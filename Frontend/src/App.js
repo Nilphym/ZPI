@@ -1,7 +1,13 @@
 import React from 'react';
+import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const App = () => {
-  return <div />;
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ width: '100%', height: '100vh', backgroundColor: theme.palette.primary.main }} />
+  );
 };
 
 export default App;
