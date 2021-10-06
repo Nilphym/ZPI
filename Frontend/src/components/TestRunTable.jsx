@@ -1,21 +1,32 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, IconButton } from '@mui/material';
+import PropTypes from 'prop-types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Box,
+  IconButton
+} from '@mui/material';
 import { Done, Error } from '@mui/icons-material';
 
 import useTableSteps from '../hooks/useTableSteps';
-
 
 const StepButtonTableCell = ({ row, useTableStepsRef }) => {
   const [currentState, stepStates, doneAction, errorAction, clearAction] = useTableStepsRef;
 
   const handleClear = () => {
     if (Object.values(currentState).some((stepState) => stepState === stepStates.error)) {
-      //TODO: add modal with info that you cannot clear after error has been reported
+      // TODO: add modal with info that you cannot clear after error has been reported
     } else {
-      //TODO: add modal asking if you sure want to clear
+      // TODO: add modal asking if you sure want to clear
       clearAction(row.id);
     }
-  }
+  };
 
   switch (currentState[row.id]) {
     case stepStates.choose:
@@ -46,12 +57,7 @@ const StepButtonTableCell = ({ row, useTableStepsRef }) => {
       return (
         <TableCell sx={{ width: '5rem' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-              onClick={handleClear}
-            >
+            <IconButton component="span" color="primary" size="small" onClick={handleClear}>
               <Done />
             </IconButton>
           </Box>
@@ -62,11 +68,7 @@ const StepButtonTableCell = ({ row, useTableStepsRef }) => {
       return (
         <TableCell sx={{ width: '5rem' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-            >
+            <IconButton component="span" color="primary" size="small">
               <Error />
             </IconButton>
           </Box>
@@ -78,16 +80,28 @@ const StepButtonTableCell = ({ row, useTableStepsRef }) => {
   }
 };
 
+StepButtonTableCell.propTypes = {
+  row: PropTypes.object.isRequired,
+  useTableStepsRef: PropTypes.func.isRequired
+};
+
 const DataTableCell = ({ data, color }) => {
   return (
     <TableCell sx={{ width: '7rem' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         {data?.map((dataItem) => (
-          <Button key={dataItem} color={color}>{dataItem}</Button>
+          <Button key={dataItem} color={color}>
+            {dataItem}
+          </Button>
         ))}
       </Box>
     </TableCell>
   );
+};
+
+DataTableCell.propTypes = {
+  data: PropTypes.array.isRequired,
+  color: PropTypes.string.isRequired
 };
 
 // rows should be taken from redux
@@ -108,15 +122,11 @@ const TestRunTable = ({ rows }) => {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow
-              key={row.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              hover
-            >
+            <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover>
               <StepButtonTableCell row={row} useTableStepsRef={useTableStepsRef} />
               <TableCell>{row.step}</TableCell>
               <DataTableCell data={row.associatedBugs} color="error" />
-              <DataTableCell data={row.testData}/>
+              <DataTableCell data={row.testData} />
               <TableCell>{row.controlPoint}</TableCell>
             </TableRow>
           ))}
@@ -127,3 +137,7 @@ const TestRunTable = ({ rows }) => {
 };
 
 export default TestRunTable;
+
+TestRunTable.propTypes = {
+  rows: PropTypes.array.isRequired
+};

@@ -15,7 +15,7 @@ const rows = [
     tests: [
       { name: 'normal process works OK' },
       { name: 'all fields blank rejected' },
-      { name: 'email address already in use' },
+      { name: 'email address already in use' }
     ]
   },
   {
@@ -23,7 +23,7 @@ const rows = [
     tests: [
       { name: 'normal process works OK' },
       { name: 'all fields blank rejected' },
-      { name: 'email address already in use' },
+      { name: 'email address already in use' }
     ]
   },
   {
@@ -31,7 +31,7 @@ const rows = [
     tests: [
       { name: 'normal process works OK' },
       { name: 'all fields blank rejected' },
-      { name: 'email address already in use' },
+      { name: 'email address already in use' }
     ]
   },
   {
@@ -39,7 +39,7 @@ const rows = [
     tests: [
       { name: 'normal process works OK' },
       { name: 'all fields blank rejected' },
-      { name: 'email address already in use' },
+      { name: 'email address already in use' }
     ]
   }
 ];

@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
+import PropTypes from 'prop-types';
+import {
+  Collapse,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper
+} from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp, ExitToApp } from '@mui/icons-material';
 
 const Row = ({ row: { name, tests } }) => {
@@ -7,12 +17,14 @@ const Row = ({ row: { name, tests } }) => {
 
   return (
     <>
-      <TableRow sx={{ 
-        backgroundColor: '#EEEEEE',
-        'td, th': {
-          fontWeight: 'bold'
-        }
-       }}>
+      <TableRow
+        sx={{
+          backgroundColor: '#EEEEEE',
+          'td, th': {
+            fontWeight: 'bold'
+          }
+        }}
+      >
         <TableCell padding="checkbox">
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -32,11 +44,7 @@ const Row = ({ row: { name, tests } }) => {
             <Table size="small">
               <TableBody>
                 {tests.map(({ name }) => (
-                  <TableRow
-                    hover
-                    sx={{ height: '2.7rem' }}
-                    key={name}
-                  >
+                  <TableRow hover sx={{ height: '2.7rem' }} key={name}>
                     <TableCell padding="checkbox" />
                     <TableCell component="th" scope="row">
                       {name}
@@ -45,7 +53,12 @@ const Row = ({ row: { name, tests } }) => {
                       1
                     </TableCell>
                     <TableCell align="center" sx={{ width: 0 }}>
-                      <IconButton component="span" sx={{ display: 'flex', alignItems: 'center' }} color="primary" size="small">
+                      <IconButton
+                        component="span"
+                        sx={{ display: 'flex', alignItems: 'center' }}
+                        color="primary"
+                        size="small"
+                      >
                         <ExitToApp />
                       </IconButton>
                     </TableCell>
@@ -58,6 +71,13 @@ const Row = ({ row: { name, tests } }) => {
       </TableRow>
     </>
   );
+};
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    name: PropTypes.string,
+    tests: PropTypes.array
+  }).isRequired
 };
 
 const TestPlanTable = ({ rows }) => {
@@ -75,3 +95,7 @@ const TestPlanTable = ({ rows }) => {
 };
 
 export default TestPlanTable;
+
+TestPlanTable.propTypes = {
+  rows: PropTypes.array.isRequired
+};

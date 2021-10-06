@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableRow, TableCell, TableContainer, TablePagination, Paper } from '@mui/material';
+import PropTypes from 'prop-types';
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  Paper
+} from '@mui/material';
 
 import EnhancedTableHead from './TableHead';
 import EnhancedTableRow from './TableRow';
-
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -44,7 +52,7 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
 
   const adjustPerPageRowsOptions = (rowsPerPageOptions, rowsNumber) => {
     const adjustedRowsPerPageOptions = [];
-  
+
     rowsPerPageOptions.forEach((interval) => {
       if (interval <= rowsNumber) {
         adjustedRowsPerPageOptions.push(interval);
@@ -52,9 +60,9 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
         adjustedRowsPerPageOptions.push(rowsNumber);
       }
     });
-  
+
     return adjustedRowsPerPageOptions;
-  }
+  };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -69,12 +77,12 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
             headCells={headCells}
           />
           <TableBody>
-            {rows.sort(getComparator(order, orderBy))
+            {rows
+              .sort(getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                  <EnhancedTableRow key={row.id} rowCells={rowCells} row={row} />
-                )
-              )}
+                <EnhancedTableRow key={row.id} rowCells={rowCells} row={row} />
+              ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 66.8 * emptyRows }}>
                 <TableCell colSpan={headCells.length} />
@@ -97,3 +105,10 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
 };
 
 export default EnhancedTable;
+
+EnhancedTable.propTypes = {
+  headCells: PropTypes.array.isRequired,
+  rowCells: PropTypes.array.isRequired,
+  rows: PropTypes.array.isRequired,
+  rowsPerPageOptions: PropTypes.array.isRequired
+};

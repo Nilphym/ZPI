@@ -1,13 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { TableCell, IconButton } from '@mui/material';
 import { Settings, Repeat, Done, Error, Add } from '@mui/icons-material';
 
 const icons = {
-  'done': <Done />,
-  'error': <Error />,
-  'add': <Add />,
-  'repeat': <Repeat />,
-  'settings': <Settings />
+  done: <Done />,
+  error: <Error />,
+  add: <Add />,
+  repeat: <Repeat />,
+  settings: <Settings />
 };
 
 const ButtonTableCell = ({ icon, onClick }) => (
@@ -25,3 +26,8 @@ const ButtonTableCell = ({ icon, onClick }) => (
 );
 
 export default ButtonTableCell;
+
+ButtonTableCell.propTypes = {
+  icon: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
+};

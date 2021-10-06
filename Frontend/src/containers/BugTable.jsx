@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 
 import Table from '../components/Table';
 
-
 export const types = {
   myBugs: 'my-bugs',
   toFix: 'to-fix',
   toReview: 'to-review'
-}
+};
 
 // rows should be taken from redux
 const BugTable = ({ type, rows }) => {
@@ -17,12 +16,42 @@ const BugTable = ({ type, rows }) => {
     { id: 'name', label: 'Name', isSortable: true, isVisible: true },
     { id: 'date', label: 'Date', isSortable: true, isVisible: true },
     { id: 'description', label: 'Description', isSortable: true, isVisible: true },
-    { id: 'execs', alignCenter: true, label: ['Execs', 'Req/Done/Failed'], isSortable: false, isVisible: type === types.toReview },
-    { id: 'edit' , alignCenter: true, label: 'Edit', isSortable: false, isVisible: true },
-    { id: 'reject' , alignCenter: true, label: 'Reject', isSortable: false, isVisible: type === types.myBugs },
-    { id: 'resolve' , alignCenter: true, label: 'Resolve', isSortable: false, isVisible: type === types.myBugs },
-    { id: 'take' , alignCenter: true, label: 'Take', isSortable: false, isVisible: type === types.toFix },
-    { id: 'retest' , alignCenter: true, label: 'Retest', isSortable: false, isVisible: type === types.toReview }
+    {
+      id: 'execs',
+      alignCenter: true,
+      label: ['Execs', 'Req/Done/Failed'],
+      isSortable: false,
+      isVisible: type === types.toReview
+    },
+    { id: 'edit', alignCenter: true, label: 'Edit', isSortable: false, isVisible: true },
+    {
+      id: 'reject',
+      alignCenter: true,
+      label: 'Reject',
+      isSortable: false,
+      isVisible: type === types.myBugs
+    },
+    {
+      id: 'resolve',
+      alignCenter: true,
+      label: 'Resolve',
+      isSortable: false,
+      isVisible: type === types.myBugs
+    },
+    {
+      id: 'take',
+      alignCenter: true,
+      label: 'Take',
+      isSortable: false,
+      isVisible: type === types.toFix
+    },
+    {
+      id: 'retest',
+      alignCenter: true,
+      label: 'Retest',
+      isSortable: false,
+      isVisible: type === types.toReview
+    }
   ];
 
   const rowCells = [
@@ -51,5 +80,6 @@ const BugTable = ({ type, rows }) => {
 export default BugTable;
 
 BugTable.propTypes = {
-  type: PropTypes.oneOf(Object.values(types)).isRequired
+  type: PropTypes.oneOf(Object.values(types)).isRequired,
+  rows: PropTypes.array.isRequired
 };
