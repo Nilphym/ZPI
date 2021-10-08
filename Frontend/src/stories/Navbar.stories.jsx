@@ -17,5 +17,6 @@ Navbar.args = {
     { icon: 'home', text: 'Bilings', destination: 'bilings' },
     { icon: 'home', text: 'Team', destination: 'team' },
     { icon: 'home', text: 'Settings', destination: 'settings' }
-  ]
+  ],
+  profile: { name: 'John Snow' }
 };
