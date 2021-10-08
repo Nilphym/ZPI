@@ -10,4 +10,12 @@ export default {
 const Template = (args) => <NavbarComponent {...args} />;
 
 export const Navbar = Template.bind({});
-Navbar.args = {};
+Navbar.args = {
+  links: [
+    { icon: 'home', text: 'Home', destination: 'home' },
+    { icon: 'home', text: 'Projects', destination: 'projects' },
+    { icon: 'home', text: 'Bilings', destination: 'bilings' },
+    { icon: 'home', text: 'Team', destination: 'team' },
+    { icon: 'home', text: 'Settings', destination: 'settings' }
+  ]
+};

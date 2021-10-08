@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/system';
 
 const App = () => {
   const theme = useTheme();
