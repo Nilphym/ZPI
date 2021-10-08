@@ -5,15 +5,18 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@mui/icons-material": "^5.0.0",
-    "@mui/material": "^5.0.0",
+    "@mui/icons-material": "^5.0.3",
+    "@mui/material": "^5.0.3",
+    "@mui/system": "^5.0.3",
     "@reduxjs/toolkit": "^1.6.2",
+    "@testing-library/dom": "^8.7.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.22.0",
     "history": "^5.0.1",
     "luxon": "^2.0.2",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.17.1",
@@ -21,6 +24,8 @@
     "react-router": "^6.0.0-beta.6",
     "react-router-dom": "^6.0.0-beta.6",
     "react-scripts": "4.0.3",
+    "redux": "^4.1.1",
+    "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
     "yup": "^0.32.9"
   },
@@ -32,7 +37,8 @@
     "lint": "eslint src/**/*.js src/**/*.jsx"
   },
   "resolutions": {
-    "babel-loader": "8.1.0"
+    "babel-loader": "8.1.0",
+    "webpack": "4.44.2"
   },
   "browserslist": {
     "production": [
@@ -47,21 +53,27 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.15.8",
     "@storybook/addon-actions": "^6.3.8",
     "@storybook/addon-essentials": "^6.3.8",
     "@storybook/addon-links": "^6.3.8",
     "@storybook/node-logger": "^6.3.8",
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.3.8",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jest": "^24.5.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.4.1"
-  }
+    "prettier": "^2.4.1",
+    "webpack": "^5.58.0",
+    "webpack-hot-middleware": "^2.25.1"
+  },
+  "packageManager": "yarn@3.0.2"
 }
