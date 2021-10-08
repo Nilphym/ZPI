@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '@mui/material';
 import { styled } from '@mui/system';
+import { Box, SvgIcon } from '@mui/material';
+import { HomeOutlined } from '@mui/icons-material';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+
+const icons = {
+  home: <HomeOutlined />
+};
 
 const Scrollbar = styled(SimpleBar)({
   maxHeight: '100%'
@@ -16,13 +21,13 @@ const Navbar = ({ links }) => {
     <Box
       sx={{
         height: '100vh',
-        width: '300px'
+        width: '100%'
       }}
     >
       <Scrollbar>
-        <Box>Logo</Box>
-        <Box>Navigation</Box>
+        <SvgIcon>add_circle</SvgIcon>
         {/* icon, text, hyperlink */}
+        <Box>Navigation</Box>
         <Box>Person</Box>
       </Scrollbar>
     </Box>

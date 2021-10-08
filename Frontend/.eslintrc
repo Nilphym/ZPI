@@ -29,8 +29,5 @@
     "no-shadow": "off",
     "semi": "error",
     "arrow-body-style": "off"
-  },
-  "settings": {
-    "import/resolver": "node"
   }
 }
