@@ -4041,22 +4041,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.7.2":
-  version: 8.7.2
-  resolution: "@testing-library/dom@npm:8.7.2"
-  dependencies:
-    "@babel/code-frame": ^7.10.4
-    "@babel/runtime": ^7.12.5
-    "@types/aria-query": ^4.2.0
-    aria-query: ^4.2.2
-    chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.6
-    lz-string: ^1.4.4
-    pretty-format: ^27.0.2
-  checksum: 9c0b2a9bc7aa92f22d909d677093d4d520c59de36013e97ba6eeaea4b4fccd3cae7e1221712bf079939b7d86aa69740441b206ae1cb9c3a1ecbb420070f4d0c9
-  languageName: node
-  linkType: hard
-
 "@testing-library/jest-dom@npm:^5.11.4":
   version: 5.14.1
   resolution: "@testing-library/jest-dom@npm:5.14.1"
@@ -9849,7 +9833,6 @@ fsevents@^1.2.7:
     "@emotion/styled": ^11.3.0
     "@mui/icons-material": ^5.0.3
     "@mui/material": ^5.0.3
-    "@mui/system": ^5.0.3
     "@reduxjs/toolkit": ^1.6.2
     "@storybook/addon-actions": ^6.3.10
     "@storybook/addon-essentials": ^6.3.10
@@ -9857,7 +9840,6 @@ fsevents@^1.2.7:
     "@storybook/node-logger": ^6.3.10
     "@storybook/preset-create-react-app": ^3.2.0
     "@storybook/react": ^6.3.10
-    "@testing-library/dom": ^8.7.2
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
@@ -9874,7 +9856,6 @@ fsevents@^1.2.7:
     history: ^5.0.1
     luxon: ^2.0.2
     prettier: ^2.4.1
-    prop-types: ^15.7.2
     react: ^17.0.2
     react-dom: ^17.0.2
     react-hook-form: ^7.17.1
@@ -9882,8 +9863,6 @@ fsevents@^1.2.7:
     react-router: ^6.0.0-beta.6
     react-router-dom: ^6.0.0-beta.6
     react-scripts: 4.0.3
-    redux: ^4.1.1
-    simplebar: ^5.3.6
     simplebar-react: ^2.3.6
     yup: ^0.32.9
   languageName: unknown
@@ -15565,7 +15544,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.2, pretty-format@npm:^27.2.4":
+"pretty-format@npm:^27.0.0, pretty-format@npm:^27.2.4":
   version: 27.2.4
   resolution: "pretty-format@npm:27.2.4"
   dependencies:
@@ -16496,7 +16475,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.0, redux@npm:^4.1.0, redux@npm:^4.1.1":
+"redux@npm:^4.0.0, redux@npm:^4.1.0":
   version: 4.1.1
   resolution: "redux@npm:4.1.1"
   dependencies:
