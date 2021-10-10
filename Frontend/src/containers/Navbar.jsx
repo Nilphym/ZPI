@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Box, Typography, Avatar, IconButton, useMediaQuery } from '@mui/material';
+import { Box, Typography, Avatar, IconButton, Slide, Fade, useMediaQuery } from '@mui/material';
 import { HomeOutlined, MenuOpen, Menu } from '@mui/icons-material';
 import { blue, grey } from '@mui/material/colors';
-import { styled } from '@mui/system';
+import { styled, useTheme } from '@mui/system';
 
 import logo from '../assets/logo/logo2.png';
 
@@ -81,42 +81,82 @@ Profile.propTypes = {
   }).isRequired
 };
 
-// TODO: 1200px min width for desktop else mobile menu
 const Navbar = ({ links, profile }) => {
   const { pathname } = useLocation();
-  const largeMedia = useMediaQuery('(min-width:1200px)');
-  console.log(largeMedia);
+  const theme = useTheme();
+  const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
+  const [open, setOpen] = useState(true);
+
+  const toggleOpen = () => {
+    setOpen((open) => !open);
+  };
+
+  useEffect(() => {
+    if ((largeMedia && !open) || (!largeMedia && open)) toggleOpen();
+  }, [largeMedia]);
 
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        width: '18.8rem',
-        display: 'grid',
-        gridTemplateRows: '7rem 1fr 7rem',
-        borderRight: `2px solid ${grey[100]}`
-      }}
-    >
-      <Box
-        sx={{
-          margin: '0 1rem 0 2rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-      >
-        <Logo src={logo} alt="logo" />
-        <IconButton>
-          <MenuOpen sx={{ color: 'primary.dark' }} />
-        </IconButton>
-      </Box>
-      <Box sx={{ alignSelf: 'center' }}>
-        {links.map((link) => (
-          <NavbarItem key={link.destination} pathname={pathname} link={link} />
-        ))}
-      </Box>
-      <Profile profile={profile} />
-    </Box>
+    <>
+      <Slide direction="right" in={open} mountOnEnter unmountOnExit>
+        <Box
+          sx={{
+            height: '100vh',
+            width: '18.8rem',
+            display: 'grid',
+            gridTemplateRows: '7rem 1fr 7rem',
+            borderRight: `2px solid ${grey[100]}`,
+            backgroundColor: 'white',
+            position: 'relative',
+            zIndex: 1
+          }}
+        >
+          <Box
+            sx={{
+              margin: '0 1rem 0 2rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Logo src={logo} alt="logo" />
+            <IconButton onClick={toggleOpen}>
+              <MenuOpen sx={{ color: 'primary.dark' }} />
+            </IconButton>
+          </Box>
+          <Box sx={{ alignSelf: 'center' }}>
+            {links.map((link) => (
+              <NavbarItem key={link.destination} pathname={pathname} link={link} />
+            ))}
+          </Box>
+          <Profile profile={profile} />
+        </Box>
+      </Slide>
+      <Slide direction="right" in={!open} mountOnEnter unmountOnExit>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '2.3rem',
+            left: '1rem'
+          }}
+        >
+          <IconButton onClick={toggleOpen}>
+            <Menu sx={{ color: 'primary.dark' }} />
+          </IconButton>
+        </Box>
+      </Slide>
+      <Fade in={!largeMedia && open}>
+        <Box
+          sx={{
+            position: 'fixed',
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            top: 0,
+            zIndex: 0
+          }}
+        />
+      </Fade>
+    </>
   );
 };
 
