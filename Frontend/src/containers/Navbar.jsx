@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Box, Typography, Avatar } from '@mui/material';
-import { HomeOutlined } from '@mui/icons-material';
+import { Box, Typography, Avatar, IconButton, useMediaQuery } from '@mui/material';
+import { HomeOutlined, MenuOpen, Menu } from '@mui/icons-material';
 import { blue, grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
 
@@ -13,8 +13,7 @@ const icons = {
 };
 
 const Logo = styled('img')({
-  width: '47%',
-  padding: '2rem 0 0 2rem'
+  width: '8rem'
 });
 
 const StyledLink = styled(Link, {
@@ -24,7 +23,7 @@ const StyledLink = styled(Link, {
   padding: '1rem 2rem',
   display: 'flex',
   alignItems: 'center',
-  color: theme.palette.primary.main,
+  color: theme.palette.primary.dark,
   textDecoration: 'none',
   ...(!active && {
     '&:hover': {
@@ -36,10 +35,11 @@ const StyledLink = styled(Link, {
   })
 }));
 
-// TODO: change active checking to match every subroute, eq. /home/dashboard
 const NavbarItem = ({ pathname, link: { icon, text, destination } }) => {
+  const regex = new RegExp(`/${destination}`);
+
   return (
-    <StyledLink active={pathname === `/${destination}`} to={destination}>
+    <StyledLink active={regex.test(pathname)} to={destination}>
       {icons[icon]}
       <Typography sx={{ width: '100%', paddingLeft: '1rem' }}>{text}</Typography>
     </StyledLink>
@@ -59,18 +59,17 @@ const Profile = ({ profile: { avatar, name } }) => {
   return (
     <Box
       sx={{
-        paddingBottom: '2rem',
-        alignSelf: 'end',
+        alignSelf: 'center',
         justifySelf: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
       }}
     >
-      <Avatar sx={{ marginBottom: '.5rem' }} src={avatar}>
+      <Avatar sx={{ backgroundColor: 'primary.dark', marginBottom: '0.5rem' }} src={avatar}>
         {name.at(0)}
       </Avatar>
-      <Typography>{name}</Typography>
+      <Typography sx={{ color: 'primary.dark' }}>{name}</Typography>
     </Box>
   );
 };
@@ -85,21 +84,35 @@ Profile.propTypes = {
 // TODO: 1200px min width for desktop else mobile menu
 const Navbar = ({ links, profile }) => {
   const { pathname } = useLocation();
+  const largeMedia = useMediaQuery('(min-width:1200px)');
+  console.log(largeMedia);
 
   return (
     <Box
       sx={{
         height: '100vh',
-        width: '300px',
+        width: '18.8rem',
         display: 'grid',
-        alignItems: 'start',
+        gridTemplateRows: '7rem 1fr 7rem',
         borderRight: `2px solid ${grey[100]}`
       }}
     >
-      <Logo src={logo} alt="logo" />
-      <Box>
+      <Box
+        sx={{
+          margin: '0 1rem 0 2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Logo src={logo} alt="logo" />
+        <IconButton>
+          <MenuOpen sx={{ color: 'primary.dark' }} />
+        </IconButton>
+      </Box>
+      <Box sx={{ alignSelf: 'center' }}>
         {links.map((link) => (
-          <NavbarItem pathname={pathname} link={link} />
+          <NavbarItem key={link.destination} pathname={pathname} link={link} />
         ))}
       </Box>
       <Profile profile={profile} />

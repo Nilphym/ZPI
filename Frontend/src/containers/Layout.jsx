@@ -1,13 +1,15 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import Navbar from './containers/Navbar';
 
-const App = () => {
+import Navbar from './Navbar';
+
+const Layout = () => {
   return (
     <Box sx={{ width: '100%', height: '100vh' }}>
       <Navbar
         links={[
-          { icon: 'home', text: 'Home', destination: 'home' },
+          { icon: 'home', text: 'Home', destination: 'login' },
           { icon: 'home', text: 'Projects', destination: 'projects' },
           { icon: 'home', text: 'Bilings', destination: 'bilings' },
           { icon: 'home', text: 'Team', destination: 'team' },
@@ -15,8 +17,9 @@ const App = () => {
         ]}
         profile={{ name: 'John Snow' }}
       />
+      <Outlet />
     </Box>
   );
 };
 
-export default App;
+export default Layout;
