@@ -11,7 +11,7 @@ import React from 'react';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
-  width: '200px',
+  width: '12.5rem',
   height: '8vh',
   position: 'absolute',
   top: '50%',
@@ -61,22 +61,23 @@ const LoginPanel = () => {
     );
   };
 
-  const StyledLink = styled(Link)`
-    color: blue;
-    &:visited {
-      color: blue;
+  const StyledLink = styled(Link)({
+     color: 'blue',
+    '&:visited': {
+      color: 'blue'
     },
-    &:focus,
-    &:hover,
-    &:active {
-      color: grey;
-    }`;
-
+    '&:focus, &:hover, &:active':{
+      color: 'grey'
+    }
+  })
+    ;
+  
+  // 1rem <=> 16px
   return (
     <Box>
       <Box
         sx={{
-          width: '200px',
+          width: '12.5rem',
           height: '8vh',
           position: 'absolute',
           top: '20%',
@@ -96,7 +97,7 @@ const LoginPanel = () => {
           flexDirection: 'column'
         }}
       >
-        <Typography variant="h2" gutterBottom component="div">
+        <Typography align="center" variant="h2" gutterBottom component="div">
           Login Panel
         </Typography>
         <Box
@@ -119,7 +120,7 @@ const LoginPanel = () => {
                 helperText={!!errors.login && 'Login field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -139,29 +140,27 @@ const LoginPanel = () => {
                 }
                 {...field}
                 sx={{
-                  margin: '10px 0 10px 0'
+                  margin: '0.625rem 0 0.625rem 0'
                 }}
               />
             )}
           />
-          <Typography>
-            <StyledLink to="/register">Register a new product -&gt;</StyledLink>
-          </Typography>
+          <StyledLink to="/register">Register a new product -&gt;</StyledLink>
           <Button
             type="submit"
             variant="contained"
             sx={{
-              height: '50px',
-              marginTop: '10px',
-              marginBottom: '20px'
+              height: '3.125rem',
+              marginTop: '0.625rem',
+              marginBottom: '1.25rem'
             }}
           >
             Login
           </Button>
-          <Typography>
-            {`Have you forgot you password? ${' '}`}
+          <Box>
+            <Typography>{`Have you forgot you password? ${' '}`}</Typography>
             <StyledLink to="#!">Reset password</StyledLink>
-          </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>

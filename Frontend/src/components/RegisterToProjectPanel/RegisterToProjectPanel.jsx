@@ -40,7 +40,7 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-const RegisterToProjectPanel = ({projectName}) => {
+const RegisterToProjectPanel = ({ projectName }) => {
   const {
     control,
     handleSubmit,
@@ -71,7 +71,7 @@ const RegisterToProjectPanel = ({projectName}) => {
     <Box>
       <Box
         sx={{
-          width: '200px',
+          width: '12.5rem',
           height: '8vh',
           position: 'absolute',
           top: '10%',
@@ -93,7 +93,7 @@ const RegisterToProjectPanel = ({projectName}) => {
           flexDirection: 'column'
         }}
       >
-        <Typography variant="h3" gutterBottom component="div">
+        <Typography align="center" variant="h3" gutterBottom component="div">
           {`Register User to ${projectName} Panel`}
         </Typography>
         <Box
@@ -118,7 +118,7 @@ const RegisterToProjectPanel = ({projectName}) => {
                 helperText={!!errors.name && 'Name field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -137,7 +137,7 @@ const RegisterToProjectPanel = ({projectName}) => {
                 helperText={!!errors.surname && 'Surname field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -159,7 +159,7 @@ const RegisterToProjectPanel = ({projectName}) => {
                 }
                 {...field}
                 sx={{
-                  margin: '10px 0 0 0'
+                  margin: '0.625rem 0 0 0'
                 }}
               />
             )}
@@ -180,7 +180,7 @@ const RegisterToProjectPanel = ({projectName}) => {
                 }
                 {...field}
                 sx={{
-                  margin: '10px 0 10px 0'
+                  margin: '0.625rem 0 0.625rem 0'
                 }}
               />
             )}
@@ -189,8 +189,8 @@ const RegisterToProjectPanel = ({projectName}) => {
             type="submit"
             variant="contained"
             sx={{
-              height: '50px',
-              marginTop: '10px'
+              height: '3.125rem',
+              marginTop: '0.625rem'
             }}
           >
             Register User

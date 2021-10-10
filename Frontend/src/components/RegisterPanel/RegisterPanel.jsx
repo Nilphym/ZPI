@@ -10,7 +10,7 @@ import React from 'react';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
-  width: '200px',
+  width: '12.5rem',
   height: '8vh',
   position: 'absolute',
   top: '50%',
@@ -76,7 +76,7 @@ const RegisterPanel = () => {
     <Box>
       <Box
         sx={{
-          width: '200px',
+          width: '12.5rem',
           height: '8vh',
           position: 'absolute',
           top: '10%',
@@ -96,7 +96,7 @@ const RegisterPanel = () => {
           flexDirection: 'column'
         }}
       >
-        <Typography variant="h2" gutterBottom component="div">
+        <Typography align="center" variant="h2" gutterBottom component="div">
           Register Panel
         </Typography>
         <Box
@@ -121,7 +121,7 @@ const RegisterPanel = () => {
                 helperText={!!errors.projectName && 'Project Name field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -140,7 +140,7 @@ const RegisterPanel = () => {
                 helperText={!!errors.email && 'Email field cannot be empty and must be in pattern!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -159,7 +159,7 @@ const RegisterPanel = () => {
                 helperText={!!errors.name && 'Name field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -178,7 +178,7 @@ const RegisterPanel = () => {
                 helperText={!!errors.surname && 'Surname field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '10px'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -200,7 +200,7 @@ const RegisterPanel = () => {
                 }
                 {...field}
                 sx={{
-                  margin: '10px 0 0 0'
+                  margin: '0.625rem 0 0 0'
                 }}
               />
             )}
@@ -221,7 +221,7 @@ const RegisterPanel = () => {
                 }
                 {...field}
                 sx={{
-                  margin: '10px 0 10px 0'
+                  margin: '0.625rem 0 0.625rem 0'
                 }}
               />
             )}
@@ -230,8 +230,8 @@ const RegisterPanel = () => {
             type="submit"
             variant="contained"
             sx={{
-              height: '50px',
-              marginTop: '10px'
+              height: '3.125rem',
+              marginTop: '0.625rem'
             }}
           >
             Register
