@@ -110,7 +110,6 @@ const RegisterPanel = () => {
           <Controller
             name="projectName"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -129,7 +128,6 @@ const RegisterPanel = () => {
           <Controller
             name="email"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -148,7 +146,6 @@ const RegisterPanel = () => {
           <Controller
             name="name"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -167,7 +164,6 @@ const RegisterPanel = () => {
           <Controller
             name="surname"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -186,7 +182,6 @@ const RegisterPanel = () => {
           <Controller
             name="password"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -208,7 +203,6 @@ const RegisterPanel = () => {
           <Controller
             name="repeatPassword"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField

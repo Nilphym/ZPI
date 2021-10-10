@@ -86,7 +86,7 @@ const RegisterToProjectPanel = ({ projectName }) => {
           position: 'absolute',
           top: '23%',
           left: '50%',
-          width: '400px',
+          width: '25rem',
           transform: 'translateX(-50%)',
           display: 'flex',
           flexWrap: 'wrap',
@@ -107,7 +107,6 @@ const RegisterToProjectPanel = ({ projectName }) => {
           <Controller
             name="name"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -126,7 +125,6 @@ const RegisterToProjectPanel = ({ projectName }) => {
           <Controller
             name="surname"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -145,7 +143,6 @@ const RegisterToProjectPanel = ({ projectName }) => {
           <Controller
             name="password"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
@@ -167,7 +164,6 @@ const RegisterToProjectPanel = ({ projectName }) => {
           <Controller
             name="repeatPassword"
             control={control}
-            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
