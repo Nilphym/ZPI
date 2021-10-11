@@ -9,16 +9,16 @@ const instance = axios.create({
 
 const getHeaders = (isAuth) => (isAuth ? authService.getAuthHeader() : {});
 
-const server = {
+const server = (axiosInstance = instance) => ({
   async get(url, isAuth) {
-    return instance.get({
+    return axiosInstance.get({
       url,
       headers: getHeaders(isAuth)
     });
   },
 
   async post(url, data, isAuth) {
-    return instance.post({
+    return axiosInstance.post({
       url,
       data,
       headers: getHeaders(isAuth)
@@ -26,7 +26,7 @@ const server = {
   },
 
   async put(url, data, isAuth) {
-    return instance.post({
+    return axiosInstance.post({
       url,
       data,
       headers: getHeaders(isAuth)
@@ -34,11 +34,11 @@ const server = {
   },
 
   async delete(url, isAuth) {
-    return instance.post({
+    return axiosInstance.post({
       url,
       headers: getHeaders(isAuth)
     });
   }
-};
+});
 
 export default server;
