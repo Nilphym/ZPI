@@ -34,10 +34,10 @@ const EditableTable = ({
       {!disabled && columnsNumber < MAX_COLUMNS_NUMBER && (
         <Button onClick={() => setColumnsNumber((number) => number + 1)}>Add column</Button>
       )}
-      {!disabled && rowsNumber > 1 && (
+      {!disabled && rowsNumber > 2 && (
         <Button onClick={() => setRowsNumber((number) => number - 1)}>Delete row</Button>
       )}
-      {!disabled && columnsNumber > 1 && (
+      {!disabled && columnsNumber > 2 && (
         <Button onClick={() => setColumnsNumber((number) => number - 1)}>Delete column</Button>
       )}
       {!disabled && (

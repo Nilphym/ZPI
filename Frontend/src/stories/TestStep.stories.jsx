@@ -13,5 +13,6 @@ export const TestStep = Template.bind({});
 TestStep.args = {
   testName: 'Test1',
   testProcedureName: 'Procedure1',
-  testStepName: 'TestStep1'
+  testStepName: 'TestStep1',
+  isEditable: true
 };

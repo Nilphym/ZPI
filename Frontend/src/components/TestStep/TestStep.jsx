@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,7 +9,6 @@ import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
 import WarningIcon from '@mui/icons-material/Warning';
 import EditableTable from '../EditableTable/EditableTable';
-
 
 const formFields = {
   rowsNumber: 'rowsNumber',
@@ -30,7 +29,7 @@ const schema = yup.object().shape({
 // TODO: usable API
 // TODO: styles
 // part of test creation form
-const TestStep = ({ testName, testProcedureName, testStepName }) => {
+const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isEditable }) => {
   const {
     control: innerControl,
     handleSubmit,
@@ -72,8 +71,8 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
     });
   };
 
-  const deleteTable = tableName => {
-    setEditableTables((state => [...state.filter(table => table.tableName !== tableName)]));
+  const deleteTable = (tableName) => {
+    setEditableTables((state) => [...state.filter((table) => table.tableName !== tableName)]);
   };
 
   return (
@@ -98,9 +97,9 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
       >
         {testStepName}
       </Button>
-      {!isOpened && (
+      {isOpened && (
         <Box>
-          {!isEditing && (
+          {isEditable && !isEditing && (
             <CreateIcon
               sx={{
                 position: 'absolute',
@@ -117,13 +116,20 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
             />
           )}
           <Box>
-            <Typography variant="h5">Test Data:</Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                marginTop: '0.625rem'
+              }}
+            >
+              Test Data:
+            </Typography>
             {editableTables.length > 0 ? (
               <Box>
                 {editableTables.map(({ tableName, rowsNumber, columnsNumber }) => (
                   <EditableTable
                     key={`${tableName}`}
-                    name={`${testName}-${testProcedureName}-${testStepName}-${tableName}`}
+                    name={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-${tableName}`}
                     rowsNumber={rowsNumber}
                     columnsNumber={columnsNumber}
                     disabled={!isEditing}
@@ -133,11 +139,16 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
                 ))}
               </Box>
             ) : (
-                <Button sx={{
+              <Button
+                sx={{
                   '&.Mui-disabled': {
-                    color: ''
+                    color: 'black'
                   }
-                }} variant="body1" startIcon={<WarningIcon />} disabled>
+                }}
+                variant="body1"
+                startIcon={<WarningIcon />}
+                disabled
+              >
                 No Data
               </Button>
             )}
@@ -154,6 +165,7 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
               ) : (
                 <Box component="form" onSubmit={handleSubmit(addTable)}>
                   <Controller
+                    shouldUnregister
                     name={formFields.rowsNumber}
                     control={innerControl}
                     render={({ field }) => (
@@ -175,6 +187,7 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
                     )}
                   />
                   <Controller
+                    shouldUnregister
                     name={formFields.columnsNumber}
                     control={innerControl}
                     render={({ field }) => (
@@ -231,11 +244,11 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
               Control Point:
             </Typography>
             <Controller
-              name={`${testName}-${testProcedureName}-${testStepName}-result`}
+              name={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
               control={innerControl}
               render={({ field }) => (
                 <TextField
-                  id={`${testName}-${testProcedureName}-${testStepName}-result`}
+                  id={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
                   label="Control Point"
                   type="text"
                   disabled={!isEditing}
@@ -256,7 +269,10 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
             <Button
               variant="outlined"
               sx={{ marginTop: '0.625rem' }}
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                setIsAddingTable(false);
+              }}
             >
               Save
             </Button>
@@ -268,9 +284,11 @@ const TestStep = ({ testName, testProcedureName, testStepName }) => {
 };
 
 TestStep.propTypes = {
+  testPlanName: PropTypes.string.isRequired,
   testName: PropTypes.string.isRequired,
   testProcedureName: PropTypes.string.isRequired,
-  testStepName: PropTypes.string.isRequired
+  testStepName: PropTypes.string.isRequired,
+  isEditable: PropTypes.bool.isRequired
   // control: PropTypes.object.isRequired
 };
 
