@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/system';
 import { CssBaseline } from '@mui/material';
 
 import theme from '../src/utils/theme';
-import MockServer from '../src/services/MockServer';
+import MockServer from '../src/services/server/MockServer';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
