@@ -81,11 +81,16 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
               .sort(getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                <EnhancedTableRow key={row.id} rowCells={rowCells} row={row} />
+                <EnhancedTableRow
+                  key={row.id}
+                  headCells={headCells}
+                  rowCells={rowCells}
+                  row={row}
+                />
               ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 66.8 * emptyRows }}>
-                <TableCell colSpan={headCells.length} />
+                <TableCell colSpan={headCells.length + 1} />
               </TableRow>
             )}
           </TableBody>
