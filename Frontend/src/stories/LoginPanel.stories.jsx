@@ -9,5 +9,5 @@ export default {
 
 const Template = (args) => <LoginPanelComponent {...args} />;
 
-export const LoginPanel = Template.bind({});
-LoginPanel.args = {};
+export const LoginToProjectPanel = Template.bind({});
+LoginToProjectPanel.args = {};

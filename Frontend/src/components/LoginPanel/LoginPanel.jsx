@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography} from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
@@ -29,49 +29,47 @@ const defaultValues = {
   [formFields.password]: ''
 };
 
-
 const schema = yup.object().shape({
   [formFields.login]: yup.string().required(),
   [formFields.password]: yup.string().required().min(6)
 });
 
-
 const LoginPanel = () => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     defaultValues,
     resolver: yupResolver(schema)
   });
-  
-  const onSubmit = data => {
+
+  const onSubmit = (data) => {
     try {
-       axios({
-         method: 'POST',
-         url: '/api/auth/login',
-         data
-       });
+      axios({
+        method: 'POST',
+        url: '/api/auth/login',
+        data
+      });
     } catch (err) {
       console.error(err.status);
     }
     console.log(data);
-    reset(
-      defaultValues,
-      {
-        keepIsValid: true
-      }
-    );
+    reset(defaultValues, {
+      keepIsValid: true
+    });
   };
 
   const StyledLink = styled(Link)({
-     color: 'blue',
+    color: 'blue',
     '&:visited': {
       color: 'blue'
     },
-    '&:focus, &:hover, &:active':{
+    '&:focus, &:hover, &:active': {
       color: 'grey'
     }
-  })
-    ;
-  
+  });
   // 1rem <=> 16px
   return (
     <Box>
