@@ -45,7 +45,7 @@ const EditableTable = ({
           sx={{
             position: 'absolute',
             top: '1vh',
-            right: '2vw',
+            right: '1vw',
             border: '1px solid black',
             borderRadius: '50%',
             padding: '2px',

@@ -22,7 +22,7 @@ const TableItem = ({ name, row, column, control, disabled }) => {
             <TextField
               id={`${name}-${row}-${column}`}
               type="text"
-              defaultValue=""
+              defaultValue={`${name}`}
               disabled
               placeholder=""
               required

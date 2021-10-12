@@ -8,11 +8,12 @@ const makeServer = () =>
       this.namespace = 'api';
 
       // Responding to a POST request
-      this.post('/movies', (schema, request) => {
-        const attrs = JSON.parse(request.requestBody);
-        attrs.id = Math.floor(Math.random() * 100);
+      this.post('/singin', (schema, request) => {
+        // const attrs = JSON.parse(request.requestBody);
+        // attrs.id = Math.floor(Math.random() * 100);
 
-        return { movie: attrs };
+        // return { movie: attrs };
+        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       });
 
       // Using the `timing` option to slow down the response

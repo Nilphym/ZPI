@@ -7,19 +7,22 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
-import TestStep from '../TestStep/TestStep';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditableTable from '../EditableTable/EditableTable';
 
 const formFields = {
-  newTestStepName: 'newTestStepName'
+  rowsNumber: 'rowsNumber',
+  columnsNumber: 'columnsNumber'
 };
 
 const defaultValues = {
-  [formFields.newTestStepName]: ''
+  [formFields.rowsNumber]: '',
+  [formFields.columnsNumber]: ''
 };
 
 const schema = yup.object().shape({
-  [formFields.newTestStepName]: yup.string().required()
+  [formFields.rowsNumber]: yup.number().required().min(1).max(10),
+  [formFields.columnsNumber]: yup.number().required().min(1).max(10)
 });
 
 const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
@@ -51,12 +54,38 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
     resolver: yupResolver(schema)
   });
 
-  const addField = ({ newTestStepName }) => {
-    setTestSteps((state) => [...state, newTestStepName]);
+  const addField = ({ rowsNumber, columnsNumber, textField }) => {
+    if (isAddingTable) {
+      setEntryData(state => [...state, {
+        entryType: 'table',
+        tableName: `table-${tablesCount}`,
+        rowsNumber,
+        columnsNumber
+      }]);
+      setTablesCount(state => state + 1);
+      setIsAddingTable(false);
+    }
+    if (isAddingTextField) {
+      setEntryData(state => [...state, {
+        entryType: 'textField',
+        textFieldName: textField
+      }]);
+      setIsAddingTextField(false);
+      setTextFieldsCount(state => state + 1);
+    }
     reset(defaultValues, {
       keepIsValid: true
     });
-    setIsAddingTestStep(false);
+  };
+
+  const deleteTextField = (id) => {
+    setEntryData(state => [...state.filter(item => item.entryType === 'table' ||
+      (item.entryType === 'textField' && item.textFieldName !== id))]);
+  };
+
+  const deleteTable = (id) => {
+    setEntryData(state => [...state.filter(item => item.entryType === 'textField' ||
+      (item.entryType === 'table' && item.tableName !== id))]);
   };
 
   return (
@@ -110,30 +139,48 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
             {entryData.map((entryData) => (
               <Box>
                 {entryData.entryType === 'textField' ? (
-                  <Controller
-                    shouldUnregister
-                    name={`${testPlanName}-${testName}-${testCaseName}-textField-${entryData.textFieldName}`}
-                    control={innerControl} // TODO: Change controller to outer controller
-                    render={({ field }) => (
-                      <TextField
-                        id={`${testPlanName}-${testName}-${testCaseName}-textField-${entryData.textFieldName}`}
-                        label="Rows Number"
-                        type="text"
-                        {...field}
-                        sx={{
-                          marginTop: '0.625rem',
-                          width: '10rem'
-                        }}
-                      />
-                    )}
-                  />
+                  <Box sx={{
+                    position: 'relative'
+                  }}>
+                    <DeleteIcon
+                      onClick={() => deleteTextField(entryData.textFieldName)}
+                      sx={{
+                        position: 'absolute',
+                        top: '2.3vh',
+                        right: '1vw',
+                        border: '1px solid black',
+                        borderRadius: '50%',
+                        padding: '2px',
+                        '&:hover': {
+                          cursor: 'pointer'
+                        }
+                      }} />
+                    <Controller
+                      shouldUnregister
+                      name={entryData.textFieldName}
+                      control={innerControl} // TODO: Change controller to outer controller
+                      render={({ field }) => (
+                        <TextField
+                          id={entryData.textFieldName}
+                          label="TextField"
+                          type="text"
+                          {...field}
+                          sx={{
+                            marginTop: '0.625rem',
+                            width: '100%'
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
+
                 ) : (
                   <EditableTable
                     name={entryData.tableName}
                     rowsNumber={entryData.rowsNumber}
                     columnsNumber={entryData.columnsNumber}
-                    disabled={false}
-                    deleteTable={() => console.log()}
+                    disabled={!isEditable}
+                    deleteTable={() => deleteTable(entryData.tableName)}
                   />
                 )}
               </Box>
@@ -154,10 +201,125 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
           </Button>
         )}
         <Box>
-          {!isAddingTable && !isAddingTextField ? (
-            <Button>Add TextField</Button> && <Button>Add Table</Button>
+          {(!isAddingTable && !isAddingTextField) ? (
+            <Box>
+              <Button onClick={() => setIsAddingTextField(true)}>Add TextField</Button>
+              <Button onClick={() => setIsAddingTable(true)}>Add Table</Button>
+
+            </Box>
           ) : (
-            <Box>{isAddingTable ? <></> : <></>}</Box> // TODO: Modal for Table and TextField
+            <Box>
+              {isAddingTable ? (
+                <Box component="form" onSubmit={handleSubmit(addField)}>
+                  <Controller
+                    shouldUnregister
+                    name={formFields.rowsNumber}
+                    control={innerControl}
+                    render={({ field }) => (
+                      <TextField
+                        id={formFields.rowsNumber}
+                        label="Rows Number"
+                        type="text"
+                        error={!!errors.rowsNumber}
+                        helperText={
+                          !!errors.rowsNumber &&
+                          'Rows number is required and must belong to [1-10]!'
+                        }
+                        {...field}
+                        sx={{
+                          marginTop: '0.625rem',
+                          width: '10rem'
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    shouldUnregister
+                    name={formFields.columnsNumber}
+                    control={innerControl}
+                    render={({ field }) => (
+                      <TextField
+                        id={formFields.columnsNumber}
+                        label="Columns Number"
+                        type="text"
+                        error={!!errors.columnsNumber}
+                        helperText={
+                          !!errors.columnsNumber &&
+                          'Columns number is required and must belong to [1-10]!'
+                        }
+                        {...field}
+                        sx={{
+                          marginTop: '0.625rem',
+                          width: '10rem'
+                        }}
+                      />
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    sx={{
+                      height: '3.125rem',
+                      width: '7rem',
+                      margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                    }}
+                    startIcon={<AddIcon />}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      height: '3.125rem',
+                      width: '7rem',
+                      marginTop: '0.625rem',
+                      marginBottom: '1.25rem'
+                    }}
+                    onClick={() => {
+                      setIsAddingTextField(false);
+                      setIsAddingTable(false);
+                      reset(defaultValues);
+                    }}
+                    startIcon={<CloseIcon />}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              ) : (
+                <Box>
+                  <Button
+                    onClick={() => addField({ textField: `${testPlanName}-${testName}-${testCaseName}-textField-${textFieldsCount}` })}
+                    variant="outlined"
+                    sx={{
+                      height: '3.125rem',
+                      width: '7rem',
+                      margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                    }}
+                    startIcon={<AddIcon />}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      height: '3.125rem',
+                      width: '7rem',
+                      marginTop: '0.625rem',
+                      marginBottom: '1.25rem'
+                    }}
+                    onClick={() => {
+                      setIsAddingTextField(false);
+                      setIsAddingTable(false);
+                      reset(defaultValues);
+                    }}
+                    startIcon={<CloseIcon />}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              )
+              }
+            </Box>
           )}
         </Box>
       </Box>
@@ -168,8 +330,9 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
 TestCase.propTypes = {
   testPlanName: PropTypes.string.isRequired,
   testName: PropTypes.string.isRequired,
-  testProcedureName: PropTypes.string.isRequired,
+  testCaseName: PropTypes.string.isRequired,
   isEditable: PropTypes.bool.isRequired
+  // TODO: control: PropTypes.object.isRequired
 };
 
 export default TestCase;

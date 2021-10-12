@@ -1,13 +1,13 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
-
-// import PropTypes from 'prop-types';
-import axios from 'axios';
 import React from 'react';
+
+import { login, selectIsLoggedIn } from '../../redux/reducers/auth/authSlice';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
@@ -35,6 +35,12 @@ const schema = yup.object().shape({
 });
 
 const LoginPanel = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const from = state ? state.from.pathname : '/';
+
   const {
     control,
     handleSubmit,
@@ -45,20 +51,16 @@ const LoginPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = (data) => {
-    try {
-      axios({
-        method: 'POST',
-        url: '/api/auth/login',
-        data
+  const onSubmit = async ({ login: loginData, password }) => {
+    await dispatch(login({ loginData, password }));
+
+    if (isLoggedIn) {
+      navigate(from, { replace: true });
+    } else {
+      reset(defaultValues, {
+        keepIsValid: true
       });
-    } catch (err) {
-      console.error(err.status);
     }
-    console.log(data);
-    reset(defaultValues, {
-      keepIsValid: true
-    });
   };
 
   const StyledLink = styled(Link)({

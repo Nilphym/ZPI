@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import PropTypes from 'prop-types';
+
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+
 import AddIcon from '@mui/icons-material/Add';
-import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
+import CreateIcon from '@mui/icons-material/Create';
+
+import PropTypes from 'prop-types';
 import WarningIcon from '@mui/icons-material/Warning';
+import { yupResolver } from '@hookform/resolvers/yup';
 import EditableTable from '../EditableTable/EditableTable';
 
-const formFields = {
+const formFieldsTable = {
   rowsNumber: 'rowsNumber',
   columnsNumber: 'columnsNumber'
 };
 
-const defaultValues = {
-  [formFields.rowsNumber]: '',
-  [formFields.columnsNumber]: ''
+const defaultValuesTable = {
+  [formFieldsTable.rowsNumber]: '',
+  [formFieldsTable.columnsNumber]: ''
 };
 
-const schema = yup.object().shape({
-  [formFields.rowsNumber]: yup.number().required().min(1).max(10),
-  [formFields.columnsNumber]: yup.number().required().min(1).max(10)
+const schemaTable = yup.object().shape({
+  [formFieldsTable.rowsNumber]: yup.number().required().min(1).max(10),
+  [formFieldsTable.columnsNumber]: yup.number().required().min(1).max(10)
+});
+
+const formFieldsStepName = {
+  stepName: 'stepName'
+};
+
+const schemaStepName = yup.object().shape({
+  [formFieldsStepName.stepName]: yup.string().required()
 });
 
 // TODO: connect with outer control form
@@ -31,16 +42,26 @@ const schema = yup.object().shape({
 // part of test creation form
 const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isEditable }) => {
   const {
-    control: innerControl,
-    handleSubmit,
-    reset,
-    formState: { errors }
+    control: innerControlTable,
+    handleSubmit: handleSubmitTable,
+    reset: resetTable,
+    formState: { errors: errorsTable }
   } = useForm({
-    defaultValues,
-    resolver: yupResolver(schema)
+    defaultValuesTable,
+    resolver: yupResolver(schemaTable)
+  });
+
+  const {
+    control: innerControlStepName,
+    handleSubmit: handleSubmitStepName,
+    reset: resetStepName,
+    formState: { errors: errorsStepName }
+  } = useForm({
+    resolver: yupResolver(schemaStepName)
   });
 
   const [isOpened, setIsOpened] = useState(false);
+  const [stepName, setStepName] = useState(testStepName);
   const [tablesCount, setTablesCount] = useState(0);
   const [editableTables, setEditableTables] = useState([
     {
@@ -52,8 +73,9 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
 
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
+  const [isEditingStepName, setIsEditingStepName] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const addTable = ({ rowsNumber, columnsNumber }) => {
     setTablesCount((state) => state + 1);
@@ -66,9 +88,14 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
       }
     ]);
     setIsAddingTable(false);
-    reset(defaultValues, {
+    resetTable(defaultValuesTable, {
       keepIsValid: true
     });
+  };
+
+  const changeStepName = ({ stepName }) => {
+    setStepName(stepName);
+    setIsEditingStepName(false);
   };
 
   const deleteTable = (tableName) => {
@@ -92,10 +119,11 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
         sx={{
           width: '100%',
           bgcolor: '#0077c2',
-          color: 'white'
+          color: 'white',
+          textTransform: 'capitalize'
         }}
       >
-        {testStepName}
+        {stepName}
       </Button>
       {isOpened && (
         <Box>
@@ -116,6 +144,65 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
             />
           )}
           <Box>
+            {isEditing && (!isEditingStepName ? (
+              <Button onClick={() => setIsEditingStepName(true)} variant="outlined">Edit Step Name</Button>
+            ) : (
+              <Box component="form" onSubmit={handleSubmitStepName(changeStepName)}>
+                <Controller
+                  shouldUnregister
+                  name={formFieldsStepName.stepName}
+                  control={innerControlStepName}
+                  render={({ field }) => (
+                    <TextField
+                      id={formFieldsStepName.stepName}
+                      label="Step Name"
+                      type="text"
+                      defaultValue={testStepName}
+                      error={!!errorsStepName.stepName}
+                      helperText={
+                        !!errorsStepName.stepName &&
+                        'Step Name field is required!'
+                      }
+                      {...field}
+                      sx={{
+                        marginTop: '0.625rem',
+                        width: '10rem'
+                      }}
+                    />
+                  )}
+                />
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  sx={{
+                    height: '3.125rem',
+                    width: '12rem',
+                    margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                  }}
+                // startIcon={<AddIcon />}
+                >
+                  Change Step Name
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    height: '3.125rem',
+                    width: '7rem',
+                    marginTop: '0.625rem',
+                    marginBottom: '1.25rem'
+                  }}
+                  onClick={() => {
+                    setIsEditingStepName(false);
+                    resetStepName({ 'stepName': testStepName });
+                  }}
+                  startIcon={<CloseIcon />}
+                >
+                  Close
+                </Button>
+              </Box>
+            ))}
+          </Box>
+          <Box>
             <Typography
               variant="h5"
               sx={{
@@ -134,7 +221,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                     columnsNumber={columnsNumber}
                     disabled={!isEditing}
                     deleteTable={() => deleteTable(tableName)}
-                    // TODO: Add control props from outer form !!!
+                  // TODO: Add control props from outer form !!!
                   />
                 ))}
               </Box>
@@ -163,19 +250,19 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                   Add table
                 </Button>
               ) : (
-                <Box component="form" onSubmit={handleSubmit(addTable)}>
+                <Box component="form" onSubmit={handleSubmitTable(addTable)}>
                   <Controller
                     shouldUnregister
-                    name={formFields.rowsNumber}
-                    control={innerControl}
+                    name={formFieldsTable.rowsNumber}
+                    control={innerControlTable}
                     render={({ field }) => (
                       <TextField
-                        id={formFields.rowsNumber}
+                        id={formFieldsTable.rowsNumber}
                         label="Rows Number"
                         type="text"
-                        error={!!errors.rowsNumber}
+                        error={!!errorsTable.rowsNumber}
                         helperText={
-                          !!errors.rowsNumber &&
+                          !!errorsTable.rowsNumber &&
                           'Rows number is required and must belong to [1-10]!'
                         }
                         {...field}
@@ -188,16 +275,16 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                   />
                   <Controller
                     shouldUnregister
-                    name={formFields.columnsNumber}
-                    control={innerControl}
+                    name={formFieldsTable.columnsNumber}
+                    control={innerControlTable}
                     render={({ field }) => (
                       <TextField
-                        id={formFields.columnsNumber}
+                        id={formFieldsTable.columnsNumber}
                         label="Columns Number"
                         type="text"
-                        error={!!errors.columnsNumber}
+                        error={!!errorsTable.columnsNumber}
                         helperText={
-                          !!errors.columnsNumber &&
+                          !!errorsTable.columnsNumber &&
                           'Columns number is required and must belong to [1-10]!'
                         }
                         {...field}
@@ -230,7 +317,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                     }}
                     onClick={() => {
                       setIsAddingTable(false);
-                      reset(defaultValues);
+                      resetTable(defaultValuesTable);
                     }}
                     startIcon={<CloseIcon />}
                   >
@@ -245,7 +332,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
             </Typography>
             <Controller
               name={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
-              control={innerControl}
+              control={innerControlTable} // TODO: Change into outer controller
               render={({ field }) => (
                 <TextField
                   id={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
@@ -278,8 +365,9 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
             </Button>
           )}
         </Box>
-      )}
-    </Box>
+      )
+      }
+    </Box >
   );
 };
 
