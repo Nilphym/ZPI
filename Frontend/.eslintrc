@@ -28,6 +28,7 @@
     "no-plusplus": "off",
     "no-shadow": "off",
     "semi": "error",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
+    "class-methods-use-this": "off"
   }
 }

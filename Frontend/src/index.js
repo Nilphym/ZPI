@@ -7,6 +7,7 @@ import { CssBaseline } from '@mui/material';
 
 import configureStore from './redux/configureStore';
 import App from './App';
+import AuthManager from './services/auth/AuthManager';
 import theme from './utils/theme';
 
 const store = configureStore();
@@ -15,10 +16,12 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
+        <AuthManager>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </AuthManager>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>,

@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import counterReducer from './reducers/counter/counterSlice';
+import authReducer from './reducers/auth/authSlice';
 
 const createRootReducer = () =>
   combineReducers({
-    counter: counterReducer
+    auth: authReducer
   });
 
 export default createRootReducer;

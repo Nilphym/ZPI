@@ -1,9 +1,10 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import { ThemeProvider } from '@mui/system';
 import { CssBaseline } from '@mui/material';
 
 import theme from '../src/utils/theme';
-import { MemoryRouter } from 'react-router';
+import MockServer from '../src/services/server/MockServer';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -18,10 +19,12 @@ export const parameters = {
 export const decorators = [
   (Story) => (
     <MemoryRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
+      <MockServer>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Story />
+        </ThemeProvider>
+      </MockServer>
     </MemoryRouter>
   )
 ];
