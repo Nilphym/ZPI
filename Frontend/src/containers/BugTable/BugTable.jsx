@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Table from '../components/Table';
+import Table from '../../components/Table';
 
 export const types = {
   myBugs: 'my-bugs',
@@ -9,7 +9,7 @@ export const types = {
   toReview: 'to-review'
 };
 
-// rows should be taken from redux
+// TODO: rows should be taken from redux
 const BugTable = ({ type, rows }) => {
   const headCells = [
     { id: 'id', label: '#', isSortable: true, isVisible: true },
@@ -59,7 +59,7 @@ const BugTable = ({ type, rows }) => {
     { id: 'name', width: '20rem', isVisible: true },
     { id: 'date', width: 0, isVisible: true },
     { id: 'description', isVisible: true },
-    { id: 'execs', align: 'center', width: '8.5rem', isVisible: type === types.toReview },
+    { id: 'execs', align: 'center', width: '9rem', isVisible: type === types.toReview },
     { id: 'edit', isButton: true, icon: 'settings', isVisible: true },
     { id: 'reject', isButton: true, icon: 'error', isVisible: type === types.myBugs },
     { id: 'resolve', isButton: true, icon: 'done', isVisible: type === types.myBugs },

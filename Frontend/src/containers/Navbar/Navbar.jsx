@@ -6,7 +6,7 @@ import { HomeOutlined, MenuOpen, Menu } from '@mui/icons-material';
 import { blue, grey } from '@mui/material/colors';
 import { styled, useTheme } from '@mui/system';
 
-import logo from '../assets/logo/logo2.png';
+import logo from '../../assets/logo/logo2.png';
 
 const icons = {
   home: <HomeOutlined />
@@ -154,6 +154,7 @@ const Navbar = ({ links, profile }) => {
             top: 0,
             zIndex: 0
           }}
+          onClick={toggleOpen}
         />
       </Fade>
     </>

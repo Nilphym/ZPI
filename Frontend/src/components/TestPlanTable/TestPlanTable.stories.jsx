@@ -1,13 +1,13 @@
 import React from 'react';
 
-import TestPlanTableComponent from '../components/TestPlanTable';
+import TestPlanTable from './TestPlanTable';
 
 export default {
-  title: 'Components',
-  component: TestPlanTableComponent
+  title: 'Test Plan Table',
+  component: TestPlanTable
 };
 
-const Template = (args) => <TestPlanTableComponent {...args} />;
+const Template = (args) => <TestPlanTable {...args} />;
 
 const rows = [
   {
@@ -44,5 +44,5 @@ const rows = [
   }
 ];
 
-export const TestPlanTable = Template.bind({});
-TestPlanTable.args = { rows };
+export const Default = Template.bind({});
+Default.args = { rows };

@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Done, Error } from '@mui/icons-material';
 
-import useTableSteps from '../hooks/useTableSteps';
+import useTableSteps from '../../hooks/useTableSteps';
 
 const StepButtonTableCell = ({ row, useTableStepsRef }) => {
   const [currentState, stepStates, doneAction, errorAction, clearAction] = useTableStepsRef;

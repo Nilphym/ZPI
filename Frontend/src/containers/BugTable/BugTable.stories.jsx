@@ -1,13 +1,13 @@
 import React from 'react';
 
-import BugTableComponent, { types } from '../containers/BugTable';
+import BugTable, { types } from './BugTable';
 
 export default {
-  title: 'Components',
-  component: BugTableComponent
+  title: 'Bug Table',
+  component: BugTable
 };
 
-const Template = (args) => <BugTableComponent {...args} />;
+const Template = (args) => <BugTable {...args} />;
 
 function createData(id, name, date, description, execs) {
   return { id, name, date, description, execs };
@@ -35,20 +35,20 @@ const rows = [
   createData(13, 'abc', '2021-09-01', "it's not working", '3 / 1 / 0')
 ];
 
-export const BugsToReviewTable = Template.bind({});
-BugsToReviewTable.args = {
+export const ToReview = Template.bind({});
+ToReview.args = {
   type: types.toReview,
   rows
 };
 
-export const BugsToFixTable = Template.bind({});
-BugsToFixTable.args = {
+export const ToFix = Template.bind({});
+ToFix.args = {
   type: types.toFix,
   rows
 };
 
-export const MyBugsTable = Template.bind({});
-MyBugsTable.args = {
+export const MyBugs = Template.bind({});
+MyBugs.args = {
   type: types.myBugs,
   rows
 };

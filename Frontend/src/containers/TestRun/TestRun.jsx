@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Paper, Box } from '@mui/material';
-import TestRunTable from '../components/TestRunTable';
+
+import TestRunTable from '../../components/TestRunTable';
 
 const Preconditions = ({ preconditions }) => {
   return (

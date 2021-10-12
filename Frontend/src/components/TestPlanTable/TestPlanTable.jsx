@@ -44,7 +44,7 @@ const Row = ({ row: { name, tests } }) => {
             <Table size="small">
               <TableBody>
                 {tests.map(({ name }) => (
-                  <TableRow hover sx={{ height: '2.7rem' }} key={name}>
+                  <TableRow colSpan={4} hover sx={{ height: '2.7rem' }} key={name}>
                     <TableCell padding="checkbox" />
                     <TableCell component="th" scope="row">
                       {name}

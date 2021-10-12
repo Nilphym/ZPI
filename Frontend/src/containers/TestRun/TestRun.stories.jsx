@@ -1,14 +1,16 @@
 import React from 'react';
 
-import TestRunTableComponent from '../components/TestRunTable';
+import TestRun from './TestRun';
 
 export default {
-  title: 'Components',
-  component: TestRunTableComponent
+  title: 'Test Run',
+  component: TestRun
 };
 
-const Template = (args) => <TestRunTableComponent {...args} />;
+const Template = (args) => <TestRun {...args} />;
 
+const preconditions = 'Some tables probably';
+const expectedResult = 'User successfully registered';
 const rows = [
   { id: 1, step: 'Enter the page', associatedBugs: ['b-1213112', 'b-1234121'] },
   { id: 2, step: 'Find big icon', testData: ['td-142482'] },
@@ -26,5 +28,5 @@ const rows = [
   }
 ];
 
-export const TestRunTable = Template.bind({});
-TestRunTable.args = { rows };
+export const Default = Template.bind({});
+Default.args = { preconditions, expectedResult, rows };

@@ -85,7 +85,7 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
               ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 66.8 * emptyRows }}>
-                <TableCell colSpan={headCells.length} />
+                <TableCell colSpan={headCells.length + 1} />
               </TableRow>
             )}
           </TableBody>
