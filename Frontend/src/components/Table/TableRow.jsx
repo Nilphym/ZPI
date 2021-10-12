@@ -6,37 +6,39 @@ import { blue } from '@mui/material/colors';
 
 import EnhancedTableCell from './TableCell';
 
-const EnhancedTableRow = ({ rowCells, row }) => {
+const EnhancedTableRow = ({ headCells, rowCells, row }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <TableRow hover tabIndex={-1} key={row.id}>
+      <TableRow tabIndex={-1} key={row.id}>
         <TableCell padding="checkbox">
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        {rowCells.map((rowCell) => (
-          <EnhancedTableCell key={rowCell.id} content={row[rowCell.id]} rowCell={rowCell} />
+        {headCells.map((headCell) => (
+          <EnhancedTableCell key={headCell.id} content={row[headCell.id]} headCell={headCell} />
         ))}
       </TableRow>
       <TableRow>
-        <TableCell style={{ padding: 0 }} colSpan={8}>
+        <TableCell style={{ padding: 0 }} colSpan={headCells.length + 1}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Table size="small" sx={{ backgroundColor: blue[50] }}>
               <TableBody>
-                {rowCells.map(() => (
-                  <TableRow colSpan={8} hover sx={{ height: '2.7rem' }} key={null}>
-                    <TableCell padding="checkbox" />
-                    <TableCell component="th" scope="row">
-                      test
-                    </TableCell>
-                    <TableCell align="center" sx={{ width: '5rem' }}>
-                      1
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {[...headCells, ...rowCells]
+                  .filter((cell) => cell.isEditable)
+                  .map((cell) => (
+                    <TableRow
+                      colSpan={headCells.length + 1}
+                      sx={{ height: '2.7rem' }}
+                      key={cell.id}
+                    >
+                      <TableCell component="th" scope="row">
+                        {cell.label}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Collapse>
@@ -49,6 +51,7 @@ const EnhancedTableRow = ({ rowCells, row }) => {
 export default EnhancedTableRow;
 
 EnhancedTableRow.propTypes = {
+  headCells: PropTypes.array.isRequired,
   rowCells: PropTypes.array.isRequired,
   row: PropTypes.object.isRequired
 };

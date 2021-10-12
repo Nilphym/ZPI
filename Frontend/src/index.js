@@ -5,12 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/system';
 import { CssBaseline } from '@mui/material';
 
-import configureStore from './redux/configureStore';
+import store from './redux/store';
 import App from './App';
 import AuthManager from './services/auth/AuthManager';
 import theme from './utils/theme';
-
-const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>

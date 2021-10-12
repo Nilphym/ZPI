@@ -12,59 +12,114 @@ export const types = {
 // TODO: rows should be taken from redux
 const BugTable = ({ type, rows }) => {
   const headCells = [
-    { id: 'id', label: '#', isSortable: true, isVisible: true },
-    { id: 'name', label: 'Name', isSortable: true, isVisible: true },
-    { id: 'date', label: 'Date', isSortable: true, isVisible: true },
-    { id: 'description', label: 'Description', isSortable: true, isVisible: true },
+    {
+      id: 'code',
+      label: 'Code',
+      isSortable: true,
+      isVisible: true,
+      width: 0,
+      isHeading: true,
+      isEditable: false
+    },
+    {
+      id: 'name',
+      label: 'Name',
+      isSortable: true,
+      isVisible: true,
+      width: '20rem',
+      isEditable: true
+    },
+    { id: 'state', label: 'State', isSortable: true, isVisible: true, width: 0, isEditable: true },
+    {
+      id: 'functionality',
+      label: 'Functionality',
+      isSortable: true,
+      isVisible: true,
+      isEditable: false
+    },
+    { id: 'type', label: 'Type', isSortable: true, isVisible: true, width: 0, isEditable: true },
+    {
+      id: 'impact',
+      label: 'Impact',
+      isSortable: true,
+      isVisible: true,
+      width: 0,
+      isEditable: true
+    },
+    {
+      id: 'priority',
+      label: 'Priority',
+      isSortable: true,
+      isVisible: true,
+      width: 0,
+      isEditable: true
+    },
     {
       id: 'execs',
       alignCenter: true,
       label: ['Execs', 'Req/Done/Failed'],
       isSortable: false,
-      isVisible: type === types.toReview
+      isVisible: type === types.toReview,
+      width: '5rem',
+      isEditable: false
     },
-    { id: 'edit', alignCenter: true, label: 'Edit', isSortable: false, isVisible: true },
+    {
+      id: 'edit',
+      alignCenter: true,
+      label: 'Edit',
+      isSortable: false,
+      isVisible: true,
+      isButton: true,
+      icon: 'settings',
+      isEditable: false
+    },
     {
       id: 'reject',
       alignCenter: true,
       label: 'Reject',
       isSortable: false,
-      isVisible: type === types.myBugs
+      isVisible: type === types.myBugs,
+      isButton: true,
+      icon: 'error',
+      isEditable: false
     },
     {
       id: 'resolve',
       alignCenter: true,
       label: 'Resolve',
       isSortable: false,
-      isVisible: type === types.myBugs
+      isVisible: type === types.myBugs,
+      isButton: true,
+      icon: 'done',
+      isEditable: false
     },
     {
       id: 'take',
       alignCenter: true,
       label: 'Take',
       isSortable: false,
-      isVisible: type === types.toFix
+      isVisible: type === types.toFix,
+      isButton: true,
+      icon: 'add',
+      isEditable: false
     },
     {
       id: 'retest',
       alignCenter: true,
       label: 'Retest',
       isSortable: false,
-      isVisible: type === types.toReview
+      isVisible: type === types.toReview,
+      isButton: true,
+      icon: 'repeat',
+      isEditable: false
     }
   ];
 
   const rowCells = [
-    { id: 'id', width: 0, isHeading: true, isVisible: true },
-    { id: 'name', width: '20rem', isVisible: true },
-    { id: 'date', width: 0, isVisible: true },
-    { id: 'description', isVisible: true },
-    { id: 'execs', align: 'center', width: '9rem', isVisible: type === types.toReview },
-    { id: 'edit', isButton: true, icon: 'settings', isVisible: true },
-    { id: 'reject', isButton: true, icon: 'error', isVisible: type === types.myBugs },
-    { id: 'resolve', isButton: true, icon: 'done', isVisible: type === types.myBugs },
-    { id: 'take', isButton: true, icon: 'add', isVisible: type === types.toFix },
-    { id: 'retest', isButton: true, icon: 'repeat', isVisible: type === types.toReview }
+    { id: 'description', label: 'Description', isVisible: true, isEditable: true },
+    { id: 'deadline', label: 'Deadline', isVisible: true, isEditable: true },
+    { id: 'reportDate', label: 'Report date', isVisible: true, isEditable: true },
+    { id: 'endDate', label: 'End date', isVisible: true, isEditable: true }
   ];
 
   return (

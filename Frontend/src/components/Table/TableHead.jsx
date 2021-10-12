@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
+import { TableCell, TableHead, TableRow, TableSortLabel, Typography, Box } from '@mui/material';
 
 const EnhancedTableHead = ({ order, orderBy, onRequestSort, headCells }) => {
   const createSortHandler = (property) => (event) => {
@@ -20,13 +20,25 @@ const EnhancedTableHead = ({ order, orderBy, onRequestSort, headCells }) => {
       );
     }
 
-    if (Array.isArray(headCell.label)) {
+    if (headCell.id === 'execs') {
       return (
-        <>
-          {headCell.label.map((labelLine) => (
-            <div key={labelLine}>{labelLine}</div>
-          ))}
-        </>
+        <Box sx={{ position: 'relative' }}>
+          <Typography sx={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
+            {headCell.label[0]}
+          </Typography>
+          <Typography
+            sx={{
+              width: '6rem',
+              fontSize: '0.7rem',
+              position: 'absolute',
+              left: '50%',
+              bottom: '-60%',
+              transform: 'translate(-50%, 0)'
+            }}
+          >
+            {headCell.label[1]}
+          </Typography>
+        </Box>
       );
     }
 

@@ -2,14 +2,24 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import { Box, Typography, Avatar, IconButton, Slide, Fade, useMediaQuery } from '@mui/material';
-import { HomeOutlined, MenuOpen, Menu } from '@mui/icons-material';
+import {
+  Login,
+  FormatListBulleted,
+  BugReport,
+  BarChart,
+  MenuOpen,
+  Menu
+} from '@mui/icons-material';
 import { blue, grey } from '@mui/material/colors';
 import { styled, useTheme } from '@mui/system';
 
 import logo from '../../assets/logo/logo2.png';
 
 const icons = {
-  home: <HomeOutlined />
+  dashboard: <BarChart />,
+  bugs: <BugReport />,
+  tests: <FormatListBulleted />,
+  logout: <Login />
 };
 
 const Logo = styled('img')({
