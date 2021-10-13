@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,63 +21,74 @@ const EditableTable = ({
   const [columnsNumber, setColumnsNumber] = useState(defaultColumnsNumber + 1);
 
   return (
-    <Box
-      sx={{
-        border: '1px solid black',
-        position: 'relative',
-        marginTop: '1.25rem'
-      }}
-    >
-      {!disabled && rowsNumber < MAX_ROWS_NUMBER && (
-        <Button onClick={() => setRowsNumber((number) => number + 1)}>Add row</Button>
-      )}
-      {!disabled && columnsNumber < MAX_COLUMNS_NUMBER && (
-        <Button onClick={() => setColumnsNumber((number) => number + 1)}>Add column</Button>
-      )}
-      {!disabled && rowsNumber > 2 && (
-        <Button onClick={() => setRowsNumber((number) => number - 1)}>Delete row</Button>
-      )}
-      {!disabled && columnsNumber > 2 && (
-        <Button onClick={() => setColumnsNumber((number) => number - 1)}>Delete column</Button>
-      )}
-      {!disabled && (
-        <DeleteIcon
-          sx={{
-            position: 'absolute',
-            top: '1vh',
-            right: '1vw',
-            border: '1px solid black',
-            borderRadius: '50%',
-            padding: '2px',
-            '&:hover': {
-              cursor: 'pointer'
-            }
-          }}
-          onClick={() => deleteTable()}
-        />
-      )}
-      <Box sx={{
-        width: '100%'
+    <Box sx={{
+      marginTop: '1.25rem'
+    }}>
+      <Typography sx={{
+        fontWeight: '700'
       }}>
-        {[...Array.from(Array(rowsNumber).keys())].map((rowNumber) => (
-          <Box
-            key={`row-${rowNumber}`}
+        {`Table name: ${name}`}
+      </Typography>
+      <Box
+        sx={{
+          border: '1px solid black',
+          position: 'relative',
+          marginTop: '0.625rem'
+        }}
+      >
+        {!disabled && rowsNumber < MAX_ROWS_NUMBER && (
+          <Button onClick={() => setRowsNumber((number) => number + 1)}>Add row</Button>
+        )}
+        {!disabled && columnsNumber < MAX_COLUMNS_NUMBER && (
+          <Button onClick={() => setColumnsNumber((number) => number + 1)}>Add column</Button>
+        )}
+        {!disabled && rowsNumber > 2 && (
+          <Button onClick={() => setRowsNumber((number) => number - 1)}>Delete row</Button>
+        )}
+        {!disabled && columnsNumber > 2 && (
+          <Button onClick={() => setColumnsNumber((number) => number - 1)}>Delete column</Button>
+        )}
+        {!disabled && (
+          <DeleteIcon
             sx={{
-              display: 'flex'
+              position: 'absolute',
+              top: '1vh',
+              right: '1vw',
+              border: '1px solid black',
+              borderRadius: '50%',
+              padding: '2px',
+              '&:hover': {
+                cursor: 'pointer'
+              }
             }}
-          >
-            {[...Array.from(Array(columnsNumber).keys())].map((columnNumber) => (
-              <TableItem
-                key={`${rowNumber}-${columnNumber}`}
-                name={name}
-                row={rowNumber}
-                column={columnNumber}
-                control={control}
-                disabled={disabled}
-              />
-            ))}
-          </Box>
-        ))}
+            onClick={() => deleteTable()}
+          />
+        )}
+        <Box
+          sx={{
+            width: '100%'
+          }}
+        >
+          {[...Array.from(Array(rowsNumber).keys())].map((rowNumber) => (
+            <Box
+              key={`row-${rowNumber}`}
+              sx={{
+                display: 'flex'
+              }}
+            >
+              {[...Array.from(Array(columnsNumber).keys())].map((columnNumber) => (
+                <TableItem
+                  key={`${rowNumber}-${columnNumber}`}
+                  name={name}
+                  row={rowNumber}
+                  column={columnNumber}
+                  control={control}
+                  disabled={disabled}
+                />
+              ))}
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );

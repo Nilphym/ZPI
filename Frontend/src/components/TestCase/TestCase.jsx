@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
+import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditableTable from '../EditableTable/EditableTable';
 
@@ -44,6 +45,7 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
 
   const [tablesCount, setTablesCount] = useState(0);
   const [textFieldsCount, setTextFieldsCount] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
   const [isAddingTextField, setIsAddingTextField] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
 
@@ -93,6 +95,22 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
 
   return (
     <Box>
+      {isEditable && !isEditing && (
+        <CreateIcon
+          sx={{
+            position: 'absolute',
+            top: '6vh',
+            right: '2vw',
+            border: '1px solid black',
+            borderRadius: '50%',
+            padding: '2px',
+            '&:hover': {
+              cursor: 'pointer'
+            }
+          }}
+          onClick={() => setIsEditing(true)}
+        />
+      )}
       <Typography variant="h4">Test Case:</Typography>
       <Box>
         <Typography
@@ -115,6 +133,7 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
               type="text"
               error=""
               helperText=""
+              disabled={!isEditing}
               multiline
               rows={3}
               {...field}
@@ -142,10 +161,12 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
             {entryData.map((entryData) => (
               <Box>
                 {entryData.entryType === 'textField' ? (
-                  <Box sx={{
-                    position: 'relative'
-                  }}>
-                    <DeleteIcon
+                  <Box
+                    sx={{
+                      position: 'relative'
+                    }}
+                  >
+                    {isEditing && <DeleteIcon
                       onClick={() => deleteTextField(entryData.textFieldName)}
                       sx={{
                         position: 'absolute',
@@ -154,10 +175,12 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
                         border: '1px solid black',
                         borderRadius: '50%',
                         padding: '2px',
+                        zIndex: 1,
                         '&:hover': {
                           cursor: 'pointer'
                         }
-                      }} />
+                      }}
+                    />}
                     <Controller
                       shouldUnregister
                       name={entryData.textFieldName}
@@ -167,6 +190,7 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
                           id={entryData.textFieldName}
                           label="TextField"
                           type="text"
+                          disabled={!isEditing}
                           {...field}
                           sx={{
                             marginTop: '0.625rem',
@@ -176,13 +200,12 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
                       )}
                     />
                   </Box>
-
                 ) : (
                   <EditableTable
                     name={entryData.tableName}
                     rowsNumber={entryData.rowsNumber}
                     columnsNumber={entryData.columnsNumber}
-                    disabled={!isEditable}
+                    disabled={!isEditing}
                     deleteTable={() => deleteTable(entryData.tableName)}
                   />
                 )}
@@ -204,128 +227,161 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
           </Button>
         )}
         <Box>
-          {(!isAddingTable && !isAddingTextField) ? (
+          {isEditing ? (
             <Box>
-              <Button onClick={() => setIsAddingTextField(true)}>Add TextField</Button>
-              <Button onClick={() => setIsAddingTable(true)}>Add Table</Button>
-
-            </Box>
-          ) : (
-            <Box>
-              {isAddingTable ? (
-                <Box component="form" onSubmit={handleSubmit(addField)}>
-                  <Controller
-                    shouldUnregister
-                    name={formFields.rowsNumber}
-                    control={innerControl}
-                    render={({ field }) => (
-                      <TextField
-                        id={formFields.rowsNumber}
-                        label="Rows Number"
-                        type="text"
-                        error={!!errors.rowsNumber}
-                        helperText={
-                          !!errors.rowsNumber &&
-                          'Rows number is required and must belong to [1-10]!'
-                        }
-                        {...field}
-                        sx={{
-                          marginTop: '0.625rem',
-                          width: '10rem'
-                        }}
-                      />
-                    )}
-                  />
-                  <Controller
-                    shouldUnregister
-                    name={formFields.columnsNumber}
-                    control={innerControl}
-                    render={({ field }) => (
-                      <TextField
-                        id={formFields.columnsNumber}
-                        label="Columns Number"
-                        type="text"
-                        error={!!errors.columnsNumber}
-                        helperText={
-                          !!errors.columnsNumber &&
-                          'Columns number is required and must belong to [1-10]!'
-                        }
-                        {...field}
-                        sx={{
-                          marginTop: '0.625rem',
-                          width: '10rem'
-                        }}
-                      />
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      margin: '0.625rem 0.625rem 1.25rem 0.625rem'
-                    }}
-                    startIcon={<AddIcon />}
-                  >
-                    Add
+              {!isAddingTable && !isAddingTextField ? (
+                <Box
+                  sx={{
+                    marginTop: '0.625rem'
+                  }}
+                >
+                  <Button variant="outlined" onClick={() => setIsAddingTextField(true)}>
+                    Add TextField
                   </Button>
                   <Button
                     variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      marginTop: '0.625rem',
-                      marginBottom: '1.25rem'
-                    }}
-                    onClick={() => {
-                      setIsAddingTextField(false);
-                      setIsAddingTable(false);
-                      reset(defaultValues);
-                    }}
-                    startIcon={<CloseIcon />}
+                    sx={{ marginLeft: '0.625rem' }}
+                    onClick={() => setIsAddingTable(true)}
                   >
-                    Close
+                    Add Table
                   </Button>
                 </Box>
               ) : (
                 <Box>
-                  <Button
-                    onClick={() => addField({ textField: `${testPlanName}-${testName}-${testCaseName}-textField-${textFieldsCount}` })}
-                    variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      margin: '0.625rem 0.625rem 1.25rem 0.625rem'
-                    }}
-                    startIcon={<AddIcon />}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      marginTop: '0.625rem',
-                      marginBottom: '1.25rem'
-                    }}
-                    onClick={() => {
-                      setIsAddingTextField(false);
-                      setIsAddingTable(false);
-                      reset(defaultValues);
-                    }}
-                    startIcon={<CloseIcon />}
-                  >
-                    Close
-                  </Button>
+                  {isAddingTable ? (
+                    <Box component="form" onSubmit={handleSubmit(addField)}>
+                      <Controller
+                        shouldUnregister
+                        name={formFields.rowsNumber}
+                        control={innerControl}
+                        render={({ field }) => (
+                          <TextField
+                            id={formFields.rowsNumber}
+                            label="Rows Number"
+                            type="text"
+                            error={!!errors.rowsNumber}
+                            helperText={
+                              !!errors.rowsNumber &&
+                              'Rows number is required and must belong to [1-10]!'
+                            }
+                            {...field}
+                            sx={{
+                              marginTop: '0.625rem',
+                              width: '10rem'
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        shouldUnregister
+                        name={formFields.columnsNumber}
+                        control={innerControl}
+                        render={({ field }) => (
+                          <TextField
+                            id={formFields.columnsNumber}
+                            label="Columns Number"
+                            type="text"
+                            error={!!errors.columnsNumber}
+                            helperText={
+                              !!errors.columnsNumber &&
+                              'Columns number is required and must belong to [1-10]!'
+                            }
+                            {...field}
+                            sx={{
+                              marginTop: '0.625rem',
+                              width: '10rem'
+                            }}
+                          />
+                        )}
+                      />
+                      <Button
+                        type="submit"
+                        variant="outlined"
+                        sx={{
+                          height: '3.125rem',
+                          width: '7rem',
+                          margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                        }}
+                        startIcon={<AddIcon />}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          height: '3.125rem',
+                          width: '7rem',
+                          marginTop: '0.625rem',
+                          marginBottom: '1.25rem'
+                        }}
+                        onClick={() => {
+                          setIsAddingTextField(false);
+                          setIsAddingTable(false);
+                          reset(defaultValues);
+                        }}
+                        startIcon={<CloseIcon />}
+                      >
+                        Close
+                      </Button>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <Button
+                        onClick={() =>
+                          addField({
+                            textField: `${testPlanName}-${testName}-${testCaseName}-textField-${textFieldsCount}`
+                          })
+                        }
+                        variant="outlined"
+                        sx={{
+                          height: '3.125rem',
+                          width: '7rem',
+                          margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                        }}
+                        startIcon={<AddIcon />}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          height: '3.125rem',
+                          width: '7rem',
+                          marginTop: '0.625rem',
+                          marginBottom: '1.25rem'
+                        }}
+                        onClick={() => {
+                          setIsAddingTextField(false);
+                          setIsAddingTable(false);
+                          reset(defaultValues);
+                        }}
+                        startIcon={<CloseIcon />}
+                      >
+                        Close
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
-              )
-              }
+              )}
             </Box>
+          ) : (
+            <Box />
           )}
         </Box>
       </Box>
+      {isEditing && (
+        <Button
+          variant="outlined"
+          sx={{ marginTop: '1.5rem' }}
+          onClick={() => {
+            setIsEditing(false);
+            setIsAddingTable(false);
+            setIsAddingTextField(false);
+          }}
+        >
+          Save
+        </Button>
+      )}
     </Box>
   );
 };
