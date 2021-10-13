@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import React from 'react';
 
-import { login, selectIsLoggedIn } from '../../redux/reducers/auth/authSlice';
+import { login } from '../../redux/reducers/auth/authSlice';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
@@ -38,7 +38,7 @@ const LoginPanel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const from = state ? state.from.pathname : '/';
 
   const {
@@ -51,8 +51,8 @@ const LoginPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = async ({ login: loginData, password }) => {
-    await dispatch(login({ loginData, password }));
+  const onSubmit = async ({ login: username, password }) => {
+    await dispatch(login({ username, password }));
 
     if (isLoggedIn) {
       navigate(from, { replace: true });

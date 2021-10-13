@@ -9,19 +9,22 @@ import store from './redux/store';
 import App from './App';
 import AuthManager from './services/auth/AuthManager';
 import theme from './utils/theme';
+import MockServer from './services/server/MockServer';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <AuthManager>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
-        </AuthManager>
-      </BrowserRouter>
-    </Provider>
+    <MockServer>
+      <Provider store={store}>
+        <BrowserRouter>
+          <AuthManager>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <App />
+            </ThemeProvider>
+          </AuthManager>
+        </BrowserRouter>
+      </Provider>
+    </MockServer>
   </React.StrictMode>,
   document.getElementById('root')
 );
