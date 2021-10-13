@@ -25,6 +25,9 @@ const schema = yup.object().shape({
   [formFields.columnsNumber]: yup.number().required().min(1).max(10)
 });
 
+
+// TODO: Dodać editable
+
 const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
   const [entryData, setEntryData] = useState([
     {
