@@ -18,7 +18,7 @@ namespace Data.Models
 
         public int StepNumber { get; set; }
         
-        [Required] //tez json
+        [Required] 
         public string  TestData { get; set; }
 
         [NotMapped]

@@ -7,6 +7,9 @@ using Microsoft.OpenApi.Models;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Data.Models;
+using System;
+using Funtest.Interfaces;
+using Funtest.Services;
 
 namespace Funtest
 {
@@ -22,10 +25,17 @@ namespace Funtest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //po³¹czenie z baz¹ danych
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            //po³¹czenie automapera
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddMvc().AddNewtonsoftJson();
+            //rejestracja DI
+            services.AddTransient<IStepService, StepService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -39,7 +49,7 @@ namespace Funtest
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage(); 
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
