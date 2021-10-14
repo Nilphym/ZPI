@@ -28,11 +28,16 @@ namespace Funtest.Services
             return true;
         }
 
-        public IQueryable<StepsGetStep> GetAll()
+        public IQueryable<StepsGetStep> GetAllSteps()
         {
             var steps = Context.Steps.AsQueryable();
-            var s = steps.Select(x => _mapper.Map<StepsGetStep>(x));
-            return s;
+            return steps.Select(x => _mapper.Map<StepsGetStep>(x));
+        }
+
+        public IQueryable<StepsGetStep> GetAllStepsForTestProcedure(Guid testProcedureId)
+        {
+            var steps = Context.Steps.Where(x => x.TestProcedureId ==testProcedureId).AsQueryable();
+            return steps.Select( x => _mapper.Map<StepsGetStep>(x));
         }
     }
 }

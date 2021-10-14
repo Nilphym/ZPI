@@ -10,6 +10,7 @@ using Data.Models;
 using System;
 using Funtest.Interfaces;
 using Funtest.Services;
+using Funtest.Services.Interfaces;
 
 namespace Funtest
 {
@@ -36,6 +37,7 @@ namespace Funtest
             services.AddMvc().AddNewtonsoftJson();
             //rejestracja DI
             services.AddTransient<IStepService, StepService>();
+            services.AddTransient<ITestProcedureService, TestProcedureService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -7,7 +7,7 @@ namespace Funtest.TransferObject.Steps
     {
         public string Name { get; set; }
         public int StepNumber { get; set; }
-        public JObject TestData { get; set; }
+        public JObject? TestData { get; set; }
         public string ControlPoint { get; set; }
         public Guid TestProcedureId { get; set; }
     }
