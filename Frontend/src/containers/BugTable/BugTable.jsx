@@ -52,7 +52,6 @@ const BugTable = ({ type, rows }) => {
       hidden: type !== types.toReview,
       width: '5.5rem'
     },
-    { id: 'edit', label: 'Edit', button: 'settings' },
     { id: 'reject', label: 'Reject', hidden: type !== types.myBugs, button: 'error' },
     { id: 'resolve', label: 'Resolve', hidden: type !== types.myBugs, button: 'done' },
     { id: 'take', label: 'Take', hidden: type !== types.toFix, button: 'add' },

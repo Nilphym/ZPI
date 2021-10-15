@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   TableRow,
@@ -73,8 +73,15 @@ Field.defaultProps = {
   values: undefined
 };
 
-const EnhancedTableRow = ({ headCells, rowCells, row }) => {
+const EnhancedTableRow = ({ headCells, rowCells, row, setCollapseDetails, collapseDetails }) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (collapseDetails) {
+      setOpen(false);
+      setCollapseDetails(false);
+    }
+  }, [collapseDetails]);
 
   return (
     <>
@@ -129,5 +136,7 @@ export default EnhancedTableRow;
 EnhancedTableRow.propTypes = {
   headCells: PropTypes.array.isRequired,
   rowCells: PropTypes.array.isRequired,
-  row: PropTypes.object.isRequired
+  row: PropTypes.object.isRequired,
+  setCollapseDetails: PropTypes.func.isRequired,
+  collapseDetails: PropTypes.func.isRequired
 };

@@ -34,15 +34,18 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
   const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [collapseDetails, setCollapseDetails] = useState(false);
 
   const handleRequestSort = (_event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    setCollapseDetails(true);
   };
 
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
+    setCollapseDetails(true);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -86,6 +89,8 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
                   headCells={headCells}
                   rowCells={rowCells}
                   row={row}
+                  setCollapseDetails={setCollapseDetails}
+                  collapseDetails={collapseDetails}
                 />
               ))}
             {emptyRows > 0 && (
