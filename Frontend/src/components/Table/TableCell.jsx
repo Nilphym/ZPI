@@ -4,15 +4,10 @@ import { TableCell } from '@mui/material';
 
 import ButtonTableCell from './ButtonTableCell';
 
-const EnhancedTableCell = ({
-  content,
-  headCell: { isButton, icon, isHeading, width, alignCenter }
-}) => {
-  if (isButton) {
-    return <ButtonTableCell icon={icon} />;
-  }
-
-  return (
+const EnhancedTableCell = ({ content, headCell: { button, isHeading, width, alignCenter } }) =>
+  button ? (
+    <ButtonTableCell icon={button} />
+  ) : (
     <TableCell
       sx={{ width }}
       align={alignCenter ? 'center' : 'left'}
@@ -22,15 +17,13 @@ const EnhancedTableCell = ({
       {content}
     </TableCell>
   );
-};
 
 export default EnhancedTableCell;
 
 EnhancedTableCell.propTypes = {
   content: PropTypes.any.isRequired,
   headCell: PropTypes.shape({
-    isButton: PropTypes.bool,
-    icon: PropTypes.string,
+    button: PropTypes.string,
     isHeading: PropTypes.bool,
     width: PropTypes.string,
     alignCenter: PropTypes.bool

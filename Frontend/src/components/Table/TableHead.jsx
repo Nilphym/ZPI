@@ -7,56 +7,49 @@ const EnhancedTableHead = ({ order, orderBy, onRequestSort, headCells }) => {
     onRequestSort(event, property);
   };
 
-  const createTableLabel = (headCell) => {
-    if (headCell.isSortable) {
-      return (
-        <TableSortLabel
-          active={orderBy === headCell.id}
-          direction={orderBy === headCell.id ? order : 'asc'}
-          onClick={createSortHandler(headCell.id)}
-        >
-          {headCell.label}
-        </TableSortLabel>
-      );
-    }
-
-    if (headCell.id === 'execs') {
-      return (
-        <Box sx={{ position: 'relative' }}>
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
-            {headCell.label[0]}
-          </Typography>
-          <Typography
-            sx={{
-              width: '6rem',
-              fontSize: '0.7rem',
-              position: 'absolute',
-              left: '50%',
-              bottom: '-60%',
-              transform: 'translate(-50%, 0)'
-            }}
-          >
-            {headCell.label[1]}
-          </Typography>
-        </Box>
-      );
-    }
-
-    return headCell.label;
-  };
-
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox" />
-        {headCells.map((headCell) => (
+        {headCells.map(({ id, label, sublabel, button, unsortable, alignCenter }) => (
           <TableCell
-            key={headCell.id}
-            align={headCell.alignCenter ? 'center' : 'left'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            key={id}
+            sortDirection={orderBy === id ? order : false}
             sx={{ fontWeight: 'bold' }}
           >
-            {createTableLabel(headCell)}
+            {button || unsortable ? (
+              <Box sx={{ position: 'relative' }}>
+                <Typography
+                  align={alignCenter ? 'center' : 'left'}
+                  sx={{ fontSize: '0.9rem', fontWeight: 'bold' }}
+                >
+                  {label}
+                </Typography>
+                {sublabel && (
+                  <Typography
+                    align={alignCenter ? 'center' : 'left'}
+                    sx={{
+                      width: '6rem',
+                      fontSize: '0.7rem',
+                      position: 'absolute',
+                      left: '50%',
+                      bottom: '-60%',
+                      transform: 'translate(-50%, 0)'
+                    }}
+                  >
+                    {sublabel}
+                  </Typography>
+                )}
+              </Box>
+            ) : (
+              <TableSortLabel
+                active={orderBy === id}
+                direction={orderBy === id ? order : 'asc'}
+                onClick={createSortHandler(id)}
+              >
+                {label}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
       </TableRow>

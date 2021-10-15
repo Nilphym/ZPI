@@ -9,12 +9,51 @@ export default {
 
 const Template = (args) => <BugTable {...args} />;
 
-function createData(code, name, state, functionality, type, impact, priority, execs) {
-  return { code, name, state, functionality, type, impact, priority, execs };
+function createData(
+  code,
+  name,
+  state,
+  functionality,
+  type,
+  impact,
+  priority,
+  execs,
+  description,
+  deadline,
+  reportDate,
+  endDate
+) {
+  return {
+    code,
+    name,
+    state,
+    functionality,
+    type,
+    impact,
+    priority,
+    execs,
+    description,
+    deadline,
+    reportDate,
+    endDate
+  };
 }
 
 const rows = [
-  createData('E-12323', 'Not responding', 'New', 'Login', 'Functional', 'High', 'Low', '1/1/1'),
+  createData(
+    'E-12323',
+    'Not responding',
+    'New',
+    'Login',
+    'Functional',
+    'High',
+    'Low',
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
+  ),
   createData(
     'E-45432',
     'Table not visible',
@@ -23,7 +62,11 @@ const rows = [
     'Functional',
     'Low',
     'Medium',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-95783',
@@ -33,7 +76,11 @@ const rows = [
     'Logical',
     'Medium',
     'Low',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-769478',
@@ -43,7 +90,11 @@ const rows = [
     'Logical',
     'Low',
     'Medium',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-654865',
@@ -53,7 +104,11 @@ const rows = [
     'Wrong datatype',
     'Medium',
     'High',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-234504',
@@ -63,7 +118,11 @@ const rows = [
     'Wrong datatype',
     'High',
     'High',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-090123',
@@ -73,7 +132,11 @@ const rows = [
     'Code duplication',
     'Low',
     'Low',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-325980',
@@ -83,7 +146,11 @@ const rows = [
     'Logical',
     'Medium',
     'Medium',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-123423',
@@ -93,7 +160,11 @@ const rows = [
     'Logical',
     'High',
     'High',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-112223',
@@ -103,7 +174,11 @@ const rows = [
     'Code duplication',
     'Medium',
     'Low',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-123432',
@@ -113,7 +188,11 @@ const rows = [
     'Code duplication',
     'Low',
     'Low',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-123290',
@@ -123,7 +202,11 @@ const rows = [
     'Wrong datatype',
     'Low',
     'Medium',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   ),
   createData(
     'E-123003',
@@ -133,7 +216,11 @@ const rows = [
     'Security',
     'High',
     'Low',
-    '1/1/1'
+    '1/1/1',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
+    '12/15/2022',
+    '12/15/2022',
+    '12/15/2022'
   )
 ];
 
