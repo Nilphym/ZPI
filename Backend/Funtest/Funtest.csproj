@@ -36,4 +36,9 @@
     <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TransferObject\Steps\Responses\" />
+    <Folder Include="TransferObject\Steps\Requests\" />
+  </ItemGroup>
+
 </Project>
