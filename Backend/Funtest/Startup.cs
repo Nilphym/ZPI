@@ -11,6 +11,10 @@ using System;
 using Funtest.Interfaces;
 using Funtest.Services;
 using Funtest.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Funtest
 {
@@ -35,14 +39,50 @@ namespace Funtest
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddMvc().AddNewtonsoftJson();
+
             //rejestracja DI
             services.AddTransient<IStepService, StepService>();
             services.AddTransient<ITestProcedureService, TestProcedureService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IJWTService, JWTService>();
 
             services.AddControllers();
+
+            services.AddIdentity<User, IdentityRole>(opt =>
+            {
+                opt.Lockout.AllowedForNewUsers = false;
+            })
+                .AddSignInManager<SignInManager<User>>()
+                .AddEntityFrameworkStores<DatabaseContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                  .AddJwtBearer(options =>
+                  {
+                      options.TokenValidationParameters = new TokenValidationParameters
+                      {
+                          ValidateIssuer = true,
+                          ValidateAudience = true,
+                          ValidateLifetime = true,
+                          ValidateIssuerSigningKey = true,
+                          ValidIssuer = Configuration["Jwt:Issuer"],
+                          ValidAudience = Configuration["Jwt:Issuer"],
+                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                      };
+                  });
+            services.AddAuthorization();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
             });
         }
 
@@ -51,7 +91,7 @@ namespace Funtest
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage(); 
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
@@ -60,6 +100,7 @@ namespace Funtest
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

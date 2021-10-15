@@ -27,11 +27,10 @@ namespace Funtest.Controllers
             var correctResult = await _stepService.AddStep(step);
 
             if (correctResult)
-                return Ok();
+                return Ok(step);
 
             return Problem("Problem with saving an object in the database");
         }
-
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StepsGetStep>>> GetSteps()
