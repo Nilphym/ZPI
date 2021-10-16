@@ -29,7 +29,7 @@ const schema = yup.object().shape({
 
 // TODO: Dodać editable
 
-const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
+const TestCase = ({ testName, testPlanName, testCaseName, isEditable }) => {
   const [entryData, setEntryData] = useState([
     {
       entryType: 'textField',
@@ -61,22 +61,28 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
 
   const addField = ({ rowsNumber, columnsNumber, textField }) => {
     if (isAddingTable) {
-      setEntryData(state => [...state, {
-        entryType: 'table',
-        tableName: `table-${tablesCount}`,
-        rowsNumber,
-        columnsNumber
-      }]);
-      setTablesCount(state => state + 1);
+      setEntryData((state) => [
+        ...state,
+        {
+          entryType: 'table',
+          tableName: `table-${tablesCount}`,
+          rowsNumber,
+          columnsNumber
+        }
+      ]);
+      setTablesCount((state) => state + 1);
       setIsAddingTable(false);
     }
     if (isAddingTextField) {
-      setEntryData(state => [...state, {
-        entryType: 'textField',
-        textFieldName: textField
-      }]);
+      setEntryData((state) => [
+        ...state,
+        {
+          entryType: 'textField',
+          textFieldName: textField
+        }
+      ]);
       setIsAddingTextField(false);
-      setTextFieldsCount(state => state + 1);
+      setTextFieldsCount((state) => state + 1);
     }
     reset(defaultValues, {
       keepIsValid: true
@@ -84,17 +90,26 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
   };
 
   const deleteTextField = (id) => {
-    setEntryData(state => [...state.filter(item => item.entryType === 'table' ||
-      (item.entryType === 'textField' && item.textFieldName !== id))]);
+    setEntryData((state) => [
+      ...state.filter(
+        (item) =>
+          item.entryType === 'table' ||
+          (item.entryType === 'textField' && item.textFieldName !== id)
+      )
+    ]);
   };
 
   const deleteTable = (id) => {
-    setEntryData(state => [...state.filter(item => item.entryType === 'textField' ||
-      (item.entryType === 'table' && item.tableName !== id))]);
+    setEntryData((state) => [
+      ...state.filter(
+        (item) =>
+          item.entryType === 'textField' || (item.entryType === 'table' && item.tableName !== id)
+      )
+    ]);
   };
 
   return (
-    <Box>
+    <Box sx={{position: 'relative', marginTop: '1.5rem'}}>
       {isEditable && !isEditing && (
         <CreateIcon
           sx={{
@@ -111,13 +126,13 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
           onClick={() => setIsEditing(true)}
         />
       )}
-      <Typography variant="h4">Test Case:</Typography>
+      <Typography variant="h4" sx={{fontSize: '1.9rem'}}>Test Case:</Typography>
       <Box>
         <Typography
           variant="h5"
           sx={{
             textDecoration: 'underline',
-            marginTop: '1.25rem',
+            marginTop: '0.625rem',
             marginBottom: '0.625rem'
           }}
         >
@@ -166,21 +181,23 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
                       position: 'relative'
                     }}
                   >
-                    {isEditing && <DeleteIcon
-                      onClick={() => deleteTextField(entryData.textFieldName)}
-                      sx={{
-                        position: 'absolute',
-                        top: '2.3vh',
-                        right: '1vw',
-                        border: '1px solid black',
-                        borderRadius: '50%',
-                        padding: '2px',
-                        zIndex: 1,
-                        '&:hover': {
-                          cursor: 'pointer'
-                        }
-                      }}
-                    />}
+                    {isEditing && (
+                      <DeleteIcon
+                        onClick={() => deleteTextField(entryData.textFieldName)}
+                        sx={{
+                          position: 'absolute',
+                          top: '2.3vh',
+                          right: '1vw',
+                          border: '1px solid black',
+                          borderRadius: '50%',
+                          padding: '2px',
+                          zIndex: 1,
+                          '&:hover': {
+                            cursor: 'pointer'
+                          }
+                        }}
+                      />
+                    )}
                     <Controller
                       shouldUnregister
                       name={entryData.textFieldName}
@@ -188,7 +205,7 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
                       render={({ field }) => (
                         <TextField
                           id={entryData.textFieldName}
-                          label="TextField"
+                          label="Entry Data"
                           type="text"
                           disabled={!isEditing}
                           {...field}
@@ -379,7 +396,7 @@ const TestCase = ({ testPlanName, testName, testCaseName, isEditable }) => {
             setIsAddingTextField(false);
           }}
         >
-          Save
+          Save Test Case
         </Button>
       )}
     </Box>

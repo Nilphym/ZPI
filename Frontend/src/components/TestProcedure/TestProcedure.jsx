@@ -45,7 +45,7 @@ const TestProcedure = ({ testPlanName, testName, testProcedureName, isEditable }
   };
 
   return (
-    <Box>
+    <Box sx={{ position: 'relative', marginTop: '1.5rem' }}>
       {isEditable && !isEditing && (
         <CreateIcon
           sx={{
@@ -62,7 +62,9 @@ const TestProcedure = ({ testPlanName, testName, testProcedureName, isEditable }
           onClick={() => setIsEditing(true)}
         />
       )}
-      <Typography variant="h4">Test Procedure:</Typography>
+      <Typography variant="h4" sx={{ fontSize: '1.9rem' }}>
+        Test Procedure:
+      </Typography>
       <Typography
         variant="h5"
         sx={{ textDecoration: 'underline', marginTop: '0.625rem', marginBottom: '0.625rem' }}
@@ -183,7 +185,7 @@ const TestProcedure = ({ testPlanName, testName, testProcedureName, isEditable }
             setIsEditing(false);
           }}
         >
-          Save
+          Save Test Procedure
         </Button>
       )}
     </Box>

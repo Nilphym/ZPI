@@ -361,7 +361,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                 setIsAddingTable(false);
               }}
             >
-              Save
+              Save Test Step
             </Button>
           )}
         </Box>

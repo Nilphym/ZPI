@@ -16,14 +16,14 @@ const authService = {
     return token ? { Authorization: `Bearer ${token}` } : {};
   },
   async login({ username, password }) {
-    const response = await axios.post(`${API_URL}signin`, { username, password });
+    const response = await axios.post(`${API_URL}/signin`, { username, password });
     if (response.data) {
       localStorage.setItem(TOKEN_KEY, response.data);
     }
     return jwtDecode(response.data);
   },
   async register({ username, email, password }) {
-    return axios.post(`${API_URL}signup`, {
+    return axios.post(`${API_URL}/signup`, {
       username,
       email,
       password
