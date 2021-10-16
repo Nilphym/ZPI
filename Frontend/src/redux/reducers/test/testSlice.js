@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export const getTestById = createAsyncThunk('test/getTestById', async (testId) => {
-  const response = await server().get({ url: `/test/${testId}` });
+  const response = await server().get({ url: `test/${testId}` });
   return response;
 });
 
