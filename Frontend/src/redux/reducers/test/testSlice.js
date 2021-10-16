@@ -1,13 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import api from '../../../services/server/api';
-import {
-  API_URL
-} from '../../../config';
-
+import server from '../../../services/server/api';
 
 const initialState = {
   testId: '',
@@ -19,11 +12,10 @@ const initialState = {
   selectedTestProcedure: {}
 };
 
-export const getTestById = createAsyncThunk('test/getTestById',
-  async (testId) => {
-    const response = await api.get({url :`${API_URL}/test/${testId}`});
-    return response;
-  });
+export const getTestById = createAsyncThunk('test/getTestById', async (testId) => {
+  const response = await server().get({ url: `/test/${testId}` });
+  return response;
+});
 
 export const testSlice = createSlice({
   name: 'test',
