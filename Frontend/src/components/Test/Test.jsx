@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
-import PropTypes from 'prop-types';
+import { getTestById, setTestId } from '../../redux/reducers/test/testSlice';
 
-const Test = ({ testId, isEditable }) => {
+const Test = ({ isEditable }) => {
   const {
     control: mainControl,
     handleSubmit,
@@ -13,21 +15,25 @@ const Test = ({ testId, isEditable }) => {
     formState: { errors }
   } = useForm();
 
-  const [selectedTestProcedure, setSelectedTestProcedure] = useState('Test Procedure 1');
-  const [selectedTestCase, setSelectedTestCase] = useState('Test Case 1');
+  const dispatch = useDispatch();
+  const testId = useSelector((state) => state.test.testId);
+  const testName = useSelector((state) => state.test.testName);
+  const testCategories = useSelector((state) => state.test.testCategories);
+  const testCasesIds = useSelector((state) => state.test.testCasesIds);
+  const testProceduresIds = useSelector((state) => state.test.testProceduresIds);
+  const selectedTestCase = useSelector((state) => state.test.selectedTestCase);
+  const selectedTestProcedure = useSelector((state) => state.test.selectedTestProcedure);
   const [isEditing, setIsEditing] = useState(false);
 
-  const testName = 'Test-demo';
 
-  const [testProcedures, setTestProcedures] = useState([
-    'Test Procedure 1',
-    'Test Procedure 2',
-    'Test Procedure 3'
-  ]);
+  useEffect(() => {
+    dispatch(setTestId('test-0')); // TODO: DELETE this line, delete export
+    async function getTestData(testId) {
+      await dispatch(getTestById(testId));
+    }
 
-  const [testCases, setTestCases] = useState(['Test Case 1', 'Test Case 2', 'Test Case 3']);
-
-  const [testCategories, setTestCategories] = useState(['Category 1', 'Category 2', 'Category 3']);
+    getTestData(testId);
+  }, []);
 
   return (
     <Box>
@@ -91,7 +97,7 @@ const Test = ({ testId, isEditable }) => {
             <Box>
               <InputLabel id="caseSelect-label">Test Case:</InputLabel>
               <Select labelId="caseSelect-label" id="caseSelect" sx={{ width: '10rem' }} {...field}>
-                {testCases.map((testCase) => (
+                {testCasesIds.map((testCase) => (
                   <MenuItem value={testCase}>{testCase}</MenuItem>
                 ))}
               </Select>
@@ -120,7 +126,7 @@ const Test = ({ testId, isEditable }) => {
                 sx={{ width: '10rem' }}
                 {...field}
               >
-                {testProcedures.map((testProcedure) => (
+                {testProceduresIds.map((testProcedure) => (
                   <MenuItem value={testProcedure}>{testProcedure}</MenuItem>
                 ))}
               </Select>
@@ -144,12 +150,7 @@ const Test = ({ testId, isEditable }) => {
   );
 };
 
-Test.defaultProps = {
-  testId: 'test-0645n6gj4356d4fb$%'
-};
-
 Test.propTypes = {
-  testId: PropTypes.string,
   isEditable: PropTypes.bool.isRequired
 };
 
