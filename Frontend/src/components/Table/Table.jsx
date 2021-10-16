@@ -29,7 +29,7 @@ const getComparator = (order, orderBy) => {
     : (a, b) => -descendingComparator(a, b, orderBy);
 };
 
-const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
+const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
@@ -91,6 +91,7 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
                   row={row}
                   setCollapseDetails={setCollapseDetails}
                   collapseDetails={collapseDetails}
+                  onSubmit={onSubmit}
                 />
               ))}
             {emptyRows > 0 && (
@@ -120,5 +121,6 @@ EnhancedTable.propTypes = {
   headCells: PropTypes.array.isRequired,
   rowCells: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
-  rowsPerPageOptions: PropTypes.array.isRequired
+  rowsPerPageOptions: PropTypes.array.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };

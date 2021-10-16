@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { CircularProgress, Box } from '@mui/material';
 
 import Table from '../../components/Table';
+import { getRows, putRows } from '../../redux/reducers/bugs/bugsSlice';
 
 export const types = {
   myBugs: 'my-bugs',
@@ -9,8 +12,14 @@ export const types = {
   toReview: 'to-review'
 };
 
-// TODO: rows should be taken from redux
-const BugTable = ({ type, rows }) => {
+const BugTable = ({ type }) => {
+  const dispatch = useDispatch();
+  const { rows, loading } = useSelector((state) => state.bugs);
+
+  useEffect(() => {
+    dispatch(getRows());
+  }, []);
+
   const headCells = [
     { id: 'code', label: 'Code', width: 0, isHeading: true },
     { id: 'name', label: 'Name', type: 'text' },
@@ -66,12 +75,30 @@ const BugTable = ({ type, rows }) => {
     { id: 'attachments', label: 'Attachments', type: 'text' }
   ];
 
-  return (
+  const onSubmit = async (json) => {
+    await dispatch(putRows({ code: json.code, json }));
+    await dispatch(getRows());
+  };
+
+  return loading ? (
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  ) : (
     <Table
       headCells={headCells.filter((headCell) => !headCell.hidden)}
       rowCells={rowCells}
       rowsPerPageOptions={[5, 10, 15]}
-      rows={rows}
+      rows={[...rows]}
+      onSubmit={onSubmit}
     />
   );
 };
@@ -79,6 +106,5 @@ const BugTable = ({ type, rows }) => {
 export default BugTable;
 
 BugTable.propTypes = {
-  type: PropTypes.oneOf(Object.values(types)).isRequired,
-  rows: PropTypes.array.isRequired
+  type: PropTypes.oneOf(Object.values(types)).isRequired
 };

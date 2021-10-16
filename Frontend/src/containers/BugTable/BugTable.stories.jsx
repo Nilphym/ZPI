@@ -51,8 +51,8 @@ const rows = [
     '1/1/1',
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
     '12/15/2022',
-    '12/15/2022',
-    '12/15/2022'
+    '12/20/2022',
+    '12/05/2022'
   ),
   createData(
     'E-45432',

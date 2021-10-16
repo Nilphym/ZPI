@@ -16,44 +16,81 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { blue } from '@mui/material/colors';
 import { DesktopDatePicker } from '@mui/lab';
+import { Controller, useForm, FormProvider, useFormContext } from 'react-hook-form';
 
 import EnhancedTableCell from './TableCell';
 
 const Field = ({ id, label, type, content, values }) => {
+  const { control, setValue } = useFormContext();
+  const [date, setDate] = useState(null);
+
   switch (type) {
     case 'text':
-      return <TextField size="small" id={id} label={label} defaultValue={content} />;
+      return (
+        <Controller
+          defaultValue={content}
+          control={control}
+          name={id}
+          render={({ field }) => <TextField size="small" id={id} label={label} {...field} />}
+        />
+      );
     case 'textLarge':
       return (
-        <TextField
-          sx={{ gridColumn: 'span 5', gridRow: 'span 2' }}
-          multiline
-          rows={3}
-          id={id}
-          label={label}
+        <Controller
+          control={control}
           defaultValue={content}
+          name={id}
+          render={({ field }) => (
+            <TextField
+              sx={{ gridColumn: 'span 5', gridRow: 'span 2' }}
+              multiline
+              rows={3}
+              id={id}
+              label={label}
+              {...field}
+            />
+          )}
         />
       );
     case 'date':
       return (
-        <DesktopDatePicker
-          label={label}
-          inputFormat="MM/dd/yyyy"
-          value={content}
-          renderInput={(params) => <TextField size="small" {...params} />}
+        <Controller
+          control={control}
+          defaultValue={content}
+          name={id}
+          render={({ field }) => (
+            <DesktopDatePicker
+              label={label}
+              inputFormat="MM/dd/yyyy"
+              value={date}
+              renderInput={(params) => <TextField size="small" {...params} />}
+              {...field}
+              onChange={(date) => {
+                setDate(date);
+                setValue(id, date.toLocaleString());
+              }}
+            />
+          )}
         />
       );
     case 'select':
       return (
         <FormControl size="small">
           <InputLabel id={id}>{label}</InputLabel>
-          <Select labelId={id} id={id} defaultValue={content} label={label}>
-            {values.map((value) => (
-              <MenuItem key={value} value={value}>
-                {value}
-              </MenuItem>
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            name={id}
+            defaultValue={content}
+            render={({ field }) => (
+              <Select labelId={id} id={id} label={label} {...field}>
+                {values.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
         </FormControl>
       );
     default:
@@ -73,8 +110,21 @@ Field.defaultProps = {
   values: undefined
 };
 
-const EnhancedTableRow = ({ headCells, rowCells, row, setCollapseDetails, collapseDetails }) => {
+const EnhancedTableRow = ({
+  headCells,
+  rowCells,
+  row,
+  setCollapseDetails,
+  collapseDetails,
+  onSubmit
+}) => {
   const [open, setOpen] = useState(false);
+  const formMethods = useForm();
+  const { handleSubmit, setValue } = formMethods;
+
+  useEffect(() => {
+    setValue('code', row.code);
+  }, []);
 
   useEffect(() => {
     if (collapseDetails) {
@@ -87,7 +137,7 @@ const EnhancedTableRow = ({ headCells, rowCells, row, setCollapseDetails, collap
     <>
       <TableRow tabIndex={-1} key={row.id}>
         <TableCell padding="checkbox">
-          <IconButton size="small" onClick={() => setOpen(!open)}>
+          <IconButton size="small" onClick={() => setOpen((opened) => !opened)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
@@ -98,32 +148,40 @@ const EnhancedTableRow = ({ headCells, rowCells, row, setCollapseDetails, collap
       <TableRow>
         <TableCell style={{ padding: 0 }} colSpan={headCells.length + 1}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box
-              sx={{
-                backgroundColor: blue[50],
-                display: 'grid',
-                gridTemplate: 'repeat(5, 1fr) / repeat(5, 1fr) 6rem',
-                gap: '1rem 4rem',
-                padding: '2rem 6rem'
-              }}
-            >
-              {[...headCells, ...rowCells]
-                .filter((headCell) => headCell.type)
-                .map(({ id, label, type, values }) => (
-                  <Field
-                    key={id}
-                    id={id}
-                    label={label}
-                    type={type}
-                    content={row[id]}
-                    values={values}
-                  />
-                ))}
-              <Box sx={{ gridColumn: '6/7', gridRow: '1/5' }} />
-              <Button variant="contained" sx={{ gridColumn: '6/7', gridRow: '5/6' }}>
-                Save
-              </Button>
-            </Box>
+            <FormProvider {...formMethods}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Box
+                  sx={{
+                    backgroundColor: blue[50],
+                    display: 'grid',
+                    gridTemplate: 'repeat(5, 1fr) / repeat(5, 1fr) 6rem',
+                    gap: '1rem 4rem',
+                    padding: '2rem 6rem'
+                  }}
+                >
+                  {[...headCells, ...rowCells]
+                    .filter((headCell) => headCell.type)
+                    .map(({ id, label, type, values }) => (
+                      <Field
+                        key={id}
+                        id={id}
+                        label={label}
+                        type={type}
+                        content={row[id]}
+                        values={values}
+                      />
+                    ))}
+                  <Box sx={{ gridColumn: '6/7', gridRow: '1/5' }} />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ gridColumn: '6/7', gridRow: '5/6' }}
+                  >
+                    Save
+                  </Button>
+                </Box>
+              </form>
+            </FormProvider>
           </Collapse>
         </TableCell>
       </TableRow>
@@ -138,5 +196,6 @@ EnhancedTableRow.propTypes = {
   rowCells: PropTypes.array.isRequired,
   row: PropTypes.object.isRequired,
   setCollapseDetails: PropTypes.func.isRequired,
-  collapseDetails: PropTypes.func.isRequired
+  collapseDetails: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };

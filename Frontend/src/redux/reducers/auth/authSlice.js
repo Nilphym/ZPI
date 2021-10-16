@@ -41,9 +41,11 @@ export const authSlice = createSlice({
       builder
         .addCase(register.fulfilled, (state) => {
           state.isLoggedIn = false;
+          state.token = null;
         })
         .addCase(register.rejected, (state) => {
           state.isLoggedIn = false;
+          state.token = null;
         })
         .addCase(login.fulfilled, (state, action) => {
           state.isLoggedIn = true;
