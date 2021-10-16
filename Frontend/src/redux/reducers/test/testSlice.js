@@ -4,6 +4,7 @@ import server from '../../../services/server/api';
 
 const initialState = {
   testId: '',
+  testData: {},
   testName: '',
   testCategories: [],
   testCasesIds: [],
@@ -12,9 +13,9 @@ const initialState = {
   selectedTestProcedure: {}
 };
 
-export const getTestById = createAsyncThunk('test/getTestById', async (testId) => {
-  const response = await server().get({ url: `test/${testId}` });
-  return response;
+export const getTestById = createAsyncThunk('test/getTestById', async (_, { getState }) => {
+  const data = await server().get({ url: `test/${getState().test.testId}` });
+  return data;
 });
 
 export const testSlice = createSlice({
@@ -29,7 +30,7 @@ export const testSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getTestById.fulfilled, (state, action) => {
-        state = action.payload;
+        state.testData = action.payload;
       })
       .addCase(getTestById.rejected, (state, action) => {
         alert(action.error.message);

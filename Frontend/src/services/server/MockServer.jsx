@@ -18,8 +18,8 @@ const makeServer = () =>
           testCategories: ['login', 'register', 'API'],
           testCasesIds: ['tc1', 'tc2', 'tc3'],
           testProceduresIds: ['tp1', 'tp2', 'tp3'],
-          selectedTestCase: {testCaseId: 'tc2'},
-          selectedTestProcedure: {testProcedureId: 'tp3'}
+          selectedTestCase: { testCaseId: 'tc2' },
+          selectedTestProcedure: { testProcedureId: 'tp3' }
         };
       });
     }
