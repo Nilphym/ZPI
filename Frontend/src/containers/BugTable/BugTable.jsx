@@ -12,120 +12,64 @@ export const types = {
 // TODO: rows should be taken from redux
 const BugTable = ({ type, rows }) => {
   const headCells = [
+    { id: 'code', label: 'Code', width: 0, isHeading: true },
+    { id: 'name', label: 'Name', type: 'text' },
     {
-      id: 'code',
-      label: 'Code',
-      isSortable: true,
-      isVisible: true,
+      id: 'state',
+      label: 'State',
       width: 0,
-      isHeading: true,
-      isEditable: false
+      type: 'select',
+      values: ['New', 'In testing', 'Fixed', 'For retest']
     },
+    { id: 'functionality', label: 'Functionality', width: '15rem' },
     {
-      id: 'name',
-      label: 'Name',
-      isSortable: true,
-      isVisible: true,
-      width: '20rem',
-      isEditable: true
+      id: 'type',
+      label: 'Type',
+      width: 0,
+      type: 'select',
+      values: ['Functional', 'Logical', 'Wrong datatype']
     },
-    { id: 'state', label: 'State', isSortable: true, isVisible: true, width: 0, isEditable: true },
-    {
-      id: 'functionality',
-      label: 'Functionality',
-      isSortable: true,
-      isVisible: true,
-      isEditable: false
-    },
-    { id: 'type', label: 'Type', isSortable: true, isVisible: true, width: 0, isEditable: true },
     {
       id: 'impact',
       label: 'Impact',
-      isSortable: true,
-      isVisible: true,
       width: 0,
-      isEditable: true
+      type: 'select',
+      values: ['High', 'Medium', 'Low']
     },
     {
       id: 'priority',
       label: 'Priority',
-      isSortable: true,
-      isVisible: true,
       width: 0,
-      isEditable: true
+      type: 'select',
+      values: ['High', 'Medium', 'Low']
     },
     {
       id: 'execs',
       alignCenter: true,
-      label: ['Execs', 'Req/Done/Failed'],
-      isSortable: false,
-      isVisible: type === types.toReview,
-      width: '5rem',
-      isEditable: false
+      label: 'Execs',
+      sublabel: 'Req/Done/Failed',
+      unsortable: true,
+      hidden: type !== types.toReview,
+      width: '5.5rem'
     },
-    {
-      id: 'edit',
-      alignCenter: true,
-      label: 'Edit',
-      isSortable: false,
-      isVisible: true,
-      isButton: true,
-      icon: 'settings',
-      isEditable: false
-    },
-    {
-      id: 'reject',
-      alignCenter: true,
-      label: 'Reject',
-      isSortable: false,
-      isVisible: type === types.myBugs,
-      isButton: true,
-      icon: 'error',
-      isEditable: false
-    },
-    {
-      id: 'resolve',
-      alignCenter: true,
-      label: 'Resolve',
-      isSortable: false,
-      isVisible: type === types.myBugs,
-      isButton: true,
-      icon: 'done',
-      isEditable: false
-    },
-    {
-      id: 'take',
-      alignCenter: true,
-      label: 'Take',
-      isSortable: false,
-      isVisible: type === types.toFix,
-      isButton: true,
-      icon: 'add',
-      isEditable: false
-    },
-    {
-      id: 'retest',
-      alignCenter: true,
-      label: 'Retest',
-      isSortable: false,
-      isVisible: type === types.toReview,
-      isButton: true,
-      icon: 'repeat',
-      isEditable: false
-    }
+    { id: 'reject', label: 'Reject', hidden: type !== types.myBugs, button: 'error' },
+    { id: 'resolve', label: 'Resolve', hidden: type !== types.myBugs, button: 'done' },
+    { id: 'take', label: 'Take', hidden: type !== types.toFix, button: 'add' },
+    { id: 'retest', label: 'Retest', hidden: type !== types.toReview, button: 'repeat' }
   ];
 
   const rowCells = [
-    { id: 'description', label: 'Description', isVisible: true, isEditable: true },
-    { id: 'deadline', label: 'Deadline', isVisible: true, isEditable: true },
-    { id: 'reportDate', label: 'Report date', isVisible: true, isEditable: true },
-    { id: 'endDate', label: 'End date', isVisible: true, isEditable: true }
+    { id: 'deadline', label: 'Deadline', type: 'date' },
+    { id: 'reportDate', label: 'Report date', type: 'date' },
+    { id: 'endDate', label: 'End date', type: 'date' },
+    { id: 'description', label: 'Description', type: 'textLarge' },
+    { id: 'attachments', label: 'Attachments', type: 'text' }
   ];
 
   return (
     <Table
-      headCells={headCells.filter((headCell) => headCell.isVisible)}
-      rowCells={rowCells.filter((rowCell) => rowCell.isVisible)}
+      headCells={headCells.filter((headCell) => !headCell.hidden)}
+      rowCells={rowCells}
       rowsPerPageOptions={[5, 10, 15]}
       rows={rows}
     />

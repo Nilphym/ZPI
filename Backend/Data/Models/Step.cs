@@ -18,11 +18,10 @@ namespace Data.Models
 
         public int StepNumber { get; set; }
         
-        [Required] //tez json
         public string  TestData { get; set; }
 
         [NotMapped]
-        public JObject TestDataObject
+        public JObject? TestDataObject
         {
             get
             {

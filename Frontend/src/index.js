@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/system';
 import { CssBaseline } from '@mui/material';
+import { LocalizationProvider } from '@mui/lab';
+import DateAdapter from '@mui/lab/AdapterLuxon';
 
 import store from './redux/store';
 import App from './App';
@@ -17,10 +19,12 @@ ReactDOM.render(
       <Provider store={store}>
         <BrowserRouter>
           <AuthManager>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <App />
-            </ThemeProvider>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <App />
+              </ThemeProvider>
+            </LocalizationProvider>
           </AuthManager>
         </BrowserRouter>
       </Provider>
