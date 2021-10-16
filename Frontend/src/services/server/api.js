@@ -23,14 +23,14 @@ const server = (axiosInstance = instance) => ({
   },
 
   async put({ url, data }) {
-    const { data: fetchedData } = await axiosInstance.post(url, data, {
+    const { data: fetchedData } = await axiosInstance.put(url, data, {
       headers: authService.getAuthHeader()
     });
     return fetchedData;
   },
 
   async delete({ url }) {
-    const { data: fetchedData } = await axiosInstance.post(url, {
+    const { data: fetchedData } = await axiosInstance.delete(url, {
       headers: authService.getAuthHeader()
     });
     return fetchedData;
