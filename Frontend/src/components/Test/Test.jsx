@@ -28,15 +28,20 @@ const Test = ({ isEditable }) => {
   } = useSelector((state) => state.test);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   useEffect(() => {
+    setIsLoadingData(true);
+
     dispatch(setTestId('test-0')); // TODO: DELETE this line, delete export
     async function getTestData() {
       await dispatch(getTestById());
     }
 
     getTestData();
+    setIsLoadingData(false);
   }, []);
+
 
   const updateData = (data) => {
     console.log(data);
