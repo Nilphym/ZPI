@@ -3,14 +3,29 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authService from '../../../services/auth/authService';
 
 const token = authService.getDecodedToken();
-const initialState = token ? { isLoggedIn: true, token } : { isLoggedIn: false, token: null };
+const initialState = token
+  ? {
+      isLoggedIn: true,
+      token
+    }
+  : {
+      isLoggedIn: false,
+      token: null
+    };
 
 export const register = createAsyncThunk('auth/register', async ({ username, email, password }) => {
-  return authService.register({ username, email, password });
+  return authService.register({
+    username,
+    email,
+    password
+  });
 });
 
 export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
-  return authService.login({ username, password });
+  return authService.login({
+    username,
+    password
+  });
 });
 
 export const authSlice = createSlice({
@@ -26,9 +41,11 @@ export const authSlice = createSlice({
       builder
         .addCase(register.fulfilled, (state) => {
           state.isLoggedIn = false;
+          state.token = null;
         })
         .addCase(register.rejected, (state) => {
           state.isLoggedIn = false;
+          state.token = null;
         })
         .addCase(login.fulfilled, (state, action) => {
           state.isLoggedIn = true;
@@ -43,5 +60,4 @@ export const authSlice = createSlice({
 });
 
 export const { logout } = authSlice.actions;
-export const selectToken = (state) => state.token;
 export default authSlice.reducer;

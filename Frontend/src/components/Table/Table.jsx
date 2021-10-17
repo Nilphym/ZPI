@@ -29,20 +29,23 @@ const getComparator = (order, orderBy) => {
     : (a, b) => -descendingComparator(a, b, orderBy);
 };
 
-const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
+const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('id');
+  const [orderBy, setOrderBy] = useState(headCells[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [collapseDetails, setCollapseDetails] = useState(false);
 
   const handleRequestSort = (_event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    setCollapseDetails(true);
   };
 
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
+    setCollapseDetails(true);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -81,11 +84,19 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions }) => {
               .sort(getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                <EnhancedTableRow key={row.id} rowCells={rowCells} row={row} />
+                <EnhancedTableRow
+                  key={row.id}
+                  headCells={headCells}
+                  rowCells={rowCells}
+                  row={row}
+                  setCollapseDetails={setCollapseDetails}
+                  collapseDetails={collapseDetails}
+                  onSubmit={onSubmit}
+                />
               ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 66.8 * emptyRows }}>
-                <TableCell colSpan={headCells.length} />
+                <TableCell colSpan={headCells.length + 1} />
               </TableRow>
             )}
           </TableBody>
@@ -110,5 +121,6 @@ EnhancedTable.propTypes = {
   headCells: PropTypes.array.isRequired,
   rowCells: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
-  rowsPerPageOptions: PropTypes.array.isRequired
+  rowsPerPageOptions: PropTypes.array.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };

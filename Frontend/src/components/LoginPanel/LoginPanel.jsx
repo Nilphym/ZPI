@@ -1,13 +1,13 @@
-import { Box, Button, TextField, Typography} from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
-
-// import PropTypes from 'prop-types';
-import axios from 'axios';
 import React from 'react';
+
+import { login } from '../../redux/reducers/auth/authSlice';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
@@ -29,49 +29,49 @@ const defaultValues = {
   [formFields.password]: ''
 };
 
-
 const schema = yup.object().shape({
   [formFields.login]: yup.string().required(),
   [formFields.password]: yup.string().required().min(6)
 });
 
-
 const LoginPanel = () => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const from = state ? state.from.pathname : '/';
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     defaultValues,
     resolver: yupResolver(schema)
   });
-  
-  const onSubmit = data => {
-    try {
-       axios({
-         method: 'POST',
-         url: '/api/auth/login',
-         data
-       });
-    } catch (err) {
-      console.error(err.status);
-    }
-    console.log(data);
-    reset(
-      defaultValues,
-      {
+
+  const onSubmit = async ({ login: username, password }) => {
+    await dispatch(login({ username, password }));
+
+    if (isLoggedIn) {
+      navigate(from, { replace: true });
+    } else {
+      reset(defaultValues, {
         keepIsValid: true
-      }
-    );
+      });
+    }
   };
 
   const StyledLink = styled(Link)({
-     color: 'blue',
+    color: 'blue',
     '&:visited': {
       color: 'blue'
     },
-    '&:focus, &:hover, &:active':{
+    '&:focus, &:hover, &:active': {
       color: 'grey'
     }
-  })
-    ;
-  
+  });
   // 1rem <=> 16px
   return (
     <Box>

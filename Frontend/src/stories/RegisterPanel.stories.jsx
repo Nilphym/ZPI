@@ -9,5 +9,5 @@ export default {
 
 const Template = (args) => <RegisterPanelComponent {...args} />;
 
-export const RegisterToProjectPanel = Template.bind({});
-RegisterToProjectPanel.args = {};
+export const RegisterPanel = Template.bind({});
+RegisterPanel.args = {};

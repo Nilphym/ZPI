@@ -7,37 +7,33 @@ const instance = axios.create({
   baseURL: API_URL
 });
 
-const getHeaders = (isAuth) => (isAuth ? authService.getAuthHeader() : {});
-
 const server = (axiosInstance = instance) => ({
-  async get({ url, isAuth }) {
-    return axiosInstance.get({
-      url,
-      headers: getHeaders(isAuth)
+  async get({ url }) {
+    const { data: fetchedData } = await axiosInstance.get(url, {
+      headers: authService.getAuthHeader()
     });
+    return fetchedData;
   },
 
-  async post({ url, data, isAuth }) {
-    return axiosInstance.post({
-      url,
-      data,
-      headers: getHeaders(isAuth)
+  async post({ url, data }) {
+    const { data: fetchedData } = await axiosInstance.post(url, data, {
+      headers: authService.getAuthHeader()
     });
+    return fetchedData;
   },
 
-  async put({ url, data, isAuth }) {
-    return axiosInstance.post({
-      url,
-      data,
-      headers: getHeaders(isAuth)
+  async put({ url, data }) {
+    const { data: fetchedData } = await axiosInstance.put(url, data, {
+      headers: authService.getAuthHeader()
     });
+    return fetchedData;
   },
 
-  async delete({ url, isAuth }) {
-    return axiosInstance.post({
-      url,
-      headers: getHeaders(isAuth)
+  async delete({ url }) {
+    const { data: fetchedData } = await axiosInstance.delete(url, {
+      headers: authService.getAuthHeader()
     });
+    return fetchedData;
   }
 });
 

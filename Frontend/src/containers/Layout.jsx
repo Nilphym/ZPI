@@ -9,11 +9,10 @@ const Layout = () => {
     <Box sx={{ width: '100%', height: '100vh' }}>
       <Navbar
         links={[
-          { icon: 'home', text: 'Home', destination: 'login' },
-          { icon: 'home', text: 'Projects', destination: 'projects' },
-          { icon: 'home', text: 'Bilings', destination: 'bilings' },
-          { icon: 'home', text: 'Team', destination: 'team' },
-          { icon: 'home', text: 'Settings', destination: 'settings' }
+          { icon: 'dashboard', text: 'Dashboard', destination: 'dashboard' },
+          { icon: 'bugs', text: 'Bugs', destination: 'bugs' },
+          { icon: 'tests', text: 'Tests', destination: 'tests' },
+          { icon: 'logout', text: 'Logout', destination: 'logout' }
         ]}
         profile={{ name: 'John Snow' }}
       />

@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { selectToken } from '../../redux/reducers/auth/authSlice';
-
 const RequireAuth = ({ children }) => {
   const location = useLocation();
-  const token = useSelector(selectToken);
+  const token = useSelector((state) => state.auth.token);
 
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} />;
