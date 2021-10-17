@@ -12,31 +12,39 @@ const Test = ({ isEditable }) => {
     control: mainControl,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors }
   } = useForm();
 
   const dispatch = useDispatch();
-  const testId = useSelector((state) => state.test.testId);
-  const testName = useSelector((state) => state.test.testName);
-  const testCategories = useSelector((state) => state.test.testCategories);
-  const testCasesIds = useSelector((state) => state.test.testCasesIds);
-  const testProceduresIds = useSelector((state) => state.test.testProceduresIds);
-  const selectedTestCase = useSelector((state) => state.test.selectedTestCase);
-  const selectedTestProcedure = useSelector((state) => state.test.selectedTestProcedure);
-  const [isEditing, setIsEditing] = useState(false);
+  const {
+    testName,
+    testCategories,
+    testCasesIds,
+    testProceduresIds,
+    selectedTestCategory,
+    selectedTestCase,
+    selectedTestProcedure
+  } = useSelector((state) => state.test);
 
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     dispatch(setTestId('test-0')); // TODO: DELETE this line, delete export
-    async function getTestData(testId) {
-      await dispatch(getTestById(testId));
+    async function getTestData() {
+      await dispatch(getTestById());
     }
 
-    getTestData(testId);
+    getTestData();
   }, []);
 
+  const updateData = (data) => {
+    console.log(data);
+    setIsEditing(false);
+  };
+
   return (
-    <Box>
+    <Box component="form" onSubmit={handleSubmit(updateData)}>
       <Typography variant="h2">Test:</Typography>
       {isEditable && !isEditing && (
         <Button
@@ -55,6 +63,7 @@ const Test = ({ isEditable }) => {
         shouldUnregister
         name="testName"
         control={mainControl}
+        defaultValue={testName}
         render={({ field }) => (
           <TextField
             id="testName"
@@ -72,6 +81,7 @@ const Test = ({ isEditable }) => {
         <Controller
           name="categorySelect"
           control={mainControl}
+          defaultValue={selectedTestCategory}
           render={({ field }) => (
             <Box>
               <InputLabel id="categorySelect">Test Category:</InputLabel>
@@ -93,6 +103,7 @@ const Test = ({ isEditable }) => {
         <Controller
           name="caseSelect"
           control={mainControl}
+          defaultValue={selectedTestCase.testCaseId}
           render={({ field }) => (
             <Box>
               <InputLabel id="caseSelect-label">Test Case:</InputLabel>
@@ -117,6 +128,7 @@ const Test = ({ isEditable }) => {
         <Controller
           name="procedureSelect"
           control={mainControl}
+          defaultValue={selectedTestProcedure.testProcedureId}
           render={({ field }) => (
             <Box>
               <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
@@ -136,13 +148,7 @@ const Test = ({ isEditable }) => {
         {selectedTestProcedure && <TestProcedure isEditable={isEditing} />}
       </Box>
       {isEditing && (
-        <Button
-          variant="outlined"
-          sx={{ marginTop: '1.5rem' }}
-          onClick={() => {
-            setIsEditing(false);
-          }}
-        >
+        <Button variant="outlined" sx={{ marginTop: '1.5rem' }} type="submit">
           Save Test
         </Button>
       )}

@@ -1,4 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
 
 import server from '../../../services/server/api';
 
@@ -9,6 +12,7 @@ const initialState = {
   testCategories: [],
   testCasesIds: [],
   testProceduresIds: [],
+  selectedTestCategory: '',
   selectedTestCase: {},
   selectedTestProcedure: {}
 };
@@ -30,7 +34,24 @@ export const testSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getTestById.fulfilled, (state, action) => {
-        state.testData = action.payload;
+        const {
+          testId,
+          testName,
+          testCategories,
+          testCasesIds,
+          testProceduresIds,
+          selectedTestCategory,
+          selectedTestCase,
+          selectedTestProcedure
+        } = action.payload;
+        state.testId = testId;
+        state.testName = testName;
+        state.testCategories = testCategories;
+        state.testCasesIds = testCasesIds;
+        state.testProceduresIds = testProceduresIds;
+        state.selectedTestCategory = selectedTestCategory;
+        state.selectedTestCase = selectedTestCase;
+        state.selectedTestProcedure = selectedTestProcedure;
       })
       .addCase(getTestById.rejected, (state, action) => {
         alert(action.error.message);
@@ -38,5 +59,7 @@ export const testSlice = createSlice({
   }
 });
 
-export const { setTestId } = testSlice.actions;
+export const {
+  setTestId
+} = testSlice.actions;
 export default testSlice.reducer;
