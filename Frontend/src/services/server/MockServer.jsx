@@ -50,6 +50,8 @@ const makeServer = () =>
 
       this.put('bugs/resolve/:id', (schema, request) => {
         const { id } = request.params;
+        const requiredRetests = JSON.parse(request.requestBody);
+        console.log(requiredRetests, id);
         schema.bugs.findBy({ id }).update('state', 'Resolved');
       });
 
@@ -278,7 +280,6 @@ const makeServer = () =>
 
 const MockServer = ({ children }) => {
   makeServer();
-
   return children;
 };
 
