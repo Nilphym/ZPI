@@ -19,10 +19,8 @@ import { getTestById, setTestId } from '../../redux/reducers/test/testSlice';
 const Test = ({ isEditable }) => {
   const {
     control: mainControl,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors }
+    handleSubmit
+    // formState: { errors }
   } = useForm();
 
   const dispatch = useDispatch();
@@ -32,8 +30,8 @@ const Test = ({ isEditable }) => {
     testCasesIds,
     testProceduresIds,
     selectedTestCategory,
-    selectedTestCase,
-    selectedTestProcedure,
+    selectedTestCaseId,
+    selectedTestProcedureId,
     isLoadingTest:isLoading
   } = useSelector((state) => state.test);
 
@@ -84,6 +82,7 @@ const Test = ({ isEditable }) => {
                 label="Test Name"
                 type="text"
                 {...field}
+                disabled={!isEditing}
                 sx={{
                   marginTop: '0.625rem',
                   width: '15rem'
@@ -103,6 +102,7 @@ const Test = ({ isEditable }) => {
                     labelId="categorySelect-label"
                     id="categorySelect"
                     sx={{ width: '10rem' }}
+                    disabled={!isEditing}
                     {...field}
                   >
                     {testCategories.map((testCategory) => (
@@ -117,7 +117,7 @@ const Test = ({ isEditable }) => {
             <Controller
               name="caseSelect"
               control={mainControl}
-              defaultValue={selectedTestCase.testCaseId}
+              defaultValue={selectedTestCaseId}
               render={({ field }) => (
                 <Box>
                   <InputLabel id="caseSelect-label">Test Case:</InputLabel>
@@ -125,6 +125,7 @@ const Test = ({ isEditable }) => {
                     labelId="caseSelect-label"
                     id="caseSelect"
                     sx={{ width: '10rem' }}
+                    disabled={!isEditing}
                     {...field}
                   >
                     {testCasesIds.map((testCase) => (
@@ -134,11 +135,8 @@ const Test = ({ isEditable }) => {
                 </Box>
               )}
             />
-            {selectedTestCase && (
+            {selectedTestCaseId && (
               <TestCase
-                testName="Test-demo"
-                testPlanName={selectedTestProcedure}
-                testCaseName="Test-Case-1"
                 isEditable={isEditing}
               />
             )}
@@ -147,7 +145,7 @@ const Test = ({ isEditable }) => {
             <Controller
               name="procedureSelect"
               control={mainControl}
-              defaultValue={selectedTestProcedure.testProcedureId}
+              defaultValue={selectedTestProcedureId}
               render={({ field }) => (
                 <Box>
                   <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
@@ -155,6 +153,7 @@ const Test = ({ isEditable }) => {
                     labelId="procedureSelect-label"
                     id="procedureSelect"
                     sx={{ width: '10rem' }}
+                    disabled={!isEditing}
                     {...field}
                   >
                     {testProceduresIds.map((testProcedure) => (
@@ -164,7 +163,7 @@ const Test = ({ isEditable }) => {
                 </Box>
               )}
             />
-            {selectedTestProcedure && <TestProcedure isEditable={isEditing} />}
+            {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           </Box>
           {isEditing && (
             <Button variant="outlined" sx={{ marginTop: '1.5rem' }} type="submit">
