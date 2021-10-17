@@ -14,7 +14,8 @@ const initialState = {
   testProceduresIds: [],
   selectedTestCategory: '',
   selectedTestCase: {},
-  selectedTestProcedure: {}
+  selectedTestProcedure: {},
+  isLoadingTest: true
 };
 
 export const getTestById = createAsyncThunk('test/getTestById', async (_, { getState }) => {
@@ -28,6 +29,7 @@ export const testSlice = createSlice({
   reducers: {
     setTestId: (state, action) => {
       state.testId = action.payload;
+      state.isLoading = true;
     }
   },
 
@@ -52,6 +54,7 @@ export const testSlice = createSlice({
         state.selectedTestCategory = selectedTestCategory;
         state.selectedTestCase = selectedTestCase;
         state.selectedTestProcedure = selectedTestProcedure;
+        state.isLoadingTest = false;
       })
       .addCase(getTestById.rejected, (state, action) => {
         alert(action.error.message);
