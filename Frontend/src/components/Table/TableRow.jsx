@@ -99,15 +99,16 @@ const Field = ({ id, label, type, content, values }) => {
 };
 
 Field.propTypes = {
-  id: PropTypes.number.isRequired,
-  label: PropTypes.array.isRequired,
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+  content: PropTypes.string,
   values: PropTypes.array
 };
 
 Field.defaultProps = {
-  values: undefined
+  values: null,
+  content: null
 };
 
 const EnhancedTableRow = ({
@@ -135,14 +136,19 @@ const EnhancedTableRow = ({
 
   return (
     <>
-      <TableRow tabIndex={-1} key={row.id}>
+      <TableRow tabIndex={-1} key={row.code}>
         <TableCell padding="checkbox">
           <IconButton size="small" onClick={() => setOpen((opened) => !opened)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
         {headCells.map((headCell) => (
-          <EnhancedTableCell key={headCell.id} content={row[headCell.id]} headCell={headCell} />
+          <EnhancedTableCell
+            key={headCell.id}
+            id={row.id}
+            content={row[headCell.id]}
+            headCell={headCell}
+          />
         ))}
       </TableRow>
       <TableRow>
@@ -196,6 +202,6 @@ EnhancedTableRow.propTypes = {
   rowCells: PropTypes.array.isRequired,
   row: PropTypes.object.isRequired,
   setCollapseDetails: PropTypes.func.isRequired,
-  collapseDetails: PropTypes.func.isRequired,
+  collapseDetails: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired
 };

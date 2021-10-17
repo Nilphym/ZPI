@@ -4,9 +4,13 @@ import { TableCell } from '@mui/material';
 
 import ButtonTableCell from './ButtonTableCell';
 
-const EnhancedTableCell = ({ content, headCell: { button, isHeading, width, alignCenter } }) =>
+const EnhancedTableCell = ({
+  id,
+  content,
+  headCell: { button, isHeading, width, alignCenter, onClick }
+}) =>
   button ? (
-    <ButtonTableCell icon={button} />
+    <ButtonTableCell icon={button} onClick={onClick} id={id} />
   ) : (
     <TableCell
       sx={{ width }}
@@ -21,11 +25,17 @@ const EnhancedTableCell = ({ content, headCell: { button, isHeading, width, alig
 export default EnhancedTableCell;
 
 EnhancedTableCell.propTypes = {
-  content: PropTypes.any.isRequired,
+  id: PropTypes.string.isRequired,
+  content: PropTypes.any,
   headCell: PropTypes.shape({
     button: PropTypes.string,
     isHeading: PropTypes.bool,
-    width: PropTypes.string,
-    alignCenter: PropTypes.bool
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    alignCenter: PropTypes.bool,
+    onClick: PropTypes.func
   }).isRequired
+};
+
+EnhancedTableCell.defaultProps = {
+  content: null
 };

@@ -31,7 +31,7 @@ const getComparator = (order, orderBy) => {
 
 const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('id');
+  const [orderBy, setOrderBy] = useState(headCells[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [collapseDetails, setCollapseDetails] = useState(false);

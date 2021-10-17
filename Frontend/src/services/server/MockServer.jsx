@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { createServer, Model } from 'miragejs';
 
@@ -11,7 +12,7 @@ const makeServer = () =>
       this.namespace = 'api/';
 
       this.post('signin', () => {
-        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOjEsImlhdCI6MTUxNjIzOTAyMn0.X_M6O0tdAGnnqqYoV_Q4xQZeG58gth-PG7KSW96tsic';
       });
 
       this.get('test/test-0', () => {
@@ -30,16 +31,39 @@ const makeServer = () =>
         return schema.bugs.all().models;
       });
 
-      this.put('bugs/:code', (schema, request) => {
-        const { code } = request.params;
+      this.put('bugs/take/:id', (_, request) => {
+        const { id } = request.params;
+        const personId = JSON.parse(request.requestBody);
+        console.log(personId, id);
+      });
+
+      this.put('bugs/resign/:id', (_, request) => {
+        const { id } = request.params;
+        const personId = JSON.parse(request.requestBody);
+        console.log(personId, id);
+      });
+
+      this.put('bugs/reject/:id', (schema, request) => {
+        const { id } = request.params;
+        schema.bugs.findBy({ id }).update('state', 'Rejected');
+      });
+
+      this.put('bugs/resolve/:id', (schema, request) => {
+        const { id } = request.params;
+        schema.bugs.findBy({ id }).update('state', 'Resolved');
+      });
+
+      this.put('bugs/:id', (schema, request) => {
+        const { id } = request.params;
         const json = JSON.parse(request.requestBody);
 
-        schema.bugs.findBy({ code }).update(json);
+        schema.bugs.findBy({ id }).update(json);
       });
     },
     seeds(server) {
       [
         {
+          id: 1,
           code: 'E-12323',
           name: 'Not responding',
           state: 'New',
@@ -47,7 +71,7 @@ const makeServer = () =>
           type: 'Functional',
           impact: 'High',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -55,6 +79,7 @@ const makeServer = () =>
           endDate: '12/05/2022'
         },
         {
+          id: 2,
           code: 'E-45432',
           name: 'Table not visible',
           state: 'New',
@@ -62,7 +87,7 @@ const makeServer = () =>
           type: 'Functional',
           impact: 'Low',
           priority: 'Medium',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -70,6 +95,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 3,
           code: 'E-95783',
           name: 'Internet down',
           state: 'In testing',
@@ -77,7 +103,7 @@ const makeServer = () =>
           type: 'Logical',
           impact: 'Medium',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -85,6 +111,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 4,
           code: 'E-769478',
           name: 'Christmas early this year',
           state: 'Fixed',
@@ -92,7 +119,7 @@ const makeServer = () =>
           type: 'Logical',
           impact: 'Low',
           priority: 'Medium',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -100,6 +127,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 5,
           code: 'E-654865',
           name: 'Big bang',
           state: 'For retest',
@@ -107,7 +135,7 @@ const makeServer = () =>
           type: 'Wrong datatype',
           impact: 'Medium',
           priority: 'High',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -115,6 +143,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 6,
           code: 'E-234504',
           name: 'Rain is raining',
           state: 'Resolved',
@@ -122,7 +151,7 @@ const makeServer = () =>
           type: 'Wrong datatype',
           impact: 'High',
           priority: 'High',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -130,6 +159,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 7,
           code: 'E-090123',
           name: 'Goblins attack',
           state: 'Rejected',
@@ -137,7 +167,7 @@ const makeServer = () =>
           type: 'Code duplication',
           impact: 'Low',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -145,6 +175,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 8,
           code: 'E-325980',
           name: 'Lorem ipsum dolor',
           state: 'Resolved',
@@ -152,7 +183,7 @@ const makeServer = () =>
           type: 'Logical',
           impact: 'Medium',
           priority: 'Medium',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -160,6 +191,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 9,
           code: 'E-123423',
           name: 'Lorem ipsum dolor',
           state: 'Resolved',
@@ -167,7 +199,7 @@ const makeServer = () =>
           type: 'Logical',
           impact: 'High',
           priority: 'High',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -175,6 +207,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 10,
           code: 'E-112223',
           name: 'Lorem ipsum dolor',
           state: 'Fixed',
@@ -182,7 +215,7 @@ const makeServer = () =>
           type: 'Code duplication',
           impact: 'Medium',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -190,6 +223,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 11,
           code: 'E-123432',
           name: 'Lorem ipsum dolor',
           state: 'Fixed',
@@ -197,7 +231,7 @@ const makeServer = () =>
           type: 'Code duplication',
           impact: 'Low',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -205,6 +239,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 12,
           code: 'E-123290',
           name: 'Lorem ipsum dolor',
           state: 'New',
@@ -212,7 +247,7 @@ const makeServer = () =>
           type: 'Wrong datatype',
           impact: 'Low',
           priority: 'Medium',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
@@ -220,6 +255,7 @@ const makeServer = () =>
           endDate: '12/15/2022'
         },
         {
+          id: 13,
           code: 'E-123003',
           name: 'Lorem ipsum dolor',
           state: 'In testing',
@@ -227,7 +263,7 @@ const makeServer = () =>
           type: 'Security',
           impact: 'High',
           priority: 'Low',
-          execs: '1/1/1',
+          retests: '1/1/1',
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
           deadline: '12/15/2022',
