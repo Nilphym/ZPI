@@ -36,9 +36,28 @@ const processData = (data) => {
   return processedData;
 };
 
-
-const prepareOutputData = () => {
-
+const prepareOutputData = (values) => {
+  let iterator = 1;
+  const dataKeys = Object.keys(values);
+  const processedData = {};
+  const array = [];
+  dataKeys.forEach((key) => {
+    if (key.toString().includes('-0-0')) {
+      processedData[`RowName${iterator}`] = values[key];
+    } else if (key.toString().substring(key.length - 2).includes('-0')) {
+      processedData[`Data${iterator}`] = [...array];
+      iterator += 1;
+      array.length = 0;
+      processedData[`RowName${iterator}`] = values[key];
+    } else if (key === dataKeys[dataKeys.length - 1]) {
+        array.push(values[key]);
+       processedData[`Data${iterator}`] = [...array];
+     }
+    else {
+      array.push(values[key]);
+    }
+  });
+  return processedData;
 };
 
 // TODO: Add control from outer form !!!
@@ -51,10 +70,9 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
   const [currentData, setCurrentData] = useState(defaultData);
   const [isEditing, setIsEditing] = useState(false);
 
-
   const addRow = () => {
     setRowsNumber((number) => number + 1);
-    const copyData = [...currentData];    
+    const copyData = [...currentData];
     copyData.push([...Array.from(Array(copyData[copyData.length - 1].length).keys())].fill(''));
     setCurrentData(copyData);
   };
@@ -62,28 +80,28 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
   const addColumn = () => {
     setColumnsNumber((number) => number + 1);
     let copyData = [...currentData];
-    copyData = copyData.map(row => [...row, '']);
+    copyData = copyData.map((row) => [...row, '']);
     setCurrentData(copyData);
   };
-  
+
   const deleteRow = () => {
     setRowsNumber((number) => number - 1);
     let copyData = [...currentData];
     copyData = copyData.slice(0, copyData.length - 1);
     setCurrentData(copyData);
   };
-  
+
   const deleteColumn = () => {
     setColumnsNumber((number) => number - 1);
     let copyData = [...currentData];
-    copyData = copyData.map((row) => row.slice(0, row.length-1));
+    copyData = copyData.map((row) => row.slice(0, row.length - 1));
     setCurrentData(copyData);
   };
-  
-  useEffect(() => {
-    setValue('Genowefa', { a: '1', b: '2' });
-    console.log('rerender');
-  }, []);
+
+  const saveTable = () => {
+    setIsEditing(false);
+    console.log(prepareOutputData(getValues()));
+  };
 
   return (
     <Box
@@ -182,20 +200,17 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
           </Box>
         </Box>
       </Box>
-      <Button sx={{
-        position: 'absolute',
-        left: '50vw'
-      }} onClick={() => console.log(getValues())}>
+      <Button
+        sx={{
+          position: 'absolute',
+          left: '50vw'
+        }}
+        onClick={() => console.log(getValues())}
+      >
         Get Values
       </Button>
       {isEditing && (
-        <Button
-          variant="outlined"
-          sx={{ marginTop: '1.5rem' }}
-          onClick={() => {
-            setIsEditing(false);
-          }}
-        >
+        <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTable()}>
           Save Table
         </Button>
       )}
