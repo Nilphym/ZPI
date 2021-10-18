@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,9 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Funtest">
         <activity
+            android:name=".BugDetailsActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Funtest.NoActionBar"/>
+            android:theme="@style/Theme.Funtest.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">
