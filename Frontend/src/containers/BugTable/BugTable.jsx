@@ -111,7 +111,7 @@ const BugTable = ({ type }) => {
   };
 
   const headCells = [
-    { id: 'code', label: 'Code', width: 0, isHeading: true },
+    { id: 'code', label: 'Code', width: '6rem', isHeading: true },
     { id: 'name', label: 'Name', type: 'text' },
     { id: 'state', label: 'State', width: 0 },
     { id: 'functionality', label: 'Functionality', width: '15rem' },

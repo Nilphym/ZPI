@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
@@ -36,7 +36,6 @@ const schema = yup.object().shape({
 
 const LoginPanel = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { state } = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const from = state ? state.from.pathname : '/';
@@ -54,13 +53,9 @@ const LoginPanel = () => {
   const onSubmit = async ({ login: username, password }) => {
     await dispatch(login({ username, password }));
 
-    if (isLoggedIn) {
-      navigate(from, { replace: true });
-    } else {
-      reset(defaultValues, {
-        keepIsValid: true
-      });
-    }
+    reset(defaultValues, {
+      keepIsValid: true
+    });
   };
 
   const StyledLink = styled(Link)({
@@ -73,7 +68,9 @@ const LoginPanel = () => {
     }
   });
   // 1rem <=> 16px
-  return (
+  return isLoggedIn ? (
+    <Navigate to={from} replace />
+  ) : (
     <Box>
       <Box
         sx={{

@@ -22,10 +22,11 @@ export const register = createAsyncThunk('auth/register', async ({ username, ema
 });
 
 export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
-  return authService.login({
+  const data = await authService.login({
     username,
     password
   });
+  return data;
 });
 
 export const authSlice = createSlice({
@@ -36,26 +37,26 @@ export const authSlice = createSlice({
       authService.logout();
       state.isLoggedIn = false;
       state.token = null;
-    },
-    extraReducers: (builder) => {
-      builder
-        .addCase(register.fulfilled, (state) => {
-          state.isLoggedIn = false;
-          state.token = null;
-        })
-        .addCase(register.rejected, (state) => {
-          state.isLoggedIn = false;
-          state.token = null;
-        })
-        .addCase(login.fulfilled, (state, action) => {
-          state.isLoggedIn = true;
-          state.token = action.payload;
-        })
-        .addCase(login.rejected, (state) => {
-          state.isLoggedIn = false;
-          state.token = null;
-        });
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(register.fulfilled, (state) => {
+        state.isLoggedIn = false;
+        state.token = null;
+      })
+      .addCase(register.rejected, (state) => {
+        state.isLoggedIn = false;
+        state.token = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoggedIn = true;
+        state.token = action.payload;
+      })
+      .addCase(login.rejected, (state) => {
+        state.isLoggedIn = false;
+        state.token = null;
+      });
   }
 });
 
