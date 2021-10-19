@@ -38,7 +38,7 @@ const makeServer = () =>
       this.get('testProcedure/:id', () => {
         return {
           selectedTestProcedure: {
-            testStepsIds: ['Test Step 1#987', 'Login#657', 'Register#123'],
+            testStepsIds: ['Test_Step_1#987', 'Login#657', 'Register#123'],
             result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -56,6 +56,42 @@ const makeServer = () =>
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`,
             entryData: []
           }
+        };
+      });
+
+      this.get('testStep/:id', () => {
+        return {
+          testData: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 3',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         };
       });
 
