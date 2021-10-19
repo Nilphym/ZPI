@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
@@ -9,13 +9,13 @@ import TableItem from './TableItem';
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
 
-const demo = {
-  tableName: 'aaa',
-  RowName1: '',
-  Data1: ['ac', '1', '2', 'b', '3', 'c'],
-  RowName2: 'Ble ble',
-  Data2: ['x', 'y', 'z', 't', 'r', 'w']
-};
+// const demo = {
+//   tableName: 'aaa',
+//   RowName1: '',
+//   Data1: ['ac', '1', '2', 'b', '3', 'c'],
+//   RowName2: 'Ble ble',
+//   Data2: ['x', 'y', 'z', 't', 'r', 'w']
+// };
 
 const processData = (data) => {
   const originalDataKeys = Object.keys(data);
@@ -61,10 +61,10 @@ const prepareOutputData = (values) => {
 };
 
 // TODO: Add control from outer form !!!
-const EditableTable = ({ name, disabled, deleteTable, data }) => {
-  const { control: tableControl, getValues, setValue } = useForm();
+const EditableTable = ({ disabled, deleteTable, data }) => {
+  const { control: tableControl, getValues} = useForm();
 
-  const defaultData = processData(demo);
+  const defaultData = processData(data);
   const [rowsNumber, setRowsNumber] = useState(defaultData.length);
   const [columnsNumber, setColumnsNumber] = useState(defaultData[0].length);
   const [currentData, setCurrentData] = useState(defaultData);
@@ -114,7 +114,7 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
           fontWeight: '700'
         }}
       >
-        {`Table name: ${demo.tableName}`}
+        {`Table name: ${data.tableName}`}
       </Typography>
       <Box
         sx={{
@@ -187,7 +187,7 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
                 {row.map((item, columnIndex) => (
                   <TableItem
                     key={`${row[0]}-${item}`}
-                    name={demo.tableName}
+                    name={data.tableName}
                     row={rowIndex}
                     column={columnIndex}
                     control={tableControl}
@@ -219,7 +219,6 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
 };
 
 EditableTable.propTypes = {
-  name: PropTypes.string.isRequired,
   // control: PropTypes.object.isRequired,
   disabled: PropTypes.bool.isRequired,
   deleteTable: PropTypes.func.isRequired,

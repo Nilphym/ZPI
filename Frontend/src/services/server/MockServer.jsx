@@ -59,8 +59,11 @@ const makeServer = () =>
         };
       });
 
-      this.get('testStep/:id', () => {
+      this.get('step/:id', () => {
         return {
+          id: 'TestStep1',
+          name: 'Login',
+          testStep: 0,
           testData: [
             {
               tableName: 'Table 1',
