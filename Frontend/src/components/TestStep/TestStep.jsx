@@ -12,7 +12,12 @@ import PropTypes from 'prop-types';
 import WarningIcon from '@mui/icons-material/Warning';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTestStepById } from '../../redux/reducers/test/testSlice';
+import {
+  getTestStepById,
+  setTestStepTestData,
+  deleteTestStepTestData,
+  setTestStepName
+} from '../../redux/reducers/test/testSlice';
 import EditableTable from '../EditableTable/EditableTable';
 
 const formFieldsTable = {
@@ -38,15 +43,6 @@ const schemaStepName = yup.object().shape({
   [formFieldsStepName.stepName]: yup.string().required()
 });
 
-const prepareOutputData = (testDataArray) => {
-  let iterator = 1;
-  const testDataObject = {};
-  testDataArray.forEach((object) => {
-    testDataObject[`Data${iterator}`] = object;
-    iterator += 1;
-  });
-  return testDataObject;
-};
 
 const createTable = (tablesCount, rowsCount, columnsCount) => {
   const tableObject = {};
@@ -64,9 +60,7 @@ const TestStep = ({ testStepId, isEditable }) => {
   const dispatch = useDispatch();
 
   const [isOpened, setIsOpened] = useState(false);
-  const [stepName, setStepName] = useState(testStepId);
   const [tablesCount, setTablesCount] = useState(0);
-  const [testData, setTestData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
   const [isEditingStepName, setIsEditingStepName] = useState(false);
@@ -75,7 +69,6 @@ const TestStep = ({ testStepId, isEditable }) => {
   useEffect(() => {
     async function getTestStepData(testStepId) {
       await dispatch(getTestStepById(testStepId));
-      setTestData(selectedTestStep[testStepId].testDataObject);
     }
     getTestStepData(testStepId);
   }, []);
@@ -105,10 +98,8 @@ const TestStep = ({ testStepId, isEditable }) => {
 
   const addTable = ({ rowsNumber, columnsNumber }) => {
     setTablesCount((state) => state + 1);
-    setTestData((state) => {
-      const newTable = createTable(state + 1, rowsNumber, columnsNumber);
-      return [...state, newTable];
-    });
+    const newTable = createTable(tablesCount + 1, rowsNumber, columnsNumber);
+    dispatch(setTestStepTestData({ id: testStepId, newTable }));
     setIsAddingTable(false);
     resetTable(defaultValuesTable, {
       keepIsValid: true
@@ -116,12 +107,12 @@ const TestStep = ({ testStepId, isEditable }) => {
   };
 
   const changeStepName = ({ stepName }) => {
-    setStepName(stepName);
+    dispatch(setTestStepName({id: testStepId, name: stepName}));
     setIsEditingStepName(false);
   };
 
   const deleteTable = (tableName) => {
-    setTestData((state) => [...state.filter((table) => table.tableName !== tableName)]);
+    dispatch(deleteTestStepTestData({ id: testStepId, tableName }));
   };
 
   return (
@@ -237,9 +228,9 @@ const TestStep = ({ testStepId, isEditable }) => {
                 >
                   Test Data:
                 </Typography>
-                {testData.length > 0 ? (
+                {selectedTestStep[testStepId].testData.length > 0 ? (
                   <Box>
-                    {testData.map((data) => (
+                    {selectedTestStep[testStepId].testData.map((data) => (
                       <EditableTable
                         key={`${data.tableName}`}
                         disabled={!isEditing}

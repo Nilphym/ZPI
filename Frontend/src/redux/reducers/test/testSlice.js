@@ -12,6 +12,16 @@ const transformData = (testDataObject) => {
   return transformedData;
 };
 
+// const prepareOutputData = (testDataArray) => {
+//   let iterator = 1;
+//   const testDataObject = {};
+//   testDataArray.forEach((object) => {
+//     testDataObject[`Data${iterator}`] = object;
+//     iterator += 1;
+//   });
+//   return testDataObject;
+// };
+
 const initialState = {
   testId: '',
   testData: {},
@@ -103,9 +113,26 @@ export const testSlice = createSlice({
     setTestId: (state, action) => {
       state.testId = action.payload;
       state.isLoading = true;
+    },
+    setTestStepTestData: (state, action) => {
+      const { id, newTable } = action.payload;
+      state.selectedTestStep[id].testData = [...state.selectedTestStep[id].testData, newTable];
+    },
+    deleteTestStepTestData: (state, action) => {
+      const {
+        id,
+        tableName
+      } = action.payload;
+      state.selectedTestStep[id].testData = [...state.selectedTestStep[id].testData.filter((table) => table.tableName !== tableName)];
+    },
+    setTestStepName: (state, action) => {
+      const {
+        id,
+        newName
+      } = action.payload;
+      state.selectedTestStep[id].name = newName;
     }
   },
-
   extraReducers: (builder) => {
     builder
       .addCase(getTestById.fulfilled, (state, action) => {
@@ -157,13 +184,13 @@ export const testSlice = createSlice({
         const {
           id,
           name,
-          testStep,
+          stepNumber,
           testData,
           controlPoint
         } = action.payload;
         state.selectedTestStep[action.payload.id].id = id;
         state.selectedTestStep[action.payload.id].name = name;
-        state.selectedTestStep[action.payload.id].testStep = testStep;
+        state.selectedTestStep[action.payload.id].stepNumber = stepNumber;
         state.selectedTestStep[action.payload.id].testData = transformData(testData);
         state.selectedTestStep[action.payload.id].controlPoint = controlPoint;
         state.isLoadingTestStep[action.payload.id] = false;
@@ -175,6 +202,9 @@ export const testSlice = createSlice({
 });
 
 export const {
-  setTestId
+  setTestId,
+  setTestStepTestData,
+  deleteTestStepTestData,
+  setTestStepName
 } = testSlice.actions;
 export default testSlice.reducer;

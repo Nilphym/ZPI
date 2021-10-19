@@ -63,7 +63,7 @@ const makeServer = () =>
         return {
           id: 'TestStep1',
           name: 'Login',
-          testStep: 0,
+          stepNumber: 0,
           testData: [
             {
               tableName: 'Table 1',
