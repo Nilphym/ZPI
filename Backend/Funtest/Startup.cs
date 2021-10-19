@@ -46,6 +46,7 @@ namespace Funtest
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IJWTService, JWTService>();
             services.AddTransient<ITestCaseService, TestCaseService>();
+            services.AddTransient<ITestService, TestService>();
 
             services.AddControllers();
 
