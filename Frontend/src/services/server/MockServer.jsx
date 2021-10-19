@@ -15,15 +15,47 @@ const makeServer = () =>
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpZCI6MSwicm9sZSI6ImRldiJ9.l3t9QmgNcBbwSiCK2i6aV7w1Wu51vDmVJuQe9d6DDPA';
       });
 
-      this.get('test/test-0', () => {
+      this.get('test/:id', (_, request) => {
+        const { id } = request.params;
         return {
-          testId: 'test-0',
+          testId: id,
           testName: 'Test the best',
           testCategories: ['login', 'register', 'API'],
           testCasesIds: ['tc1', 'tc2', 'tc3'],
           testProceduresIds: ['tp1', 'tp2', 'tp3'],
-          selectedTestCase: { testCaseId: 'tc2' },
-          selectedTestProcedure: { testProcedureId: 'tp3' }
+          selectedTestCategory: 'login',
+          selectedTestCaseId: 'tc2',
+          selectedTestProcedureId: 'tp3'
+        };
+      });
+
+      this.put('test/:id', (_, request) => {
+        const { id } = request.params;
+        const data = JSON.parse(request.requestBody);
+        console.log(`PUT/test/${id}: ${data}`);
+      });
+
+      this.get('testProcedure/:id', () => {
+        return {
+          selectedTestProcedure: {
+            testStepsIds: ['Test Step 1#987', 'Login#657', 'Register#123'],
+            result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+          }
+        };
+      });
+
+      this.get('testCase/:id', () => {
+        return {
+          selectedTestCase: {
+            preconditions: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`,
+            entryData: []
+          }
         };
       });
 

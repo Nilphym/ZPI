@@ -40,7 +40,7 @@ const schemaStepName = yup.object().shape({
 // TODO: usable API
 // TODO: styles
 // part of test creation form
-const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isEditable }) => {
+const TestStep = ({ testStepId, isEditable }) => {
   const {
     control: innerControlTable,
     handleSubmit: handleSubmitTable,
@@ -61,7 +61,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
   });
 
   const [isOpened, setIsOpened] = useState(false);
-  const [stepName, setStepName] = useState(testStepName);
+  const [stepName, setStepName] = useState(testStepId);
   const [tablesCount, setTablesCount] = useState(0);
   const [editableTables, setEditableTables] = useState([
     {
@@ -157,7 +157,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                       id={formFieldsStepName.stepName}
                       label="Step Name"
                       type="text"
-                      defaultValue={testStepName}
+                      defaultValue={testStepId}
                       error={!!errorsStepName.stepName}
                       helperText={
                         !!errorsStepName.stepName &&
@@ -193,7 +193,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                   }}
                   onClick={() => {
                     setIsEditingStepName(false);
-                    resetStepName({ 'stepName': testStepName });
+                    resetStepName({ 'stepName': testStepId });
                   }}
                   startIcon={<CloseIcon />}
                 >
@@ -216,7 +216,7 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
                 {editableTables.map(({ tableName, rowsNumber, columnsNumber }) => (
                   <EditableTable
                     key={`${tableName}`}
-                    name={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-${tableName}`}
+                    name={`${tableName}`}
                     rowsNumber={rowsNumber}
                     columnsNumber={columnsNumber}
                     disabled={!isEditing}
@@ -331,11 +331,11 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
               Control Point:
             </Typography>
             <Controller
-              name={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
-              control={innerControlTable} // TODO: Change into outer controller
+              name='controlPoint'
+              control={innerControlTable}
               render={({ field }) => (
                 <TextField
-                  id={`${testPlanName}-${testName}-${testProcedureName}-${testStepName}-result`}
+                  id='controlPoint'
                   label="Control Point"
                   type="text"
                   disabled={!isEditing}
@@ -372,12 +372,8 @@ const TestStep = ({ testPlanName, testName, testProcedureName, testStepName, isE
 };
 
 TestStep.propTypes = {
-  testPlanName: PropTypes.string.isRequired,
-  testName: PropTypes.string.isRequired,
-  testProcedureName: PropTypes.string.isRequired,
-  testStepName: PropTypes.string.isRequired,
+  testStepId: PropTypes.string.isRequired,
   isEditable: PropTypes.bool.isRequired
-  // control: PropTypes.object.isRequired
 };
 
 export default TestStep;
