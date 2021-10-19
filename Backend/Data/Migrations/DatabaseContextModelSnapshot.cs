@@ -167,6 +167,10 @@ namespace Data.Migrations
                     b.Property<int>("ExecutionCounter")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("TestCaseId")
                         .HasColumnType("uniqueidentifier");
 

@@ -5,6 +5,7 @@ import Layout from './containers/Layout';
 import NoMatch from './containers/NoMatch';
 import RequireAuth from './services/auth/RequireAuth';
 import Login from './components/LoginPanel/LoginPanel';
+import Logout from './containers/Logout';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
             </RequireAuth>
           }
         />
+        <Route path="logout" element={<Logout />} />
       </Route>
       <Route path="*" element={<NoMatch />} />
     </Routes>

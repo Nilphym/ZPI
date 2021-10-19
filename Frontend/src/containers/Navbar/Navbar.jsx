@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
-import { Box, Typography, Avatar, IconButton, Slide, Fade, useMediaQuery } from '@mui/material';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Typography,
+  Avatar,
+  IconButton,
+  Slide,
+  Fade,
+  useMediaQuery,
+  Button,
+  Menu,
+  MenuItem
+} from '@mui/material';
 import {
   Login,
   FormatListBulleted,
   BugReport,
   BarChart,
   MenuOpen,
-  Menu
+  Menu as MenuIcon,
+  Person
 } from '@mui/icons-material';
 import { blue, grey } from '@mui/material/colors';
 import { styled, useTheme } from '@mui/system';
@@ -19,7 +31,8 @@ const icons = {
   dashboard: <BarChart />,
   bugs: <BugReport />,
   tests: <FormatListBulleted />,
-  logout: <Login />
+  logout: <Login />,
+  profile: <Person />
 };
 
 const Logo = styled('img')({
@@ -45,6 +58,27 @@ const StyledLink = styled(Link, {
   })
 }));
 
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'active'
+})(({ active, theme }) => ({
+  width: '100%',
+  padding: '1rem 2rem',
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.primary.dark,
+  textDecoration: 'none',
+  ...(!active && {
+    '&:hover': {
+      backgroundColor: grey[50]
+    }
+  }),
+  ...(active && {
+    backgroundColor: blue[50]
+  }),
+  textAlign: 'left',
+  textTransform: 'none'
+}));
+
 const NavbarItem = ({ pathname, link: { icon, text, destination } }) => {
   const regex = new RegExp(`/${destination}`);
 
@@ -63,6 +97,42 @@ NavbarItem.propTypes = {
     text: PropTypes.string.isRequired,
     destination: PropTypes.string.isRequired
   }).isRequired
+};
+
+const NavbarMenu = ({ name, icon, links }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItem = (destination) => {
+    navigate(destination);
+  };
+
+  return (
+    <>
+      <StyledButton onClick={handleClick}>
+        {icons[icon]}
+        <Typography sx={{ width: '100%', paddingLeft: '1rem' }}>{name}</Typography>
+      </StyledButton>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        {links.map((link) => (
+          <MenuItem onClick={() => handleMenuItem(link.destination)}>{link.text}</MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
+};
+
+NavbarMenu.propTypes = {
+  name: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  links: PropTypes.array.isRequired
 };
 
 const Profile = ({ profile: { avatar, name } }) => {
@@ -134,9 +204,13 @@ const Navbar = ({ links, profile }) => {
             </IconButton>
           </Box>
           <Box sx={{ alignSelf: 'center' }}>
-            {links.map((link) => (
-              <NavbarItem key={link.destination} pathname={pathname} link={link} />
-            ))}
+            {links.map((link) =>
+              link.name ? (
+                <NavbarMenu key={link.name} name={link.name} icon={link.icon} links={link.links} />
+              ) : (
+                <NavbarItem key={link.destination} pathname={pathname} link={link} />
+              )
+            )}
           </Box>
           <Profile profile={profile} />
         </Box>
@@ -150,7 +224,7 @@ const Navbar = ({ links, profile }) => {
           }}
         >
           <IconButton onClick={toggleOpen}>
-            <Menu sx={{ color: 'primary.dark' }} />
+            <MenuIcon sx={{ color: 'primary.dark' }} />
           </IconButton>
         </Box>
       </Slide>
