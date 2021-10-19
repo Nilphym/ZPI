@@ -38,7 +38,7 @@ const LoginPanel = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const from = state ? state.from.pathname : '/';
+  const from = state ? state.from.pathname : '/dashboard';
 
   const {
     control,

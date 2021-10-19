@@ -26,6 +26,7 @@ import {
 } from '../../redux/reducers/bugs/bugsSlice';
 
 export const types = {
+  all: 'all',
   myBugs: 'my-bugs',
   toFix: 'to-fix',
   toReview: 'to-review'
@@ -142,7 +143,7 @@ const BugTable = ({ type }) => {
       label: 'Retests',
       sublabel: 'Req/Done/Failed',
       unsortable: true,
-      hidden: type !== types.toReview,
+      hidden: type !== types.toReview && type !== types.all,
       width: '5.5rem'
     },
     {

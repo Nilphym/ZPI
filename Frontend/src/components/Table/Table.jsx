@@ -70,7 +70,7 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <Paper>
+    <Paper sx={{ width: '100%' }}>
       <TableContainer>
         <Table>
           <EnhancedTableHead
@@ -95,7 +95,7 @@ const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit
                 />
               ))}
             {emptyRows > 0 && (
-              <TableRow style={{ height: 66.8 * emptyRows }}>
+              <TableRow style={{ height: 77.8 * emptyRows }}>
                 <TableCell colSpan={headCells.length + 1} />
               </TableRow>
             )}

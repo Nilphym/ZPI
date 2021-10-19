@@ -11,7 +11,7 @@ const Layout = () => {
   switch (token?.role) {
     case 'tester':
       return (
-        <Box sx={{ width: '100%', height: '100vh' }}>
+        <Box sx={{ display: 'flex' }}>
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
@@ -21,7 +21,7 @@ const Layout = () => {
                 name: 'Bugs',
                 links: [
                   { text: 'All bugs', destination: '/bugs' },
-                  { text: 'Bugs to review', destination: '/bugs-retest' }
+                  { text: 'Bugs to review', destination: '/bugs/retest' }
                 ]
               },
               { icon: 'profile', text: 'Profile', destination: '/profile' },
@@ -34,7 +34,7 @@ const Layout = () => {
       );
     case 'dev':
       return (
-        <Box sx={{ width: '100%', height: '100vh' }}>
+        <Box sx={{ display: 'flex' }}>
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
@@ -44,8 +44,8 @@ const Layout = () => {
                 name: 'Bugs',
                 links: [
                   { text: 'All bugs', destination: '/bugs' },
-                  { text: 'Active bugs', destination: '/active-bugs' },
-                  { text: 'My bugs', destination: '/my-bugs' }
+                  { text: 'Active bugs', destination: '/bugs/active' },
+                  { text: 'My bugs', destination: '/bugs/assigned' }
                 ]
               },
               { icon: 'profile', text: 'Profile', destination: '/profile' },
@@ -58,7 +58,7 @@ const Layout = () => {
       );
     case 'pm':
       return (
-        <Box sx={{ width: '100%', height: '100vh' }}>
+        <Box sx={{ display: 'flex' }}>
           <Navbar
             links={[
               {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -80,7 +81,7 @@ const StyledButton = styled(Button, {
 }));
 
 const NavbarItem = ({ pathname, link: { icon, text, destination } }) => {
-  const regex = new RegExp(`/${destination}`);
+  const regex = new RegExp(destination);
 
   return (
     <StyledLink active={regex.test(pathname)} to={destination}>
@@ -111,6 +112,7 @@ const NavbarMenu = ({ name, icon, links }) => {
   };
 
   const handleMenuItem = (destination) => {
+    setAnchorEl(null);
     navigate(destination);
   };
 
@@ -122,7 +124,9 @@ const NavbarMenu = ({ name, icon, links }) => {
       </StyledButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {links.map((link) => (
-          <MenuItem onClick={() => handleMenuItem(link.destination)}>{link.text}</MenuItem>
+          <MenuItem key={link.text} onClick={() => handleMenuItem(link.destination)}>
+            {link.text}
+          </MenuItem>
         ))}
       </Menu>
     </>
@@ -135,7 +139,7 @@ NavbarMenu.propTypes = {
   links: PropTypes.array.isRequired
 };
 
-const Profile = ({ profile: { avatar, name } }) => {
+const Profile = ({ avatar, name }) => {
   return (
     <Box
       sx={{
@@ -155,15 +159,18 @@ const Profile = ({ profile: { avatar, name } }) => {
 };
 
 Profile.propTypes = {
-  profile: PropTypes.shape({
-    avatar: PropTypes.string,
-    name: PropTypes.string.isRequired
-  }).isRequired
+  avatar: PropTypes.string,
+  name: PropTypes.string.isRequired
 };
 
-const Navbar = ({ links, profile }) => {
+Profile.defaultProps = {
+  avatar: null
+};
+
+const Navbar = ({ links }) => {
   const { pathname } = useLocation();
   const theme = useTheme();
+  const name = useSelector((state) => state.auth.token.name);
   const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
   const [open, setOpen] = useState(true);
 
@@ -186,7 +193,8 @@ const Navbar = ({ links, profile }) => {
             gridTemplateRows: '7rem 1fr 7rem',
             borderRight: `2px solid ${grey[100]}`,
             backgroundColor: 'white',
-            position: 'relative',
+            position: 'sticky',
+            top: 0,
             zIndex: 1
           }}
         >
@@ -212,7 +220,7 @@ const Navbar = ({ links, profile }) => {
               )
             )}
           </Box>
-          <Profile profile={profile} />
+          <Profile name={name} />
         </Box>
       </Slide>
       <Slide direction="right" in={!open} mountOnEnter unmountOnExit>
@@ -228,7 +236,7 @@ const Navbar = ({ links, profile }) => {
           </IconButton>
         </Box>
       </Slide>
-      <Fade in={!largeMedia && open}>
+      <Fade in={!largeMedia && open} mountOnEnter unmountOnExit>
         <Box
           sx={{
             position: 'fixed',
