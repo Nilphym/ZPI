@@ -1,8 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { CircularProgress, Box } from '@mui/material';
+import {
+  CircularProgress,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  TextField
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
 
 import Table from '../../components/Table';
 import {
@@ -23,39 +34,84 @@ export const types = {
 const BugTable = ({ type }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { rows, loading } = useSelector((state) => state.bugs);
+  const { handleSubmit, setValue, control } = useForm();
+  const [dialog, setDialog] = useState({ open: false, content: null, action: null });
   const { id: personId } = useSelector((state) => state.auth.token);
+  const { rows, loading } = useSelector((state) => state.bugs);
 
   useEffect(() => {
     dispatch(getRows());
   }, []);
 
+  const closeDialog = () => {
+    setDialog((dialog) => ({ ...dialog, open: false }));
+  };
+
   const onRetest = (id) => {
     navigate(`/testing/${id}`);
   };
 
-  const onTake = async (id) => {
-    await dispatch(takeBug({ id, personId }));
-    await dispatch(getRows());
+  const onResign = (id) => {
+    setValue('id', id);
+    setValue('personId', personId);
+    setDialog({
+      open: true,
+      content: <DialogContentText>You will be unassigned from the bug.</DialogContentText>,
+      action: resignFromBug
+    });
   };
 
-  const onResign = async (id) => {
-    await dispatch(resignFromBug({ id, personId }));
-    await dispatch(getRows());
+  const onReject = (id) => {
+    setValue('id', id);
+    setDialog({
+      open: true,
+      content: <DialogContentText>This bug will be marked as rejected.</DialogContentText>,
+      action: rejectBug
+    });
   };
 
-  const onReject = async (id) => {
-    await dispatch(rejectBug({ id }));
-    await dispatch(getRows());
+  const onTake = (id) => {
+    setValue('id', id);
+    setValue('personId', personId);
+    setDialog({
+      open: true,
+      content: <DialogContentText>You will be assigned to the bug.</DialogContentText>,
+      action: takeBug
+    });
   };
 
-  const onResolve = async (id) => {
-    await dispatch(resolveBug({ id }));
-    await dispatch(getRows());
+  const onResolve = (id) => {
+    setValue('id', id);
+    setDialog({
+      open: true,
+      content: (
+        <>
+          <DialogContentText>This bug will be marked as resolved.</DialogContentText>
+          <Controller
+            defaultValue={1}
+            control={control}
+            name="retestsRequired"
+            render={({ field }) => (
+              <TextField
+                autoFocus
+                margin="dense"
+                id="retestsRequired"
+                label="* Number of required reviews"
+                type="number"
+                fullWidth
+                variant="standard"
+                {...field}
+              />
+            )}
+          />
+        </>
+      ),
+      action: resolveBug
+    });
   };
 
   const headCells = [
-    { id: 'code', label: 'Code', width: 0, isHeading: true },
+    { id: 'code', label: 'Code', width: '6rem', isHeading: true },
     { id: 'name', label: 'Name', type: 'text' },
     { id: 'state', label: 'State', width: 0 },
     { id: 'functionality', label: 'Functionality', width: '15rem' },
@@ -134,8 +190,14 @@ const BugTable = ({ type }) => {
     { id: 'attachments', label: 'Attachments', type: 'text' }
   ];
 
-  const onSubmit = async (json) => {
-    await dispatch(putRows({ code: json.code, json }));
+  const onSubmitBugStatus = async (arg) => {
+    closeDialog();
+    await dispatch(dialog.action(arg));
+    await dispatch(getRows());
+  };
+
+  const onSubmitBugDetails = async (json) => {
+    await dispatch(putRows({ id: json.id, json }));
     await dispatch(getRows());
   };
 
@@ -152,13 +214,25 @@ const BugTable = ({ type }) => {
       <CircularProgress />
     </Box>
   ) : (
-    <Table
-      headCells={headCells.filter((headCell) => !headCell.hidden)}
-      rowCells={rowCells}
-      rowsPerPageOptions={[5, 10, 15]}
-      rows={[...rows]}
-      onSubmit={onSubmit}
-    />
+    <>
+      <Table
+        headCells={headCells.filter((headCell) => !headCell.hidden)}
+        rowCells={rowCells}
+        rowsPerPageOptions={[5, 10, 15]}
+        rows={[...rows]}
+        onSubmit={onSubmitBugDetails}
+      />
+      <Dialog open={dialog.open} onClose={closeDialog}>
+        <form onSubmit={handleSubmit(onSubmitBugStatus)}>
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogContent>{dialog.content}</DialogContent>
+          <DialogActions>
+            <Button onClick={closeDialog}>Cancel</Button>
+            <Button type="submit">Confirm</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </>
   );
 };
 

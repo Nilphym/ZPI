@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +12,8 @@ namespace Data.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime CreationDate { get; set; }
 
+        [Required]
+        public string Name { get; set; }
         public int Version { get; set; }
 
         public int ExecutionCounter { get; set; }
@@ -27,7 +27,7 @@ namespace Data.Models
         public Guid? TestProcedureId { get; set; }
 
         [ForeignKey("TestCaseId")]
-        public virtual TestCase TestCase{ get; set; }
+        public virtual TestCase TestCase { get; set; }
         public Guid? TestCaseId { get; set; }
     }
 }
