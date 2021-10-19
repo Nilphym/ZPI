@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TransferObject\Error\Requests\" />
     <Folder Include="TransferObject\Steps\Responses\" />
     <Folder Include="TransferObject\Steps\Requests\" />
   </ItemGroup>

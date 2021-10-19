@@ -36,9 +36,11 @@ namespace Data.Models
         public ErrorPriority ErrorPriority { get; set; }
         
         public ErrorType ErrorCategory { get; set; }
-        
+
+        public List<byte[]> Attachments { get; set; }
+
         public virtual Step Step { get; set; }
-        
+
         public Guid? StepId { get; set; }
 
         public virtual Developer Developer { get; set; }
@@ -49,5 +51,6 @@ namespace Data.Models
 
         public virtual ICollection<Review> Reviews { get; set; }
 
+        public virtual ICollection<Attachment> Attachment { get; set; }
     }
 }

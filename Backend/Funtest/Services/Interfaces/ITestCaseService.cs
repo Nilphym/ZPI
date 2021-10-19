@@ -9,7 +9,5 @@ namespace Funtest.Services.Interfaces
     {
         Task<bool> AddTestCase(AddTestCaseRequest testCaseRequest);
         Task<GetTestCaseResponse> GetTestCaseById(Guid id);
-
-        //IQueryable<StepsGetStep> GetAllStepsForTestProcedure(Guid testProcedureId);
     }
 }
