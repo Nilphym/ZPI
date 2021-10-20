@@ -5,23 +5,42 @@ import {
 
 import server from '../../../services/server/api';
 
-const transformData = (testDataObject) => {
-  console.log(testDataObject);
+const transformTestData = (testDataObject) => {
   const keys = Object.keys(testDataObject);
   const transformedData = [];
   keys.forEach((key) => transformedData.push(testDataObject[key]));
   return transformedData;
 };
 
-// const prepareOutputData = (testDataArray) => {
-//   let iterator = 1;
-//   const testDataObject = {};
-//   testDataArray.forEach((object) => {
-//     testDataObject[`Data${iterator}`] = object;
-//     iterator += 1;
-//   });
-//   return testDataObject;
-// };
+const transformEntryData = (entryDataObject) => {
+  const keys = Object.keys(entryDataObject);
+  const array = [];
+  let iterator = 0;
+  keys.forEach((key) => {
+    if (typeof entryDataObject[key] === 'string') {
+      array.push({
+        textFieldId: `${iterator}`,
+        entryType: 'textField',
+        textField: entryDataObject[key]
+      });
+      iterator += 1;
+    } else {
+      array.push(entryDataObject[key]);
+    }
+  });
+
+  return array;
+};
+
+const prepareOutputData = (testDataArray) => {
+  let iterator = 0;
+  const testDataObject = {};
+  testDataArray.forEach((object) => {
+    testDataObject[`Data${iterator}`] = object;
+    iterator += 1;
+  });
+  return testDataObject;
+};
 
 const initialState = {
   testId: '',
@@ -105,7 +124,8 @@ export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_
   getState
 }) => {
   const response = await server().get({
-    url: `testCase/${getState().test.selectedTestCaseId}`
+    // url: `testCase/${getState().test.selectedTestCaseId}`
+    url: 'testCase/Tc1'
   });
   return response;
 });
@@ -126,7 +146,7 @@ export const putTestStepById = createAsyncThunk('test/putTestStepById', async (t
   const currentTestStep = getState().test.selectedTestStep[testStepId];
   const dataToSend = {};
   dataToSend.name = currentTestStep.name;
-  dataToSend.testDataObject = currentTestStep.testData;
+  dataToSend.testDataObject = prepareOutputData(currentTestStep.testData);
   dataToSend.controlPoint = currentTestStep.controlPoint;
   const response = await server().put({
     url: `step/${testStepId}`,
@@ -198,6 +218,10 @@ export const testSlice = createSlice({
     },
     setTestProcedureLoading: (state, action) => {
       state.isLoadingTestProcedure = action.payload.isLoading;
+    },
+    addTestCaseEntryDataItem: (state, action) => {
+      const { newItem } = action.payload;
+      state.selectedTestCase.entryData = [...state.selectedTestCase.entryData, newItem];
     }
   },
   extraReducers: (builder) => {
@@ -253,7 +277,8 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
-        state.selectedTestCase = action.payload.selectedTestCase;
+        state.selectedTestCase.entryData = transformEntryData(action.payload.entryDataObject);
+        state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })
       .addCase(getTestCaseById.rejected, (_, action) => {
@@ -270,7 +295,7 @@ export const testSlice = createSlice({
         state.selectedTestStep[action.payload.id].id = id;
         state.selectedTestStep[action.payload.id].name = name;
         state.selectedTestStep[action.payload.id].stepNumber = stepNumber;
-        state.selectedTestStep[action.payload.id].testData = transformData(testDataObject);
+        state.selectedTestStep[action.payload.id].testData = transformTestData(testDataObject);
         state.selectedTestStep[action.payload.id].controlPoint = controlPoint;
         state.isLoadingTestStep[action.payload.id] = false;
       })
@@ -300,6 +325,7 @@ export const {
   deleteTestStepTestData,
   setTestStepName,
   editTestProcedureResult,
-  setTestProcedureLoading
+  setTestProcedureLoading,
+  addTestCaseEntryDataItem
 } = testSlice.actions;
 export default testSlice.reducer;
