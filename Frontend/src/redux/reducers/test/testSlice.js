@@ -72,12 +72,26 @@ export const getTestProcedureById = createAsyncThunk('test/getTestProcedureById'
   getState
 }) => {
   const response = await server().get({
-    url: `testProcedure/${getState().test.selectedTestProcedureId}`
+    // url: `testProcedure/${getState().test.selectedTestProcedureId}`
+    url: 'testProcedure/Tp1'
   });
   return response;
 });
 
-export const addTestProcedure = createAsyncThunk('test/addTestProcedure', async (body) => {
+export const putTestProcedureById = createAsyncThunk('test/putTestProcedureById', async (_, {
+  getState
+}) => {
+  const response = await server().put({
+    // url: `testProcedure/${getState().test.selectedTestProcedureId}`
+    url: 'testProcedure/Tp1',
+    data: {
+      result: getState().test.selectedTestProcedure.result
+    }
+  });
+  return response;
+});
+
+export const postTestProcedure = createAsyncThunk('test/addTestProcedure', async (body) => {
   const response = await server().post({
     url: 'testProcedures',
     data: body
@@ -108,7 +122,7 @@ export const getTestStepById = createAsyncThunk('test/getTestStepById', async (t
 export const putTestStepById = createAsyncThunk('test/putTestStepById', async (testStepId, {
   getState
 }) => {
-  
+
   const currentTestStep = getState().test.selectedTestStep[testStepId];
   const dataToSend = {};
   dataToSend.name = currentTestStep.name;
@@ -116,6 +130,20 @@ export const putTestStepById = createAsyncThunk('test/putTestStepById', async (t
   dataToSend.controlPoint = currentTestStep.controlPoint;
   const response = await server().put({
     url: `step/${testStepId}`,
+    data: dataToSend
+  });
+  return response;
+});
+
+export const postTestStep = createAsyncThunk('test/postTestStep', async (newStepName, {
+  getState
+}) => {
+  const currentTestProcedureId = getState().test.selectedTestProcedure.id;
+  const dataToSend = {};
+  dataToSend.testProcedureId = currentTestProcedureId;
+  dataToSend.name = newStepName;
+  const response = await server().post({
+    url: 'step',
     data: dataToSend
   });
   return response;
@@ -164,6 +192,12 @@ export const testSlice = createSlice({
         newName
       } = action.payload;
       state.selectedTestStep[id].name = newName;
+    },
+    editTestProcedureResult: (state, action) => {
+      state.selectedTestProcedure.result = action.payload.result;
+    },
+    setTestProcedureLoading: (state, action) => {
+      state.isLoadingTestProcedure = action.payload.isLoading;
     }
   },
   extraReducers: (builder) => {
@@ -195,15 +229,27 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(getTestProcedureById.fulfilled, (state, action) => {
-        state.selectedTestProcedure = action.payload.selectedTestProcedure;
+        const {
+          id,
+          result,
+          testStepsIds
+        } = action.payload;
+        state.selectedTestProcedure.id = id;
+        state.selectedTestProcedure.testStepsIds = testStepsIds;
+        state.selectedTestProcedure.result = result;
         state.isLoadingTestProcedure = false;
-        const testStepIds = action.payload.selectedTestProcedure.testStepsIds;
-        testStepIds.forEach(testStepId => {
+        testStepsIds.forEach(testStepId => {
           state.selectedTestStep[testStepId] = {};
           state.isLoadingTestStep[testStepId] = true;
         });
       })
       .addCase(getTestProcedureById.rejected, (_, action) => {
+        alert(action.error.message);
+      })
+      .addCase(putTestProcedureById.fulfilled, () => {
+        alert('Object changed');
+      })
+      .addCase(putTestProcedureById.rejected, (_, action) => {
         alert(action.error.message);
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
@@ -236,6 +282,12 @@ export const testSlice = createSlice({
       })
       .addCase(putTestStepById.rejected, (_, action) => {
         alert(action.error.message);
+      })
+      .addCase(postTestStep.fulfilled, () => {
+        console.log('Object changed, Object added');
+      })
+      .addCase(postTestStep.rejected, (_, action) => {
+        alert(action.error.message);
       });
   }
 });
@@ -246,6 +298,8 @@ export const {
   editTestStepTestData,
   editTestStepControlPoint,
   deleteTestStepTestData,
-  setTestStepName
+  setTestStepName,
+  editTestProcedureResult,
+  setTestProcedureLoading
 } = testSlice.actions;
 export default testSlice.reducer;

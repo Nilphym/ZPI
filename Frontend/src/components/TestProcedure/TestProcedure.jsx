@@ -9,7 +9,13 @@ import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import TestStep from '../TestStep/TestStep';
-import { getTestProcedureById } from '../../redux/reducers/test/testSlice';
+import {
+  getTestProcedureById,
+  postTestStep,
+  editTestProcedureResult,
+  setTestProcedureLoading,
+  putTestProcedureById
+} from '../../redux/reducers/test/testSlice';
 
 const formFields = {
   newTestStepName: 'newTestStepName'
@@ -46,19 +52,32 @@ const TestProcedure = ({ isEditable }) => {
   } = useSelector((state) => state.test);
 
   useEffect(() => {
+    dispatch(setTestProcedureLoading({ isLoading: true }));
     async function getTestProcedureData() {
       await dispatch(getTestProcedureById());
     }
     getTestProcedureData();
   }, []);
 
-  const addTestStep = ({ newTestStepName }) => {
-    // API add Test Step
+  async function addTestStep({ newTestStepName }) {
+    await dispatch(postTestStep(newTestStepName));
     reset(defaultValues, {
       keepIsValid: true
     });
     setIsAddingTestStep(false);
-  };
+    setIsEditing(false);
+    dispatch(setTestProcedureLoading({ isLoading: true }));
+    await dispatch(getTestProcedureById());
+  }
+
+  async function saveTestProcedure() {
+    setIsAddingTestStep(false);
+    setIsEditing(false);
+    dispatch(editTestProcedureResult(getValues('result')));
+    await dispatch(putTestProcedureById());
+    dispatch(setTestProcedureLoading({ isLoading: true }));
+    await dispatch(getTestProcedureById());
+  }
 
   return (
     <Box>
@@ -196,9 +215,7 @@ const TestProcedure = ({ isEditable }) => {
             <Button
               variant="outlined"
               sx={{ marginTop: '0.625rem' }}
-              onClick={() => {
-                setIsEditing(false);
-              }}
+              onClick={() => saveTestProcedure()}
             >
               Save Test Procedure
             </Button>
@@ -207,7 +224,7 @@ const TestProcedure = ({ isEditable }) => {
       )}
     </Box>
   );
-};
+};;
 
 TestProcedure.propTypes = {
   isEditable: PropTypes.bool.isRequired

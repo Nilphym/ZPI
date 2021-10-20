@@ -59,7 +59,6 @@ const prepareOutputData = (values) => {
   return processedData;
 };
 
-// TODO: Add control from outer form !!!
 const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) => {
   const { control: tableControl, getValues } = useForm();
 
@@ -106,7 +105,7 @@ const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) 
     if (parentComp === 'testStep') {
       dispatch(editTestStepTestData({ id: testStepId, editedTable: tableObject }));
     }
-    // else {}
+    // else {} // TODO: After TestCase update
   };
 
   return (
@@ -185,14 +184,15 @@ const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) 
           >
             {currentData.map((row, rowIndex) => (
               <Box
-                key={`row-${row[0]}`}
+                key={`${data.tableName}-row-${row[0]}`}
                 sx={{
                   display: 'flex'
                 }}
               >
                 {row.map((item, columnIndex) => (
                   <TableItem
-                    key={`${row[0]}-${item}`}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${data.tableName}-${rowIndex}-${item}`}
                     name={data.tableName}
                     row={rowIndex}
                     column={columnIndex}

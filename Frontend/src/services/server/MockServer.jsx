@@ -7,7 +7,8 @@ const makeServer = () =>
   createServer({
     models: {
       bug: Model,
-      testStep: Model
+      testStep: Model,
+      testProcedure: Model
     },
     routes() {
       this.namespace = 'api/';
@@ -36,18 +37,20 @@ const makeServer = () =>
         console.log(`PUT/test/${id}: ${data}`);
       });
 
-      this.get('testProcedure/:id', () => {
-        return {
-          selectedTestProcedure: {
-            testStepsIds: ['Test_Step_1#987', 'Login#657', 'Register#123'],
-            result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
-          }
-        };
+      // TestProcedure requests
+      this.get('testProcedure/:id', (schema, request) => {
+        const { id } = request.params;
+        const findingItem = schema.testProcedures.findBy({ id }).attrs;
+        return findingItem;
       });
 
+      this.put('testProcedure/:id', (schema, request) => {
+        const { id } = request.params;
+        const { result } = JSON.parse(request.requestBody);
+        schema.testProcedures.findBy({ id }).update({ result });
+      });
+
+      // TestCase requests
       this.get('testCase/:id', () => {
         return {
           selectedTestCase: {
@@ -60,21 +63,34 @@ const makeServer = () =>
         };
       });
 
+      // TestStep requests
       this.get('step/:id', (schema, request) => {
         const { id } = request.params;
         const findingItem = schema.testSteps.findBy({ id }).attrs;
-        console.log(findingItem);
         return findingItem;
       });
 
-       this.put('step/:id', (schema, request) => {
-         const { id } = request.params;
-         const { name, testDataObject, controlPoint } = JSON.parse(request.requestBody);
-         schema.testSteps.findBy({ id }).update({
-           name, testDataObject, controlPoint
-         });
-       });
+      this.put('step/:id', (schema, request) => {
+        const { id } = request.params;
+        const { name, testDataObject, controlPoint } = JSON.parse(request.requestBody);
+        schema.testSteps.findBy({ id }).update({
+          name,
+          testDataObject,
+          controlPoint
+        });
+      });
 
+      this.post('step', (schema, request) => {
+        const { name, testProcedureId: id } = JSON.parse(request.requestBody);
+        const newStepId = Math.random() * 10000;
+        const { testStepsIds } = schema.testProcedures.findBy({ id}).attrs;
+        schema.testProcedures.findBy({ id }).update({
+          testStepsIds: [...testStepsIds, newStepId]
+        });
+        schema.testSteps.create({id: newStepId, name, stepNumber: 5, testDataObject: {}, controlPoint: '' });
+      });
+
+      // Bugs
       this.get('bugs', (schema) => {
         return schema.bugs.all().models;
       });
@@ -456,6 +472,42 @@ const makeServer = () =>
         }
       ].forEach((testStep) => {
         server.create('testStep', testStep);
+      });
+      [
+        {
+          id: 'Tp1',
+          testStepsIds: ['Ts1', 'Ts2', 'Ts3'],
+          result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'Tp2',
+          testStepsIds: ['Ts2', 'Ts3', 'Ts4'],
+          result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'Tp3',
+          testStepsIds: ['Ts4', 'Ts1', 'Ts2'],
+          result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'Tp4',
+          testStepsIds: ['Ts3', 'Ts1', 'Ts2'],
+          result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        }
+      ].forEach((testProcedure) => {
+        server.create('testProcedure', testProcedure);
       });
     }
   });
