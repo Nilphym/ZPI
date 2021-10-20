@@ -6,6 +6,7 @@ import {
 import server from '../../../services/server/api';
 
 const transformData = (testDataObject) => {
+  console.log(testDataObject);
   const keys = Object.keys(testDataObject);
   const transformedData = [];
   keys.forEach((key) => transformedData.push(testDataObject[key]));
@@ -39,10 +40,10 @@ const initialState = {
   isLoadingTestCase: true,
   // checked and correct
   selectedTestStep: {
-    TestStep1: {}
+    Ts1: {}
   },
   isLoadingTestStep: {
-    TestStep1: true
+    Ts1: true
   }
 };
 
@@ -98,9 +99,24 @@ export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_
 
 // ----------------------------------------- Test Step API
 export const getTestStepById = createAsyncThunk('test/getTestStepById', async (testStepId) => {
-  alert('aaa');
   const response = await server().get({
     url: `step/${testStepId}`
+  });
+  return response;
+});
+
+export const putTestStepById = createAsyncThunk('test/putTestStepById', async (testStepId, {
+  getState
+}) => {
+  
+  const currentTestStep = getState().test.selectedTestStep[testStepId];
+  const dataToSend = {};
+  dataToSend.name = currentTestStep.name;
+  dataToSend.testDataObject = currentTestStep.testData;
+  dataToSend.controlPoint = currentTestStep.controlPoint;
+  const response = await server().put({
+    url: `step/${testStepId}`,
+    data: dataToSend
   });
   return response;
 });
@@ -114,9 +130,26 @@ export const testSlice = createSlice({
       state.testId = action.payload;
       state.isLoading = true;
     },
-    setTestStepTestData: (state, action) => {
-      const { id, newTable } = action.payload;
+    addTestStepTestData: (state, action) => {
+      const {
+        id,
+        newTable
+      } = action.payload;
       state.selectedTestStep[id].testData = [...state.selectedTestStep[id].testData, newTable];
+    },
+    editTestStepTestData: (state, action) => {
+      const {
+        id,
+        editedTable
+      } = action.payload;
+      state.selectedTestStep[id].testData[state.selectedTestStep[id].testData.findIndex(table => table.name === editedTable.name)] = editedTable;
+    },
+    editTestStepControlPoint: (state, action) => {
+      const {
+        id,
+        editedControlPoint
+      } = action.payload;
+      state.selectedTestStep[id].controlPoint = editedControlPoint;
     },
     deleteTestStepTestData: (state, action) => {
       const {
@@ -185,17 +218,23 @@ export const testSlice = createSlice({
           id,
           name,
           stepNumber,
-          testData,
+          testDataObject,
           controlPoint
         } = action.payload;
         state.selectedTestStep[action.payload.id].id = id;
         state.selectedTestStep[action.payload.id].name = name;
         state.selectedTestStep[action.payload.id].stepNumber = stepNumber;
-        state.selectedTestStep[action.payload.id].testData = transformData(testData);
+        state.selectedTestStep[action.payload.id].testData = transformData(testDataObject);
         state.selectedTestStep[action.payload.id].controlPoint = controlPoint;
         state.isLoadingTestStep[action.payload.id] = false;
       })
       .addCase(getTestStepById.rejected, (_, action) => {
+        alert(action.error.message);
+      })
+      .addCase(putTestStepById.fulfilled, () => {
+        console.log('Object changed');
+      })
+      .addCase(putTestStepById.rejected, (_, action) => {
         alert(action.error.message);
       });
   }
@@ -203,7 +242,9 @@ export const testSlice = createSlice({
 
 export const {
   setTestId,
-  setTestStepTestData,
+  addTestStepTestData,
+  editTestStepTestData,
+  editTestStepControlPoint,
   deleteTestStepTestData,
   setTestStepName
 } = testSlice.actions;

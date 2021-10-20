@@ -11,6 +11,6 @@ const Template = (args) => <TestStepComponent {...args} />;
 
 export const TestStep = Template.bind({});
 TestStep.args = {
-  testStepId: 'TestStep1',
+  testStepId: 'Ts1',
   isEditable: true
 };
