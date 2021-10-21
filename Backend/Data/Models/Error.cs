@@ -14,7 +14,7 @@ namespace Data.Models
         public string Name { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
-        public DateTime FilingDate { get; set; }
+        public DateTime ReportDate { get; set; }
 
         [Required]
         public string Description { get; set; }
@@ -25,7 +25,7 @@ namespace Data.Models
         public int RequiredReviewCounter { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime FinishDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public string Category { get; set; }
 
@@ -35,9 +35,7 @@ namespace Data.Models
 
         public ErrorPriority ErrorPriority { get; set; }
         
-        public ErrorType ErrorCategory { get; set; }
-
-        public List<byte[]> Attachments { get; set; }
+        public ErrorType ErrorType { get; set; }
 
         public virtual Step Step { get; set; }
 

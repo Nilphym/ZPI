@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestProcedure.Requests;
 using Funtest.TransferObject.TestProcedure.Responses;
+using Funtest.Interfaces;
+using System.Linq;
 
 namespace Funtest.Controllers
 {
@@ -12,10 +14,12 @@ namespace Funtest.Controllers
     public class TestProceduresController : ControllerBase
     {
         private readonly ITestProcedureService _testProcedureService;
+        private readonly IStepService _stepService;
 
-        public TestProceduresController(ITestProcedureService testProcedureService)
+        public TestProceduresController(ITestProcedureService testProcedureService, IStepService stepService)
         {
             _testProcedureService = testProcedureService;
+            _stepService = stepService;
         }
 
         [HttpPost]
@@ -29,7 +33,6 @@ namespace Funtest.Controllers
             return Problem("Problem with saving an object in the database");
         }
 
-        // GET: api/TestProcedures/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetTestProcedureResponse>> GetTestProcedure(Guid id)
         {
@@ -38,6 +41,7 @@ namespace Funtest.Controllers
             {
                 return NotFound("Object with the given id doesn't exist.");
             }
+            testProcedure.StepIds = _stepService.GetAllStepsForTestProcedure(id).Select(x => x.Id).ToList();
 
             return Ok(testProcedure);
         }

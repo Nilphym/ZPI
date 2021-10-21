@@ -13,9 +13,10 @@ namespace Data.Models
         public Guid Id { get; set; }
 
         [Required]
+        public string Code { get; set; }
+
         public string Preconditions { get; set; }
     
-        [Required] 
         public string EntryData { get; set; }
 
         [NotMapped]
@@ -27,7 +28,7 @@ namespace Data.Models
             }
             set
         {
-                EntryData = value.ToString();
+                EntryData = value == null ? "{}" : value.ToString();
             }
         } 
 

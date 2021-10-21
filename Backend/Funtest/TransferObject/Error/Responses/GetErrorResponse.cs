@@ -19,6 +19,6 @@ namespace Funtest.TransferObject.Error.Responses
         public int RetestDone { get; set; }
         public int RetestFailed { get; set; }
 
-        public List<string> Attachments { get; set; }
+        //public List<string> Attachments { get; set; }
     }
 }

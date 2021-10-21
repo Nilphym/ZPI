@@ -28,8 +28,7 @@ namespace Funtest.Services
             if (!result.Succeeded)
                 return null;
             var token = await _jwtService.GenerateJWToken(user);
-            var role = await UserManager.GetRolesAsync(user);
-            var response = new LoginResponse() { Token = token, Role = role[0] };
+            var response = new LoginResponse() { Token = token };
             return response;
         }
     }

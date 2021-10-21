@@ -13,6 +13,8 @@ namespace Data.Models
         [Required]
         public string Result { get; set; }
 
+        [Required]
+        public string Code { get; set; }
         public virtual ICollection<Test> Tests { get; set; }
 
         public virtual ICollection<Step> Steps { get; set; }
