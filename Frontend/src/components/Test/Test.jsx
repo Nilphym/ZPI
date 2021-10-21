@@ -14,42 +14,72 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
-import { getTestById, setTestId } from '../../redux/reducers/test/testSlice';
+import {
+  getTestById,
+  setTestId,
+  setTestTestCase,
+  setTestTestProcedure,
+  getTestCaseById,
+  getTestProcedureById,
+  setTestCaseLoading,
+  setTestProcedureLoading,
+  getTestStepById
+} from '../../redux/reducers/test/testSlice';
 
 const Test = ({ isEditable }) => {
   const {
     control: mainControl,
-    handleSubmit
+    handleSubmit,
+    getValues
     // formState: { errors }
   } = useForm();
 
   const dispatch = useDispatch();
   const {
     testName,
-    testCategories,
-    testCasesIds,
-    testProceduresIds,
-    selectedTestCategory,
+    testSuites,
+    testCasesCodes,
+    testProceduresCodes,
+    selectedTestSuiteId,
     selectedTestCaseId,
     selectedTestProcedureId,
-    isLoadingTest:isLoading
+    selectedTestProcedure : {testStepsIds},
+    isLoadingTest: isLoading
   } = useSelector((state) => state.test);
 
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     dispatch(setTestId('test-0')); // TODO: DELETE this line, delete export
+
     async function getTestData() {
       await dispatch(getTestById());
     }
+
     getTestData();
   }, []);
-
 
   const updateData = (data) => {
     console.log(data);
     setIsEditing(false);
   };
+
+  async function handleTestCaseChange({ target: { value } }) {
+    dispatch(setTestTestCase({ id: value }));
+    dispatch(setTestCaseLoading(true));
+    await dispatch(getTestCaseById());
+  }
+
+  async function handleTestProcedureChange({ target: { value } }) {
+    dispatch(setTestTestProcedure({ id: value }));
+    dispatch(setTestProcedureLoading(true));
+    await dispatch(getTestProcedureById());
+    for (let i = 0; i < testStepsIds.length; i += 1){
+      // eslint-disable-next-line no-await-in-loop
+      console.log(testStepsIds[i]);
+      await dispatch(getTestStepById(testStepsIds[i]));
+    }
+  }
 
   return (
     <Box>
@@ -57,6 +87,7 @@ const Test = ({ isEditable }) => {
         <CircularProgress />
       ) : (
         <Box component="form" onSubmit={handleSubmit(updateData)}>
+          <Button onClick={() => console.log(getValues())}>XXXX</Button>
           <Typography variant="h2">Test:</Typography>
           {isEditable && !isEditing && (
             <Button
@@ -92,21 +123,21 @@ const Test = ({ isEditable }) => {
           />
           <Box sx={{ marginTop: '1rem' }}>
             <Controller
-              name="categorySelect"
+              name="suiteSelect"
               control={mainControl}
-              defaultValue={selectedTestCategory}
+              defaultValue={selectedTestSuiteId}
               render={({ field }) => (
                 <Box>
-                  <InputLabel id="categorySelect">Test Category:</InputLabel>
+                  <InputLabel id="suiteSelect">Test Suite:</InputLabel>
                   <Select
-                    labelId="categorySelect-label"
-                    id="categorySelect"
+                    labelId="suiteSelect-label"
+                    id="suiteSelect"
                     sx={{ width: '10rem' }}
                     disabled={!isEditing}
                     {...field}
                   >
-                    {testCategories.map((testCategory) => (
-                      <MenuItem value={testCategory}>{testCategory}</MenuItem>
+                    {testSuites.map(({ testSuiteId, testSuite }) => (
+                      <MenuItem value={testSuiteId}>{testSuite}</MenuItem>
                     ))}
                   </Select>
                 </Box>
@@ -114,55 +145,37 @@ const Test = ({ isEditable }) => {
             />
           </Box>
           <Box sx={{ marginTop: '1rem' }}>
-            <Controller
-              name="caseSelect"
-              control={mainControl}
-              defaultValue={selectedTestCaseId}
-              render={({ field }) => (
-                <Box>
-                  <InputLabel id="caseSelect-label">Test Case:</InputLabel>
-                  <Select
-                    labelId="caseSelect-label"
-                    id="caseSelect"
-                    sx={{ width: '10rem' }}
-                    disabled={!isEditing}
-                    {...field}
-                  >
-                    {testCasesIds.map((testCase) => (
-                      <MenuItem value={testCase}>{testCase}</MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-              )}
-            />
-            {selectedTestCaseId && (
-              <TestCase
-                isEditable={isEditing}
-              />
-            )}
+            <InputLabel id="caseSelect-label">Test Case:</InputLabel>
+            <Select
+              labelId="caseSelect-label"
+              id="caseSelect"
+              sx={{ width: '10rem' }}
+              disabled={!isEditing}
+              onChange={(e) => handleTestCaseChange(e)}
+              value={selectedTestCaseId}
+            >
+              {testCasesCodes.map(({ testCaseId, testCaseCode }) => (
+                <MenuItem value={testCaseId}>{testCaseCode}</MenuItem>
+              ))}
+            </Select>
+
+            {selectedTestCaseId && <TestCase isEditable={isEditing} />}
           </Box>
           <Box sx={{ marginTop: '1rem' }}>
-            <Controller
-              name="procedureSelect"
-              control={mainControl}
-              defaultValue={selectedTestProcedureId}
-              render={({ field }) => (
-                <Box>
-                  <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
-                  <Select
-                    labelId="procedureSelect-label"
-                    id="procedureSelect"
-                    sx={{ width: '10rem' }}
-                    disabled={!isEditing}
-                    {...field}
-                  >
-                    {testProceduresIds.map((testProcedure) => (
-                      <MenuItem value={testProcedure}>{testProcedure}</MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-              )}
-            />
+            <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
+            <Select
+              labelId="procedureSelect-label"
+              id="procedureSelect"
+              sx={{ width: '10rem' }}
+              disabled={!isEditing}
+              onChange={(e) => handleTestProcedureChange(e)}
+              value={selectedTestProcedureId}
+            >
+              {testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
+                <MenuItem value={testProcedureId}>{testProcedureCode}</MenuItem>
+              ))}
+            </Select>
+
             {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           </Box>
           {isEditing && (
@@ -174,7 +187,7 @@ const Test = ({ isEditable }) => {
       )}
     </Box>
   );
-};
+};;
 
 Test.propTypes = {
   isEditable: PropTypes.bool.isRequired

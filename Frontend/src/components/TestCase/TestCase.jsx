@@ -8,10 +8,17 @@ import * as yup from 'yup';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector, useDispatch } from 'react-redux';
 import EditableTable from '../EditableTable/EditableTable';
-import { getTestCaseById, addTestCaseEntryDataItem } from '../../redux/reducers/test/testSlice';
+import {
+  getTestCaseById,
+  putTestCaseById,
+  addTestCaseEntryDataItem,
+  deleteTestCaseTextField,
+  deleteTestCaseTable,
+  editTestCasePreconditions,
+  setTestCaseLoading
+} from '../../redux/reducers/test/testSlice';
 import EditableTextField from '../EditableTextField/EditableTextField';
 
 const formFields = {
@@ -42,8 +49,6 @@ const createTable = (tablesCount, rowsCount, columnsCount) => {
 };
 
 const TestCase = ({ isEditable }) => {
-  const [tablesCount, setTablesCount] = useState(0);
-  const [textFieldsCount, setTextFieldsCount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTextField, setIsAddingTextField] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
@@ -52,6 +57,7 @@ const TestCase = ({ isEditable }) => {
     control: testCaseControl,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors }
   } = useForm({
     defaultValues,
@@ -64,10 +70,12 @@ const TestCase = ({ isEditable }) => {
     isLoadingTestCase: isLoading
   } = useSelector((state) => state.test);
 
-
   const addTable = ({ rowsNumber, columnsNumber }) => {
     const filteredArray = entryData.filter((item) => item.entryType !== 'textField');
-    const id = filteredArray[filteredArray.length - 1].tableName.toString().substring(6) * 1 + 1;
+    const id =
+      filteredArray.length > 0
+        ? filteredArray[filteredArray.length - 1].tableName.toString().substring(6) * 1 + 1
+        : 0;
     const newTable = createTable(id, rowsNumber, columnsNumber);
     dispatch(addTestCaseEntryDataItem({ newItem: newTable }));
     setIsAddingTable(false);
@@ -78,7 +86,8 @@ const TestCase = ({ isEditable }) => {
 
   const addTextField = () => {
     const filteredArray = entryData.filter((item) => item.entryType === 'textField');
-    const id = filteredArray[filteredArray.length - 1].textFieldId * 1 + 1;
+    const id =
+      filteredArray.length > 0 ? filteredArray[filteredArray.length - 1].textFieldId * 1 + 1 : 0;
     const newTextField = {
       textFieldId: id,
       entryType: 'textField',
@@ -89,22 +98,21 @@ const TestCase = ({ isEditable }) => {
   };
 
   const deleteTextField = (id) => {
-    setEntryData((state) => [
-      ...state.filter(
-        (item) =>
-          item.entryType === 'table' ||
-          (item.entryType === 'textField' && item.textFieldName !== id)
-      )
-    ]);
+    dispatch(deleteTestCaseTextField({ textFieldId: id }));
   };
 
-  const deleteTable = (id) => {
-    setEntryData((state) => [
-      ...state.filter(
-        (item) =>
-          item.entryType === 'textField' || (item.entryType === 'table' && item.tableName !== id)
-      )
-    ]);
+  const deleteTable = (tableName) => {
+    dispatch(deleteTestCaseTable({ tableName }));
+  };
+
+  async function saveTestCase(){
+    setIsEditing(false);
+    setIsAddingTable(false);
+    setIsAddingTextField(false);
+    dispatch(editTestCasePreconditions(getValues('preconditions')));
+    await dispatch(putTestCaseById());
+    dispatch(setTestCaseLoading(true));
+    await dispatch(getTestCaseById());
   };
 
   useEffect(() => {
@@ -112,6 +120,7 @@ const TestCase = ({ isEditable }) => {
       await dispatch(getTestCaseById());
     }
     getTestCaseData();
+    // setValue('preconditions', preconditions);
   }, []);
 
   return (
@@ -153,7 +162,7 @@ const TestCase = ({ isEditable }) => {
             <Controller
               name="preconditions"
               control={testCaseControl} // TODO: Change controller to outer controller
-              defaultValue={preconditions}
+              // defaultValue={preconditions}
               render={({ field }) => (
                 <TextField
                   id="preconditions"
@@ -162,6 +171,7 @@ const TestCase = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
+                  value={preconditions}
                   sx={{
                     marginTop: '0.625rem',
                     width: '100%'
@@ -191,7 +201,11 @@ const TestCase = ({ isEditable }) => {
                           position: 'relative'
                         }}
                       >
-                        <EditableTextField disabled={!isEditing} data={entryData} deleteTextField />
+                        <EditableTextField
+                          disabled={!isEditing}
+                          data={entryData}
+                          deleteTextField={() => deleteTextField(entryData.textFieldId)}
+                        />
                       </Box>
                     ) : (
                       <EditableTable
@@ -359,15 +373,7 @@ const TestCase = ({ isEditable }) => {
             </Box>
           </Box>
           {isEditing && (
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '1.5rem' }}
-              onClick={() => {
-                setIsEditing(false);
-                setIsAddingTable(false);
-                setIsAddingTextField(false);
-              }}
-            >
+            <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTestCase()}>
               Save Test Case
             </Button>
           )}

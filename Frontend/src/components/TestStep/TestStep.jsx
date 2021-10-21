@@ -18,7 +18,8 @@ import {
   addTestStepTestData,
   deleteTestStepTestData,
   editTestStepControlPoint,
-  setTestStepName 
+  setTestStepName,
+  setTestStepLoading
 } from '../../redux/reducers/test/testSlice';
 import EditableTable from '../EditableTable/EditableTable';
 
@@ -68,9 +69,11 @@ const TestStep = ({ testStepId, isEditable }) => {
   const { selectedTestStep, isLoadingTestStep: isLoading } = useSelector((state) => state.test);
 
   useEffect(() => {
+    
     async function getTestStepData(testStepId) {
       await dispatch(getTestStepById(testStepId));
     }
+    dispatch(setTestStepLoading({ id: testStepId, value: true}));
     getTestStepData(testStepId);
   }, []);
 
@@ -99,7 +102,7 @@ const TestStep = ({ testStepId, isEditable }) => {
   } = useForm();
 
   const addTable = ({ rowsNumber, columnsNumber }) => {
-    const id = selectedTestStep[testStepId].testData[selectedTestStep[testStepId].testData.length-1].tableName.toString().substring(6) * 1 + 1;
+    const id = selectedTestStep[testStepId].testData.length > 0 ? selectedTestStep[testStepId].testData[selectedTestStep[testStepId].testData.length-1].tableName.toString().substring(6) * 1 + 1 : 0;
     const newTable = createTable(id, rowsNumber, columnsNumber);
     dispatch(addTestStepTestData({ id: testStepId, newTable }));
     setIsAddingTable(false);

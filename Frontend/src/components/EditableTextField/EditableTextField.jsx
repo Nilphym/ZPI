@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
-import { editTestStepTestData } from '../../redux/reducers/test/testSlice';
+import { editTestCaseTextField } from '../../redux/reducers/test/testSlice';
 
 const EditableTextField = ({ disabled, deleteTextField, data }) => {
   const { control: textFieldControl, getValues } = useForm();
@@ -16,8 +16,12 @@ const EditableTextField = ({ disabled, deleteTextField, data }) => {
 
   const saveTextField = () => {
     setIsEditing(false);
-    // const tableObject = prepareOutputData(getValues());
-    // tableObject.tableName = data.tableName;
+    const textFieldObject = {
+      textFieldId: data.textFieldId,
+      entryType: 'textField',
+      textField: getValues(`textField-${data.textFieldId}`)
+    };
+    dispatch(editTestCaseTextField({ editedTextField : textFieldObject}));
   };
 
   return (

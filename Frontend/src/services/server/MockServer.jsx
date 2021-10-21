@@ -8,7 +8,8 @@ const makeServer = () =>
     models: {
       bug: Model,
       testStep: Model,
-      testProcedure: Model
+      testProcedure: Model,
+      testCase: Model
     },
     routes() {
       this.namespace = 'api/';
@@ -20,14 +21,29 @@ const makeServer = () =>
       this.get('test/:id', (_, request) => {
         const { id } = request.params;
         return {
-          testId: id,
-          testName: 'Test the best',
-          testCategories: ['login', 'register', 'API'],
-          testCasesIds: ['tc1', 'tc2', 'tc3'],
-          testProceduresIds: ['tp1', 'tp2', 'tp3'],
-          selectedTestCategory: 'login',
-          selectedTestCaseId: 'tc2',
-          selectedTestProcedureId: 'tp3'
+          id,
+          name: 'Test the best',
+          creationDate: '21.10.2021',
+          version: 'v.0.1',
+          executionCounter: 0,
+          testSuites: [
+            { testSuiteId: 1, testSuite: 'login' },
+            { testSuiteId: 2, testSuite: 'register' },
+            { testSuiteId: 3, testSuite: 'API' }
+          ],
+          selectedTestSuiteId: { testSuiteId: 2, testSuite: 'register' },
+          testCasesCodes: [
+            { testCaseId: 'tc1', testCaseCode: 'TC#132' },
+            { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+            { testCaseId: 'tc3', testCaseCode: 'TC#789' }
+          ],
+          testProceduresCodes: [
+            { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
+            { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
+            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
+          ],
+          selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+          selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
         };
       });
 
@@ -51,33 +67,20 @@ const makeServer = () =>
       });
 
       // TestCase requests
-      this.get('testCase/:id', () => {
-        return {
-          preconditions: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`,
-          entryDataObject: {
-            Data0: `laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-            minus vel deleniti doloremque adipisc`,
-            Data1: {
-              tableName: 'Table 1',
-              RowName1: '',
-              Data1: ['c', '1', '2', 'b', '3', 'c'],
-              RowName2: 'Ble ble',
-              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
-              RowName3: 'Tse Tse',
-              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
-            },
-            Data2: {
-              tableName: 'Table 2',
-              RowName1: '',
-              Data1: ['c', '1', '2', 'b', '3', 'c'],
-              RowName2: 'Tse Tse',
-              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
-            }
-          }
-        };
+      this.get('testCase/:id', (schema, request) => {
+        const { id } = request.params;
+        const findingItem = schema.testCases.findBy({ id }).attrs;
+        return findingItem;
+      });
+
+      this.put('testCase/:id', (schema, request) => {
+        const { id } = request.params;
+        const { preconditions, entryDataObject } = JSON.parse(request.requestBody);
+        schema.testCases.findBy({ id }).update({
+          preconditions,
+          entryDataObject
+        });
+        console.log(schema.testCases.findBy({ id }).attrs);
       });
 
       // TestStep requests
@@ -364,7 +367,7 @@ const makeServer = () =>
       });
       [
         {
-          id: 'Ts1',
+          id: 'ts1',
           name: 'Login',
           stepNumber: 0,
           testDataObject: {
@@ -400,7 +403,7 @@ const makeServer = () =>
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Ts2',
+          id: 'ts2',
           name: 'Register',
           stepNumber: 3,
           testDataObject: [
@@ -429,7 +432,7 @@ const makeServer = () =>
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Ts3',
+          id: 'ts3',
           name: 'API',
           stepNumber: 10,
           testDataObject: [
@@ -449,7 +452,7 @@ const makeServer = () =>
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Ts4',
+          id: 'ts4',
           name: 'Check username',
           stepNumber: 20,
           testDataObject: [
@@ -498,32 +501,32 @@ const makeServer = () =>
       });
       [
         {
-          id: 'Tp1',
-          testStepsIds: ['Ts1', 'Ts2', 'Ts3'],
+          id: 'tp1',
+          testStepsIds: ['ts1', 'ts3'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Tp2',
-          testStepsIds: ['Ts2', 'Ts3', 'Ts4'],
+          id: 'tp2',
+          testStepsIds: ['ts1','ts2', 'ts3', 'ts4'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Tp3',
-          testStepsIds: ['Ts4', 'Ts1', 'Ts2'],
+          id: 'tp3',
+          testStepsIds: ['ts2'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
             saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
         },
         {
-          id: 'Tp4',
-          testStepsIds: ['Ts3', 'Ts1', 'Ts2'],
+          id: 'tp4',
+          testStepsIds: ['ts3', 'ts1', 'ts2'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -531,6 +534,105 @@ const makeServer = () =>
         }
       ].forEach((testProcedure) => {
         server.create('testProcedure', testProcedure);
+      });
+      [
+        {
+          id: 'tc1',
+          preconditions: `gggggggggggggggggggggLorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
+          entryDataObject: {
+            Data0: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data1: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: 'Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+          }
+        },
+        {
+          id: 'tc2',
+          preconditions: 'cccccccccccccccccc, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium ',
+          entryDataObject: {
+            Data0: 'bbbbbbbbbbbbbbbbbbbbc',
+            Data1: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['a', '2', '4', '6', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            }
+          }
+        },
+        {
+          id: 'tc3',
+          preconditions: 'Ala ma kota',
+          entryDataObject: {
+            Data0: 'aaaaaaaaaaa',
+            Data1: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            }
+          }
+        },
+        {
+          id: 'tc4',
+          preconditions: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
+          entryDataObject: {
+            Data0: `laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisc`,
+            Data1: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            }
+          }
+        }
+      ].forEach((testCase) => {
+        server.create('testCase', testCase);
       });
     }
   });

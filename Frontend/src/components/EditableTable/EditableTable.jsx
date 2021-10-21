@@ -6,7 +6,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import TableItem from './TableItem';
-import { editTestStepTestData } from '../../redux/reducers/test/testSlice';
+import { editTestStepTestData, editTestCaseTable } from '../../redux/reducers/test/testSlice';
 
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
@@ -105,7 +105,9 @@ const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) 
     if (parentComp === 'testStep') {
       dispatch(editTestStepTestData({ id: testStepId, editedTable: tableObject }));
     }
-    // else {} // TODO: After TestCase update
+    else {
+      dispatch(editTestCaseTable({ editedTable: tableObject }));
+    }
   };
 
   return (

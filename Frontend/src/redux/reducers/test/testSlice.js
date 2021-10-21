@@ -32,7 +32,7 @@ const transformEntryData = (entryDataObject) => {
   return array;
 };
 
-const prepareOutputData = (testDataArray) => {
+const prepareOutputTestData = (testDataArray) => {
   let iterator = 0;
   const testDataObject = {};
   testDataArray.forEach((object) => {
@@ -42,14 +42,27 @@ const prepareOutputData = (testDataArray) => {
   return testDataObject;
 };
 
+const prepareOutputEntryData = (entryDataArray) => {
+  let iterator = 0;
+  const testDataObject = {};
+  entryDataArray.forEach((object) => {
+    if(object.entryType === 'textField')
+      testDataObject[`Data${iterator}`] = object.textField;
+    else {
+      testDataObject[`Data${iterator}`] = object;
+    }
+    iterator += 1;
+  });
+  return testDataObject;
+};
+
 const initialState = {
   testId: '',
   testData: {},
-  testName: '',
-  testCategories: [],
-  testCasesIds: [],
-  testProceduresIds: [],
-  selectedTestCategory: '',
+  testSuites: [],
+  testCasesCodes: [],
+  testProceduresCodes: [],
+  selectedTestSuiteId: '',
   selectedTestCaseId: '',
   selectedTestProcedureId: '',
   selectedTestCase: {},
@@ -57,13 +70,8 @@ const initialState = {
   isLoadingTest: true,
   isLoadingTestProcedure: true,
   isLoadingTestCase: true,
-  // checked and correct
-  selectedTestStep: {
-    Ts1: {}
-  },
-  isLoadingTestStep: {
-    Ts1: true
-  }
+  selectedTestStep: {},
+  isLoadingTestStep: {}
 };
 
 // ----------------------------------------- Test API
@@ -91,8 +99,7 @@ export const getTestProcedureById = createAsyncThunk('test/getTestProcedureById'
   getState
 }) => {
   const response = await server().get({
-    // url: `testProcedure/${getState().test.selectedTestProcedureId}`
-    url: 'testProcedure/Tp1'
+    url: `testProcedure/${getState().test.selectedTestProcedureId}`
   });
   return response;
 });
@@ -101,8 +108,7 @@ export const putTestProcedureById = createAsyncThunk('test/putTestProcedureById'
   getState
 }) => {
   const response = await server().put({
-    // url: `testProcedure/${getState().test.selectedTestProcedureId}`
-    url: 'testProcedure/Tp1',
+    url: `testProcedure/${getState().test.selectedTestProcedureId}`,
     data: {
       result: getState().test.selectedTestProcedure.result
     }
@@ -124,8 +130,23 @@ export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_
   getState
 }) => {
   const response = await server().get({
-    // url: `testCase/${getState().test.selectedTestCaseId}`
-    url: 'testCase/Tc1'
+    url: `testCase/${getState().test.selectedTestCaseId}`,
+  });
+  return response;
+});
+
+export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_, {
+  getState
+}) => {
+
+  const transferObject = {
+    preconditions: getState().test.selectedTestCase.preconditions,
+    entryDataObject: prepareOutputEntryData(getState().test.selectedTestCase.entryData)
+  };
+
+  const response = await server().put({
+    url: `testCase/${getState().test.selectedTestCaseId}`,
+    data: transferObject
   });
   return response;
 });
@@ -146,7 +167,7 @@ export const putTestStepById = createAsyncThunk('test/putTestStepById', async (t
   const currentTestStep = getState().test.selectedTestStep[testStepId];
   const dataToSend = {};
   dataToSend.name = currentTestStep.name;
-  dataToSend.testDataObject = prepareOutputData(currentTestStep.testData);
+  dataToSend.testDataObject = prepareOutputTestData(currentTestStep.testData);
   dataToSend.controlPoint = currentTestStep.controlPoint;
   const response = await server().put({
     url: `step/${testStepId}`,
@@ -190,7 +211,7 @@ export const testSlice = createSlice({
         id,
         editedTable
       } = action.payload;
-      state.selectedTestStep[id].testData[state.selectedTestStep[id].testData.findIndex(table => table.name === editedTable.name)] = editedTable;
+      state.selectedTestStep[id].testData[state.selectedTestStep[id].testData.findIndex(table => table.tableName === editedTable.tableName)] = editedTable;
     },
     editTestStepControlPoint: (state, action) => {
       const {
@@ -213,6 +234,10 @@ export const testSlice = createSlice({
       } = action.payload;
       state.selectedTestStep[id].name = newName;
     },
+    setTestStepLoading: (state, action) => {
+      const { id, value } = action.payload;
+      state.isLoadingTestStep[id] = value;
+    },
     editTestProcedureResult: (state, action) => {
       state.selectedTestProcedure.result = action.payload.result;
     },
@@ -222,32 +247,73 @@ export const testSlice = createSlice({
     addTestCaseEntryDataItem: (state, action) => {
       const { newItem } = action.payload;
       state.selectedTestCase.entryData = [...state.selectedTestCase.entryData, newItem];
+    },
+    editTestCaseTextField: (state, action) => {
+      const { editedTextField } = action.payload;
+      state.selectedTestCase.entryData[state.selectedTestCase.entryData.findIndex(item => item.entryType === 'textField' && item.textFieldId === editedTextField.textFieldId)] = editedTextField;
+    },
+    editTestCaseTable: (state, action) => {
+      const {
+        editedTable
+      } = action.payload;
+      state.selectedTestCase.entryData[state.selectedTestCase.entryData.findIndex(table => table.tableName === editedTable.tableName)] = editedTable;
+    },
+    editTestCasePreconditions: (state, action) => {
+      const {
+        editedPreconditions
+      } = action.payload;
+      state.selectedTestCase.preconditions = editedPreconditions;
+    },
+    deleteTestCaseTextField: (state, action) => {
+      const {
+        textFieldId
+      } = action.payload;
+      state.selectedTestCase.entryData = [...state.selectedTestCase.entryData.filter((item) => item.textFieldId !== textFieldId)];
+    },
+    deleteTestCaseTable: (state, action) => {
+      const {
+        tableName
+      } = action.payload;
+      state.selectedTestCase.entryData = [...state.selectedTestCase.entryData.filter((item) => item.tableName !== tableName)];
+    },
+    setTestCaseLoading: (state, action) => {
+      state.isLoadingTestCase = action.payload.isLoading;
+    },
+    setTestTestCase: (state, action) => {
+      state.selectedTestCaseId = action.payload.id;
+    },
+    setTestTestProcedure: (state, action) => {
+      state.selectedTestProcedureId = action.payload.id;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(getTestById.fulfilled, (state, action) => {
         const {
-          testId,
-          testName,
-          testCategories,
-          testCasesIds,
-          testProceduresIds,
-          selectedTestCategory,
+          id,
+          name,
+          creationDate,
+          version,
+          executionCounter,
+          testSuites,
+          testCasesCodes,
+          testProceduresCodes,
+          selectedTestSuiteId,
           selectedTestCaseId,
           selectedTestProcedureId
         } = action.payload;
-        state.testId = testId;
-        state.testName = testName;
-        state.testCategories = testCategories;
-        state.testCasesIds = testCasesIds;
-        state.testProceduresIds = testProceduresIds;
-        state.selectedTestCategory = selectedTestCategory;
-        state.selectedTestCaseId = selectedTestCaseId;
-        state.selectedTestProcedureId = selectedTestProcedureId;
+        state.testId = id;
+        state.testData.testName = name;
+        state.testData.creationDate = creationDate;
+        state.testData.version = version;
+        state.testData.executionCounter = executionCounter;
+        state.testSuites = testSuites;
+        state.testCasesCodes = testCasesCodes;
+        state.testProceduresCodes = testProceduresCodes;
+        state.selectedTestSuiteId = selectedTestSuiteId.testSuiteId;
+        state.selectedTestCaseId = selectedTestCaseId.testCaseId;
+        state.selectedTestProcedureId = selectedTestProcedureId.testProcedureId;
         state.isLoadingTest = false;
-        state.isLoadingTestProcedure = true;
-        state.isLoadingTestCase = true;
       })
       .addCase(getTestById.rejected, (_, action) => {
         alert(action.error.message);
@@ -264,7 +330,6 @@ export const testSlice = createSlice({
         state.isLoadingTestProcedure = false;
         testStepsIds.forEach(testStepId => {
           state.selectedTestStep[testStepId] = {};
-          state.isLoadingTestStep[testStepId] = true;
         });
       })
       .addCase(getTestProcedureById.rejected, (_, action) => {
@@ -284,6 +349,12 @@ export const testSlice = createSlice({
       .addCase(getTestCaseById.rejected, (_, action) => {
         alert(action.error.message);
       })
+      .addCase(putTestCaseById.fulfilled, () => {
+          alert('Object changed');
+        })
+        .addCase(putTestCaseById.rejected, (_, action) => {
+          alert(action.error.message);
+        })
       .addCase(getTestStepById.fulfilled, (state, action) => {
         const {
           id,
@@ -292,6 +363,7 @@ export const testSlice = createSlice({
           testDataObject,
           controlPoint
         } = action.payload;
+        state.selectedTestStep[action.payload.id] = {};
         state.selectedTestStep[action.payload.id].id = id;
         state.selectedTestStep[action.payload.id].name = name;
         state.selectedTestStep[action.payload.id].stepNumber = stepNumber;
@@ -323,9 +395,18 @@ export const {
   editTestStepTestData,
   editTestStepControlPoint,
   deleteTestStepTestData,
+  setTestStepLoading,
   setTestStepName,
   editTestProcedureResult,
   setTestProcedureLoading,
-  addTestCaseEntryDataItem
+  addTestCaseEntryDataItem,
+  editTestCaseTextField,
+  editTestCaseTable,
+  editTestCasePreconditions,
+  deleteTestCaseTextField,
+  deleteTestCaseTable,
+  setTestCaseLoading,
+  setTestTestCase,
+  setTestTestProcedure
 } = testSlice.actions;
 export default testSlice.reducer;
