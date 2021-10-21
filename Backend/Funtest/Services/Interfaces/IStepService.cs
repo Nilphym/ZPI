@@ -1,5 +1,7 @@
-﻿using Funtest.TransferObject.Steps;
+﻿using Funtest.TransferObject.Steps.Requests;
+using Funtest.TransferObject.Steps.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,8 +9,9 @@ namespace Funtest.Interfaces
 {
     public interface IStepService
     {
-        Task<bool> AddStep(StepsAddStep step);
-        IQueryable<StepsGetStep> GetAllStepsForTestProcedure(Guid testProcedureId);
-        IQueryable<StepsGetStep> GetAllSteps();
+        Task<bool> AddStep(AddStepRequest step);
+        List<GetStepResponse> GetAllStepsForTestProcedure(Guid testProcedureId);
+        IQueryable<GetStepResponse> GetAllSteps();
+        Task<bool> EditStep(Guid id, EditStepRequest step);
     }
 }

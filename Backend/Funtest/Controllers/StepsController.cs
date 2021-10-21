@@ -5,6 +5,8 @@ using Funtest.Interfaces;
 using Funtest.TransferObject.Steps;
 using System;
 using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Steps.Requests;
+using Funtest.TransferObject.Steps.Responses;
 
 namespace Funtest.Controllers
 {
@@ -22,7 +24,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddStep(StepsAddStep step)
+        public async Task<ActionResult> AddStep(AddStepRequest step)
         {
             var correctResult = await _stepService.AddStep(step);
 
@@ -33,17 +35,29 @@ namespace Funtest.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StepsGetStep>>> GetSteps()
+        public ActionResult<IEnumerable<GetStepResponse>> GetSteps()
         {
             return Ok(_stepService.GetAllSteps());
         }
 
         [HttpGet("{testProcedureId}")]
-        public async Task<ActionResult<IEnumerable<StepsGetStep>>> GetStepsForTestProcedure([FromRoute] Guid testProcedureId)
+        public ActionResult<IEnumerable<GetStepResponse>> GetStepsForTestProcedure([FromRoute] Guid testProcedureId)
         {
             if (_testProcedureService.IsTestProcedureExist(testProcedureId))
                 return Ok(_stepService.GetAllStepsForTestProcedure(testProcedureId));
+
             return NotFound("Test procedure with the given id doesn't exist.");
+        }
+
+        [HttpPut("stepId")]
+        public async Task<ActionResult> EditStep([FromRoute] Guid stepId, EditStepRequest request)
+        {
+            var response = await _stepService.EditStep(stepId, request);
+
+            if (!response)
+                return Problem("Not saved! Problem during saving object in database!");
+
+            return Ok();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Funtest.TransferObject.Auth.Responses
+﻿using Data.Roles;
+
+namespace Funtest.TransferObject.Auth.Responses
 {
     public class LoginResponse
     {

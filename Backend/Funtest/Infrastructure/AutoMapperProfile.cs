@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Steps;
+using Funtest.TransferObject.Steps.Requests;
+using Funtest.TransferObject.Steps.Responses;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using Funtest.TransferObject.TestCase.Requests;
@@ -15,9 +18,9 @@ namespace Funtest.Infrastructure
         public AutoMapperProfile()
         {
             //Mapowanie dla controlera Step 
-            CreateMap<StepsAddStep, Step>();
-            CreateMap<StepsGetStep, Step>();
-            CreateMap<Step, StepsGetStep>();
+            CreateMap<AddStepRequest, Step>();
+            CreateMap<GetStepResponse, Step>();
+            CreateMap<Step, GetStepResponse>();
 
             //Mapowania dla TestCase
             CreateMap<AddTestCaseRequest, TestCase>();
@@ -26,10 +29,14 @@ namespace Funtest.Infrastructure
             //Mapowania dla TestProcedure
             CreateMap<AddTestProcedureRequest, TestProcedure>();
             CreateMap<TestProcedure, GetTestProcedureResponse>();
+            CreateMap<TestProcedure, GetTestProcedureIdentityValueResponse>();
 
             //Mapowania dla TestProcedure
             CreateMap<AddTestRequest, Test>();
             CreateMap<Test, GetTestResponse>();
+
+            //Mapowanie dla Błędów
+            CreateMap<Error, GetErrorResponse>();
         }
     }
 }

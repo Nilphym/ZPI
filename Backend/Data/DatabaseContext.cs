@@ -39,7 +39,6 @@ namespace Data
               .WithMany(p => p.Tests)
               .HasForeignKey(p => p.TestProcedureId)
               .OnDelete(DeleteBehavior.NoAction);
-
         }
     }
 }
