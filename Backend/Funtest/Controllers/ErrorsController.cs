@@ -9,7 +9,7 @@ using Funtest.TransferObject.Error.Responses;
 
 namespace Funtest.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ErrorsController : ControllerBase
@@ -72,6 +72,15 @@ namespace Funtest.Controllers
         {
             var result = await _errorService.EditError(id, request);
             if(result)
+                return Ok();
+            return Problem("Problem with saving changes in database.");
+        }
+
+        [HttpPut("resolve/{id}")]
+        public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
+        {
+            var result = await _errorService.ResolveError(id, request);
+            if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
         }

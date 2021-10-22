@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.Enums;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
@@ -90,6 +91,19 @@ namespace Funtest.Services
         {
             var error = await Context.Errors.FindAsync(errorId);
             error.DeveloperId = request.DeveloperId;
+
+            Context.Errors.Update(error);
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> ResolveError(Guid id, ResolveErrorRequest request)
+        {
+            var error = await Context.Errors.FindAsync(id);
+            error.ErrorState = ErrorState.Repaired;
+            error.RetestsRequired = request.RetestRequired;
 
             Context.Errors.Update(error);
             if (await Context.SaveChangesAsync() == 0)
