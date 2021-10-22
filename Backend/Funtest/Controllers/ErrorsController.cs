@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Funtest.Services.Interfaces;
 using Data.Roles;
 using Microsoft.AspNetCore.Authorization;

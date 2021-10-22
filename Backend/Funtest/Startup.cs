@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest
 {
@@ -49,6 +50,14 @@ namespace Funtest
             services.AddTransient<ITestService, TestService>();
             services.AddTransient<IErrorService, ErrorService>();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("funtest");
+                    });
+            });
 
             services.AddIdentity<User, IdentityRole>(opt =>
             {
@@ -57,7 +66,6 @@ namespace Funtest
                 .AddSignInManager<SignInManager<User>>()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.AddAuthorization();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -72,6 +80,17 @@ namespace Funtest
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
+
+              services.AddAuthorization(options =>
+            {
+                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+                    JwtBearerDefaults.AuthenticationScheme);
+
+                defaultAuthorizationPolicyBuilder =
+                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+            }); 
 
             services.AddMvc().AddNewtonsoftJson();
 
@@ -98,13 +117,16 @@ namespace Funtest
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
+
             app.UseRouting();
+            app.UseCors(x => x
+                       .AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader());
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseHttpsRedirection();
-
-
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

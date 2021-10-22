@@ -31,10 +31,8 @@ namespace Funtest.Services
 
             var claims = new List<Claim>{
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim("userId", user.Id),
             };
-
 
             var userClaims = await UserManager.GetClaimsAsync(user);
             claims.AddRange(userClaims);
