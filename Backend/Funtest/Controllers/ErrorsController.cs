@@ -41,7 +41,7 @@ namespace Funtest.Controllers
             return Ok(errors);
         }
 
-        [Authorize(Roles=Roles.Developer)]
+       // [Authorize(Roles=Roles.Developer)]
         [HttpGet("developer/{developerId}")]
         public async Task<ActionResult<GetErrorResponse>> GetAllErrorsAssignedToDeveloper([FromRoute] string developerId)
         {
