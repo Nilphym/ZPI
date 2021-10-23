@@ -7,6 +7,6 @@ namespace Funtest.Services.Interfaces
     {
         Task<bool> AddNewUser(AddNewUserRequest request);
 
-        Task<bool> AddProjectManager(AddNewUserRequest request);
+        Task<bool> AddProjectManager(AddProjectManageRequest request);
     }
 }

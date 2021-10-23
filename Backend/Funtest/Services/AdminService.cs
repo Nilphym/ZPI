@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Data.Roles;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Admin.Requests;
 using System;
@@ -18,9 +19,6 @@ namespace Funtest.Services
 
         public Task<bool> AddNewUser(AddNewUserRequest request)
         {
-            var user = _mapper.Map<User>(request);
-          //  user.Email = GenerateUserLogin
-            Context.Users.Add(user);
             return null;
         }
 
@@ -29,7 +27,7 @@ namespace Funtest.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<bool> AddProjectManager(AddNewUserRequest request)
+        public async Task<bool> AddProjectManager(AddProjectManageRequest request)
         {
             var isUnique = Context.Users.Select(x => x.Email).Where(x => x == request.Email).Count();
             if (isUnique != 0)

@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="TransferObject\Admin\Responses\" />
+    <Folder Include="TransferObject\Attachment\Responses\" />
     <Folder Include="TransferObject\Product\Responses\" />
     <Folder Include="TransferObject\TestSuite\Requests\" />
   </ItemGroup>

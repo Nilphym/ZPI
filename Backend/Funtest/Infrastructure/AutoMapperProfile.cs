@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Models;
 using Funtest.TransferObject.Admin.Requests;
+using Funtest.TransferObject.Attachment.Requests;
 using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
@@ -48,7 +49,10 @@ namespace Funtest.Infrastructure
             CreateMap<Test, GetTestResponse>();
 
             //Mapowanie dla Usera
-            CreateMap<AddNewUserRequest, User>();
+            CreateMap<AddProjectManageRequest, User>();
+
+            //Mapowanie dla Załącznika
+            CreateMap<AddAttachmentRequest, Attachment>();
         }
     }
 }
