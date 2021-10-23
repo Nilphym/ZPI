@@ -194,7 +194,7 @@ const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) 
                 {row.map((item, columnIndex) => (
                   <TableItem
                     // eslint-disable-next-line react/no-array-index-key
-                    key={`${data.tableName}-${rowIndex}-${item}`}
+                    key={`${data.tableName}-${rowIndex}-${columnIndex}`}
                     name={data.tableName}
                     row={rowIndex}
                     column={columnIndex}

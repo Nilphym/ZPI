@@ -46,7 +46,7 @@ const prepareOutputEntryData = (entryDataArray) => {
   let iterator = 0;
   const testDataObject = {};
   entryDataArray.forEach((object) => {
-    if(object.entryType === 'textField')
+    if (object.entryType === 'textField')
       testDataObject[`Data${iterator}`] = object.textField;
     else {
       testDataObject[`Data${iterator}`] = object;
@@ -84,12 +84,29 @@ export const getTestById = createAsyncThunk('test/getTestById', async (_, {
   return response;
 });
 
-export const updateTestById = createAsyncThunk('test/updateTestById', async (data, {
+export const putTestById = createAsyncThunk('test/putTestById', async (_, {
   getState
 }) => {
+  console.log(getState().test.testCasesCodes);
+  const body = {
+    name: getState().test.testData.testName,
+    selectedTestSuiteId: {
+      testSuiteId: getState().test.selectedTestSuiteId,
+      testSuite: getState().test.testSuites.filter(testSuite => testSuite.testSuiteId === getState().test.selectedTestSuiteId)[0].testSuite
+    },
+    selectedTestProcedureId: {
+      testProcedureId: getState().test.selectedTestProcedureId,
+      testProcedureCode: getState().test.testProceduresCodes.filter(procedureCode => procedureCode.testProcedureId === getState().test.selectedTestProcedureId)[0].testProcedureCode
+    },
+    selectedTestCaseId: {
+      testCaseId: getState().test.selectedTestCaseId,
+      testCaseCode: getState().test.testCasesCodes.filter(caseCode => caseCode.testCaseId === getState().test.selectedTestCaseId)[0].testCaseCode
+    }
+  };
+  console.log(body);
   const response = await server().put({
     url: `test/${getState().test.testId}`,
-    data
+    data: body
   });
   return response;
 });
@@ -130,7 +147,7 @@ export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_
   getState
 }) => {
   const response = await server().get({
-    url: `testCase/${getState().test.selectedTestCaseId}`,
+    url: `testCase/${getState().test.selectedTestCaseId}`
   });
   return response;
 });
@@ -235,7 +252,10 @@ export const testSlice = createSlice({
       state.selectedTestStep[id].name = newName;
     },
     setTestStepLoading: (state, action) => {
-      const { id, value } = action.payload;
+      const {
+        id,
+        value
+      } = action.payload;
       state.isLoadingTestStep[id] = value;
     },
     editTestProcedureResult: (state, action) => {
@@ -245,11 +265,15 @@ export const testSlice = createSlice({
       state.isLoadingTestProcedure = action.payload.isLoading;
     },
     addTestCaseEntryDataItem: (state, action) => {
-      const { newItem } = action.payload;
+      const {
+        newItem
+      } = action.payload;
       state.selectedTestCase.entryData = [...state.selectedTestCase.entryData, newItem];
     },
     editTestCaseTextField: (state, action) => {
-      const { editedTextField } = action.payload;
+      const {
+        editedTextField
+      } = action.payload;
       state.selectedTestCase.entryData[state.selectedTestCase.entryData.findIndex(item => item.entryType === 'textField' && item.textFieldId === editedTextField.textFieldId)] = editedTextField;
     },
     editTestCaseTable: (state, action) => {
@@ -286,6 +310,18 @@ export const testSlice = createSlice({
       state.selectedTestProcedureId = action.payload.id;
       state.selectedTestProcedure.testStepsIds = [];
       state.selectedTestStep = {};
+    },
+    setTestName: (state, action) => {
+      state.testData.testName = action.payload.newName;
+    },
+    setTestSuite: (state, action) => {
+      state.selectedTestSuiteId = action.payload.newTestSuiteId;
+    },
+    setTestLoading: (state, action) => {
+      state.isLoadingTest = action.payload.isLoading;
+    },
+    increaseExecutionCount: (state) => {
+      state.testData.executionCounter += 1;
     }
   },
   extraReducers: (builder) => {
@@ -320,6 +356,12 @@ export const testSlice = createSlice({
       .addCase(getTestById.rejected, (_, action) => {
         alert(action.error.message);
       })
+      .addCase(putTestById.fulfilled, () => {
+        alert('Object changed');
+        })
+        .addCase(putTestById.rejected, (_, action) => {
+          alert(action.error.message);
+        })
       .addCase(getTestProcedureById.fulfilled, (state, action) => {
         const {
           id,
@@ -355,11 +397,11 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(putTestCaseById.fulfilled, () => {
-          alert('Object changed');
-        })
-        .addCase(putTestCaseById.rejected, (_, action) => {
-          alert(action.error.message);
-        })
+        alert('Object changed');
+      })
+      .addCase(putTestCaseById.rejected, (_, action) => {
+        alert(action.error.message);
+      })
       .addCase(getTestStepById.fulfilled, (state, action) => {
         const {
           id,
@@ -368,13 +410,13 @@ export const testSlice = createSlice({
           testDataObject,
           controlPoint
         } = action.payload;
-        state.selectedTestStep[action.payload.id] = {};
-        state.selectedTestStep[action.payload.id].id = id;
-        state.selectedTestStep[action.payload.id].name = name;
-        state.selectedTestStep[action.payload.id].stepNumber = stepNumber;
-        state.selectedTestStep[action.payload.id].testData = transformTestData(testDataObject);
-        state.selectedTestStep[action.payload.id].controlPoint = controlPoint;
-        state.isLoadingTestStep[action.payload.id] = false;
+        state.selectedTestStep[id] = {};
+        state.selectedTestStep[id].id = id;
+        state.selectedTestStep[id].name = name;
+        state.selectedTestStep[id].stepNumber = stepNumber;
+        state.selectedTestStep[id].testData = transformTestData(testDataObject);
+        state.selectedTestStep[id].controlPoint = controlPoint;
+        state.isLoadingTestStep[id] = false;
       })
       .addCase(getTestStepById.rejected, (_, action) => {
         alert(action.error.message);
@@ -412,6 +454,10 @@ export const {
   deleteTestCaseTable,
   setTestCaseLoading,
   setTestTestCase,
-  setTestTestProcedure
+  setTestTestProcedure,
+  setTestName,
+  setTestSuite,
+  setTestLoading,
+  increaseExecutionCount
 } = testSlice.actions;
 export default testSlice.reducer;

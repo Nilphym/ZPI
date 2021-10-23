@@ -9,7 +9,8 @@ const makeServer = () =>
       bug: Model,
       testStep: Model,
       testProcedure: Model,
-      testCase: Model
+      testCase: Model,
+      test: Model
     },
     routes() {
       this.namespace = 'api/';
@@ -18,40 +19,18 @@ const makeServer = () =>
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpZCI6MSwicm9sZSI6ImRldiJ9.l3t9QmgNcBbwSiCK2i6aV7w1Wu51vDmVJuQe9d6DDPA';
       });
 
-      this.get('test/:id', (_, request) => {
+      this.get('test/:id', (schema, request) => {
         const { id } = request.params;
-        return {
-          id,
-          name: 'Test the best',
-          creationDate: '21.10.2021',
-          version: 'v.0.1',
-          executionCounter: 0,
-          testSuites: [
-            { testSuiteId: 1, testSuite: 'login' },
-            { testSuiteId: 2, testSuite: 'register' },
-            { testSuiteId: 3, testSuite: 'API' }
-          ],
-          selectedTestSuiteId: { testSuiteId: 2, testSuite: 'register' },
-          testCasesCodes: [
-            { testCaseId: 'tc1', testCaseCode: 'TC#132' },
-            { testCaseId: 'tc2', testCaseCode: 'TC#456' },
-            { testCaseId: 'tc3', testCaseCode: 'TC#789' }
-          ],
-          testProceduresCodes: [
-            { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
-            { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
-            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' },
-            { testProcedureId: 'tp4', testProcedureCode: 'TP#1-123' }
-          ],
-          selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
-          selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
-        };
+        const findingItem = schema.tests.findBy({ id }).attrs;
+        return findingItem;
       });
 
-      this.put('test/:id', (_, request) => {
+      this.put('test/:id', (schema, request) => {
         const { id } = request.params;
-        const data = JSON.parse(request.requestBody);
-        console.log(`PUT/test/${id}: ${data}`);
+        const {name, selectedTestSuiteId, selectedTestProcedureId, selectedTestCaseId} = JSON.parse(request.requestBody);
+        schema.tests
+          .findBy({ id })
+          .update({ name, selectedTestSuiteId, selectedTestProcedureId, selectedTestCaseId });
       });
 
       // TestProcedure requests
@@ -895,6 +874,87 @@ const makeServer = () =>
         }
       ].forEach((testCase) => {
         server.create('testCase', testCase);
+      });
+      [
+        {
+          id: 't1',
+          name: 'Test the best',
+          creationDate: '21.10.2021',
+          version: 'v.0.1',
+          executionCounter: 0,
+          testSuites: [
+            { testSuiteId: 1, testSuite: 'login' },
+            { testSuiteId: 2, testSuite: 'register' },
+            { testSuiteId: 3, testSuite: 'API' }
+          ],
+          selectedTestSuiteId: { testSuiteId: 2, testSuite: 'register' },
+          testCasesCodes: [
+            { testCaseId: 'tc1', testCaseCode: 'TC#132' },
+            { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+            { testCaseId: 'tc3', testCaseCode: 'TC#789' }
+          ],
+          testProceduresCodes: [
+            { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
+            { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
+            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' },
+            { testProcedureId: 'tp4', testProcedureCode: 'TP#1-123' }
+          ],
+          selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+          selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
+        },
+        {
+          id: 't2',
+          name: 'Test 2',
+          creationDate: '23.10.2021',
+          version: 'v.1.1',
+          executionCounter: 0,
+          testSuites: [
+            { testSuiteId: 1, testSuite: 'login' },
+            { testSuiteId: 2, testSuite: 'register' }
+          ],
+          selectedTestSuiteId: { testSuiteId: 2, testSuite: 'register' },
+          testCasesCodes: [
+            { testCaseId: 'tc1', testCaseCode: 'TC#132' },
+            { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+            { testCaseId: 'tc3', testCaseCode: 'TC#789' }
+          ],
+          testProceduresCodes: [
+            { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
+            { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
+            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' },
+            { testProcedureId: 'tp4', testProcedureCode: 'TP#1-123' }
+          ],
+          selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+          selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
+        },
+        {
+          id: 't3',
+          name: 'Test the best',
+          creationDate: '21.10.2021',
+          version: 'v.0.1',
+          executionCounter: 0,
+          testSuites: [
+            { testSuiteId: 1, testSuite: 'login' },
+            { testSuiteId: 2, testSuite: 'register' },
+            { testSuiteId: 3, testSuite: 'API' }
+          ],
+          selectedTestSuiteId: { testSuiteId: 2, testSuite: 'register' },
+          testCasesCodes: [
+            { testCaseId: 'tc1', testCaseCode: 'TC#132' },
+            { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+            { testCaseId: 'tc3', testCaseCode: 'TC#789' }
+          ],
+          testProceduresCodes: [
+            { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
+            { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
+            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' },
+            { testProcedureId: 'tp4', testProcedureCode: 'TP#1-123' }
+          ],
+          selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
+          selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
+        }
+      ].forEach((test) => {
+        server.create('test', test);
       });
     }
   });

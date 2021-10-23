@@ -43,7 +43,7 @@ const TestProcedure = ({ isEditable }) => {
     resolver: yupResolver(schema)
   });
 
-  const { control: testProcedureControl, getValues } = useForm();
+  const { control: testProcedureControl } = useForm();
 
   const dispatch = useDispatch();
   const {
@@ -73,7 +73,6 @@ const TestProcedure = ({ isEditable }) => {
   async function saveTestProcedure() {
     setIsAddingTestStep(false);
     setIsEditing(false);
-    dispatch(editTestProcedureResult(getValues('result')));
     await dispatch(putTestProcedureById());
     dispatch(setTestProcedureLoading({ isLoading: true }));
     await dispatch(getTestProcedureById());
@@ -112,7 +111,7 @@ const TestProcedure = ({ isEditable }) => {
           </Typography>
           {testStepsIds ? (
             testStepsIds.map((testStepId) => (
-              <TestStep testStepId={testStepId} isEditable={isEditing} />
+              <TestStep key={testStepId} testStepId={testStepId} isEditable={isEditing} />
             ))
           ) : (
             <Typography>Loading Data ...</Typography>
@@ -195,11 +194,9 @@ const TestProcedure = ({ isEditable }) => {
             <Controller
               name="result"
               control={testProcedureControl}
-              defaultValue={result}
               render={({ field }) => (
                 <TextField
                   id="result"
-                  label="Result"
                   type="text"
                   error=""
                   helperText=""
@@ -207,6 +204,10 @@ const TestProcedure = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
+                  onChange={e => {
+                    dispatch(editTestProcedureResult({result: e.target.value }));
+                  }}
+                  value={result}
                   sx={{
                     marginTop: '0.625rem',
                     width: '100%'

@@ -22,7 +22,11 @@ import {
   getTestCaseById,
   getTestProcedureById,
   setTestCaseLoading,
-  setTestProcedureLoading
+  setTestProcedureLoading,
+  setTestName,
+  setTestSuite,
+  putTestById,
+  setTestLoading
 } from '../../redux/reducers/test/testSlice';
 
 const Test = ({ isEditable }) => {
@@ -30,12 +34,11 @@ const Test = ({ isEditable }) => {
     control: mainControl,
     handleSubmit,
     getValues
-    // formState: { errors }
   } = useForm();
 
   const dispatch = useDispatch();
   const {
-    testName,
+    testData: { testName, creationDate, version, executionCounter },
     testSuites,
     testCasesCodes,
     testProceduresCodes,
@@ -48,7 +51,7 @@ const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestId('test-0')); // TODO: DELETE this line, delete export
+    dispatch(setTestId('t1')); // TODO: DELETE this line, delete export
 
     async function getTestData() {
       await dispatch(getTestById());
@@ -57,9 +60,13 @@ const Test = ({ isEditable }) => {
     getTestData();
   }, []);
 
-  const updateData = (data) => {
-    console.log(data);
+  async function saveTest({testName}){
     setIsEditing(false);
+    dispatch(setTestName({ newName: testName }));
+    dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
+    await dispatch(putTestById());
+    dispatch(setTestLoading({isLoading: true}));
+    await dispatch(getTestById());
   };
 
   async function handleTestCaseChange({ target: { value } }) {
@@ -71,17 +78,46 @@ const Test = ({ isEditable }) => {
   async function handleTestProcedureChange({ target: { value } }) {
     dispatch(setTestTestProcedure({ id: value }));
     dispatch(setTestProcedureLoading(true));
-    await dispatch(getTestProcedureById());
+    await dispatch(getTestProcedureById(getValues('suiteSelect')));
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: 're'
+      }}
+    >
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <Box component="form" onSubmit={handleSubmit(updateData)}>
-          <Button onClick={() => console.log(getValues())}>XXXX</Button>
+        <Box>
           <Typography variant="h2">Test:</Typography>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '2.5rem',
+              left: '20.5rem'
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '1.25rem',
+                fontWeight: '700'
+              }}
+            >
+              Additional Info:
+            </Typography>
+            <Typography>{`Creation Date: ${creationDate}`}</Typography>
+            <Typography>{`Version: ${version}`}</Typography>
+            <Typography
+              sx={{
+                fontSize: '1rem',
+                textDecoration: 'underline'
+              }}
+            >
+              {`Execution Counter: ${executionCounter}`}
+            </Typography>
+          </Box>
           {isEditable && !isEditing && (
             <Button
               sx={{
@@ -92,51 +128,58 @@ const Test = ({ isEditable }) => {
               variant="outlined"
               onClick={() => setIsEditing(true)}
             >
-              Edit
+              Edit Test
             </Button>
           )}
-          <Controller
-            shouldUnregister
-            name="testName"
-            control={mainControl}
-            defaultValue={testName}
-            render={({ field }) => (
-              <TextField
-                id="testName"
-                label="Test Name"
-                type="text"
-                {...field}
-                disabled={!isEditing}
-                sx={{
-                  marginTop: '0.625rem',
-                  width: '15rem'
-                }}
-              />
-            )}
-          />
-          <Box sx={{ marginTop: '1rem' }}>
+          <Box component="form" onSubmit={handleSubmit(saveTest)}>
             <Controller
-              name="suiteSelect"
+              shouldUnregister
+              name="testName"
               control={mainControl}
-              defaultValue={selectedTestSuiteId}
+              defaultValue={testName}
               render={({ field }) => (
-                <Box>
-                  <InputLabel id="suiteSelect">Test Suite:</InputLabel>
-                  <Select
-                    labelId="suiteSelect-label"
-                    id="suiteSelect"
-                    sx={{ width: '10rem' }}
-                    disabled={!isEditing}
-                    {...field}
-                  >
-                    {testSuites.map(({ testSuiteId, testSuite }) => (
-                      <MenuItem value={testSuiteId}>{testSuite}</MenuItem>
-                    ))}
-                  </Select>
-                </Box>
+                <TextField
+                  id="testName"
+                  label="Test Name"
+                  type="text"
+                  {...field}
+                  disabled={!isEditing}
+                  sx={{
+                    marginTop: '0.625rem',
+                    width: '15rem'
+                  }}
+                />
               )}
             />
+            <Box sx={{ marginTop: '1rem' }}>
+              <Controller
+                name="suiteSelect"
+                control={mainControl}
+                defaultValue={selectedTestSuiteId}
+                render={({ field }) => (
+                  <Box>
+                    <InputLabel id="suiteSelect">Test Suite:</InputLabel>
+                    <Select
+                      labelId="suiteSelect-label"
+                      id="suiteSelect"
+                      sx={{ width: '10rem' }}
+                      disabled={!isEditing}
+                      {...field}
+                    >
+                      {testSuites
+                        .filter((testSuite) => testSuite.testSuiteId !== selectedTestSuiteId)
+                        .map(({ testSuiteId, testSuite }) => (
+                          <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
+                            {testSuite}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </Box>
+                )}
+              />
+            </Box>
           </Box>
+
           <Box sx={{ marginTop: '1rem' }}>
             <InputLabel id="caseSelect-label">Test Case:</InputLabel>
             <Select
@@ -147,9 +190,13 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestCaseChange(e)}
               value={selectedTestCaseId}
             >
-              {testCasesCodes.map(({ testCaseId, testCaseCode }) => (
-                <MenuItem value={testCaseId}>{testCaseCode}</MenuItem>
-              ))}
+              {testCasesCodes
+                .filter((testCase) => testCase.testCaseId !== selectedTestCaseId)
+                .map(({ testCaseId, testCaseCode }) => (
+                  <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
+                    {testCaseCode}
+                  </MenuItem>
+                ))}
             </Select>
 
             {selectedTestCaseId && <TestCase isEditable={isEditing} />}
@@ -164,9 +211,15 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestProcedureChange(e)}
               value={selectedTestProcedureId}
             >
-              {testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
-                <MenuItem value={testProcedureId}>{testProcedureCode}</MenuItem>
-              ))}
+              {testProceduresCodes
+                .filter(
+                  (testProcedure) => testProcedure.testProcedureId !== selectedTestProcedureId
+                )
+                .map(({ testProcedureId, testProcedureCode }) => (
+                  <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                    {testProcedureCode}
+                  </MenuItem>
+                ))}
             </Select>
 
             {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
@@ -180,7 +233,7 @@ const Test = ({ isEditable }) => {
       )}
     </Box>
   );
-};;
+};
 
 Test.propTypes = {
   isEditable: PropTypes.bool.isRequired

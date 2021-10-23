@@ -57,7 +57,6 @@ const TestCase = ({ isEditable }) => {
     control: testCaseControl,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors }
   } = useForm({
     defaultValues,
@@ -109,7 +108,6 @@ const TestCase = ({ isEditable }) => {
     setIsEditing(false);
     setIsAddingTable(false);
     setIsAddingTextField(false);
-    dispatch(editTestCasePreconditions(getValues('preconditions')));
     await dispatch(putTestCaseById());
     dispatch(setTestCaseLoading(true));
     await dispatch(getTestCaseById());
@@ -120,7 +118,6 @@ const TestCase = ({ isEditable }) => {
       await dispatch(getTestCaseById());
     }
     getTestCaseData();
-    // setValue('preconditions', preconditions);
   }, []);
 
   return (
@@ -161,8 +158,7 @@ const TestCase = ({ isEditable }) => {
             </Typography>
             <Controller
               name="preconditions"
-              control={testCaseControl} // TODO: Change controller to outer controller
-              defaultValue={preconditions}
+              control={testCaseControl}
               render={({ field }) => (
                 <TextField
                   id="preconditions"
@@ -171,6 +167,10 @@ const TestCase = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
+                  onChange={(e) => {
+                    dispatch(editTestCasePreconditions({ editedPreconditions: e.target.value }));
+                  }}
+                  value={preconditions}
                   sx={{
                     marginTop: '0.625rem',
                     width: '100%'
@@ -192,8 +192,9 @@ const TestCase = ({ isEditable }) => {
             </Typography>
             {entryData.length > 0 ? (
               <Box>
-                {entryData.map((entryData) => (
-                  <Box>
+                {entryData.map((entryData, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Box key={`Bbb-${index}`}>
                     {entryData.entryType === 'textField' ? (
                       <Box
                         sx={{
