@@ -1,126 +1,129 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useTable, usePagination, useSortBy, useGlobalFilter, useFilters } from 'react-table';
 import {
   Table,
   TableBody,
-  TableRow,
   TableCell,
+  TableHead,
+  TableRow,
+  TableFooter,
   TableContainer,
-  TablePagination,
-  Paper
+  TableSortLabel,
+  Paper,
+  Box
 } from '@mui/material';
 
-import EnhancedTableHead from './TableHead';
-import EnhancedTableRow from './TableRow';
+import TablePagination from './TablePagination';
+import TableToolbar from './TableToolbar';
+import { DefaultFilter } from './CustomFilter';
 
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-};
+const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
+  const defaultColumn = useMemo(() => ({ Filter: DefaultFilter }), []);
 
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
+  const {
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    gotoPage,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+    state: { pageIndex, globalFilter }
+  } = useTable(
+    {
+      columns,
+      data,
+      defaultColumn,
+      initialState: { pageSize: initialPageSize }
+    },
+    useFilters,
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
 
-const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState(headCells[0].id);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [collapseDetails, setCollapseDetails] = useState(false);
-
-  const handleRequestSort = (_event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-    setCollapseDetails(true);
-  };
-
-  const handleChangePage = (_event, newPage) => {
-    setPage(newPage);
-    setCollapseDetails(true);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const adjustPerPageRowsOptions = (rowsPerPageOptions, rowsNumber) => {
-    const adjustedRowsPerPageOptions = [];
-
-    rowsPerPageOptions.forEach((interval) => {
-      if (interval <= rowsNumber) {
-        adjustedRowsPerPageOptions.push(interval);
-      } else if (rowsPerPageOptions.at(-1) !== rowsNumber) {
-        adjustedRowsPerPageOptions.push(rowsNumber);
-      }
-    });
-
-    return adjustedRowsPerPageOptions;
-  };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const [dense, setDense] = useState(false);
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <TableContainer>
-        <Table>
-          <EnhancedTableHead
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            headCells={headCells}
-          />
-          <TableBody>
-            {rows
-              .sort(getComparator(order, orderBy))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <EnhancedTableRow
-                  key={row.id}
-                  headCells={headCells}
-                  rowCells={rowCells}
-                  row={row}
-                  setCollapseDetails={setCollapseDetails}
-                  collapseDetails={collapseDetails}
-                  onSubmit={onSubmit}
-                />
-              ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 77.8 * emptyRows }}>
-                <TableCell colSpan={headCells.length + 1} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={adjustPerPageRowsOptions(rowsPerPageOptions, rows.length)}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+    <TableContainer
+      sx={{
+        minHeight: '100vh',
+        display: 'grid',
+        gridTemplateRows: 'min-content 1fr'
+      }}
+    >
+      <TableToolbar
+        title={title}
+        setGlobalFilter={setGlobalFilter}
+        globalFilter={globalFilter}
+        dense={dense}
+        setDense={setDense}
       />
-    </Paper>
+      <Table size={dense ? 'medium' : 'small'} {...getTableProps()}>
+        <Paper component={TableHead} elevation={2} square>
+          {headerGroups.map((headerGroup) => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <TableCell
+                  {...(column.id === 'selection'
+                    ? column.getHeaderProps()
+                    : column.getHeaderProps(column.getSortByToggleProps()))}
+                >
+                  {column.render('Header')}
+                  {column.id !== 'selection' ? (
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'desc' : 'asc'}
+                    />
+                  ) : null}
+                  <Box height="0.6rem" />
+                  {column.canFilter ? column.render('Filter') : null}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </Paper>
+        <TableBody>
+          {page.map((row) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={Object.keys(data[0]).length}>
+              <TablePagination
+                canPreviousPage={canPreviousPage}
+                canNextPage={canNextPage}
+                pageCount={pageCount}
+                page={pageIndex}
+                onPageChange={gotoPage}
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                title={title}
+              />
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 };
 
-export default EnhancedTable;
-
 EnhancedTable.propTypes = {
-  headCells: PropTypes.array.isRequired,
-  rowCells: PropTypes.array.isRequired,
-  rows: PropTypes.array.isRequired,
-  rowsPerPageOptions: PropTypes.array.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  title: PropTypes.string.isRequired,
+  data: PropTypes.array.isRequired,
+  columns: PropTypes.array.isRequired,
+  initialPageSize: PropTypes.number.isRequired
 };
+
+export default EnhancedTable;

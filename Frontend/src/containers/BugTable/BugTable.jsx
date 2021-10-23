@@ -15,7 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 
-import Table from '../../components/Table';
+import Table from '../../components/TableObsolete';
 import {
   getRows,
   putRows,
@@ -144,7 +144,7 @@ const BugTable = ({ type }) => {
       sublabel: 'Req/Done/Failed',
       unsortable: true,
       hidden: type !== types.toReview && type !== types.all,
-      width: '5.5rem'
+      width: '6rem'
     },
     {
       id: 'resign',
