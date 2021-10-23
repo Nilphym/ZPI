@@ -1,5 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 
 import Layout from './containers/Layout';
 import NoMatch from './containers/NoMatch';
@@ -9,195 +11,22 @@ import Logout from './containers/Logout';
 import BugPage, { types } from './pages/BugPage';
 import BugTable from './components/Table';
 import { SelectColumnFilter } from './components/Table/CustomFilter';
+import makeData from './utils/makeData';
 
 const App = () => {
-  const data = React.useMemo(
-    () => [
-      {
-        firstName: 'heee',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      },
-      {
-        firstName: 'pump',
-        lastName: 'farmer',
-        age: 5,
-        visits: 52,
-        progress: 94,
-        status: 'complicated',
-        subRows: undefined
-      }
-    ],
-    []
-  );
+  const data = React.useMemo(() => makeData(50), []);
   const columns = React.useMemo(
     () => [
+      {
+        id: 'expander',
+        disableFilters: true,
+        Cell: ({ row: { canExpand, isExpanded, getToggleRowExpandedProps } }) =>
+          canExpand ? (
+            <IconButton {...getToggleRowExpandedProps()} size="small">
+              {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          ) : null
+      },
       {
         Header: 'First Name',
         accessor: 'firstName'

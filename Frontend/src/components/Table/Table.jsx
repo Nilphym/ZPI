@@ -1,6 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { useTable, usePagination, useSortBy, useGlobalFilter, useFilters } from 'react-table';
+import {
+  useTable,
+  usePagination,
+  useSortBy,
+  useGlobalFilter,
+  useFilters,
+  useExpanded
+} from 'react-table';
 import {
   Table,
   TableBody,
@@ -16,6 +23,7 @@ import {
 
 import TablePagination from './TablePagination';
 import TableToolbar from './TableToolbar';
+import ExpandableRow from './ExpandableRow';
 import { DefaultFilter } from './CustomFilter';
 
 const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
@@ -23,6 +31,7 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
 
   const {
     getTableProps,
+    getTableBodyProps,
     headerGroups,
     prepareRow,
     page,
@@ -32,6 +41,7 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
     gotoPage,
     preGlobalFilteredRows,
     setGlobalFilter,
+    visibleColumns,
     state: { pageIndex, globalFilter }
   } = useTable(
     {
@@ -43,6 +53,7 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
     useFilters,
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -74,29 +85,39 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
                     : column.getHeaderProps(column.getSortByToggleProps()))}
                 >
                   {column.render('Header')}
-                  {column.id !== 'selection' ? (
-                    <TableSortLabel
-                      active={column.isSorted}
-                      direction={column.isSortedDesc ? 'desc' : 'asc'}
-                    />
+                  {column.canFilter && column.id !== 'selection' ? (
+                    <>
+                      <TableSortLabel
+                        active={column.isSorted}
+                        direction={column.isSortedDesc ? 'desc' : 'asc'}
+                      />
+                      <Box height="0.6rem" />
+                      {column.render('Filter')}
+                    </>
                   ) : null}
-                  <Box height="0.6rem" />
-                  {column.canFilter ? column.render('Filter') : null}
                 </TableCell>
               ))}
             </TableRow>
           ))}
         </Paper>
-        <TableBody>
+        <TableBody {...getTableBodyProps()}>
           {page.map((row) => {
+            console.log(row);
             prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
-                })}
-              </TableRow>
-            );
+            return row.originalSubRows.length ? (
+              <Fragment {...row.getRowProps()}>
+                <TableRow>
+                  {row.cells.map((cell) => (
+                    <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                  ))}
+                </TableRow>
+                <ExpandableRow
+                  colSpan={visibleColumns.length}
+                  data={row.originalSubRows[0]}
+                  open={row.isExpanded}
+                />
+              </Fragment>
+            ) : null;
           })}
         </TableBody>
         <TableFooter>

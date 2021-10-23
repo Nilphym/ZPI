@@ -7681,6 +7681,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto-extra@npm:1.0.1":
+  version: 1.0.1
+  resolution: "crypto-extra@npm:1.0.1"
+  checksum: b679f0ebf7780b8f1ea59931877fa2c4491504c673dad1d447c36727267576d842ffdaa9144bf5c891a7083b632d0ce928c0e6898bbb3c6f03fd9bfba3f121c0
+  languageName: node
+  linkType: hard
+
 "crypto-random-string@npm:^1.0.0":
   version: 1.0.0
   resolution: "crypto-random-string@npm:1.0.0"
@@ -10196,6 +10203,7 @@ fsevents@^1.2.7:
     jwt-decode: ^3.1.2
     luxon: ^2.0.2
     miragejs: ^0.1.42
+    namor: ^2.0.3
     prettier: ^2.4.1
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -14016,6 +14024,15 @@ fsevents@^1.2.7:
   bin:
     multicast-dns: cli.js
   checksum: f515b49ca964429ab48a4ac8041fcf969c927aeb49ab65288bd982e52c849a870fc3b03565780b0d194a1a02da8821f28b6425e48e95b8107bc9fcc92f571a6f
+  languageName: node
+  linkType: hard
+
+"namor@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "namor@npm:2.0.3"
+  dependencies:
+    crypto-extra: 1.0.1
+  checksum: 7ce3df1cf4e539f6667e7e89823f083f6073ad6934a039c5075e9f53a53a6affc866c2cb1dc8227c3afa58159b2f521f8b6bb47f5023db31a983c090883644c2
   languageName: node
   linkType: hard
 

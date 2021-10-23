@@ -28,13 +28,17 @@ const DotsIcon = styled(MoreHoriz)({
   width: '1.925rem'
 });
 
-const PageNumeration = ({ pageCount, page }) => {
+const PageNumeration = ({ onPageChange, pageCount, page }) => {
   const maxPagesForSmallPagination = 7;
   const maxPageForPostDots = 3;
   const maxPagesInLongPagination = 5;
 
   const PaginationButton = ({ children }) => (
-    <PaginationButtonStyled size="small" active={children - 1 === page}>
+    <PaginationButtonStyled
+      onClick={() => onPageChange(children - 1)}
+      size="small"
+      active={children - 1 === page}
+    >
       {children}
     </PaginationButtonStyled>
   );
@@ -93,6 +97,7 @@ const PageNumeration = ({ pageCount, page }) => {
 };
 
 PageNumeration.propTypes = {
+  onPageChange: PropTypes.func.isRequired,
   pageCount: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired
 };
@@ -132,7 +137,7 @@ const TablePagination = ({
         <IconButton onClick={handleBackButtonClick} disabled={!canPreviousPage}>
           <KeyboardArrowLeft />
         </IconButton>
-        <PageNumeration pageCount={pageCount} page={page} />
+        <PageNumeration onPageChange={onPageChange} pageCount={pageCount} page={page} />
         <IconButton onClick={handleNextButtonClick} disabled={!canNextPage}>
           <KeyboardArrowRight />
         </IconButton>
