@@ -4,6 +4,7 @@ using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Funtest.Services
@@ -42,6 +43,11 @@ namespace Funtest.Services
         {
             var test = await Context.Tests.FindAsync(id);
             return _mapper.Map<GetTestResponse>(test);
+        }
+
+        public bool IsTestExist(Guid id)
+        {
+            return Context.Tests.Any(x => x.Id == id);
         }
     }
 }

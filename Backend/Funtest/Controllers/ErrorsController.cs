@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Funtest.Services.Interfaces;
 using Data.Roles;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +9,7 @@ using Funtest.TransferObject.Error.Responses;
 
 namespace Funtest.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ErrorsController : ControllerBase
@@ -42,13 +41,13 @@ namespace Funtest.Controllers
             return Ok(errors);
         }
 
-        [Authorize(Roles=Roles.Developer)]
+       // [Authorize(Roles=Roles.Developer)]
         [HttpGet("developer/{developerId}")]
         public async Task<ActionResult<GetErrorResponse>> GetAllErrorsAssignedToDeveloper([FromRoute] string developerId)
         {
             var isUserExist = await _userService.IsUserExist(developerId);
             if (!isUserExist)
-                return Problem("User with given id doesn't exist.");
+                return NotFound("User with given id doesn't exist.");
 
             var errors = _errorService.GetAllErrorsAssignedToDeveloper(developerId);
             return Ok(errors);
@@ -73,6 +72,19 @@ namespace Funtest.Controllers
         {
             var result = await _errorService.EditError(id, request);
             if(result)
+                return Ok();
+            return Problem("Problem with saving changes in database.");
+        }
+
+        [HttpPut("resolve/{id}")]
+        public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
+        {
+            var isErrorExist = _errorService.IsErrorExist(id);
+            if(!isErrorExist)
+                return NotFound("Object with given id doesn't exist");
+
+            var result = await _errorService.ResolveError(id, request);
+            if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
         }

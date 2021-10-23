@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211021232413_Seed")]
+    partial class Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +84,7 @@ namespace Data.Migrations
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RetestsRequired")
+                    b.Property<int>("RequiredReviewCounter")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("StepId")
@@ -104,7 +106,7 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("21c5eb96-7e94-4e76-a8e9-f48d7d1e8eda"),
+                            Id = new Guid("f8defb30-7ede-4126-ad2a-eeeac2914d5d"),
                             Category = "Authorization",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -115,14 +117,14 @@ namespace Data.Migrations
                             ErrorState = 0,
                             ErrorType = 0,
                             Name = "Bug #1",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
+                            ReportDate = new DateTime(2021, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("ab0e98e8-3b6a-45c7-9342-4a586536c926"),
+                            Id = new Guid("f4a6c88f-3af3-4936-ba1f-1a9a1f5fb277"),
                             Category = "Functional",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -134,13 +136,13 @@ namespace Data.Migrations
                             ErrorType = 0,
                             Name = "Bug #2",
                             ReportDate = new DateTime(2020, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RetestsRequired = 2,
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("d5c811a3-6e0f-44aa-8db3-129567c8ef2d"),
+                            Id = new Guid("fc5e849c-39e3-4d99-b154-a7e576b97bb0"),
                             Category = "UX",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -151,14 +153,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 1,
                             Name = "Bug #3",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
+                            ReportDate = new DateTime(2021, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("97622c8c-af98-478a-acc3-bdfe1c31d1c4"),
+                            Id = new Guid("301110ce-8810-4347-a51c-a40913035cba"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -169,14 +171,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #4",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
+                            ReportDate = new DateTime(2021, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("c40d757a-0ac1-4689-ba5c-f35eff0f04cd"),
+                            Id = new Guid("4c3a303a-18a2-4c6b-b92e-60d87b7f2a11"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -187,14 +189,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #5",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
+                            ReportDate = new DateTime(2021, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("aca3aef0-25ae-4e71-9402-a1f48fe0490e"),
+                            Id = new Guid("5f4f4507-93b7-4cfe-a5cb-c5537c9e63c2"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -205,8 +207,8 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #6",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
+                            ReportDate = new DateTime(2021, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            RequiredReviewCounter = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         });

@@ -45,5 +45,19 @@ namespace Funtest.Controllers
 
             return Ok(testProcedure);
         }
+
+        [HttpPut("{id}") ]
+        public async Task<ActionResult> EditTestProcedure([FromRoute] Guid id, EditTestProcedureRequest request)
+        {
+            var isExist = _testProcedureService.IsTestProcedureExist(id);
+            if (!isExist)
+                return NotFound("Object with the given id doesn't exist.");
+
+            var result = await _testProcedureService.EditTestProcedure(id, request);
+
+            if (result)
+                return Ok();
+            return Problem("Problem with saving an object in the database");
+        }
     }
 }
