@@ -18,8 +18,7 @@ import {
   addTestStepTestData,
   deleteTestStepTestData,
   editTestStepControlPoint,
-  setTestStepName,
-  setTestStepLoading
+  setTestStepName
 } from '../../redux/reducers/test/testSlice';
 import EditableTable from '../EditableTable/EditableTable';
 
@@ -46,11 +45,10 @@ const schemaStepName = yup.object().shape({
   [formFieldsStepName.stepName]: yup.string().required()
 });
 
-
 const createTable = (tablesCount, rowsCount, columnsCount) => {
   const tableObject = {};
   const array = [...Array.from(Array(columnsCount).keys())].fill('');
-  for (let i = 1; i <= rowsCount+1; i += 1) {
+  for (let i = 1; i <= rowsCount + 1; i += 1) {
     tableObject[`RowName${i}`] = '';
     tableObject[`Data${i}`] = array;
   }
@@ -69,13 +67,8 @@ const TestStep = ({ testStepId, isEditable }) => {
   const { selectedTestStep, isLoadingTestStep: isLoading } = useSelector((state) => state.test);
 
   useEffect(() => {
-    
-    async function getTestStepData(testStepId) {
-      await dispatch(getTestStepById(testStepId));
-    }
-    dispatch(setTestStepLoading({ id: testStepId, value: true}));
-    getTestStepData(testStepId);
-  }, []);
+    dispatch(getTestStepById(testStepId));
+  }, [testStepId]);
 
   const {
     control: innerControlTable,
@@ -96,13 +89,19 @@ const TestStep = ({ testStepId, isEditable }) => {
     resolver: yupResolver(schemaStepName)
   });
 
-  const {
-    control: innerControlControlPoint,
-    getValues
-  } = useForm();
+  const { control: innerControlControlPoint, getValues } = useForm();
 
   const addTable = ({ rowsNumber, columnsNumber }) => {
-    const id = selectedTestStep[testStepId].testData.length > 0 ? selectedTestStep[testStepId].testData[selectedTestStep[testStepId].testData.length-1].tableName.toString().substring(6) * 1 + 1 : 0;
+    const id =
+      selectedTestStep[testStepId].testData.length > 0
+        ? selectedTestStep[testStepId].testData[
+            selectedTestStep[testStepId].testData.length - 1
+          ].tableName
+            .toString()
+            .substring(6) *
+            1 +
+          1
+        : 0;
     const newTable = createTable(id, rowsNumber, columnsNumber);
     dispatch(addTestStepTestData({ id: testStepId, newTable }));
     setIsAddingTable(false);
@@ -112,7 +111,7 @@ const TestStep = ({ testStepId, isEditable }) => {
   };
 
   const changeStepName = ({ stepName }) => {
-    dispatch(setTestStepName({id: testStepId, newName: stepName}));
+    dispatch(setTestStepName({ id: testStepId, newName: stepName }));
     setIsEditingStepName(false);
   };
 
@@ -120,7 +119,7 @@ const TestStep = ({ testStepId, isEditable }) => {
     dispatch(deleteTestStepTestData({ id: testStepId, tableName }));
   };
 
-  async function saveTestStep(){
+  async function saveTestStep() {
     setIsEditing(false);
     setIsAddingTable(false);
     dispatch(
@@ -128,7 +127,7 @@ const TestStep = ({ testStepId, isEditable }) => {
     );
     await dispatch(putTestStepById(testStepId));
     await dispatch(getTestStepById(testStepId));
-  };
+  }
 
   return (
     <Box>
@@ -155,7 +154,9 @@ const TestStep = ({ testStepId, isEditable }) => {
               textTransform: 'capitalize'
             }}
           >
-            {`${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}`}
+            {selectedTestStep[
+              testStepId
+            ] ? `${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}` : 'Loading ...'}
           </Button>
           {isOpened && (
             <Box>

@@ -40,7 +40,8 @@ const makeServer = () =>
           testProceduresCodes: [
             { testProcedureId: 'tp1', testProcedureCode: 'TP#132' },
             { testProcedureId: 'tp2', testProcedureCode: 'TP#456' },
-            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
+            { testProcedureId: 'tp3', testProcedureCode: 'TP#789' },
+            { testProcedureId: 'tp4', testProcedureCode: 'TP#1-123' }
           ],
           selectedTestCaseId: { testCaseId: 'tc2', testCaseCode: 'TC#456' },
           selectedTestProcedureId: { testProcedureId: 'tp3', testProcedureCode: 'TP#789' }
@@ -368,7 +369,7 @@ const makeServer = () =>
       [
         {
           id: 'ts1',
-          name: 'Login',
+          name: 'Login TS1',
           stepNumber: 0,
           testDataObject: {
             Data0: {
@@ -404,7 +405,7 @@ const makeServer = () =>
         },
         {
           id: 'ts2',
-          name: 'Register',
+          name: 'Register TS2',
           stepNumber: 3,
           testDataObject: [
             {
@@ -433,7 +434,7 @@ const makeServer = () =>
         },
         {
           id: 'ts3',
-          name: 'API',
+          name: 'API TS3',
           stepNumber: 10,
           testDataObject: [
             {
@@ -453,7 +454,267 @@ const makeServer = () =>
         },
         {
           id: 'ts4',
-          name: 'Check username',
+          name: 'Check username TS4',
+          stepNumber: 20,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 3',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            },
+            {
+              tableName: 'Table 4',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts5',
+          name: 'Login TS5',
+          stepNumber: 0,
+          testDataObject: {
+            Data0: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data1: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: {
+              tableName: 'Table 3',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          },
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts6',
+          name: 'Register TS6',
+          stepNumber: 3,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts7',
+          name: 'API TS7',
+          stepNumber: 10,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts8',
+          name: 'Check username TS8',
+          stepNumber: 20,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 3',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            },
+            {
+              tableName: 'Table 4',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts9',
+          name: 'Login TS9',
+          stepNumber: 0,
+          testDataObject: {
+            Data0: {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data1: {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            Data2: {
+              tableName: 'Table 3',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          },
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts10',
+          name: 'Register TS10',
+          stepNumber: 3,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            },
+            {
+              tableName: 'Table 2',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Tse Tse',
+              Data2: ['a', 'b', 'c', 'd', 'ro', 'p'],
+              RowName3: 'Ble ble',
+              Data3: ['x', 'y', 'z', 't', 'r', 'w']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts11',
+          name: 'API TS11',
+          stepNumber: 10,
+          testDataObject: [
+            {
+              tableName: 'Table 1',
+              RowName1: '',
+              Data1: ['c', '1', '2', 'b', '3', 'c'],
+              RowName2: 'Ble ble',
+              Data2: ['x', 'y', 'z', 't', 'r', 'w'],
+              RowName3: 'Tse Tse',
+              Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
+            }
+          ],
+          controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
+            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+        },
+        {
+          id: 'ts12',
+          name: 'Check username TS12',
           stepNumber: 20,
           testDataObject: [
             {
@@ -502,7 +763,7 @@ const makeServer = () =>
       [
         {
           id: 'tp1',
-          testStepsIds: ['ts1', 'ts3'],
+          testStepsIds: ['ts1', 'ts2'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -510,7 +771,7 @@ const makeServer = () =>
         },
         {
           id: 'tp2',
-          testStepsIds: ['ts1','ts2', 'ts3', 'ts4'],
+          testStepsIds: ['ts3', 'ts4', 'ts5', 'ts6'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -518,7 +779,7 @@ const makeServer = () =>
         },
         {
           id: 'tp3',
-          testStepsIds: ['ts2'],
+          testStepsIds: ['ts7'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -526,7 +787,7 @@ const makeServer = () =>
         },
         {
           id: 'tp4',
-          testStepsIds: ['ts3', 'ts1', 'ts2'],
+          testStepsIds: ['ts8', 'ts9', 'ts10'],
           result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
             deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
             minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
@@ -562,7 +823,8 @@ const makeServer = () =>
         },
         {
           id: 'tc2',
-          preconditions: 'cccccccccccccccccc, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium ',
+          preconditions:
+            'cccccccccccccccccc, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium ',
           entryDataObject: {
             Data0: 'bbbbbbbbbbbbbbbbbbbbc',
             Data1: {

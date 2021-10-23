@@ -22,8 +22,7 @@ import {
   getTestCaseById,
   getTestProcedureById,
   setTestCaseLoading,
-  setTestProcedureLoading,
-  getTestStepById
+  setTestProcedureLoading
 } from '../../redux/reducers/test/testSlice';
 
 const Test = ({ isEditable }) => {
@@ -43,7 +42,6 @@ const Test = ({ isEditable }) => {
     selectedTestSuiteId,
     selectedTestCaseId,
     selectedTestProcedureId,
-    selectedTestProcedure : {testStepsIds},
     isLoadingTest: isLoading
   } = useSelector((state) => state.test);
 
@@ -74,11 +72,6 @@ const Test = ({ isEditable }) => {
     dispatch(setTestTestProcedure({ id: value }));
     dispatch(setTestProcedureLoading(true));
     await dispatch(getTestProcedureById());
-    // for (let i = 0; i < testStepsIds.length; i += 1){
-    //   // eslint-disable-next-line no-await-in-loop
-    //   console.log(testStepsIds[i]);
-    //   await dispatch(getTestStepById(testStepsIds[i]));
-    // }
   }
 
   return (

@@ -110,9 +110,13 @@ const TestProcedure = ({ isEditable }) => {
           >
             Test Steps:
           </Typography>
-          {testStepsIds.map((testStepId) => (
-            <TestStep testStepId={testStepId} isEditable={isEditing} />
-          ))}
+          {testStepsIds ? (
+            testStepsIds.map((testStepId) => (
+              <TestStep testStepId={testStepId} isEditable={isEditing} />
+            ))
+          ) : (
+            <Typography>Loading Data ...</Typography>
+          )}
           {isEditable && isEditing && (
             <Box>
               {!isAddingTestStep ? (
@@ -224,7 +228,7 @@ const TestProcedure = ({ isEditable }) => {
       )}
     </Box>
   );
-};;
+};
 
 TestProcedure.propTypes = {
   isEditable: PropTypes.bool.isRequired

@@ -284,6 +284,7 @@ export const testSlice = createSlice({
     },
     setTestTestProcedure: (state, action) => {
       state.selectedTestProcedureId = action.payload.id;
+      state.selectedTestProcedure.testStepsIds = [];
       state.selectedTestStep = {};
     }
   },
@@ -329,7 +330,10 @@ export const testSlice = createSlice({
         state.selectedTestProcedure.testStepsIds = testStepsIds;
         state.selectedTestProcedure.result = result;
         state.isLoadingTestProcedure = false;
+        state.isLoadingTestStep = {};
+        state.selectedTestStep = {};
         testStepsIds.forEach(testStepId => {
+          state.isLoadingTestStep[testStepId] = true;
           state.selectedTestStep[testStepId] = {};
         });
       })
