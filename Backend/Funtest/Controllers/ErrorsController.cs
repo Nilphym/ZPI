@@ -47,7 +47,7 @@ namespace Funtest.Controllers
         {
             var isUserExist = await _userService.IsUserExist(developerId);
             if (!isUserExist)
-                return Problem("User with given id doesn't exist.");
+                return NotFound("User with given id doesn't exist.");
 
             var errors = _errorService.GetAllErrorsAssignedToDeveloper(developerId);
             return Ok(errors);
@@ -79,6 +79,10 @@ namespace Funtest.Controllers
         [HttpPut("resolve/{id}")]
         public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
         {
+            var isErrorExist = _errorService.IsErrorExist(id);
+            if(!isErrorExist)
+                return NotFound("Object with given id doesn't exist");
+
             var result = await _errorService.ResolveError(id, request);
             if (result)
                 return Ok();

@@ -49,8 +49,10 @@ namespace Funtest.Services
         public async Task<bool> EditTestCase(Guid id, EditTestCaseRequest request)
         {
             var testCase = await Context.TestCases.FindAsync(id);
+
             testCase.Preconditions = request.Preconditions;
-            testCase.EntryData = (string)JsonConvert.DeserializeObject<JObject>(string.IsNullOrEmpty(testCase.EntryData) ? "{}" : testCase.EntryData.ToString());
+            testCase.EntryDataObject = request.EntryDataObject;
+            testCase.EntryData = JsonConvert.SerializeObject(testCase.EntryDataObject);
 
             Context.TestCases.Update(testCase);
             if (await Context.SaveChangesAsync() == 0)
@@ -70,6 +72,11 @@ namespace Funtest.Services
         public List<GetTestCaseIdentityValueResponse> GetAllTestCases()
         {
             return Context.TestCases.AsQueryable().Select(x => _mapper.Map<GetTestCaseIdentityValueResponse>(x)).ToList();
+        }
+
+        public async Task<bool> ExistTestCase(Guid id)
+        {
+            return await Context.TestCases.FindAsync(id) != null ? true : false;
         }
     }
 }

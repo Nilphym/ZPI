@@ -111,6 +111,11 @@ namespace Funtest.Services
 
             return true;
         }
+
+        public bool IsErrorExist(Guid id)
+        {
+            return Context.Errors.Any(x => x.Id == id);
+        }
     }
 }
 

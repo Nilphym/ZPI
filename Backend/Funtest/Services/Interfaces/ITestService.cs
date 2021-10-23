@@ -10,5 +10,6 @@ namespace Funtest.Services.Interfaces
         Task<bool> AddTest(AddTestRequest test);
         Task<GetTestResponse> GetTestById(Guid id);
         Task<bool> EditTest(Guid id, EditTestRequest request);
+        bool IsTestExist(Guid id);
     }
 }
