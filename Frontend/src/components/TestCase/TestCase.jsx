@@ -162,7 +162,7 @@ const TestCase = ({ isEditable }) => {
             <Controller
               name="preconditions"
               control={testCaseControl} // TODO: Change controller to outer controller
-              // defaultValue={preconditions}
+              defaultValue={preconditions}
               render={({ field }) => (
                 <TextField
                   id="preconditions"
@@ -171,7 +171,6 @@ const TestCase = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
-                  value={preconditions}
                   sx={{
                     marginTop: '0.625rem',
                     width: '100%'

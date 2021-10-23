@@ -284,6 +284,7 @@ export const testSlice = createSlice({
     },
     setTestTestProcedure: (state, action) => {
       state.selectedTestProcedureId = action.payload.id;
+      state.selectedTestStep = {};
     }
   },
   extraReducers: (builder) => {
