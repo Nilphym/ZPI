@@ -6,6 +6,8 @@ using Data.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
+using System.Collections.Generic;
+using Data.Enums;
 
 namespace Funtest.Controllers
 {
@@ -87,6 +89,30 @@ namespace Funtest.Controllers
             if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
+        }
+
+        [HttpGet("ErrorPriorities")]
+        public ActionResult<List<string>> GetErrorPriorities()
+        {
+            return _errorService.ErrorPriorities();
+        }
+
+        [HttpGet("ErrorImpacts")]
+        public ActionResult<List<string>> GetErrorImpacts()
+        {
+            return _errorService.ErrorImpacts();
+        }
+
+        [HttpGet("ErrorStates")]
+        public ActionResult<List<string>> GetErrorStates()
+        {
+            return _errorService.ErrorStates();
+        }
+
+        [HttpGet("ErrorTypes")]
+        public ActionResult<List<string>> GetErrorTypes()
+        {
+            return _errorService.ErrorTypes();
         }
     }
 }

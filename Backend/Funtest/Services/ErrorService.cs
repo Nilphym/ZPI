@@ -5,6 +5,7 @@ using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,17 +66,14 @@ namespace Funtest.Services
             if (request.Description != null)
                 error.Description = request.Description;
 
-            if (request.EndDate != DateTime.MinValue)
-                error.EndDate = (DateTime)request.EndDate;
-
             if (request.ErrorImpact != null)
-                error.ErrorImpact = (Data.Enums.ErrorImpact)request.ErrorImpact;
+                error.ErrorImpact = (ErrorImpact)request.ErrorImpact;
 
             if (request.ErrorPriority != null)
-                error.ErrorPriority = (Data.Enums.ErrorPriority)request.ErrorPriority;
+                error.ErrorPriority = (ErrorPriority)request.ErrorPriority;
 
             if (request.ErrorType != null)
-                error.ErrorType = (Data.Enums.ErrorType)request.ErrorType;
+                error.ErrorType = (ErrorType)request.ErrorType;
 
             if (request.Name != null)
                 error.Name = request.Name;
@@ -115,6 +113,49 @@ namespace Funtest.Services
         public bool IsErrorExist(Guid id)
         {
             return Context.Errors.Any(x => x.Id == id);
+        }
+
+        private List<string> GetDisplayNames(Type type)
+        {
+            var displaynames = new List<string>();
+            var names = Enum.GetNames(type);
+            foreach (var name in names)
+            {
+                var field = type.GetField(name);
+                var customAttributes = field.GetCustomAttributes(typeof(DisplayAttribute), true);
+
+                if (customAttributes.Length == 0)
+                {
+                    displaynames.Add(name);
+                }
+
+                foreach (DisplayAttribute attribute in customAttributes)
+                {
+                    displaynames.Add(attribute.Name);
+                }
+            }
+            return displaynames;
+        }
+
+
+        public List<string> ErrorStates()
+        {
+            return GetDisplayNames(ErrorState.New.GetType());   
+        }
+
+        public List<string> ErrorImpacts()
+        {
+            return Enum.GetValues(typeof(ErrorImpact)).Cast<ErrorImpact>().Select(x => x.ToString()).ToList();
+        }
+
+        public List<string> ErrorPriorities()
+        {
+            return Enum.GetValues(typeof(ErrorPriority)).Cast<ErrorPriority>().Select(x => x.ToString()).ToList();
+        }
+
+        public List<string> ErrorTypes()
+        {
+            return GetDisplayNames(ErrorType.Functional.GetType());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Funtest.TransferObject.Error.Requests;
+﻿using Data.Enums;
+using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,10 @@ namespace Funtest.Services.Interfaces
         Task<bool> AssignBugToDeveloper(Guid errorId, AssignBugToDeveloperRequest request);
         Task<bool> ResolveError(Guid id, ResolveErrorRequest resolve);
         bool IsErrorExist(Guid id);
+
+        List<string> ErrorStates();
+        List<string> ErrorImpacts();
+        List<string> ErrorPriorities();
+        List<string> ErrorTypes();
     }
 }

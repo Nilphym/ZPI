@@ -27,6 +27,9 @@ namespace Data.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime EndDate { get; set; }
 
+        [Required]
+        public string Code { get; set; }
+
         public string Category { get; set; }
 
         public ErrorState ErrorState { get; set; }
@@ -34,7 +37,7 @@ namespace Data.Models
         public ErrorImpact ErrorImpact { get; set; }
 
         public ErrorPriority ErrorPriority { get; set; }
-        
+
         public ErrorType ErrorType { get; set; }
 
         public virtual Step Step { get; set; }
