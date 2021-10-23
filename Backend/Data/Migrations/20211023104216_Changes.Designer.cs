@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211023104216_Changes")]
+    partial class Changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,7 +106,7 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("21c5eb96-7e94-4e76-a8e9-f48d7d1e8eda"),
+                            Id = new Guid("ef6d3e57-b636-4fa8-ac75-22a25fb00edb"),
                             Category = "Authorization",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -122,7 +124,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ab0e98e8-3b6a-45c7-9342-4a586536c926"),
+                            Id = new Guid("664ef667-24b3-4a79-986f-e8c32a5bc506"),
                             Category = "Functional",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -140,7 +142,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d5c811a3-6e0f-44aa-8db3-129567c8ef2d"),
+                            Id = new Guid("467af0df-b9b0-4b4b-89e5-ec6345d6a71f"),
                             Category = "UX",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -158,7 +160,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("97622c8c-af98-478a-acc3-bdfe1c31d1c4"),
+                            Id = new Guid("fc221c29-bce9-40c6-a5e8-ec6a2a6aabd1"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -176,7 +178,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c40d757a-0ac1-4689-ba5c-f35eff0f04cd"),
+                            Id = new Guid("402b0ba8-b3a8-4179-9f36-dbfc4107a07c"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",
@@ -194,7 +196,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("aca3aef0-25ae-4e71-9402-a1f48fe0490e"),
+                            Id = new Guid("a3f0ab49-20b7-4222-92c9-8bd8ddc8a231"),
                             Category = "Database",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Error description",

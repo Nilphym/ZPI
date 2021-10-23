@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
@@ -37,6 +38,9 @@ namespace Funtest.Infrastructure
 
             //Mapowanie dla Błędów
             CreateMap<Error, GetErrorResponse>();
+
+            //Mapowanie dla Usera
+            CreateMap<AddNewUserRequest, User>();
         }
     }
 }
