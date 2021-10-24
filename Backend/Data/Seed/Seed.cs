@@ -34,6 +34,12 @@ namespace Data.Seed
                 var developertRole = new IdentityRole(Roles.Roles.Developer);
                 await roleManager.CreateAsync(developertRole);
             }
+
+            if (!await roleManager.RoleExistsAsync(Roles.Roles.ProjectManager))
+            {
+                var pmRole = new IdentityRole(Roles.Roles.ProjectManager);
+                await roleManager.CreateAsync(pmRole);
+            }
         }
 
         private static async Task SeedUsers(DatabaseContext context, UserManager<User> userManager)
@@ -101,7 +107,6 @@ namespace Data.Seed
                         Email = "stefan@workspace.com",
                     }
                 };
-
 
                 foreach (var user in testers)
                 {

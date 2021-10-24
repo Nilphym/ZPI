@@ -27,10 +27,27 @@ namespace Funtest.Services
             return true;
         }
 
-        public GetTestResponse GetTestById(Guid id)
+        public async Task<bool> EditTest(Guid id, EditTestRequest request)
         {
-            var test = Context.Tests.Where(x => x.Id == id).FirstOrDefault();
+            var test = await Context.Tests.FindAsync(id);
+            test.Name = request.Name;
+
+            Context.Tests.Update(test);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<GetTestResponse> GetTestById(Guid id)
+        {
+            var test = await Context.Tests.FindAsync(id);
             return _mapper.Map<GetTestResponse>(test);
+        }
+
+        public bool IsTestExist(Guid id)
+        {
+            return Context.Tests.Any(x => x.Id == id);
         }
     }
 }

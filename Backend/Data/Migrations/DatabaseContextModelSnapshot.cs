@@ -16,8 +16,30 @@ namespace Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Data.Models.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ErrorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileExtension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("ntext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ErrorId");
+
+                    b.ToTable("Attachment");
+                });
 
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
@@ -38,8 +60,8 @@ namespace Data.Migrations
                     b.Property<string>("DeveloperId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ErrorCategory")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ErrorImpact")
                         .HasColumnType("int");
@@ -50,17 +72,17 @@ namespace Data.Migrations
                     b.Property<int>("ErrorState")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FilingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FinishDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ErrorType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RequiredReviewCounter")
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RetestsRequired")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("StepId")
@@ -78,6 +100,116 @@ namespace Data.Migrations
                     b.HasIndex("TesterId");
 
                     b.ToTable("Errors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("21c5eb96-7e94-4e76-a8e9-f48d7d1e8eda"),
+                            Category = "Authorization",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 0,
+                            ErrorPriority = 2,
+                            ErrorState = 0,
+                            ErrorType = 0,
+                            Name = "Bug #1",
+                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        },
+                        new
+                        {
+                            Id = new Guid("ab0e98e8-3b6a-45c7-9342-4a586536c926"),
+                            Category = "Functional",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 0,
+                            ErrorPriority = 2,
+                            ErrorState = 2,
+                            ErrorType = 0,
+                            Name = "Bug #2",
+                            ReportDate = new DateTime(2020, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        },
+                        new
+                        {
+                            Id = new Guid("d5c811a3-6e0f-44aa-8db3-129567c8ef2d"),
+                            Category = "UX",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 0,
+                            ErrorPriority = 2,
+                            ErrorState = 3,
+                            ErrorType = 1,
+                            Name = "Bug #3",
+                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        },
+                        new
+                        {
+                            Id = new Guid("97622c8c-af98-478a-acc3-bdfe1c31d1c4"),
+                            Category = "Database",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 1,
+                            ErrorPriority = 0,
+                            ErrorState = 3,
+                            ErrorType = 2,
+                            Name = "Bug #4",
+                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        },
+                        new
+                        {
+                            Id = new Guid("c40d757a-0ac1-4689-ba5c-f35eff0f04cd"),
+                            Category = "Database",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 1,
+                            ErrorPriority = 0,
+                            ErrorState = 3,
+                            ErrorType = 2,
+                            Name = "Bug #5",
+                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        },
+                        new
+                        {
+                            Id = new Guid("aca3aef0-25ae-4e71-9402-a1f48fe0490e"),
+                            Category = "Database",
+                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Error description",
+                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
+                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ErrorImpact = 1,
+                            ErrorPriority = 0,
+                            ErrorState = 3,
+                            ErrorType = 2,
+                            Name = "Bug #6",
+                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            RetestsRequired = 2,
+                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
+                        });
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>
@@ -153,6 +285,15 @@ namespace Data.Migrations
                     b.HasIndex("TestProcedureId");
 
                     b.ToTable("Steps");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
+                            ControlPoint = "Now you sholud see main page",
+                            Name = "Step #1",
+                            StepNumber = 1
+                        });
                 });
 
             modelBuilder.Entity("Data.Models.Test", b =>
@@ -200,12 +341,14 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EntryData")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EntryData")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Preconditions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -238,6 +381,10 @@ namespace Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Result")
                         .IsRequired()
@@ -495,6 +642,17 @@ namespace Data.Migrations
                     b.HasDiscriminator().HasValue("Tester");
                 });
 
+            modelBuilder.Entity("Data.Models.Attachment", b =>
+                {
+                    b.HasOne("Data.Models.Error", "Error")
+                        .WithMany("Attachment")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+                });
+
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
                     b.HasOne("Data.Models.Developer", "Developer")
@@ -641,6 +799,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
+                    b.Navigation("Attachment");
+
                     b.Navigation("Reviews");
                 });
 

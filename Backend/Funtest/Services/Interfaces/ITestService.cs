@@ -8,6 +8,8 @@ namespace Funtest.Services.Interfaces
     public interface ITestService
     {
         Task<bool> AddTest(AddTestRequest test);
-        GetTestResponse GetTestById(Guid id);
+        Task<GetTestResponse> GetTestById(Guid id);
+        Task<bool> EditTest(Guid id, EditTestRequest request);
+        bool IsTestExist(Guid id);
     }
 }

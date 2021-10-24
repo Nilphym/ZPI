@@ -18,12 +18,14 @@ namespace Funtest.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
-            var response = await _authService.Login(loginRequest);
+            var token = await _authService.Login(loginRequest);
+            if (token != null)
+                return Ok(token);
 
-            return response != null ? Ok(response) : Conflict("Email or password is incorrect.");
+            return Unauthorized();
         }
     }
 }

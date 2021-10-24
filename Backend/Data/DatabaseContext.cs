@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Data.Seed;
 
 namespace Data
 {
@@ -40,6 +41,7 @@ namespace Data
               .HasForeignKey(p => p.TestProcedureId)
               .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Seed();
         }
     }
 }

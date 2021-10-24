@@ -37,8 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TransferObject\Steps\Responses\" />
-    <Folder Include="TransferObject\Steps\Requests\" />
+    <Folder Include="TransferObject\Admin\Responses\" />
+    <Folder Include="TransferObject\Attachment\Responses\" />
+    <Folder Include="TransferObject\Product\Responses\" />
+    <Folder Include="TransferObject\TestSuite\Requests\" />
   </ItemGroup>
 
 </Project>
