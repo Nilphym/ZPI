@@ -87,7 +87,6 @@ export const getTestById = createAsyncThunk('test/getTestById', async (_, {
 export const putTestById = createAsyncThunk('test/putTestById', async (_, {
   getState
 }) => {
-  console.log(getState().test.testCasesCodes);
   const body = {
     name: getState().test.testData.testName,
     selectedTestSuiteId: {
@@ -103,10 +102,19 @@ export const putTestById = createAsyncThunk('test/putTestById', async (_, {
       testCaseCode: getState().test.testCasesCodes.filter(caseCode => caseCode.testCaseId === getState().test.selectedTestCaseId)[0].testCaseCode
     }
   };
-  console.log(body);
   const response = await server().put({
     url: `test/${getState().test.testId}`,
     data: body
+  });
+  return response;
+});
+
+export const postTest = createAsyncThunk('test/post', async (testPlanId) => {
+  const response = await server().post({
+    url: 'test',
+    data: {
+      testPlanId
+    }
   });
   return response;
 });
@@ -133,10 +141,14 @@ export const putTestProcedureById = createAsyncThunk('test/putTestProcedureById'
   return response;
 });
 
-export const postTestProcedure = createAsyncThunk('test/addTestProcedure', async (body) => {
+export const postTestProcedure = createAsyncThunk('test/postTestProcedure', async (_, {
+  getState
+}) => {
   const response = await server().post({
-    url: 'testProcedures',
-    data: body
+    url: 'testProcedure',
+    data: {
+      testId: getState().test.testId
+    }
   });
   return response;
 });
@@ -168,6 +180,17 @@ export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_
   return response;
 });
 
+export const postTestCase = createAsyncThunk('test/postTestCase', async (_, {
+  getState
+}) => {
+  const response = await server().post({
+    url: 'testCase',
+    data: {
+      testId: getState().test.testId
+    }
+  });
+  return response;
+});
 
 // ----------------------------------------- Test Step API
 export const getTestStepById = createAsyncThunk('test/getTestStepById', async (testStepId) => {
@@ -358,10 +381,16 @@ export const testSlice = createSlice({
       })
       .addCase(putTestById.fulfilled, () => {
         alert('Object changed');
-        })
-        .addCase(putTestById.rejected, (_, action) => {
-          alert(action.error.message);
-        })
+      })
+      .addCase(putTestById.rejected, (_, action) => {
+        alert(action.error.message);
+      })
+      .addCase(postTest.fulfilled, (_, action) => {
+        return action.payload.testPlanId;
+      })
+      .addCase(postTest.rejected, (_, action) => {
+        alert(action.error.message);
+      })
       .addCase(getTestProcedureById.fulfilled, (state, action) => {
         const {
           id,
@@ -388,6 +417,12 @@ export const testSlice = createSlice({
       .addCase(putTestProcedureById.rejected, (_, action) => {
         alert(action.error.message);
       })
+      .addCase(postTestProcedure.fulfilled, () => {
+        alert('Object added');
+      })
+      .addCase(postTestProcedure.rejected, (_, action) => {
+        alert(action.error.message);
+      })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
         state.selectedTestCase.entryData = transformEntryData(action.payload.entryDataObject);
         state.selectedTestCase.preconditions = action.payload.preconditions;
@@ -400,6 +435,12 @@ export const testSlice = createSlice({
         alert('Object changed');
       })
       .addCase(putTestCaseById.rejected, (_, action) => {
+        alert(action.error.message);
+      })
+      .addCase(postTestCase.fulfilled, () => {
+        alert('Object changed');
+      })
+      .addCase(postTestCase.rejected, (_, action) => {
         alert(action.error.message);
       })
       .addCase(getTestStepById.fulfilled, (state, action) => {

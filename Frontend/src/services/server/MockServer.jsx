@@ -27,11 +27,38 @@ const makeServer = () =>
 
       this.put('test/:id', (schema, request) => {
         const { id } = request.params;
-        const {name, selectedTestSuiteId, selectedTestProcedureId, selectedTestCaseId} = JSON.parse(request.requestBody);
+        const { name, selectedTestSuiteId, selectedTestProcedureId, selectedTestCaseId } =
+          JSON.parse(request.requestBody);
         schema.tests
           .findBy({ id })
           .update({ name, selectedTestSuiteId, selectedTestProcedureId, selectedTestCaseId });
       });
+
+      this.post('test', (schema => { // , request)
+        const newTestId = Math.floor(Math.random() * 10000);
+        // const { testPlanId } = JSON.parse(request.requestBody);
+
+        // schema.testPlans.findBy({ id: testPlanId }).update({
+        //   testsIds: [
+        //     ...testsIds,
+        //      newTestId
+        //   ]
+        // });
+        schema.tests.create({
+          id: newTestId,
+          name: '',
+          creationDate: new Date().toISOString().split('T')[0],
+          version: 'v.0.0',
+          executionCounter: 0,
+          testSuites: [],
+          selectedTestSuiteId: {},
+          testCasesCodes: [],
+          testProceduresCode: [],
+          selectedTestCaseId: {},
+          selectedTestProcedureId: {}
+        });
+        return newTestId;
+      }));
 
       // TestProcedure requests
       this.get('testProcedure/:id', (schema, request) => {
@@ -44,6 +71,23 @@ const makeServer = () =>
         const { id } = request.params;
         const { result } = JSON.parse(request.requestBody);
         schema.testProcedures.findBy({ id }).update({ result });
+      });
+
+      this.post('testProcedure', (schema, request) => {
+        const newProcedureId = Math.floor(Math.random() * 10000);
+        const { testId } = JSON.parse(request.requestBody);
+        const { testProceduresCodes } = schema.tests.findBy({ id: testId }).attrs;
+        schema.tests.findBy({ id: testId }).update({
+          testProceduresCodes: [
+            ...testProceduresCodes,
+            { testProcedureId: newProcedureId, testProcedureCode: `TP#${newProcedureId}` }
+          ]
+        });
+        schema.testProcedures.create({
+          id: newProcedureId,
+          testStepsIds: [],
+          result: ''
+        });
       });
 
       // TestCase requests
@@ -61,6 +105,24 @@ const makeServer = () =>
           entryDataObject
         });
         console.log(schema.testCases.findBy({ id }).attrs);
+      });
+
+      this.post('testCase', (schema, request) => {
+        const newCaseId = Math.floor(Math.random() * 10000);
+        const { testId } = JSON.parse(request.requestBody);
+        const { testCasesCodes } = schema.tests.findBy({ id: testId }).attrs;
+        console.log(testCasesCodes);
+        schema.tests.findBy({ id: testId }).update({
+          testCasesCodes: [
+            ...testCasesCodes,
+            { testCaseId: newCaseId, testCaseCode: `TC#${newCaseId}` }
+          ]
+        });
+        schema.testCases.create({
+          id: newCaseId,
+          preconditions: '',
+          entryDataObject: {}
+        });
       });
 
       // TestStep requests
@@ -82,7 +144,7 @@ const makeServer = () =>
 
       this.post('step', (schema, request) => {
         const { name, testProcedureId: id } = JSON.parse(request.requestBody);
-        const newStepId = Math.random() * 10000;
+        const newStepId = Math.floor(Math.random() * 10000);
         const { testStepsIds } = schema.testProcedures.findBy({ id }).attrs;
         schema.testProcedures.findBy({ id }).update({
           testStepsIds: [...testStepsIds, newStepId]

@@ -26,15 +26,13 @@ import {
   setTestName,
   setTestSuite,
   putTestById,
-  setTestLoading
+  setTestLoading,
+  postTestProcedure,
+  postTestCase
 } from '../../redux/reducers/test/testSlice';
 
 const Test = ({ isEditable }) => {
-  const {
-    control: mainControl,
-    handleSubmit,
-    getValues
-  } = useForm();
+  const { control: mainControl, handleSubmit, getValues } = useForm();
 
   const dispatch = useDispatch();
   const {
@@ -60,25 +58,41 @@ const Test = ({ isEditable }) => {
     getTestData();
   }, []);
 
-  async function saveTest({testName}){
+  async function saveTest({ testName }) {
     setIsEditing(false);
     dispatch(setTestName({ newName: testName }));
     dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
     await dispatch(putTestById());
-    dispatch(setTestLoading({isLoading: true}));
+    dispatch(setTestLoading({ isLoading: true }));
     await dispatch(getTestById());
-  };
+  }
 
   async function handleTestCaseChange({ target: { value } }) {
-    dispatch(setTestTestCase({ id: value }));
-    dispatch(setTestCaseLoading(true));
-    await dispatch(getTestCaseById());
+    if (value) {
+      dispatch(setTestTestCase({ id: value }));
+      dispatch(setTestCaseLoading(true));
+      await dispatch(getTestCaseById());
+    }
   }
 
   async function handleTestProcedureChange({ target: { value } }) {
-    dispatch(setTestTestProcedure({ id: value }));
-    dispatch(setTestProcedureLoading(true));
-    await dispatch(getTestProcedureById(getValues('suiteSelect')));
+    if (value) {
+      dispatch(setTestTestProcedure({ id: value }));
+      dispatch(setTestProcedureLoading(true));
+      await dispatch(getTestProcedureById());
+    }
+  }
+
+  async function addTestCase() {
+    dispatch(postTestCase());
+    dispatch(setTestLoading(true));
+    await dispatch(getTestById());
+  }
+
+  async function addTestProcedure() {
+    dispatch(postTestProcedure());
+    dispatch(setTestLoading(true));
+    await dispatch(getTestById());
   }
 
   return (
@@ -166,13 +180,11 @@ const Test = ({ isEditable }) => {
                       disabled={!isEditing}
                       {...field}
                     >
-                      {testSuites
-                        .filter((testSuite) => testSuite.testSuiteId !== selectedTestSuiteId)
-                        .map(({ testSuiteId, testSuite }) => (
-                          <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
-                            {testSuite}
-                          </MenuItem>
-                        ))}
+                      {testSuites.map(({ testSuiteId, testSuite }) => (
+                        <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
+                          {testSuite}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </Box>
                 )}
@@ -190,13 +202,14 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestCaseChange(e)}
               value={selectedTestCaseId}
             >
-              {testCasesCodes
-                .filter((testCase) => testCase.testCaseId !== selectedTestCaseId)
-                .map(({ testCaseId, testCaseCode }) => (
-                  <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
-                    {testCaseCode}
-                  </MenuItem>
-                ))}
+              {testCasesCodes.map(({ testCaseId, testCaseCode }) => (
+                <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
+                  {testCaseCode}
+                </MenuItem>
+              ))}
+              <MenuItem value="">
+                <Button onClick={() => addTestCase()}>+ Add Case</Button>
+              </MenuItem>
             </Select>
 
             {selectedTestCaseId && <TestCase isEditable={isEditing} />}
@@ -211,15 +224,14 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestProcedureChange(e)}
               value={selectedTestProcedureId}
             >
-              {testProceduresCodes
-                .filter(
-                  (testProcedure) => testProcedure.testProcedureId !== selectedTestProcedureId
-                )
-                .map(({ testProcedureId, testProcedureCode }) => (
-                  <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                    {testProcedureCode}
-                  </MenuItem>
-                ))}
+              {testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
+                <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                  {testProcedureCode}
+                </MenuItem>
+              ))}
+              <MenuItem value="">
+                <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+              </MenuItem>
             </Select>
 
             {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
