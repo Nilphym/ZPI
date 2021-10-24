@@ -12,11 +12,17 @@ const Template = (args) => <Navbar {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   links: [
-    { icon: 'home', text: 'Home', destination: 'home' },
-    { icon: 'home', text: 'Projects', destination: 'projects' },
-    { icon: 'home', text: 'Bilings', destination: 'bilings' },
-    { icon: 'home', text: 'Team', destination: 'team' },
-    { icon: 'home', text: 'Settings', destination: 'settings' }
+    { icon: 'dashboard', text: 'Dashboard', destination: 'dashboard' },
+    {
+      icon: 'bugs',
+      name: 'Bugs',
+      links: [
+        { text: 'My bugs', destination: 'my-bugs' },
+        { text: 'Bugs to fix', destination: 'bugs-to-fix' }
+      ]
+    },
+    { icon: 'tests', text: 'Tests', destination: 'tests' },
+    { icon: 'logout', text: 'Logout', destination: 'logout' }
   ],
   profile: { name: 'John Snow' }
 };

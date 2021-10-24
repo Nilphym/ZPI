@@ -42,7 +42,7 @@ const Field = ({ id, label, type, content, values }) => {
           name={id}
           render={({ field }) => (
             <TextField
-              sx={{ gridColumn: 'span 5', gridRow: 'span 2' }}
+              sx={{ gridColumn: 'span 4', gridRow: 'span 2' }}
               multiline
               rows={3}
               id={id}
@@ -136,7 +136,7 @@ const EnhancedTableRow = ({
 
   return (
     <>
-      <TableRow tabIndex={-1} key={row.code}>
+      <TableRow sx={{ height: '4.8rem' }} tabIndex={-1} key={row.code}>
         <TableCell padding="checkbox">
           <IconButton size="small" onClick={() => setOpen((opened) => !opened)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -160,7 +160,7 @@ const EnhancedTableRow = ({
                   sx={{
                     backgroundColor: blue[50],
                     display: 'grid',
-                    gridTemplate: 'repeat(5, 1fr) / repeat(5, 1fr) 6rem',
+                    gridTemplate: 'repeat(5, 1fr) / repeat(4, 1fr) 6rem',
                     gap: '1rem 4rem',
                     padding: '2rem 6rem'
                   }}
@@ -177,11 +177,11 @@ const EnhancedTableRow = ({
                         values={values}
                       />
                     ))}
-                  <Box sx={{ gridColumn: '6/7', gridRow: '1/5' }} />
+                  <Box sx={{ gridColumn: '5/6', gridRow: '1/5' }} />
                   <Button
                     type="submit"
                     variant="contained"
-                    sx={{ gridColumn: '6/7', gridRow: '5/6' }}
+                    sx={{ gridColumn: '5/6', gridRow: '5/6' }}
                   >
                     Save
                   </Button>

@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Funtest.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -30,6 +31,7 @@ namespace Funtest.Services
 
             var claims = new List<Claim>{
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -38,13 +40,14 @@ namespace Funtest.Services
             claims.AddRange(userClaims);
 
             var userRoles = await UserManager.GetRolesAsync(user);
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+            claims.AddRange(userRoles.Select(role => new Claim("role", role)));
 
-            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
-                _configuration["Jwt:Issuer"],
-                claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials);
+            var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Issuer"],
+            claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

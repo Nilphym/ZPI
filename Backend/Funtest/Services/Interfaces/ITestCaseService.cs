@@ -1,6 +1,7 @@
 ﻿using Funtest.TransferObject.TestCase.Requests;
 using Funtest.TransferObject.TestCase.Responses;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Funtest.Services.Interfaces
@@ -9,7 +10,7 @@ namespace Funtest.Services.Interfaces
     {
         Task<bool> AddTestCase(AddTestCaseRequest testCaseRequest);
         Task<GetTestCaseResponse> GetTestCaseById(Guid id);
-
-        //IQueryable<StepsGetStep> GetAllStepsForTestProcedure(Guid testProcedureId);
+        Task<bool> EditTestCase(Guid id, EditTestCaseRequest request);
+        List<GetTestCaseIdentityValueResponse> GetAllTestCases();
     }
 }

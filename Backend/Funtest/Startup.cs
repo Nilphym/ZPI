@@ -38,40 +38,42 @@ namespace Funtest
             //po³¹czenie automapera
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddMvc().AddNewtonsoftJson();
 
             //rejestracja DI
-            services.AddTransient<IStepService, StepService>();
-            services.AddTransient<ITestProcedureService, TestProcedureService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IJWTService, JWTService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IStepService, StepService>();
+            services.AddTransient<ITestProcedureService, TestProcedureService>();
             services.AddTransient<ITestCaseService, TestCaseService>();
+            services.AddTransient<ITestService, TestService>();
+            services.AddTransient<IErrorService, ErrorService>();
 
-            services.AddControllers();
 
             services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.Lockout.AllowedForNewUsers = false;
             })
                 .AddSignInManager<SignInManager<User>>()
-                .AddEntityFrameworkStores<DatabaseContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                  .AddJwtBearer(options =>
-                  {
-                      options.TokenValidationParameters = new TokenValidationParameters
-                      {
-                          ValidateIssuer = true,
-                          ValidateAudience = true,
-                          ValidateLifetime = true,
-                          ValidateIssuerSigningKey = true,
-                          ValidIssuer = Configuration["Jwt:Issuer"],
-                          ValidAudience = Configuration["Jwt:Issuer"],
-                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                      };
-                  });
             services.AddAuthorization();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+            services.AddMvc().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
@@ -96,13 +98,12 @@ namespace Funtest
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
-
-            app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHttpsRedirection();
+
+
 
             app.UseEndpoints(endpoints =>
             {
