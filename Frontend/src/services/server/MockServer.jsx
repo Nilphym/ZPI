@@ -6,7 +6,10 @@ import { createServer, Model } from 'miragejs';
 const makeServer = () =>
   createServer({
     models: {
-      bug: Model
+      bug: Model,
+      type: Model,
+      impact: Model,
+      priority: Model
     },
     routes() {
       this.namespace = 'api/';
@@ -59,254 +62,315 @@ const makeServer = () =>
         };
       });
 
-      this.get('bugs', (schema) => {
+      this.get('Errors', (schema) => {
         return schema.bugs.all().models;
       });
 
-      this.put('bugs/take/:id', (_, request) => {
+      this.get('Errors/types', (schema) => {
+        return schema.types.all().models.map((model) => model.text);
+      });
+
+      this.get('Errors/impacts', (schema) => {
+        return schema.impacts.all().models.map((model) => model.text);
+      });
+
+      this.get('Errors/priorities', (schema) => {
+        return schema.priorities.all().models.map((model) => model.text);
+      });
+
+      this.put('Errors/take/:id', (_, request) => {
         const { id } = request.params;
         const personId = JSON.parse(request.requestBody);
         console.log(personId, id);
       });
 
-      this.put('bugs/resign/:id', (_, request) => {
+      this.put('Errors/resign/:id', (_, request) => {
         const { id } = request.params;
         const personId = JSON.parse(request.requestBody);
         console.log(personId, id);
       });
 
-      this.put('bugs/reject/:id', (schema, request) => {
+      this.put('Errors/reject/:id', (schema, request) => {
         const { id } = request.params;
-        schema.bugs.findBy({ id }).update('state', 'Rejected');
+        schema.bugs.findBy({ id }).update('errorState', 'Rejected');
       });
 
-      this.put('bugs/resolve/:id', (schema, request) => {
+      this.put('Errors/resolve/:id', (schema, request) => {
         const { id } = request.params;
         const requiredRetests = JSON.parse(request.requestBody);
         console.log(requiredRetests, id);
-        schema.bugs.findBy({ id }).update('state', 'Resolved');
+        schema.bugs.findBy({ id }).update('errorState', 'Resolved');
       });
 
-      this.put('bugs/:id', (schema, request) => {
+      this.put('Errors/:id', (schema, request) => {
         const { id } = request.params;
         const json = JSON.parse(request.requestBody);
+        console.log('2021-12-05T00:00:00');
+        console.log(json.deadline);
 
+        console.log(schema.bugs.findBy({ id }));
         schema.bugs.findBy({ id }).update(json);
+        console.log(schema.bugs.findBy({ id }));
       });
     },
     seeds(server) {
       [
         {
-          id: 1,
-          code: 'E-12323',
+          id: '91563764-7B2B-4FE9-AB0E-B40D5E62E9D6',
+          code: 'E-91563764',
           name: 'Not responding',
-          state: 'New',
+          errorState: 'New',
           functionality: 'Login',
-          type: 'Functional',
-          impact: 'High',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Functional',
+          errorImpact: 'High',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/20/2022',
-          endDate: '12/05/2022'
+          deadline: '2021-12-05T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 2,
-          code: 'E-45432',
+          id: '72AD77FC-B88D-4EC6-A757-A6A3864BAFFF',
+          code: 'E-72AD77FC',
           name: 'Table not visible',
-          state: 'New',
+          errorState: 'New',
           functionality: 'Register',
-          type: 'Functional',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
+          errorType: 'Functional',
+          errorImpact: 'Low',
+          errorPriority: 'Medium',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 3,
-          code: 'E-95783',
+          id: 'A7C33D4D-AC7B-4353-B192-596D70327625',
+          code: 'E-A7C33D4D',
           name: 'Internet down',
-          state: 'In testing',
+          errorState: 'In testing',
           functionality: 'Add product',
-          type: 'Logical',
-          impact: 'Medium',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Logic',
+          errorImpact: 'Medium',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 4,
-          code: 'E-769478',
-          name: 'Christmas early this year',
-          state: 'Fixed',
+          id: '2B7846E7-98A5-42E2-9E5C-C7D9BB779F25',
+          code: 'E-2B7846E7',
+          name: '012345678901234567891234567',
+          errorState: 'Fixed',
           functionality: 'Login',
-          type: 'Logical',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
+          errorType: 'Logic',
+          errorImpact: 'Low',
+          errorPriority: 'Medium',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 5,
-          code: 'E-654865',
+          id: '5CE3FE96-872C-4541-A420-EA35F77A13E2',
+          code: 'E-5CE3FE96',
           name: 'Big bang',
-          state: 'For retest',
+          errorState: 'For retest',
           functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'Medium',
-          priority: 'High',
-          retests: '1/1/1',
+          errorType: 'Data Type',
+          errorImpact: 'Medium',
+          errorPriority: 'High',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 6,
-          code: 'E-234504',
+          id: '9D663266-3805-47F8-AFFA-0B17F1B78CCF',
+          code: 'E-9D663266',
           name: 'Rain is raining',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'High',
-          priority: 'High',
-          retests: '1/1/1',
+          errorType: 'Data Type',
+          errorImpact: 'High',
+          errorPriority: 'High',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 7,
-          code: 'E-090123',
+          id: '5AE2C988-F058-4555-ADF5-3B0F66326B2F',
+          code: 'E-5AE2C988',
           name: 'Goblins attack',
-          state: 'Rejected',
+          errorState: 'Rejected',
           functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Low',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Code Duplication',
+          errorImpact: 'Low',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 8,
-          code: 'E-325980',
+          id: 'C9F996F3-6459-485E-8F30-E314FE6CC4BA',
+          code: 'E-C9F996F3',
           name: 'Lorem ipsum dolor',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
-          type: 'Logical',
-          impact: 'Medium',
-          priority: 'Medium',
-          retests: '1/1/1',
+          errorType: 'Logic',
+          errorImpact: 'Medium',
+          errorPriority: 'Medium',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 9,
-          code: 'E-123423',
+          id: '50C07E32-DEC9-4EBD-8DD1-30C631729BB2',
+          code: 'E-50C07E32',
           name: 'Lorem ipsum dolor',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
-          type: 'Logical',
-          impact: 'High',
-          priority: 'High',
-          retests: '1/1/1',
+          errorType: 'Logic',
+          errorImpact: 'High',
+          errorPriority: 'High',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 10,
-          code: 'E-112223',
+          id: '99E4D145-5BA1-4FF1-BB60-C9D5A408C7C7',
+          code: 'E-99E4D145',
           name: 'Lorem ipsum dolor',
-          state: 'Fixed',
+          errorState: 'Fixed',
           functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Medium',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Code Duplication',
+          errorImpact: 'Medium',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 11,
-          code: 'E-123432',
+          id: 'D9C27689-268B-4623-AFE2-53CC920B73EB',
+          code: 'E-D9C27689',
           name: 'Lorem ipsum dolor',
-          state: 'Fixed',
+          errorState: 'Fixed',
           functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Low',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Code Duplication',
+          errorImpact: 'Low',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 12,
-          code: 'E-123290',
+          id: '1DB009F5-02B9-4B6B-8A00-B9346D07DB1D',
+          code: 'E-1DB009F5',
           name: 'Lorem ipsum dolor',
-          state: 'New',
+          errorState: 'New',
           functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
+          errorType: 'Data Type',
+          errorImpact: 'Low',
+          errorPriority: 'Medium',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
-          id: 13,
-          code: 'E-123003',
+          id: 'BA4E6298-ADEF-40F6-9880-C6389C63436C',
+          code: 'E-BA4E6298',
           name: 'Lorem ipsum dolor',
-          state: 'In testing',
+          errorState: 'In testing',
           functionality: 'Login',
-          type: 'Security',
-          impact: 'High',
-          priority: 'Low',
-          retests: '1/1/1',
+          errorType: 'Security',
+          errorImpact: 'High',
+          errorPriority: 'Low',
+          retestsRequired: 2,
+          retestsDone: 0,
+          retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         }
       ].forEach((bug) => {
         server.create('bug', bug);
       });
+      [
+        { text: 'Functional' },
+        { text: 'Performance' },
+        { text: 'Usability' },
+        { text: 'Compatibility' },
+        { text: 'Security' },
+        { text: 'Syntax' },
+        { text: 'Logic' },
+        { text: 'Unit-level' },
+        { text: 'System-level' },
+        { text: 'Code Duplication' },
+        { text: 'Data Type' }
+      ].forEach((type) => server.create('type', type));
+      [{ text: 'High' }, { text: 'Medium' }, { text: 'Low' }].forEach((impact) =>
+        server.create('impact', impact)
+      );
+      [{ text: 'High' }, { text: 'Medium' }, { text: 'Low' }].forEach((priority) =>
+        server.create('priority', priority)
+      );
     }
   });
 
