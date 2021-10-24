@@ -8,14 +8,13 @@ import { postTest, setTestId } from '../../redux/reducers/test/testSlice';
 const TestPlan = ({ isEditable }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const from = state ? state.from.pathname : '/';
+  const {pathname} = useLocation();
+
 
   async function addTest() {
     const newTestId = await dispatch(postTest());
     dispatch(setTestId(newTestId));
-    console.log(newTestId.payload);
-    navigate(`${from}/test-${newTestId}`);
+    navigate(`${pathname}/test-${newTestId}`);
   }
 
   return (
