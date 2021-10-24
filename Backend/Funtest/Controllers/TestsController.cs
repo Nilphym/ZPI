@@ -35,7 +35,6 @@ namespace Funtest.Controllers
             return Problem("Problem with saving an object in the database");
         }
 
-        //sprawdzić czy to dobrze mapuje selected identity
         [HttpGet("{id}")]
         public async Task<ActionResult<GetTestResponse>> GetTest(Guid id)
         {
@@ -47,10 +46,13 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testId}")]
-        public async Task<ActionResult> EditTest([FromRoute] Guid id, EditTestRequest request)
+        public async Task<ActionResult> EditTest([FromRoute] Guid testId, EditTestRequest request)
         {
-            var result = await _testService.EditTest(id, request);
+            var isExist = _testService.IsTestExist(testId);
+            if (!isExist)
+                return NotFound("Object with given id doesn't exist");
 
+            var result = await _testService.EditTest(testId, request);
             if (result)
                 return Ok();
 

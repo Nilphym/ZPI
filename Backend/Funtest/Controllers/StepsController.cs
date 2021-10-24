@@ -49,7 +49,7 @@ namespace Funtest.Controllers
             return NotFound("Test procedure with the given id doesn't exist.");
         }
 
-        [HttpPut("stepId")]
+        [HttpPut("{stepId}")]
         public async Task<ActionResult> EditStep([FromRoute] Guid stepId, EditStepRequest request)
         {
             var response = await _stepService.EditStep(stepId, request);
