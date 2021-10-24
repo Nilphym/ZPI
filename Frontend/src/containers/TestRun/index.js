@@ -1,3 +1,1 @@
-import TestRun from './TestRun';
-
-export default TestRun;
+export { default } from './TestRun';

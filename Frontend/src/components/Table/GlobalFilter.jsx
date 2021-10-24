@@ -37,8 +37,10 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 };
 
 GlobalFilter.propTypes = {
-  globalFilter: PropTypes.string.isRequired,
+  globalFilter: PropTypes.string,
   setGlobalFilter: PropTypes.func.isRequired
 };
+
+GlobalFilter.defaultProps = { globalFilter: undefined };
 
 export default GlobalFilter;

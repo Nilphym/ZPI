@@ -20,7 +20,11 @@ const RowDenseSelector = ({ dense, setDense, shouldSetDense }) => {
 RowDenseSelector.propTypes = {
   dense: PropTypes.bool.isRequired,
   setDense: PropTypes.func.isRequired,
-  shouldSetDense: PropTypes.bool.isRequired
+  shouldSetDense: PropTypes.bool
+};
+
+RowDenseSelector.defaultProps = {
+  shouldSetDense: false
 };
 
 const TableToolbar = ({ title, setGlobalFilter, globalFilter, dense, setDense }) => {
@@ -57,9 +61,13 @@ const TableToolbar = ({ title, setGlobalFilter, globalFilter, dense, setDense })
 TableToolbar.propTypes = {
   title: PropTypes.string.isRequired,
   setGlobalFilter: PropTypes.func.isRequired,
-  globalFilter: PropTypes.string.isRequired,
+  globalFilter: PropTypes.string,
   dense: PropTypes.bool.isRequired,
   setDense: PropTypes.func.isRequired
+};
+
+TableToolbar.defaultProps = {
+  globalFilter: undefined
 };
 
 export default TableToolbar;

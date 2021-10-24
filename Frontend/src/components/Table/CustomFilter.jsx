@@ -67,9 +67,9 @@ export const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilter
 
 SelectColumnFilter.propTypes = {
   column: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     filterValue: PropTypes.string,
     setFilter: PropTypes.func.isRequired,
-    preFilteredRows: PropTypes.array.isRequired,
-    id: PropTypes.number.isRequired
+    preFilteredRows: PropTypes.array.isRequired
   }).isRequired
 };

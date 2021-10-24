@@ -48,37 +48,47 @@ const PageNumeration = ({ onPageChange, pageCount, page }) => {
   let numerationButtons = null;
 
   if (pageCount < maxPagesForSmallPagination + 1) {
-    numerationButtons = [
-      ...[...Array(pageCount).keys()].map((number) => (
-        <PaginationButton>{number + 1}</PaginationButton>
-      ))
-    ];
+    numerationButtons = (
+      <>
+        {[...Array(pageCount).keys()].map((number) => (
+          <PaginationButton key={number}>{number + 1}</PaginationButton>
+        ))}
+      </>
+    );
   } else if (page <= maxPageForPostDots - 1) {
-    numerationButtons = [
-      ...[...Array(maxPagesInLongPagination).keys()].map((number) => (
-        <PaginationButton>{number + 1}</PaginationButton>
-      )),
-      <DotsIcon />,
-      <PaginationButton>{pageCount}</PaginationButton>
-    ];
+    numerationButtons = (
+      <>
+        {[...Array(maxPagesInLongPagination).keys()].map((number) => (
+          <PaginationButton key={number}>{number + 1}</PaginationButton>
+        ))}
+        <DotsIcon />
+        <PaginationButton>{pageCount}</PaginationButton>
+      </>
+    );
   } else if (page >= pageCount - maxPageForPostDots) {
-    numerationButtons = [
-      <PaginationButton>1</PaginationButton>,
-      <DotsIcon />,
-      ...[...Array(maxPagesInLongPagination).keys()].map((number) => (
-        <PaginationButton>{number + pageCount - maxPagesInLongPagination + 1}</PaginationButton>
-      ))
-    ];
+    numerationButtons = (
+      <>
+        <PaginationButton>1</PaginationButton>
+        <DotsIcon />
+        {[...Array(maxPagesInLongPagination).keys()].map((number) => (
+          <PaginationButton key={number}>
+            {number + pageCount - maxPagesInLongPagination + 1}
+          </PaginationButton>
+        ))}
+      </>
+    );
   } else {
-    numerationButtons = [
-      <PaginationButton>1</PaginationButton>,
-      <DotsIcon />,
-      <PaginationButton>{page}</PaginationButton>,
-      <PaginationButton>{page + 1}</PaginationButton>,
-      <PaginationButton>{page + 2}</PaginationButton>,
-      <DotsIcon />,
-      <PaginationButton>{pageCount}</PaginationButton>
-    ];
+    numerationButtons = (
+      <>
+        <PaginationButton>1</PaginationButton>
+        <DotsIcon />
+        <PaginationButton>{page}</PaginationButton>
+        <PaginationButton>{page + 1}</PaginationButton>
+        <PaginationButton>{page + 2}</PaginationButton>
+        <DotsIcon />
+        <PaginationButton>{pageCount}</PaginationButton>
+      </>
+    );
   }
 
   return (

@@ -1,27 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '@mui/material';
 
-import BugTable, { types as bugTableTypes } from '../containers/BugTable';
+import BugTable, { tableTypes } from '../containers/BugTable';
 
 const BugPage = ({ type }) => {
-  return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        padding: '2rem 1rem',
-        alignSelf: 'center'
-      }}
-    >
-      <BugTable type={type} />
-    </Box>
-  );
+  return <BugTable type={type} />;
 };
 
 export default BugPage;
-export const types = bugTableTypes;
+export { tableTypes } from '../containers/BugTable';
 
 BugPage.propTypes = {
-  type: PropTypes.oneOf(types).isRequired
+  type: PropTypes.oneOf(Object.values(tableTypes)).isRequired
 };

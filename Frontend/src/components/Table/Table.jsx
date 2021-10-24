@@ -48,7 +48,8 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
       columns,
       data,
       defaultColumn,
-      initialState: { pageSize: initialPageSize }
+      initialState: { pageSize: initialPageSize },
+      getSubRows: (row) => row.subRows
     },
     useFilters,
     useGlobalFilter,
@@ -78,35 +79,36 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
         <Paper component={TableHead} elevation={2} square>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <TableCell
-                  {...(column.id === 'selection'
-                    ? column.getHeaderProps()
-                    : column.getHeaderProps(column.getSortByToggleProps()))}
-                >
-                  {column.render('Header')}
-                  {column.canFilter && column.id !== 'selection' ? (
-                    <>
-                      <TableSortLabel
-                        active={column.isSorted}
-                        direction={column.isSortedDesc ? 'desc' : 'asc'}
-                      />
-                      <Box height="0.6rem" />
-                      {column.render('Filter')}
-                    </>
-                  ) : null}
-                </TableCell>
-              ))}
+              {headerGroup.headers.map((column) => {
+                return (
+                  <TableCell
+                    {...(column.id === 'selection'
+                      ? column.getHeaderProps()
+                      : column.getHeaderProps(column.getSortByToggleProps()))}
+                  >
+                    {column.render('Header')}
+                    {column.disableFilters ? null : (
+                      <>
+                        <TableSortLabel
+                          active={column.isSorted}
+                          direction={column.isSortedDesc ? 'desc' : 'asc'}
+                        />
+                        <Box height="0.6rem" />
+                        {column.render('Filter')}
+                      </>
+                    )}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </Paper>
         <TableBody {...getTableBodyProps()}>
           {page.map((row) => {
-            console.log(row);
             prepareRow(row);
-            return row.originalSubRows.length ? (
-              <Fragment {...row.getRowProps()}>
-                <TableRow>
+            return row.originalSubRows ? (
+              <React.Fragment key={row.getRowProps().key}>
+                <TableRow role={row.getRowProps().role}>
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
                   ))}
@@ -115,8 +117,9 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
                   colSpan={visibleColumns.length}
                   data={row.originalSubRows[0]}
                   open={row.isExpanded}
+                  onSubmit={() => null} // TODO handle submitting
                 />
-              </Fragment>
+              </React.Fragment>
             ) : null;
           })}
         </TableBody>

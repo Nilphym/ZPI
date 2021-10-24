@@ -21,6 +21,9 @@ const Field = ({ id, label, type, value, possibleValues }) => {
   const [date, setDate] = useState(null);
 
   switch (type) {
+    case 'disabled': {
+      return <TextField disabled size="small" id={id} label={label} value={value} />;
+    }
     case 'text':
       return (
         <Controller
@@ -107,12 +110,12 @@ Field.defaultProps = {
   value: null
 };
 
-const EnhancedTableRow = ({ colSpan, data, open, onSubmit }) => {
+const ExpandableRow = ({ colSpan, data, open, onSubmit }) => {
   const formMethods = useForm();
   const { handleSubmit, setValue } = formMethods;
 
   useEffect(() => {
-    if (data) setValue(data.id, data[data.id]);
+    if (data) setValue('id', data.id);
   }, []);
 
   return (
@@ -158,14 +161,18 @@ const EnhancedTableRow = ({ colSpan, data, open, onSubmit }) => {
   );
 };
 
-export default EnhancedTableRow;
+export default ExpandableRow;
 
-EnhancedTableRow.propTypes = {
+ExpandableRow.propTypes = {
   colSpan: PropTypes.number.isRequired,
   data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     fields: PropTypes.array.isRequired
   }).isRequired,
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired
+};
+
+ExpandableRow.defaultProps = {
+  open: false
 };

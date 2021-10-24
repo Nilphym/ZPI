@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -10,22 +10,26 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  TextField
+  TextField,
+  IconButton
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
-import Table from '../../components/TableObsolete';
+import Table from '../../components/Table';
+import { SelectColumnFilter } from '../../components/Table/CustomFilter';
 import {
   getRows,
   putRows,
   resolveBug,
   rejectBug,
   takeBug,
-  resignFromBug
+  resignFromBug,
+  getPossibleValues
 } from '../../redux/reducers/bugs/bugsSlice';
 
-export const types = {
+export const tableTypes = {
   all: 'all',
   myBugs: 'my-bugs',
   toFix: 'to-fix',
@@ -39,10 +43,50 @@ const BugTable = ({ type }) => {
   const [dialog, setDialog] = useState({ open: false, content: null, action: null });
   const { id: personId } = useSelector((state) => state.auth.token);
   const { rows, loading } = useSelector((state) => state.bugs);
+  const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
 
   useEffect(() => {
     dispatch(getRows());
+    dispatch(getPossibleValues());
   }, []);
+
+  const prepareRows = (rows) =>
+    rows.map((row) => ({
+      ...row,
+      subRows: [
+        {
+          id: row.id,
+          fields: [
+            { id: 'name', label: 'Name', type: 'text', value: row.name },
+            { id: 'type', label: 'Type', type: 'select', value: row.type, possibleValues: types },
+            {
+              id: 'impact',
+              label: 'Impact',
+              type: 'select',
+              value: row.impact,
+              possibleValues: impacts
+            },
+            {
+              id: 'priority',
+              label: 'Priority',
+              type: 'select',
+              value: row.priority,
+              possibleValues: priorities
+            },
+            { id: 'deadline', label: 'Deadline', type: 'date', value: row.deadline },
+            {
+              id: 'reportDate',
+              label: 'Report date',
+              type: 'disabled',
+              value: row.reportDate
+            },
+            { id: 'endDate', label: 'End date', type: 'disabled', value: row.endDate },
+            { id: 'description', label: 'Description', type: 'textLarge', value: row.description }
+            // { id: 'attachments', label: 'Attachments', Component: null } // TODO handle attachments by custom component
+          ]
+        }
+      ]
+    }));
 
   const closeDialog = () => {
     setDialog((dialog) => ({ ...dialog, open: false }));
@@ -111,84 +155,125 @@ const BugTable = ({ type }) => {
     });
   };
 
+  const columns = useMemo(
+    () => [
+      {
+        id: 'expander',
+        disableFilters: true,
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ row: { isExpanded, getToggleRowExpandedProps } }) => (
+          <IconButton {...getToggleRowExpandedProps()} size="small">
+            {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </IconButton>
+        )
+      },
+      {
+        Header: 'Code',
+        accessor: 'code'
+      },
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'State',
+        accessor: 'state',
+        Filter: SelectColumnFilter
+      },
+      {
+        Header: 'Functionality',
+        accessor: 'functionality'
+      },
+      {
+        Header: 'Type',
+        accessor: 'type',
+        Filter: SelectColumnFilter
+      },
+      {
+        Header: 'Impact',
+        accessor: 'impact',
+        Filter: SelectColumnFilter
+      },
+      {
+        Header: 'Priority',
+        accessor: 'priority',
+        Filter: SelectColumnFilter
+      },
+      {
+        Header: 'Retests',
+        accessor: 'retests'
+      },
+      {
+        Header: 'Resign',
+        accessor: 'resign',
+        disableFilters: true
+      },
+      {
+        Header: 'Reject',
+        accessor: 'reject',
+        disableFilters: true
+      },
+      {
+        Header: 'Resolve',
+        accessor: 'resolve',
+        disableFilters: true
+      },
+      {
+        Header: 'Take',
+        accessor: 'take',
+        disableFilters: true
+      },
+      {
+        Header: 'Retest',
+        accessor: 'retest',
+        disableFilters: true
+      }
+    ],
+    []
+  );
+
   const headCells = [
-    { id: 'code', label: 'Code', width: '6rem', isHeading: true },
-    { id: 'name', label: 'Name', type: 'text' },
-    { id: 'state', label: 'State', width: 0 },
-    { id: 'functionality', label: 'Functionality', width: '15rem' },
-    {
-      id: 'type',
-      label: 'Type',
-      width: 0,
-      type: 'select',
-      values: ['Functional', 'Logical', 'Wrong datatype']
-    },
-    {
-      id: 'impact',
-      label: 'Impact',
-      width: 0,
-      type: 'select',
-      values: ['High', 'Medium', 'Low']
-    },
-    {
-      id: 'priority',
-      label: 'Priority',
-      width: 0,
-      type: 'select',
-      values: ['High', 'Medium', 'Low']
-    },
     {
       id: 'retests',
-      alignCenter: true,
       label: 'Retests',
       sublabel: 'Req/Done/Failed',
-      unsortable: true,
-      hidden: type !== types.toReview && type !== types.all,
-      width: '6rem'
+      hidden: type !== tableTypes.toReview && type !== tableTypes.all
     },
     {
       id: 'resign',
       label: 'Resign',
-      hidden: type !== types.myBugs,
+      hidden: type !== tableTypes.myBugs,
       button: 'cancel',
       onClick: onResign
     },
     {
       id: 'reject',
       label: 'Reject',
-      hidden: type !== types.myBugs,
+      hidden: type !== tableTypes.myBugs,
       button: 'clear',
       onClick: onReject
     },
     {
       id: 'resolve',
       label: 'Resolve',
-      hidden: type !== types.myBugs,
+      hidden: type !== tableTypes.myBugs,
       button: 'done',
       onClick: onResolve
     },
     {
       id: 'take',
       label: 'Take',
-      hidden: type !== types.toFix,
+      hidden: type !== tableTypes.toFix,
       button: 'add',
       onClick: onTake
     },
     {
       id: 'retest',
       label: 'Retest',
-      hidden: type !== types.toReview,
+      hidden: type !== tableTypes.toReview,
       button: 'repeat',
       onClick: onRetest
     }
-  ];
-
-  const rowCells = [
-    { id: 'deadline', label: 'Deadline', type: 'date' },
-    { id: 'reportDate', label: 'Report date', type: 'date' },
-    { id: 'endDate', label: 'End date', type: 'date' },
-    { id: 'description', label: 'Description', type: 'textLarge' },
-    { id: 'attachments', label: 'Attachments', type: 'text' }
   ];
 
   const onSubmitBugStatus = async (arg) => {
@@ -216,13 +301,14 @@ const BugTable = ({ type }) => {
     </Box>
   ) : (
     <>
-      <Table
+      <Table title="Bugs" initialPageSize={5} data={prepareRows(rows)} columns={columns} />
+      {/* <Table
         headCells={headCells.filter((headCell) => !headCell.hidden)}
         rowCells={rowCells}
         rowsPerPageOptions={[5, 10, 15]}
         rows={[...rows]}
         onSubmit={onSubmitBugDetails}
-      />
+      /> */}
       <Dialog open={dialog.open} onClose={closeDialog}>
         <form onSubmit={handleSubmit(onSubmitBugStatus)}>
           <DialogTitle>Are you sure?</DialogTitle>
@@ -240,5 +326,5 @@ const BugTable = ({ type }) => {
 export default BugTable;
 
 BugTable.propTypes = {
-  type: PropTypes.oneOf(Object.values(types)).isRequired
+  type: PropTypes.oneOf(Object.values(tableTypes)).isRequired
 };

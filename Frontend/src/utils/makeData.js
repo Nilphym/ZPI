@@ -22,14 +22,13 @@ const newPerson = () => {
 };
 
 export default function makeData(len) {
-  const makeDataLevel = (depth = 0) => {
-    return range(len).map((d) => {
+  const makeDataLevel = () => {
+    return range(len).map(() => {
       return {
         ...newPerson(),
         subRows: [
           {
-            id: 'code',
-            code: 'B-142112',
+            id: Math.floor(Math.random() * 1000),
             fields: [
               { id: 'name', label: 'Name', type: 'text', value: 'Herald' },
               {
