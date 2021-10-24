@@ -26,7 +26,7 @@ namespace Funtest.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateNewProject(CreateNewProductRequest request)
         {
-             var userResult = await _adminService.AddProjectManager(new AddNewUserRequest()
+             var userResult = await _adminService.AddProjectManager(new AddProjectManageRequest()
             {
                 Role = Roles.ProjectManager,
                 FirstName = request.FirstName,
