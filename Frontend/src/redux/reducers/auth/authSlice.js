@@ -13,9 +13,11 @@ const initialState = token
       token: null
     };
 
-export const register = createAsyncThunk('auth/register', async ({ username, email, password }) => {
+export const register = createAsyncThunk('auth/register', async ({ projectName, name, surname, email, password }) => {
   return authService.register({
-    username,
+    projectName,
+    name,
+    surname,
     email,
     password
   });
