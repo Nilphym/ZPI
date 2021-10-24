@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Controller, useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { blue } from '@mui/material/colors';
+import { DatePicker } from '@mui/lab';
+import { DateTime } from 'luxon';
 import {
   TableRow,
   TableCell,
@@ -12,17 +16,24 @@ import {
   FormControl,
   InputLabel
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
-import { DesktopDatePicker } from '@mui/lab';
-import { Controller, useForm, FormProvider, useFormContext } from 'react-hook-form';
 
 const Field = ({ id, label, type, value, possibleValues }) => {
   const { control, setValue } = useFormContext();
-  const [date, setDate] = useState(null);
 
   switch (type) {
     case 'disabled': {
-      return <TextField disabled size="small" id={id} label={label} value={value} />;
+      return DateTime.fromFormat(value, 'MM/dd/yyyy').isValid ? (
+        <DatePicker
+          label={label}
+          value={value}
+          inputFormat="MM/dd/yyyy"
+          renderInput={(params) => <TextField size="small" {...params} />}
+          onChange={() => null}
+          disabled
+        />
+      ) : (
+        <TextField disabled size="small" id={id} label={label} value={value} />
+      );
     }
     case 'text':
       return (
@@ -58,15 +69,13 @@ const Field = ({ id, label, type, value, possibleValues }) => {
           defaultValue={value}
           name={id}
           render={({ field }) => (
-            <DesktopDatePicker
+            <DatePicker
               label={label}
               inputFormat="MM/dd/yyyy"
-              value={date}
               renderInput={(params) => <TextField size="small" {...params} />}
               {...field}
               onChange={(date) => {
-                setDate(date);
-                setValue(id, date.toLocaleString());
+                setValue(id, date?.toFormat('MM/dd/yyyy'));
               }}
             />
           )}
@@ -101,29 +110,28 @@ Field.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.string.isRequired,
   possibleValues: PropTypes.array
 };
 
 Field.defaultProps = {
-  possibleValues: null,
-  value: null
+  possibleValues: null
 };
 
-const ExpandableRow = ({ colSpan, data, open, onSubmit }) => {
+const ExpandableRow = ({ colSpan, data, open }) => {
   const formMethods = useForm();
   const { handleSubmit, setValue } = formMethods;
 
   useEffect(() => {
-    if (data) setValue('id', data.id);
+    setValue('id', data.id);
   }, []);
 
   return (
     <TableRow>
-      <TableCell style={{ padding: 0 }} colSpan={colSpan}>
+      <TableCell sx={{ padding: 0 }} colSpan={colSpan}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <FormProvider {...formMethods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(data.submitHandler)}>
               <Box
                 sx={{
                   backgroundColor: blue[50],
@@ -133,17 +141,16 @@ const ExpandableRow = ({ colSpan, data, open, onSubmit }) => {
                   padding: '2rem 6rem'
                 }}
               >
-                {data &&
-                  data.fields.map(({ id, label, type, value, possibleValues }) => (
-                    <Field
-                      key={id}
-                      id={id}
-                      label={label}
-                      type={type}
-                      value={value}
-                      possibleValues={possibleValues}
-                    />
-                  ))}
+                {data.fields.map(({ id, label, type, value, possibleValues }) => (
+                  <Field
+                    key={id}
+                    id={id}
+                    label={label}
+                    type={type}
+                    value={value}
+                    possibleValues={possibleValues}
+                  />
+                ))}
                 <Box sx={{ gridColumn: '5/6', gridRow: '1/5' }} />
                 <Button
                   type="submit"
@@ -167,10 +174,10 @@ ExpandableRow.propTypes = {
   colSpan: PropTypes.number.isRequired,
   data: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    fields: PropTypes.array.isRequired
+    fields: PropTypes.array.isRequired,
+    submitHandler: PropTypes.func.isRequired
   }).isRequired,
-  open: PropTypes.bool,
-  onSubmit: PropTypes.func.isRequired
+  open: PropTypes.bool
 };
 
 ExpandableRow.defaultProps = {

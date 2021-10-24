@@ -62,51 +62,55 @@ const makeServer = () =>
         };
       });
 
-      this.get('bugs', (schema) => {
+      this.get('Errors', (schema) => {
         return schema.bugs.all().models;
       });
 
-      this.get('bugs/types', (schema) => {
+      this.get('Errors/types', (schema) => {
         return schema.types.all().models.map((model) => model.text);
       });
 
-      this.get('bugs/impacts', (schema) => {
+      this.get('Errors/impacts', (schema) => {
         return schema.impacts.all().models.map((model) => model.text);
       });
 
-      this.get('bugs/priorities', (schema) => {
+      this.get('Errors/priorities', (schema) => {
         return schema.priorities.all().models.map((model) => model.text);
       });
 
-      this.put('bugs/take/:id', (_, request) => {
+      this.put('Errors/take/:id', (_, request) => {
         const { id } = request.params;
         const personId = JSON.parse(request.requestBody);
         console.log(personId, id);
       });
 
-      this.put('bugs/resign/:id', (_, request) => {
+      this.put('Errors/resign/:id', (_, request) => {
         const { id } = request.params;
         const personId = JSON.parse(request.requestBody);
         console.log(personId, id);
       });
 
-      this.put('bugs/reject/:id', (schema, request) => {
+      this.put('Errors/reject/:id', (schema, request) => {
         const { id } = request.params;
-        schema.bugs.findBy({ id }).update('state', 'Rejected');
+        schema.bugs.findBy({ id }).update('errorState', 'Rejected');
       });
 
-      this.put('bugs/resolve/:id', (schema, request) => {
+      this.put('Errors/resolve/:id', (schema, request) => {
         const { id } = request.params;
         const requiredRetests = JSON.parse(request.requestBody);
         console.log(requiredRetests, id);
-        schema.bugs.findBy({ id }).update('state', 'Resolved');
+        schema.bugs.findBy({ id }).update('errorState', 'Resolved');
       });
 
-      this.put('bugs/:id', (schema, request) => {
+      this.put('Errors/:id', (schema, request) => {
         const { id } = request.params;
         const json = JSON.parse(request.requestBody);
+        console.log('2021-12-05T00:00:00');
+        console.log(json.deadline);
 
+        console.log(schema.bugs.findBy({ id }));
         schema.bugs.findBy({ id }).update(json);
+        console.log(schema.bugs.findBy({ id }));
       });
     },
     seeds(server) {
@@ -125,15 +129,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-05T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '72AD77FC-B88D-4EC6-A757-A6A3864BAFFF',
           code: 'E-72AD77FC',
           name: 'Table not visible',
-          state: 'New',
+          errorState: 'New',
           functionality: 'Register',
           errorType: 'Functional',
           errorImpact: 'Low',
@@ -143,15 +147,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: 'A7C33D4D-AC7B-4353-B192-596D70327625',
           code: 'E-A7C33D4D',
           name: 'Internet down',
-          state: 'In testing',
+          errorState: 'In testing',
           functionality: 'Add product',
           errorType: 'Logic',
           errorImpact: 'Medium',
@@ -161,15 +165,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '2B7846E7-98A5-42E2-9E5C-C7D9BB779F25',
           code: 'E-2B7846E7',
-          name: 'Christmas early this year',
-          state: 'Fixed',
+          name: '012345678901234567891234567',
+          errorState: 'Fixed',
           functionality: 'Login',
           errorType: 'Logic',
           errorImpact: 'Low',
@@ -179,15 +183,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '5CE3FE96-872C-4541-A420-EA35F77A13E2',
           code: 'E-5CE3FE96',
           name: 'Big bang',
-          state: 'For retest',
+          errorState: 'For retest',
           functionality: 'Login',
           errorType: 'Data Type',
           errorImpact: 'Medium',
@@ -197,15 +201,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '9D663266-3805-47F8-AFFA-0B17F1B78CCF',
           code: 'E-9D663266',
           name: 'Rain is raining',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
           errorType: 'Data Type',
           errorImpact: 'High',
@@ -215,15 +219,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '5AE2C988-F058-4555-ADF5-3B0F66326B2F',
           code: 'E-5AE2C988',
           name: 'Goblins attack',
-          state: 'Rejected',
+          errorState: 'Rejected',
           functionality: 'Login',
           errorType: 'Code Duplication',
           errorImpact: 'Low',
@@ -233,15 +237,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: 'C9F996F3-6459-485E-8F30-E314FE6CC4BA',
           code: 'E-C9F996F3',
           name: 'Lorem ipsum dolor',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
           errorType: 'Logic',
           errorImpact: 'Medium',
@@ -251,15 +255,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '50C07E32-DEC9-4EBD-8DD1-30C631729BB2',
           code: 'E-50C07E32',
           name: 'Lorem ipsum dolor',
-          state: 'Resolved',
+          errorState: 'Resolved',
           functionality: 'Login',
           errorType: 'Logic',
           errorImpact: 'High',
@@ -269,15 +273,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '99E4D145-5BA1-4FF1-BB60-C9D5A408C7C7',
           code: 'E-99E4D145',
           name: 'Lorem ipsum dolor',
-          state: 'Fixed',
+          errorState: 'Fixed',
           functionality: 'Login',
           errorType: 'Code Duplication',
           errorImpact: 'Medium',
@@ -287,15 +291,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: 'D9C27689-268B-4623-AFE2-53CC920B73EB',
           code: 'E-D9C27689',
           name: 'Lorem ipsum dolor',
-          state: 'Fixed',
+          errorState: 'Fixed',
           functionality: 'Login',
           errorType: 'Code Duplication',
           errorImpact: 'Low',
@@ -305,15 +309,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: '1DB009F5-02B9-4B6B-8A00-B9346D07DB1D',
           code: 'E-1DB009F5',
           name: 'Lorem ipsum dolor',
-          state: 'New',
+          errorState: 'New',
           functionality: 'Login',
           errorType: 'Data Type',
           errorImpact: 'Low',
@@ -323,15 +327,15 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         },
         {
           id: 'BA4E6298-ADEF-40F6-9880-C6389C63436C',
           code: 'E-BA4E6298',
           name: 'Lorem ipsum dolor',
-          state: 'In testing',
+          errorState: 'In testing',
           functionality: 'Login',
           errorType: 'Security',
           errorImpact: 'High',
@@ -341,9 +345,9 @@ const makeServer = () =>
           retestsFailed: 0,
           description:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12-15-2022T00:00:00',
-          reportDate: '12-15-2022T00:00:00',
-          endDate: '12-15-2022T00:00:00'
+          deadline: '2021-12-20T00:00:00',
+          reportDate: '2021-12-20T00:00:00',
+          endDate: '2021-12-20T00:00:00'
         }
       ].forEach((bug) => {
         server.create('bug', bug);

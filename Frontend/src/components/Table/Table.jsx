@@ -79,27 +79,28 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
         <Paper component={TableHead} elevation={2} square>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
-                return (
-                  <TableCell
-                    {...(column.id === 'selection'
-                      ? column.getHeaderProps()
-                      : column.getHeaderProps(column.getSortByToggleProps()))}
-                  >
-                    {column.render('Header')}
-                    {column.disableFilters ? null : (
-                      <>
-                        <TableSortLabel
-                          active={column.isSorted}
-                          direction={column.isSortedDesc ? 'desc' : 'asc'}
-                        />
-                        <Box height="0.6rem" />
-                        {column.render('Filter')}
-                      </>
-                    )}
-                  </TableCell>
-                );
-              })}
+              {headerGroup.headers.map((column) => (
+                <TableCell
+                  sx={{
+                    minWidth: column.minWidth,
+                    maxWidth: column.maxWidth,
+                    textAlign: column.align
+                  }}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                >
+                  {column.render('Header')}
+                  {column.disableFilters ? null : (
+                    <>
+                      <TableSortLabel
+                        active={column.isSorted}
+                        direction={column.isSortedDesc ? 'desc' : 'asc'}
+                      />
+                      <Box height="0.6rem" />
+                      {column.render('Filter')}
+                    </>
+                  )}
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </Paper>
@@ -110,14 +111,22 @@ const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
               <React.Fragment key={row.getRowProps().key}>
                 <TableRow role={row.getRowProps().role}>
                   {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                    <TableCell
+                      sx={{
+                        minWidth: cell.column.minWidth,
+                        maxWidth: cell.column.maxWidth,
+                        textAlign: cell.column.align
+                      }}
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render('Cell')}
+                    </TableCell>
                   ))}
                 </TableRow>
                 <ExpandableRow
                   colSpan={visibleColumns.length}
                   data={row.originalSubRows[0]}
                   open={row.isExpanded}
-                  onSubmit={() => null} // TODO handle submitting
                 />
               </React.Fragment>
             ) : null;

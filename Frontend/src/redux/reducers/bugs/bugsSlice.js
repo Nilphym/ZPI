@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { DateTime } from 'luxon';
 
 import server from '../../../services/server/api';
 
@@ -8,25 +9,11 @@ const initialState = {
   possibleValues: {}
 };
 
-const prepareData = (rows) => {
-  return rows.map((row) => ({
-    ...row,
-    state: row.errorState,
-    type: row.errorType,
-    impact: row.errorImpact,
-    priority: row.errorPriority,
-    retests: `${row.retestsRequired} / ${row.retestsDone} / ${row.retestsFailed}`,
-    deadline: row.deadline.substring(0, 10).replaceAll('-', '/'),
-    reportDate: row.reportDate.substring(0, 10).replaceAll('-', '/'),
-    endDate: row.endDate.substring(0, 10).replaceAll('-', '/')
-  }));
-};
-
 export const getPossibleValues = createAsyncThunk('bugs/get/values', async () => {
   const promises = [];
-  promises.push(server().get({ url: 'bugs/types' }));
-  promises.push(server().get({ url: 'bugs/impacts' }));
-  promises.push(server().get({ url: 'bugs/priorities' }));
+  promises.push(server().get({ url: 'Errors/types' }));
+  promises.push(server().get({ url: 'Errors/impacts' }));
+  promises.push(server().get({ url: 'Errors/priorities' }));
 
   const resolved = await Promise.all(promises);
 
@@ -39,33 +26,62 @@ export const getPossibleValues = createAsyncThunk('bugs/get/values', async () =>
   return data;
 });
 
+const prepareDataForView = (rows) => {
+  return rows.map((row) => ({
+    ...row,
+    state: row.errorState,
+    type: row.errorType,
+    impact: row.errorImpact,
+    priority: row.errorPriority,
+    // required: row.retestsRequired,
+    // done: row.retestsDone,
+    // failed: row.retestsFailed,
+    retests: [row.retestsRequired, row.retestsDone, row.retestsFailed].join(' / '),
+    deadline: row.deadline ? DateTime.fromISO(row.deadline).toFormat('MM/dd/yyyy') : '',
+    reportDate: DateTime.fromISO(row.reportDate).toFormat('MM/dd/yyyy'),
+    endDate: DateTime.fromISO(row.endDate).toFormat('MM/dd/yyyy')
+  }));
+};
+
 export const getRows = createAsyncThunk('bugs/get/rows', async () => {
-  const data = await server().get({ url: 'bugs' });
-  return prepareData(data);
+  const data = await server().get({ url: 'Errors' });
+  return prepareDataForView(data);
 });
 
+const prepareDataForServer = (json) => {
+  return {
+    ...json,
+    errorType: json.type,
+    errorImpact: json.impact,
+    errorPriority: json.priority,
+    deadline: json.deadline
+      ? DateTime.fromFormat(json.deadline, 'MM/dd/yyyy').toISO().substring(0, 19)
+      : ''
+  };
+};
+
 export const putRows = createAsyncThunk('bugs/put/rows', async ({ id, json }) => {
-  const data = await server().put({ url: `bugs/${id}`, data: json });
+  const data = await server().put({ url: `Errors/${id}`, data: prepareDataForServer(json) });
   return data;
 });
 
 export const rejectBug = createAsyncThunk('bugs/reject', async ({ id }) => {
-  const data = await server().put({ url: `bugs/reject/${id}` });
+  const data = await server().put({ url: `Errors/reject/${id}` });
   return data;
 });
 
 export const resolveBug = createAsyncThunk('bugs/resolve', async ({ id, retestsRequired }) => {
-  const data = await server().put({ url: `bugs/resolve/${id}`, data: retestsRequired });
+  const data = await server().put({ url: `Errors/resolve/${id}`, data: retestsRequired });
   return data;
 });
 
-export const takeBug = createAsyncThunk('bugs/take', async ({ id, personId }) => {
-  const data = await server().put({ url: `bugs/take/${id}`, data: personId });
+export const takeBug = createAsyncThunk('bugs/take', async ({ id, developerId }) => {
+  const data = await server().put({ url: `Errors/take/${id}`, data: developerId });
   return data;
 });
 
-export const resignFromBug = createAsyncThunk('bugs/resign', async ({ id, personId }) => {
-  const data = await server().put({ url: `bugs/resign/${id}`, data: personId });
+export const resignFromBug = createAsyncThunk('bugs/resign', async ({ id, developerId }) => {
+  const data = await server().put({ url: `Errors/resign/${id}`, data: developerId });
   return data;
 });
 

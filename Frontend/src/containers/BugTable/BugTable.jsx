@@ -11,13 +11,14 @@ import {
   DialogActions,
   Button,
   TextField,
-  IconButton
+  IconButton,
+  Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
-import Table from '../../components/Table';
+import Table, { EnhancedIconButton, icons } from '../../components/Table';
 import { SelectColumnFilter } from '../../components/Table/CustomFilter';
 import {
   getRows,
@@ -41,7 +42,7 @@ const BugTable = ({ type }) => {
   const navigate = useNavigate();
   const { handleSubmit, setValue, control } = useForm();
   const [dialog, setDialog] = useState({ open: false, content: null, action: null });
-  const { id: personId } = useSelector((state) => state.auth.token);
+  const { id: developerId } = useSelector((state) => state.auth.token);
   const { rows, loading } = useSelector((state) => state.bugs);
   const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
 
@@ -50,55 +51,17 @@ const BugTable = ({ type }) => {
     dispatch(getPossibleValues());
   }, []);
 
-  const prepareRows = (rows) =>
-    rows.map((row) => ({
-      ...row,
-      subRows: [
-        {
-          id: row.id,
-          fields: [
-            { id: 'name', label: 'Name', type: 'text', value: row.name },
-            { id: 'type', label: 'Type', type: 'select', value: row.type, possibleValues: types },
-            {
-              id: 'impact',
-              label: 'Impact',
-              type: 'select',
-              value: row.impact,
-              possibleValues: impacts
-            },
-            {
-              id: 'priority',
-              label: 'Priority',
-              type: 'select',
-              value: row.priority,
-              possibleValues: priorities
-            },
-            { id: 'deadline', label: 'Deadline', type: 'date', value: row.deadline },
-            {
-              id: 'reportDate',
-              label: 'Report date',
-              type: 'disabled',
-              value: row.reportDate
-            },
-            { id: 'endDate', label: 'End date', type: 'disabled', value: row.endDate },
-            { id: 'description', label: 'Description', type: 'textLarge', value: row.description }
-            // { id: 'attachments', label: 'Attachments', Component: null } // TODO handle attachments by custom component
-          ]
-        }
-      ]
-    }));
-
   const closeDialog = () => {
     setDialog((dialog) => ({ ...dialog, open: false }));
   };
 
   const onRetest = (id) => {
-    navigate(`/testing/${id}`);
+    navigate(`/retest/${id}`);
   };
 
   const onResign = (id) => {
     setValue('id', id);
-    setValue('personId', personId);
+    setValue('developerId', developerId);
     setDialog({
       open: true,
       content: <DialogContentText>You will be unassigned from the bug.</DialogContentText>,
@@ -117,7 +80,7 @@ const BugTable = ({ type }) => {
 
   const onTake = (id) => {
     setValue('id', id);
-    setValue('personId', personId);
+    setValue('developerId', developerId);
     setDialog({
       open: true,
       content: <DialogContentText>You will be assigned to the bug.</DialogContentText>,
@@ -155,126 +118,155 @@ const BugTable = ({ type }) => {
     });
   };
 
+  /* eslint-disable react/prop-types */
   const columns = useMemo(
-    () => [
-      {
-        id: 'expander',
-        disableFilters: true,
-        // eslint-disable-next-line react/prop-types
-        Cell: ({ row: { isExpanded, getToggleRowExpandedProps } }) => (
-          <IconButton {...getToggleRowExpandedProps()} size="small">
-            {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        )
-      },
-      {
-        Header: 'Code',
-        accessor: 'code'
-      },
-      {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'State',
-        accessor: 'state',
-        Filter: SelectColumnFilter
-      },
-      {
-        Header: 'Functionality',
-        accessor: 'functionality'
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-        Filter: SelectColumnFilter
-      },
-      {
-        Header: 'Impact',
-        accessor: 'impact',
-        Filter: SelectColumnFilter
-      },
-      {
-        Header: 'Priority',
-        accessor: 'priority',
-        Filter: SelectColumnFilter
-      },
-      {
-        Header: 'Retests',
-        accessor: 'retests'
-      },
-      {
-        Header: 'Resign',
-        accessor: 'resign',
-        disableFilters: true
-      },
-      {
-        Header: 'Reject',
-        accessor: 'reject',
-        disableFilters: true
-      },
-      {
-        Header: 'Resolve',
-        accessor: 'resolve',
-        disableFilters: true
-      },
-      {
-        Header: 'Take',
-        accessor: 'take',
-        disableFilters: true
-      },
-      {
-        Header: 'Retest',
-        accessor: 'retest',
-        disableFilters: true
-      }
-    ],
-    []
+    () =>
+      [
+        {
+          id: 'expander',
+          disableFilters: true,
+          disableSortBy: true,
+          Cell: ({ row: { isExpanded, getToggleRowExpandedProps } }) => (
+            <IconButton {...getToggleRowExpandedProps()} size="small">
+              {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          ),
+          visible: true
+        },
+        {
+          Header: 'Code',
+          accessor: 'code',
+          visible: true,
+          minWidth: 120,
+          maxWidth: 120
+        },
+        {
+          Header: 'Name',
+          accessor: 'name',
+          visible: true,
+          minWidth: 250,
+          maxWidth: 250
+        },
+        {
+          Header: 'State',
+          accessor: 'state',
+          Filter: SelectColumnFilter,
+          visible: true
+        },
+        {
+          Header: 'Functionality',
+          accessor: 'functionality',
+          visible: true,
+          minWidth: 150,
+          maxWidth: 150
+        },
+        {
+          Header: 'Type',
+          accessor: 'type',
+          Filter: SelectColumnFilter,
+          visible: true
+        },
+        {
+          Header: 'Impact',
+          accessor: 'impact',
+          Filter: SelectColumnFilter,
+          visible: true
+        },
+        {
+          Header: 'Priority',
+          accessor: 'priority',
+          Filter: SelectColumnFilter,
+          visible: true
+        },
+        {
+          Header: (
+            <Box sx={{ position: 'relative' }}>
+              Retests
+              <Typography
+                sx={{
+                  width: '6rem',
+                  fontSize: '0.7rem',
+                  position: 'absolute',
+                  left: '50%',
+                  bottom: '-60%',
+                  transform: 'translate(-50%, 0)'
+                }}
+              >
+                Req/Done/Failed
+              </Typography>
+            </Box>
+          ),
+          accessor: 'retests',
+          disableFilters: true,
+          disableSortBy: true,
+          visible: type === tableTypes.toReview || type === tableTypes.all,
+          minWidth: 100,
+          maxWidth: 100,
+          align: 'center'
+        },
+        {
+          Header: 'Resign',
+          accessor: 'resign',
+          disableFilters: true,
+          Cell: ({
+            row: {
+              original: { id }
+            }
+          }) => <EnhancedIconButton icon={icons.resign} onClick={() => onResign(id)} />,
+          visible: type === tableTypes.myBugs,
+          align: 'center'
+        },
+        {
+          Header: 'Reject',
+          accessor: 'reject',
+          disableFilters: true,
+          Cell: ({
+            row: {
+              original: { id }
+            }
+          }) => <EnhancedIconButton icon={icons.reject} onClick={() => onReject(id)} />,
+          visible: type === tableTypes.myBugs,
+          align: 'center'
+        },
+        {
+          Header: 'Resolve',
+          accessor: 'resolve',
+          disableFilters: true,
+          Cell: ({
+            row: {
+              original: { id }
+            }
+          }) => <EnhancedIconButton icon={icons.resolve} onClick={() => onResolve(id)} />,
+          visible: type === tableTypes.myBugs,
+          align: 'center'
+        },
+        {
+          Header: 'Take',
+          accessor: 'take',
+          disableFilters: true,
+          Cell: ({
+            row: {
+              original: { id }
+            }
+          }) => <EnhancedIconButton icon={icons.take} onClick={() => onTake(id)} />,
+          visible: type === tableTypes.toFix,
+          align: 'center'
+        },
+        {
+          Header: 'Retest',
+          accessor: 'retest',
+          Cell: ({
+            row: {
+              original: { id }
+            }
+          }) => <EnhancedIconButton icon={icons.retest} onClick={() => onRetest(id)} />,
+          visible: type === tableTypes.toReview,
+          align: 'center'
+        }
+      ].filter((column) => column.visible),
+    [type]
   );
-
-  const headCells = [
-    {
-      id: 'retests',
-      label: 'Retests',
-      sublabel: 'Req/Done/Failed',
-      hidden: type !== tableTypes.toReview && type !== tableTypes.all
-    },
-    {
-      id: 'resign',
-      label: 'Resign',
-      hidden: type !== tableTypes.myBugs,
-      button: 'cancel',
-      onClick: onResign
-    },
-    {
-      id: 'reject',
-      label: 'Reject',
-      hidden: type !== tableTypes.myBugs,
-      button: 'clear',
-      onClick: onReject
-    },
-    {
-      id: 'resolve',
-      label: 'Resolve',
-      hidden: type !== tableTypes.myBugs,
-      button: 'done',
-      onClick: onResolve
-    },
-    {
-      id: 'take',
-      label: 'Take',
-      hidden: type !== tableTypes.toFix,
-      button: 'add',
-      onClick: onTake
-    },
-    {
-      id: 'retest',
-      label: 'Retest',
-      hidden: type !== tableTypes.toReview,
-      button: 'repeat',
-      onClick: onRetest
-    }
-  ];
+  /* eslint-enable react/prop-types */
 
   const onSubmitBugStatus = async (arg) => {
     closeDialog();
@@ -283,9 +275,50 @@ const BugTable = ({ type }) => {
   };
 
   const onSubmitBugDetails = async (json) => {
-    await dispatch(putRows({ id: json.id, json }));
+    const { id } = json;
+    delete json.id;
+    await dispatch(putRows({ id, json }));
     await dispatch(getRows());
   };
+
+  const prepareRows = (rows) =>
+    rows.map((row) => ({
+      ...row,
+      subRows: [
+        {
+          id: row.id,
+          submitHandler: onSubmitBugDetails,
+          fields: [
+            { id: 'name', label: 'Name', type: 'text', value: row.name },
+            { id: 'type', label: 'Type', type: 'select', value: row.type, possibleValues: types },
+            {
+              id: 'impact',
+              label: 'Impact',
+              type: 'select',
+              value: row.impact,
+              possibleValues: impacts
+            },
+            {
+              id: 'priority',
+              label: 'Priority',
+              type: 'select',
+              value: row.priority,
+              possibleValues: priorities
+            },
+            { id: 'deadline', label: 'Deadline', type: 'date', value: row.deadline },
+            {
+              id: 'reportDate',
+              label: 'Report date',
+              type: 'disabled',
+              value: row.reportDate
+            },
+            { id: 'endDate', label: 'End date', type: 'disabled', value: row.endDate },
+            { id: 'description', label: 'Description', type: 'textLarge', value: row.description }
+            // { id: 'attachments', label: 'Attachments', Component: null } // TODO handle attachments by custom component
+          ]
+        }
+      ]
+    }));
 
   return loading ? (
     <Box
@@ -302,13 +335,6 @@ const BugTable = ({ type }) => {
   ) : (
     <>
       <Table title="Bugs" initialPageSize={5} data={prepareRows(rows)} columns={columns} />
-      {/* <Table
-        headCells={headCells.filter((headCell) => !headCell.hidden)}
-        rowCells={rowCells}
-        rowsPerPageOptions={[5, 10, 15]}
-        rows={[...rows]}
-        onSubmit={onSubmitBugDetails}
-      /> */}
       <Dialog open={dialog.open} onClose={closeDialog}>
         <form onSubmit={handleSubmit(onSubmitBugStatus)}>
           <DialogTitle>Are you sure?</DialogTitle>
