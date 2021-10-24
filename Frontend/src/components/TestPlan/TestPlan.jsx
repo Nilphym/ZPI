@@ -13,8 +13,8 @@ const TestPlan = ({ isEditable }) => {
 
   async function addTest() {
     const newTestId = await dispatch(postTest());
-    dispatch(setTestId(newTestId));
-    navigate(`${pathname}/test-${newTestId}`);
+    dispatch(setTestId(newTestId.payload));
+    navigate(`${pathname}/test-${newTestId.payload}`);
   }
 
   return (

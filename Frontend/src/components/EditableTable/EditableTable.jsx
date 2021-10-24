@@ -33,7 +33,8 @@ const processData = (data) => {
 
 const prepareOutputData = (values) => {
   let iterator = 1;
-  const dataKeys = Object.keys(values);
+  const dataKeys = Object.keys(values).sort();
+  console.log(dataKeys);
   const processedData = {};
   const array = [];
   dataKeys.forEach((key) => {
@@ -56,6 +57,7 @@ const prepareOutputData = (values) => {
       array.push(values[key]);
     }
   });
+  console.log(processedData);
   return processedData;
 };
 

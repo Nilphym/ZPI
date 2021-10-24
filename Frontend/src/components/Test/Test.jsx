@@ -16,23 +16,21 @@ import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
 import {
   getTestById,
-  setTestId,
   setTestTestCase,
   setTestTestProcedure,
   getTestCaseById,
   getTestProcedureById,
-  setTestCaseLoading,
-  setTestProcedureLoading,
   setTestName,
   setTestSuite,
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase
+  postTestCase,
+  // setTestId
 } from '../../redux/reducers/test/testSlice';
 
 const Test = ({ isEditable }) => {
-  const { control: mainControl, handleSubmit, getValues } = useForm();
+  const { control: mainControl, getValues } = useForm();
 
   const dispatch = useDispatch();
   const {
@@ -49,7 +47,7 @@ const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestId('t1')); // TODO: DELETE this line, delete export
+    // dispatch(setTestId('t1'));
 
     async function getTestData() {
       await dispatch(getTestById());
@@ -58,9 +56,9 @@ const Test = ({ isEditable }) => {
     getTestData();
   }, []);
 
-  async function saveTest({ testName }) {
+  async function saveTest() {
     setIsEditing(false);
-    dispatch(setTestName({ newName: testName }));
+    dispatch(setTestName({ newName: getValues('testName')}));
     dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
     await dispatch(putTestById());
     dispatch(setTestLoading({ isLoading: true }));
@@ -70,7 +68,6 @@ const Test = ({ isEditable }) => {
   async function handleTestCaseChange({ target: { value } }) {
     if (value) {
       dispatch(setTestTestCase({ id: value }));
-      dispatch(setTestCaseLoading(true));
       await dispatch(getTestCaseById());
     }
   }
@@ -78,18 +75,19 @@ const Test = ({ isEditable }) => {
   async function handleTestProcedureChange({ target: { value } }) {
     if (value) {
       dispatch(setTestTestProcedure({ id: value }));
-      dispatch(setTestProcedureLoading(true));
       await dispatch(getTestProcedureById());
     }
   }
 
   async function addTestCase() {
+    await dispatch(putTestById());
     dispatch(postTestCase());
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
   }
 
   async function addTestProcedure() {
+    await dispatch(putTestById());
     dispatch(postTestProcedure());
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
@@ -98,7 +96,8 @@ const Test = ({ isEditable }) => {
   return (
     <Box
       sx={{
-        position: 're'
+        position: 'relative',
+        margin: '1.5rem'
       }}
     >
       {isLoading ? (
@@ -145,7 +144,7 @@ const Test = ({ isEditable }) => {
               Edit Test
             </Button>
           )}
-          <Box component="form" onSubmit={handleSubmit(saveTest)}>
+          <Box>
             <Controller
               shouldUnregister
               name="testName"
@@ -202,11 +201,12 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestCaseChange(e)}
               value={selectedTestCaseId}
             >
-              {testCasesCodes.map(({ testCaseId, testCaseCode }) => (
-                <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
-                  {testCaseCode}
-                </MenuItem>
-              ))}
+              {testCasesCodes.length > 0 &&
+                testCasesCodes.map(({ testCaseId, testCaseCode }) => (
+                  <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
+                    {testCaseCode}
+                  </MenuItem>
+                ))}
               <MenuItem value="">
                 <Button onClick={() => addTestCase()}>+ Add Case</Button>
               </MenuItem>
@@ -224,11 +224,12 @@ const Test = ({ isEditable }) => {
               onChange={(e) => handleTestProcedureChange(e)}
               value={selectedTestProcedureId}
             >
-              {testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
-                <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                  {testProcedureCode}
-                </MenuItem>
-              ))}
+              {testProceduresCodes.length > 0 &&
+                testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
+                  <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                    {testProcedureCode}
+                  </MenuItem>
+                ))}
               <MenuItem value="">
                 <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
               </MenuItem>
@@ -237,7 +238,10 @@ const Test = ({ isEditable }) => {
             {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           </Box>
           {isEditing && (
-            <Button variant="outlined" sx={{ marginTop: '1.5rem' }} type="submit">
+              <Button variant="outlined" sx={{
+                marginTop: '1.5rem',
+                marginBottom: '1.5rem'
+              }} onClick={() => saveTest()}>
               Save Test
             </Button>
           )}

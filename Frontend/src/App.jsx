@@ -6,6 +6,8 @@ import NoMatch from './containers/NoMatch';
 import RequireAuth from './services/auth/RequireAuth';
 import Login from './components/LoginPanel/LoginPanel';
 import Logout from './containers/Logout';
+import TestPlan from './components/TestPlan/TestPlan';
+import Test from './components/Test/Test';
 
 const App = () => {
   return (
@@ -22,6 +24,9 @@ const App = () => {
             </RequireAuth>
           }
         />
+        <Route path="testPlan-:testPlanId" element={<TestPlan />} />
+        <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable/>} />
+
         <Route path="logout" element={<Logout />} />
       </Route>
       <Route path="*" element={<NoMatch />} />

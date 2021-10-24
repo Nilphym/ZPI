@@ -75,35 +75,47 @@ const initialState = {
 };
 
 // ----------------------------------------- Test API
-export const getTestById = createAsyncThunk('test/getTestById', async (_, {
+export const getTestById = createAsyncThunk('test/get/byId', async (_, {
   getState
 }) => {
   const response = await server().get({
-    url: `test/${getState().test.testId}`
+    url: `Tests/${getState().test.testId}`
   });
   return response;
 });
 
-export const putTestById = createAsyncThunk('test/putTestById', async (_, {
+export const putTestById = createAsyncThunk('test/put/ById', async (_, {
   getState
 }) => {
   const body = {
-    name: getState().test.testData.testName,
-    selectedTestSuiteId: {
+    name: getState().test.testData.testName
+  };
+  if (getState().test.selectedTestSuiteId) {
+    body.selectedTestSuiteId = {
       testSuiteId: getState().test.selectedTestSuiteId,
       testSuite: getState().test.testSuites.filter(testSuite => testSuite.testSuiteId === getState().test.selectedTestSuiteId)[0].testSuite
-    },
-    selectedTestProcedureId: {
-      testProcedureId: getState().test.selectedTestProcedureId,
-      testProcedureCode: getState().test.testProceduresCodes.filter(procedureCode => procedureCode.testProcedureId === getState().test.selectedTestProcedureId)[0].testProcedureCode
-    },
-    selectedTestCaseId: {
+    };
+  } else {
+    body.selectedTestSuiteId = {};
+  }
+  if (getState().test.selectedTestCaseId) {
+    body.selectedTestCaseId = {
       testCaseId: getState().test.selectedTestCaseId,
       testCaseCode: getState().test.testCasesCodes.filter(caseCode => caseCode.testCaseId === getState().test.selectedTestCaseId)[0].testCaseCode
-    }
-  };
+    };
+  } else {
+    body.selectedTestCaseId = {};
+  }
+  if (getState().test.selectedTestProcedureId) {
+    body.selectedTestProcedureId = {
+      testProcedureId: getState().test.selectedTestProcedureId,
+      testProcedureCode: getState().test.testProceduresCodes.filter(procedureCode => procedureCode.testProcedureId === getState().test.selectedTestProcedureId)[0].testProcedureCode
+    };
+  } else {
+    body.selectedTestProcedureId = {};
+  }
   const response = await server().put({
-    url: `test/${getState().test.testId}`,
+    url: `Tests/${getState().test.testId}`,
     data: body
   });
   return response;
@@ -111,7 +123,7 @@ export const putTestById = createAsyncThunk('test/putTestById', async (_, {
 
 export const postTest = createAsyncThunk('test/post', async (testPlanId) => {
   const response = await server().post({
-    url: 'test',
+    url: 'Tests',
     data: {
       testPlanId
     }
@@ -124,7 +136,7 @@ export const getTestProcedureById = createAsyncThunk('test/getTestProcedureById'
   getState
 }) => {
   const response = await server().get({
-    url: `testProcedure/${getState().test.selectedTestProcedureId}`
+    url: `TestProcedures/${getState().test.selectedTestProcedureId}`
   });
   return response;
 });
@@ -133,7 +145,7 @@ export const putTestProcedureById = createAsyncThunk('test/putTestProcedureById'
   getState
 }) => {
   const response = await server().put({
-    url: `testProcedure/${getState().test.selectedTestProcedureId}`,
+    url: `TestProcedures/${getState().test.selectedTestProcedureId}`,
     data: {
       result: getState().test.selectedTestProcedure.result
     }
@@ -145,7 +157,7 @@ export const postTestProcedure = createAsyncThunk('test/postTestProcedure', asyn
   getState
 }) => {
   const response = await server().post({
-    url: 'testProcedure',
+    url: 'TestProcedures',
     data: {
       testId: getState().test.testId
     }
@@ -159,7 +171,7 @@ export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_
   getState
 }) => {
   const response = await server().get({
-    url: `testCase/${getState().test.selectedTestCaseId}`
+    url: `TestCases/${getState().test.selectedTestCaseId}`
   });
   return response;
 });
@@ -174,7 +186,7 @@ export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_
   };
 
   const response = await server().put({
-    url: `testCase/${getState().test.selectedTestCaseId}`,
+    url: `TestCases/${getState().test.selectedTestCaseId}`,
     data: transferObject
   });
   return response;
@@ -184,7 +196,7 @@ export const postTestCase = createAsyncThunk('test/postTestCase', async (_, {
   getState
 }) => {
   const response = await server().post({
-    url: 'testCase',
+    url: 'TestCases',
     data: {
       testId: getState().test.testId
     }
@@ -195,7 +207,7 @@ export const postTestCase = createAsyncThunk('test/postTestCase', async (_, {
 // ----------------------------------------- Test Step API
 export const getTestStepById = createAsyncThunk('test/getTestStepById', async (testStepId) => {
   const response = await server().get({
-    url: `step/${testStepId}`
+    url: `Steps/${testStepId}`
   });
   return response;
 });
@@ -210,7 +222,7 @@ export const putTestStepById = createAsyncThunk('test/putTestStepById', async (t
   dataToSend.testDataObject = prepareOutputTestData(currentTestStep.testData);
   dataToSend.controlPoint = currentTestStep.controlPoint;
   const response = await server().put({
-    url: `step/${testStepId}`,
+    url: `Steps/${testStepId}`,
     data: dataToSend
   });
   return response;
@@ -224,7 +236,7 @@ export const postTestStep = createAsyncThunk('test/postTestStep', async (newStep
   dataToSend.testProcedureId = currentTestProcedureId;
   dataToSend.name = newStepName;
   const response = await server().post({
-    url: 'step',
+    url: 'Steps',
     data: dataToSend
   });
   return response;

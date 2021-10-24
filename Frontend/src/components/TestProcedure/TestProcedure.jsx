@@ -210,6 +210,7 @@ const TestProcedure = ({ isEditable }) => {
                   value={result}
                   sx={{
                     marginTop: '0.625rem',
+                    marginBottom: '1.5rem',
                     width: '100%'
                   }}
                 />
