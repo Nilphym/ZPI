@@ -136,7 +136,7 @@ const EnhancedTableRow = ({
 
   return (
     <>
-      <TableRow tabIndex={-1} key={row.code}>
+      <TableRow sx={{ height: '4.8rem' }} tabIndex={-1} key={row.code}>
         <TableCell padding="checkbox">
           <IconButton size="small" onClick={() => setOpen((opened) => !opened)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}

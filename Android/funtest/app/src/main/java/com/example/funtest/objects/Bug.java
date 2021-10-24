@@ -1,20 +1,29 @@
 package com.example.funtest.objects;
 
+import java.util.ArrayList;
+
 public class Bug {
     private String code;
     private String name;
-    private String state;
+    private String state; //not added while creating
     private String functionality;
     private String type;
     private String impact;
     private String priority;
-    private String execs;
+    private int retestsRequired;
+    private int retestsDone;
+    private int retestsFailed;
     private String deadline;
     private String reportDate;
     private String endDate;
     private String description;
+    private ArrayList<String> attachments;
 
-    public Bug(String code, String name, String state, String functionality, String type, String impact, String priority, String execs, String deadline, String reportDate, String endDate, String description) {
+    public Bug(){
+
+    }
+
+    public Bug(String code, String name, String state, String functionality, String type, String impact, String priority, int retestsRequired, int retestsDone, int retestsFailed, String deadline, String reportDate, String endDate, String description, ArrayList<String> attachments) {
         this.code = code;
         this.name = name;
         this.state = state;
@@ -22,11 +31,14 @@ public class Bug {
         this.type = type;
         this.impact = impact;
         this.priority = priority;
-        this.execs = execs;
+        this.retestsRequired = retestsRequired;
+        this.retestsDone = retestsDone;
+        this.retestsFailed = retestsFailed;
         this.deadline = deadline;
         this.reportDate = reportDate;
         this.endDate = endDate;
         this.description = description;
+        this.attachments = attachments;
     }
 
     public String getCode() {
@@ -85,12 +97,28 @@ public class Bug {
         this.priority = priority;
     }
 
-    public String getExecs() {
-        return execs;
+    public int getRetestsRequired() {
+        return retestsRequired;
     }
 
-    public void setExecs(String execs) {
-        this.execs = execs;
+    public void setRetestsRequired(int retestsRequired) {
+        this.retestsRequired = retestsRequired;
+    }
+
+    public int getRetestsDone() {
+        return retestsDone;
+    }
+
+    public void setRetestsDone(int retestsDone) {
+        this.retestsDone = retestsDone;
+    }
+
+    public int getRetestsFailed() {
+        return retestsFailed;
+    }
+
+    public void setRetestsFailed(int retestsFailed) {
+        this.retestsFailed = retestsFailed;
     }
 
     public String getDeadline() {
@@ -123,5 +151,13 @@ public class Bug {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ArrayList<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(ArrayList<String> attachments) {
+        this.attachments = attachments;
     }
 }
