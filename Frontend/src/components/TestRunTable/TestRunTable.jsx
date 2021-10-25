@@ -105,7 +105,7 @@ DataTableCell.propTypes = {
 };
 
 // rows should be taken from redux
-const TestRunTable = ({ rows }) => {
+export const TestRunTable = ({ rows }) => {
   const useTableStepsRef = useTableSteps(rows.length);
 
   return (

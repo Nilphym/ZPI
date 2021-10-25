@@ -1,15 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import BugTable, { tableTypes } from '../containers/BugTable';
+import { BugTable, bugTableTypes } from '../containers';
 
-const BugPage = ({ type }) => {
-  return <BugTable type={type} />;
-};
-
-export default BugPage;
-export { tableTypes } from '../containers/BugTable';
-
-BugPage.propTypes = {
-  type: PropTypes.oneOf(Object.values(tableTypes)).isRequired
-};
+export const AllBugsPage = () => <BugTable type={bugTableTypes.all} />;
+export const AssignedBugsPage = () => <BugTable type={bugTableTypes.assigned} />;
+export const ActiveBugsPage = () => <BugTable type={bugTableTypes.active} />;

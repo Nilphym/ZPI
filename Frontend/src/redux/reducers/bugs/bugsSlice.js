@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
 
-import server from '../../../services/server/api';
+import server from '../../../services/server';
 
 const initialState = {
   rows: [],

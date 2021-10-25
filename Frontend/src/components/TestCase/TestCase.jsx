@@ -9,6 +9,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import { useSelector, useDispatch } from 'react-redux';
+
 import EditableTable from '../EditableTable/EditableTable';
 import {
   getTestCaseById,
@@ -18,7 +19,7 @@ import {
   deleteTestCaseTable,
   editTestCasePreconditions,
   setTestCaseLoading
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 import EditableTextField from '../EditableTextField/EditableTextField';
 
 const formFields = {
@@ -48,7 +49,7 @@ const createTable = (tablesCount, rowsCount, columnsCount) => {
   return tableObject;
 };
 
-const TestCase = ({ isEditable }) => {
+export const TestCase = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTextField, setIsAddingTextField] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
@@ -104,14 +105,14 @@ const TestCase = ({ isEditable }) => {
     dispatch(deleteTestCaseTable({ tableName }));
   };
 
-  async function saveTestCase(){
+  async function saveTestCase() {
     setIsEditing(false);
     setIsAddingTable(false);
     setIsAddingTextField(false);
     await dispatch(putTestCaseById());
     dispatch(setTestCaseLoading(true));
     await dispatch(getTestCaseById());
-  };
+  }
 
   useEffect(() => {
     async function getTestCaseData() {

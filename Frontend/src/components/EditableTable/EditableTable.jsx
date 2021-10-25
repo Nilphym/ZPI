@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -5,8 +6,9 @@ import PropTypes from 'prop-types';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
+
 import TableItem from './TableItem';
-import { editTestStepTestData, editTestCaseTable } from '../../redux/reducers/test/testSlice';
+import { editTestStepTestData, editTestCaseTable } from '../../redux/store';
 
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
@@ -61,7 +63,7 @@ const prepareOutputData = (values) => {
   return processedData;
 };
 
-const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) => {
+export const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) => {
   const { control: tableControl, getValues } = useForm();
 
   const defaultData = processData(data);
@@ -106,8 +108,7 @@ const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) 
     tableObject.tableName = data.tableName;
     if (parentComp === 'testStep') {
       dispatch(editTestStepTestData({ id: testStepId, editedTable: tableObject }));
-    }
-    else {
+    } else {
       dispatch(editTestCaseTable({ editedTable: tableObject }));
     }
   };

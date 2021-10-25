@@ -5,8 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+
 import logo from '../../assets/logo/logo2.png';
-import { register } from '../../redux/reducers/auth/authSlice';
+import { register } from '../../redux/store';
 
 const Logo = styled('img')({
   width: '12.5rem',
@@ -44,7 +45,7 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-const RegisterPanel = () => {
+export const RegisterPanel = () => {
   const dispatch = useDispatch();
 
   const {

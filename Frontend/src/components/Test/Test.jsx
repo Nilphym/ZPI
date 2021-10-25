@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Typography,
@@ -11,7 +12,7 @@ import {
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
 import {
@@ -25,11 +26,11 @@ import {
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase,
+  postTestCase
   // setTestId
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 
-const Test = ({ isEditable }) => {
+export const Test = ({ isEditable }) => {
   const { control: mainControl, getValues } = useForm();
 
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const Test = ({ isEditable }) => {
 
   async function saveTest() {
     setIsEditing(false);
-    dispatch(setTestName({ newName: getValues('testName')}));
+    dispatch(setTestName({ newName: getValues('testName') }));
     dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
     await dispatch(putTestById());
     dispatch(setTestLoading({ isLoading: true }));
@@ -238,10 +239,14 @@ const Test = ({ isEditable }) => {
             {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           </Box>
           {isEditing && (
-              <Button variant="outlined" sx={{
+            <Button
+              variant="outlined"
+              sx={{
                 marginTop: '1.5rem',
                 marginBottom: '1.5rem'
-              }} onClick={() => saveTest()}>
+              }}
+              onClick={() => saveTest()}
+            >
               Save Test
             </Button>
           )}
@@ -256,3 +261,4 @@ Test.propTypes = {
 };
 
 export default Test;
+export { default as TestCreationNav } from './TestCreationNav';

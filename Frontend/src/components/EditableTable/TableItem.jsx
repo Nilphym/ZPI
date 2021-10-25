@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, TextField} from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import PropTypes from 'prop-types';
-
 
 const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
   return (

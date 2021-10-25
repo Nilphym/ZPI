@@ -9,9 +9,8 @@ import DateAdapter from '@mui/lab/AdapterLuxon';
 
 import store from './redux/store';
 import App from './App';
-import AuthManager from './services/auth/AuthManager';
 import theme from './utils/theme';
-import MockServer from './services/server/MockServer';
+import { AuthManager, MockServer } from './providers';
 
 ReactDOM.render(
   <React.StrictMode>

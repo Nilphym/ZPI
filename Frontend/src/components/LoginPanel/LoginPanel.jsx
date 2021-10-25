@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import React from 'react';
 
-import { login } from '../../redux/reducers/auth/authSlice';
+import { login } from '../../redux/store';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
@@ -34,7 +34,7 @@ const schema = yup.object().shape({
   [formFields.password]: yup.string().required().min(6)
 });
 
-const LoginPanel = () => {
+export const LoginPanel = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);

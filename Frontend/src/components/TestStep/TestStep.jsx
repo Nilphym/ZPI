@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import * as yup from 'yup';
 
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
@@ -19,7 +20,7 @@ import {
   deleteTestStepTestData,
   editTestStepControlPoint,
   setTestStepName
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 import EditableTable from '../EditableTable/EditableTable';
 
 const formFieldsTable = {
@@ -57,7 +58,7 @@ const createTable = (tablesCount, rowsCount, columnsCount) => {
   return tableObject;
 };
 
-const TestStep = ({ testStepId, isEditable }) => {
+export const TestStep = ({ testStepId, isEditable }) => {
   const dispatch = useDispatch();
 
   const [isOpened, setIsOpened] = useState(false);
@@ -154,9 +155,9 @@ const TestStep = ({ testStepId, isEditable }) => {
               textTransform: 'capitalize'
             }}
           >
-            {selectedTestStep[
-              testStepId
-            ] ? `${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}` : 'Loading ...'}
+            {selectedTestStep[testStepId]
+              ? `${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}`
+              : 'Loading ...'}
           </Button>
           {isOpened && (
             <Box>
