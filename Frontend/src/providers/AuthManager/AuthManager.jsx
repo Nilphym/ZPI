@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { logout } from '../../redux/reducers/auth/authSlice';
+import { logout } from '../../redux/store';
 
 export const AuthManager = ({ children }) => {
   const dispatch = useDispatch();

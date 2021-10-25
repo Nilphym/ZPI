@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-import { API_URL, TOKEN_KEY } from '../../config';
+import { API_URL, TOKEN_KEY } from '../config';
 
 const authService = {
   getDecodedToken() {

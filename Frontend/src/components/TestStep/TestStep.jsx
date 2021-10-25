@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import * as yup from 'yup';
 
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
@@ -19,7 +20,7 @@ import {
   deleteTestStepTestData,
   editTestStepControlPoint,
   setTestStepName
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 import EditableTable from '../EditableTable/EditableTable';
 
 const formFieldsTable = {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import authService from '../auth/authService';
-import { API_URL } from '../../config';
+import authService from './auth';
+import { API_URL } from '../config';
 
 const instance = axios.create({
   baseURL: API_URL

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import authService from '../../../services/auth/authService';
+import authService from '../../../services/auth';
 
 const token = authService.getDecodedToken();
 const initialState = token
@@ -13,15 +13,18 @@ const initialState = token
       token: null
     };
 
-export const register = createAsyncThunk('auth/register', async ({ projectName, name, surname, email, password }) => {
-  return authService.register({
-    projectName,
-    name,
-    surname,
-    email,
-    password
-  });
-});
+export const register = createAsyncThunk(
+  'auth/register',
+  async ({ projectName, name, surname, email, password }) => {
+    return authService.register({
+      projectName,
+      name,
+      surname,
+      email,
+      password
+    });
+  }
+);
 
 export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
   const data = await authService.login({

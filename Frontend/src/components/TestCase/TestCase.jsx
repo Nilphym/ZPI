@@ -9,6 +9,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import { useSelector, useDispatch } from 'react-redux';
+
 import EditableTable from '../EditableTable/EditableTable';
 import {
   getTestCaseById,
@@ -18,7 +19,7 @@ import {
   deleteTestCaseTable,
   editTestCasePreconditions,
   setTestCaseLoading
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 import EditableTextField from '../EditableTextField/EditableTextField';
 
 const formFields = {

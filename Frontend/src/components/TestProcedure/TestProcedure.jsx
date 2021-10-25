@@ -15,7 +15,7 @@ import {
   editTestProcedureResult,
   setTestProcedureLoading,
   putTestProcedureById
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 
 const formFields = {
   newTestStepName: 'newTestStepName'
