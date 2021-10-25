@@ -38,9 +38,11 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
     canPreviousPage,
     canNextPage,
     pageCount,
+    setPageSize,
     gotoPage,
     preGlobalFilteredRows,
     setGlobalFilter,
+    toggleAllRowsExpanded,
     visibleColumns,
     state: { pageIndex, globalFilter }
   } = useTable(
@@ -60,6 +62,16 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
 
   const [dense, setDense] = useState(false);
 
+  const setDenseAndPageSize = (value) => {
+    setDense(value);
+    toggleAllRowsExpanded(false);
+    if (value) {
+      setPageSize(initialPageSize + 1);
+    } else {
+      setPageSize(initialPageSize);
+    }
+  };
+
   return (
     <TableContainer
       sx={{
@@ -73,9 +85,10 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
         setGlobalFilter={setGlobalFilter}
         globalFilter={globalFilter}
         dense={dense}
-        setDense={setDense}
+        setDense={setDenseAndPageSize}
+        toggleAllRowsExpanded={toggleAllRowsExpanded}
       />
-      <Table size={dense ? 'medium' : 'small'} {...getTableProps()}>
+      <Table size={dense ? 'small' : 'medium'} {...getTableProps()}>
         <Paper component={TableHead} elevation={2} square>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -143,6 +156,7 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
                 onPageChange={gotoPage}
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 title={title}
+                toggleAllRowsExpanded={toggleAllRowsExpanded}
               />
             </TableCell>
           </TableRow>

@@ -28,14 +28,19 @@ const DotsIcon = styled(MoreHoriz)({
   width: '1.925rem'
 });
 
-const PageNumeration = ({ onPageChange, pageCount, page }) => {
+const PageNumeration = ({ onPageChange, pageCount, page, toggleAllRowsExpanded }) => {
   const maxPagesForSmallPagination = 7;
   const maxPageForPostDots = 3;
   const maxPagesInLongPagination = 5;
 
+  const onNumberButtonClick = (page) => {
+    toggleAllRowsExpanded(false);
+    onPageChange(page);
+  };
+
   const PaginationButton = ({ children }) => (
     <PaginationButtonStyled
-      onClick={() => onPageChange(children - 1)}
+      onClick={() => onNumberButtonClick(children - 1)}
       size="small"
       active={children - 1 === page}
     >
@@ -109,7 +114,8 @@ const PageNumeration = ({ onPageChange, pageCount, page }) => {
 PageNumeration.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   pageCount: PropTypes.number.isRequired,
-  page: PropTypes.number.isRequired
+  page: PropTypes.number.isRequired,
+  toggleAllRowsExpanded: PropTypes.func.isRequired
 };
 
 const TablePagination = ({
@@ -119,21 +125,26 @@ const TablePagination = ({
   page,
   onPageChange,
   preGlobalFilteredRows,
-  title
+  title,
+  toggleAllRowsExpanded
 }) => {
   const handleFirstPageButtonClick = () => {
+    toggleAllRowsExpanded(false);
     onPageChange(0);
   };
 
   const handleBackButtonClick = () => {
+    toggleAllRowsExpanded(false);
     onPageChange(page - 1);
   };
 
   const handleNextButtonClick = () => {
+    toggleAllRowsExpanded(false);
     onPageChange(page + 1);
   };
 
   const handleLastPageButtonClick = () => {
+    toggleAllRowsExpanded(false);
     onPageChange(Math.max(0, pageCount - 1));
   };
 
@@ -147,7 +158,12 @@ const TablePagination = ({
         <IconButton onClick={handleBackButtonClick} disabled={!canPreviousPage}>
           <KeyboardArrowLeft />
         </IconButton>
-        <PageNumeration onPageChange={onPageChange} pageCount={pageCount} page={page} />
+        <PageNumeration
+          onPageChange={onPageChange}
+          pageCount={pageCount}
+          page={page}
+          toggleAllRowsExpanded={toggleAllRowsExpanded}
+        />
         <IconButton onClick={handleNextButtonClick} disabled={!canNextPage}>
           <KeyboardArrowRight />
         </IconButton>
@@ -169,7 +185,8 @@ TablePagination.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   preGlobalFilteredRows: PropTypes.array.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  toggleAllRowsExpanded: PropTypes.func.isRequired
 };
 
 export default TablePagination;

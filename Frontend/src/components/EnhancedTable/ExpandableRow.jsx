@@ -128,17 +128,16 @@ const ExpandableRow = ({ colSpan, data, open }) => {
 
   return (
     <TableRow>
-      <TableCell sx={{ padding: 0 }} colSpan={colSpan}>
+      <TableCell sx={{ padding: 0, backgroundColor: blue[50] }} colSpan={colSpan}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <FormProvider {...formMethods}>
             <form onSubmit={handleSubmit(data.submitHandler)}>
               <Box
                 sx={{
-                  backgroundColor: blue[50],
                   display: 'grid',
                   gridTemplate: 'repeat(5, 1fr) / repeat(4, 1fr) 6rem',
-                  gap: '1rem 4rem',
-                  padding: '2rem 6rem'
+                  gap: '1rem 2rem',
+                  padding: '2rem 4rem'
                 }}
               >
                 {data.fields.map(({ id, label, type, value, possibleValues }) => (

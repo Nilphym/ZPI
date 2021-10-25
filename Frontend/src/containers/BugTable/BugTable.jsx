@@ -12,7 +12,8 @@ import {
   Button,
   TextField,
   IconButton,
-  Typography
+  Typography,
+  Chip
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
@@ -36,9 +37,30 @@ import {
 
 export const bugTableTypes = {
   all: 'all',
-  myBugs: 'my-bugs',
-  toFix: 'to-fix',
+  assigned: 'assigned',
+  active: 'active',
   toReview: 'to-review'
+};
+
+const getStateColor = (value) => {
+  switch (value) {
+    case 'New':
+      return 'warning';
+    case 'Active':
+      return 'default';
+    case 'Fixed':
+      return 'info';
+    case 'Retest':
+      return 'info';
+    case 'Resolved':
+      return 'success';
+    case 'Rejected':
+      return 'error';
+    case 'Unresolved':
+      return 'warning';
+    default:
+      return 'default';
+  }
 };
 
 export const BugTable = ({ type }) => {
@@ -148,14 +170,18 @@ export const BugTable = ({ type }) => {
           Header: 'Name',
           accessor: 'name',
           visible: true,
-          minWidth: 250,
-          maxWidth: 250
+          minWidth: 230,
+          maxWidth: 230
         },
         {
           Header: 'State',
           accessor: 'state',
           Filter: SelectColumnFilter,
-          visible: true
+          Cell: ({ value }) => <Chip label={value} color={getStateColor(value)} />,
+          visible:
+            type === bugTableTypes.all ||
+            type === bugTableTypes.assigned ||
+            type === bugTableTypes.toReview
         },
         {
           Header: 'Functionality',
@@ -168,19 +194,19 @@ export const BugTable = ({ type }) => {
           Header: 'Type',
           accessor: 'type',
           Filter: SelectColumnFilter,
-          visible: true
+          visible: type === bugTableTypes.all || type === bugTableTypes.toReview
         },
         {
           Header: 'Impact',
           accessor: 'impact',
           Filter: SelectColumnFilter,
-          visible: true
+          visible: type === bugTableTypes.active || type === bugTableTypes.toReview
         },
         {
           Header: 'Priority',
           accessor: 'priority',
           Filter: SelectColumnFilter,
-          visible: true
+          visible: type === bugTableTypes.active || type === bugTableTypes.toReview
         },
         {
           Header: (
@@ -212,6 +238,7 @@ export const BugTable = ({ type }) => {
           Header: 'Resign',
           accessor: 'resign',
           disableFilters: true,
+          disableSortBy: true,
           Cell: ({
             row: {
               original: { id }
@@ -219,13 +246,16 @@ export const BugTable = ({ type }) => {
           }) => (
             <EnhancedIconButton icon={enhancedButtonIcons.resign} onClick={() => onResign(id)} />
           ),
-          visible: type === bugTableTypes.myBugs,
+          minWidth: 75,
+          maxWidth: 75,
+          visible: type === bugTableTypes.assigned,
           align: 'center'
         },
         {
           Header: 'Reject',
           accessor: 'reject',
           disableFilters: true,
+          disableSortBy: true,
           Cell: ({
             row: {
               original: { id }
@@ -233,13 +263,16 @@ export const BugTable = ({ type }) => {
           }) => (
             <EnhancedIconButton icon={enhancedButtonIcons.reject} onClick={() => onReject(id)} />
           ),
-          visible: type === bugTableTypes.myBugs,
+          minWidth: 75,
+          maxWidth: 75,
+          visible: type === bugTableTypes.assigned,
           align: 'center'
         },
         {
           Header: 'Resolve',
           accessor: 'resolve',
           disableFilters: true,
+          disableSortBy: true,
           Cell: ({
             row: {
               original: { id }
@@ -247,24 +280,31 @@ export const BugTable = ({ type }) => {
           }) => (
             <EnhancedIconButton icon={enhancedButtonIcons.resolve} onClick={() => onResolve(id)} />
           ),
-          visible: type === bugTableTypes.myBugs,
+          minWidth: 75,
+          maxWidth: 75,
+          visible: type === bugTableTypes.assigned,
           align: 'center'
         },
         {
           Header: 'Take',
           accessor: 'take',
           disableFilters: true,
+          disableSortBy: true,
           Cell: ({
             row: {
               original: { id }
             }
           }) => <EnhancedIconButton icon={enhancedButtonIcons.take} onClick={() => onTake(id)} />,
-          visible: type === bugTableTypes.toFix,
+          minWidth: 75,
+          maxWidth: 75,
+          visible: type === bugTableTypes.active,
           align: 'center'
         },
         {
           Header: 'Retest',
           accessor: 'retest',
+          disableFilters: true,
+          disableSortBy: true,
           Cell: ({
             row: {
               original: { id }
@@ -272,6 +312,8 @@ export const BugTable = ({ type }) => {
           }) => (
             <EnhancedIconButton icon={enhancedButtonIcons.retest} onClick={() => onRetest(id)} />
           ),
+          minWidth: 75,
+          maxWidth: 75,
           visible: type === bugTableTypes.toReview,
           align: 'center'
         }

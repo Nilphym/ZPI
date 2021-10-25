@@ -5,7 +5,7 @@ import Layout from './Layout';
 import { RequireAuth } from './providers';
 import { Logout } from './containers';
 import { LoginPanel, TestPlan, Test } from './components';
-import { NoMatch, BugPage, bugTableTypes } from './pages';
+import { NoMatch, AllBugsPage, AssignedBugsPage, ActiveBugsPage } from './pages';
 
 const App = () => {
   return (
@@ -13,9 +13,9 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route path="login" element={<LoginPanel />} />
         <Route path="logout" element={<Logout />} />
-        <Route path="bugs" element={<BugPage type={bugTableTypes.all} />} />
-        <Route path="bugs/assigned" element={<BugPage type={bugTableTypes.myBugs} />} />
-        <Route path="bugs/active" element={<BugPage type={bugTableTypes.toFix} />} />
+        <Route path="bugs" element={<AllBugsPage />} />
+        <Route path="bugs/assigned" element={<AssignedBugsPage />} />
+        <Route path="bugs/active" element={<ActiveBugsPage />} />
         <Route
           path="dashboard"
           element={

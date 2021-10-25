@@ -4,7 +4,7 @@ import { TextField, InputAdornment, Select, MenuItem } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { useAsyncDebounce } from 'react-table';
 
-export const DefaultFilter = ({ column: { filterValue, setFilter } }) => {
+export const DefaultFilter = ({ column: { filterValue, setFilter }, toggleAllRowsExpanded }) => {
   const [inputContent, setInputContent] = useState(filterValue || '');
 
   const onChange = useAsyncDebounce((value) => {
@@ -19,6 +19,7 @@ export const DefaultFilter = ({ column: { filterValue, setFilter } }) => {
       onChange={(evt) => {
         setInputContent(evt.target.value);
         onChange(evt.target.value);
+        toggleAllRowsExpanded(false);
       }}
       InputProps={{
         startAdornment: !inputContent && (
@@ -41,15 +42,20 @@ DefaultFilter.propTypes = {
   column: PropTypes.shape({
     filterValue: PropTypes.string,
     setFilter: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  toggleAllRowsExpanded: PropTypes.func.isRequired
 };
 
-export const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
+export const SelectColumnFilter = ({
+  column: { filterValue, setFilter, preFilteredRows, id },
+  toggleAllRowsExpanded
+}) => {
   const options = React.useMemo(() => {
     const options = new Set();
     preFilteredRows.forEach((row) => {
       options.add(row.values[id]);
     });
+
     return [...options.values()];
   }, [id, preFilteredRows]);
 
@@ -59,6 +65,7 @@ export const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilter
       onClick={(e) => e.stopPropagation()}
       onChange={(e) => {
         setFilter(e.target.value || undefined);
+        toggleAllRowsExpanded(false);
       }}
       sx={{
         height: '2.2rem',
@@ -81,5 +88,6 @@ SelectColumnFilter.propTypes = {
     filterValue: PropTypes.string,
     setFilter: PropTypes.func.isRequired,
     preFilteredRows: PropTypes.array.isRequired
-  }).isRequired
+  }).isRequired,
+  toggleAllRowsExpanded: PropTypes.func.isRequired
 };

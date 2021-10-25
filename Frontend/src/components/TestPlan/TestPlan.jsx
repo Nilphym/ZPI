@@ -26,7 +26,11 @@ export const TestPlan = ({ isEditable }) => {
 };
 
 TestPlan.propTypes = {
-  isEditable: PropTypes.bool.isRequired
+  isEditable: PropTypes.bool
+};
+
+TestPlan.defaultProps = {
+  isEditable: false
 };
 
 export default TestPlan;
