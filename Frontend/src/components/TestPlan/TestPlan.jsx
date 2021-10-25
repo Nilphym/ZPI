@@ -66,7 +66,12 @@ export const TestPlan = ({ isEditable }) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: 'relative',
+        margin: '1.5rem'
+      }}
+    >
       {isLoading ? (
         <CircularProgress />
       ) : (
