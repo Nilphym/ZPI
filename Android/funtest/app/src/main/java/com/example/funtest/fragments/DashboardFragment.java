@@ -17,7 +17,7 @@ import com.example.funtest.R;
 
 public class DashboardFragment extends Fragment {
 
-    //check if fragment is attached to ana ctivity and do sth
+    //check if fragment is attached to an activity and do sth
     private onDashboardFragmentButtonSelected dashboardListener;
 
     @Override

@@ -15,6 +15,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Funtest">
         <activity
+            android:name=".BugActivityToReview"
+            android:exported="true" />
+        <activity
+            android:name=".BugActivityToFix"
+            android:exported="true" />
+        <activity
+            android:name=".BugActivityMyBugs"
+            android:exported="true" />
+        <activity
+            android:name=".BugDetailsActivityToReview"
+            android:exported="true" />
+        <activity
+            android:name=".BugDetailsActivityToFix"
+            android:exported="true" />
+        <activity
+            android:name=".BugDetailsActivityMyBugs"
+            android:exported="true" />
+        <activity
             android:name=".BugDetailsAttachmentsActivity"
             android:exported="true" />
         <activity

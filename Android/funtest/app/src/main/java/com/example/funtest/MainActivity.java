@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +35,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DashboardFragment.onDashboardFragmentButtonSelected {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DashboardFragment.onDashboardFragmentButtonSelected, BugsFragment.onBugsFragmentButtonSelected {
 
     //Navigation Drawer
     DrawerLayout drawerLayout;
@@ -170,6 +171,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onDasboardButtonSelected() {
         Toast.makeText(getApplicationContext(), "PM Reports Button", Toast.LENGTH_SHORT).show();
 
+    }
+
+    //BUGS FRAGMENT ACTIONS REACTIONS
+    @Override
+    public void onButtonSelectedMyBugs() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityMyBugs.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onButtonSelectedToFix() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityToFix.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onButtonSelectedToReview() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityToReview.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
     }
     ////////////////////////////
 }

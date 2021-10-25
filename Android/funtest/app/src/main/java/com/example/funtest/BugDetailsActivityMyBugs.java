@@ -3,22 +3,21 @@ package com.example.funtest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.funtest.objects.Bug;
 
 import java.util.ArrayList;
 
-public class BugDetailsActivity extends AppCompatActivity {
+public class BugDetailsActivityMyBugs extends AppCompatActivity {
 
     TextView textView_name, textView_state, textView_functionality, textView_type, textView_impact, textView_priority, textView_retestsRequired, textView_retestsDone, textView_retestsFailed, textView_deadline, textView_reportDate, textView_endDate, textView_description;
 
-    Button button_bugAttachments;
+    Button button_bugAttachments, button_resign, button_changeState;
 
     public static ArrayList<Bug> currentBugList = MainActivity.bugList;
     int bug_list_position = -1;
@@ -26,8 +25,7 @@ public class BugDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bug_details);
-
+        setContentView(R.layout.activity_bug_details_my_bugs);
 
         initializeViews();
         get_position();
@@ -57,11 +55,29 @@ public class BugDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
                 intent.putExtra("position",bug_list_position);
-                intent.putExtra("sourceActivityName","BugDetailsActivity");
+                intent.putExtra("sourceActivityName","BugDetailsActivityMyBugs");
                 startActivity(intent);
             }
         });
 
+        button_resign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
+                //intent.putExtra("position",bug_list_position);
+                //intent.putExtra("sourceActivityName","BugDetailsActivity");
+                //startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Resign Button", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        button_changeState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Change State Button", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     private void get_position() {
@@ -98,6 +114,8 @@ public class BugDetailsActivity extends AppCompatActivity {
         textView_description = findViewById(R.id.bd_textView_description);
 
         button_bugAttachments = findViewById(R.id.bd_button_attachments);
+        button_resign = findViewById(R.id.bd_button_resign);
+        button_changeState = findViewById(R.id.bd_button_changeState);
 
 
 

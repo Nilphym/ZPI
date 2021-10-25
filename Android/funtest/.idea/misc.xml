@@ -25,12 +25,24 @@
         <entry key="..\:/ZPI/Android/funtest/app/src/main/res/menu/navigation_drawer_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/drawable-v24/textview_border.xml" value="0.3828125" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_details.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_details_my_bugs.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_details_to_fix.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_details_to_review.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_my_bugs.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_to_fix.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_bug_to_review.xml" value="0.36666666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/bug_list_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/bug_list_item_mybugs.xml" value="0.33" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/bug_list_item_tofix.xml" value="0.33" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/bug_list_item_toreview.xml" value="0.33" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/fragment_bugs.xml" value="0.36666666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/fragment_dashboard.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/myBugs_bug_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/navigation_drawer_toolbar.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/toFix_bug_list_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/ZPI/ZPI/Android/funtest/app/src/main/res/layout/toReview_bug_list_item.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
