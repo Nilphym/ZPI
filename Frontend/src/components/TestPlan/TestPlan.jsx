@@ -4,7 +4,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { postTest, setTestId } from '../../redux/reducers/test/testSlice';
+import { postTest, setTestId } from '../../redux/store';
 
 export const TestPlan = ({ isEditable }) => {
   const dispatch = useDispatch();

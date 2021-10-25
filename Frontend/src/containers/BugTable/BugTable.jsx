@@ -32,7 +32,7 @@ import {
   takeBug,
   resignFromBug,
   getPossibleValues
-} from '../../redux/reducers/bugs/bugsSlice';
+} from '../../redux/store';
 
 export const bugTableTypes = {
   all: 'all',

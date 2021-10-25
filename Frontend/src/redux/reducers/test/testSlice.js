@@ -2,7 +2,7 @@
 /* eslint-disable no-alert */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import server from '../../../services/server/api';
+import server from '../../../services/server';
 
 const transformTestData = (testDataObject) => {
   const keys = Object.keys(testDataObject);

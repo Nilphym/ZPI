@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 
 import TableItem from './TableItem';
-import { editTestStepTestData, editTestCaseTable } from '../../redux/reducers/test/testSlice';
+import { editTestStepTestData, editTestCaseTable } from '../../redux/store';
 
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;

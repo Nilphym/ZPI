@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import server from '../../../services/server/api';
+import server from '../../../services/server';
 
 const initialState = {
   testPlans: [],

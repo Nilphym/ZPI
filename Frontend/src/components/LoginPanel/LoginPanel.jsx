@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import React from 'react';
 
-import { login } from '../../redux/reducers/auth/authSlice';
+import { login } from '../../redux/store';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({

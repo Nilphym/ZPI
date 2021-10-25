@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Typography,
@@ -11,7 +12,7 @@ import {
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
 import {
@@ -27,7 +28,7 @@ import {
   postTestProcedure,
   postTestCase
   // setTestId
-} from '../../redux/reducers/test/testSlice';
+} from '../../redux/store';
 
 export const Test = ({ isEditable }) => {
   const { control: mainControl, getValues } = useForm();

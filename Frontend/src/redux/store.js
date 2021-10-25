@@ -18,3 +18,7 @@ const store = configureStore({
 });
 
 export default store;
+export * from './reducers/auth/authSlice';
+export * from './reducers/counter/counterSlice';
+export * from './reducers/test/testSlice';
+export * from './reducers/bugs/bugsSlice';
