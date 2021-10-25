@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
+import WarningIcon from '@mui/icons-material/Warning';
 import { useSelector, useDispatch } from 'react-redux';
 import TestStep from '../TestStep/TestStep';
 import {
@@ -109,12 +110,23 @@ export const TestProcedure = ({ isEditable }) => {
           >
             Test Steps:
           </Typography>
-          {testStepsIds ? (
+          {testStepsIds && testStepsIds.length > 0 ? (
             testStepsIds.map((testStepId) => (
               <TestStep key={testStepId} testStepId={testStepId} isEditable={isEditing} />
             ))
           ) : (
-            <Typography>Loading Data ...</Typography>
+            <Button
+              sx={{
+                '&.Mui-disabled': {
+                  color: 'black'
+                }
+              }}
+              variant="body1"
+              startIcon={<WarningIcon />}
+              disabled
+            >
+              No Data
+            </Button>
           )}
           {isEditable && isEditing && (
             <Box>

@@ -26,8 +26,8 @@ import {
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase,
-  setTestId
+  postTestCase
+  // setTestId
 } from '../../redux/store';
 
 export const Test = ({ isEditable }) => {
@@ -48,7 +48,7 @@ export const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestId('t1'));
+    // dispatch(setTestId('t1'));
 
     async function getTestData() {
       await dispatch(getTestById());

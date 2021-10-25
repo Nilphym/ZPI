@@ -38,6 +38,10 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId, tests }) => {
     navigate(`${pathname}/test-${newTestId.payload}`);
   }
 
+  const removeTestSuite = () => {
+    dispatch(deleteTestSuite({ testSuiteId }));
+  };
+
   return (
     <Box>
       <Box>
@@ -155,11 +159,12 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId, tests }) => {
                 border: '1px solid black',
                 borderRadius: '50%',
                 padding: '2px',
+                zIndex: 3,
                 '&:hover': {
                   cursor: 'pointer'
                 }
               }}
-              onClick={() => deleteTestSuite()}
+              onClick={() => removeTestSuite()}
             />
           )}
         </Box>
