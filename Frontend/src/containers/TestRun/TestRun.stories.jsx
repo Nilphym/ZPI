@@ -3,7 +3,7 @@ import React from 'react';
 import TestRun from './TestRun';
 
 export default {
-  title: 'Test Run',
+  title: 'Nilphym/Test Run',
   component: TestRun
 };
 

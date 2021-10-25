@@ -1,16 +1,16 @@
 import React from 'react';
 
-import EditableTableComponent from '../components/EditableTable/EditableTable';
+import EditableTable from './EditableTable';
 
 export default {
-  title: 'Components',
-  component: EditableTableComponent
+  title: 'Michal/EditableTable',
+  component: EditableTable
 };
 
-const Template = (args) => <EditableTableComponent {...args} />;
+const Template = (args) => <EditableTable {...args} />;
 
-export const EditableTable = Template.bind({});
-EditableTable.args = {
+export const Default = Template.bind({});
+Default.args = {
   data: {
     tableName: 'Table 1',
     RowName1: '',
@@ -21,7 +21,7 @@ EditableTable.args = {
     Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
   },
   parentComp: 'testStep',
-  deleteTable: () => { },
+  deleteTable: () => {},
   testStepId: 'Ts1',
   disabled: false
 };
