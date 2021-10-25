@@ -1,4 +1,5 @@
-﻿using Funtest.Services.Interfaces;
+﻿using Data.Models;
+using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Auth.Requests;
 using Funtest.TransferObject.Auth.Responses;
 using System;
@@ -14,6 +15,11 @@ namespace Funtest.Services
         public AuthService(IServiceProvider serviceProvider, IJWTService jwtService) : base(serviceProvider)
         {
             _jwtService = jwtService;
+        }
+
+        public async Task<User> FindUser(string email)
+        {
+           return await UserManager.FindByEmailAsync(email);
         }
 
         public async Task<LoginResponse> Login(LoginRequest request)

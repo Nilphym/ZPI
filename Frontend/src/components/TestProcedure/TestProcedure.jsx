@@ -9,7 +9,13 @@ import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import TestStep from '../TestStep/TestStep';
-import { getTestProcedureById } from '../../redux/reducers/test/testSlice';
+import {
+  getTestProcedureById,
+  postTestStep,
+  editTestProcedureResult,
+  setTestProcedureLoading,
+  putTestProcedureById
+} from '../../redux/reducers/test/testSlice';
 
 const formFields = {
   newTestStepName: 'newTestStepName'
@@ -37,7 +43,7 @@ const TestProcedure = ({ isEditable }) => {
     resolver: yupResolver(schema)
   });
 
-  const { control: testProcedureControl, getValues } = useForm();
+  const { control: testProcedureControl } = useForm();
 
   const dispatch = useDispatch();
   const {
@@ -46,19 +52,31 @@ const TestProcedure = ({ isEditable }) => {
   } = useSelector((state) => state.test);
 
   useEffect(() => {
+    dispatch(setTestProcedureLoading({ isLoading: true }));
     async function getTestProcedureData() {
       await dispatch(getTestProcedureById());
     }
     getTestProcedureData();
   }, []);
 
-  const addTestStep = ({ newTestStepName }) => {
-    // API add Test Step
+  async function addTestStep({ newTestStepName }) {
+    await dispatch(postTestStep(newTestStepName));
     reset(defaultValues, {
       keepIsValid: true
     });
     setIsAddingTestStep(false);
-  };
+    setIsEditing(false);
+    dispatch(setTestProcedureLoading({ isLoading: true }));
+    await dispatch(getTestProcedureById());
+  }
+
+  async function saveTestProcedure() {
+    setIsAddingTestStep(false);
+    setIsEditing(false);
+    await dispatch(putTestProcedureById());
+    dispatch(setTestProcedureLoading({ isLoading: true }));
+    await dispatch(getTestProcedureById());
+  }
 
   return (
     <Box>
@@ -91,9 +109,13 @@ const TestProcedure = ({ isEditable }) => {
           >
             Test Steps:
           </Typography>
-          {testStepsIds.map((testStepId) => (
-            <TestStep testStepId={testStepId} isEditable={isEditing} />
-          ))}
+          {testStepsIds ? (
+            testStepsIds.map((testStepId) => (
+              <TestStep key={testStepId} testStepId={testStepId} isEditable={isEditing} />
+            ))
+          ) : (
+            <Typography>Loading Data ...</Typography>
+          )}
           {isEditable && isEditing && (
             <Box>
               {!isAddingTestStep ? (
@@ -172,11 +194,9 @@ const TestProcedure = ({ isEditable }) => {
             <Controller
               name="result"
               control={testProcedureControl}
-              defaultValue={result}
               render={({ field }) => (
                 <TextField
                   id="result"
-                  label="Result"
                   type="text"
                   error=""
                   helperText=""
@@ -184,8 +204,13 @@ const TestProcedure = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
+                  onChange={e => {
+                    dispatch(editTestProcedureResult({result: e.target.value }));
+                  }}
+                  value={result}
                   sx={{
                     marginTop: '0.625rem',
+                    marginBottom: '1.5rem',
                     width: '100%'
                   }}
                 />
@@ -196,9 +221,7 @@ const TestProcedure = ({ isEditable }) => {
             <Button
               variant="outlined"
               sx={{ marginTop: '0.625rem' }}
-              onClick={() => {
-                setIsEditing(false);
-              }}
+              onClick={() => saveTestProcedure()}
             >
               Save Test Procedure
             </Button>

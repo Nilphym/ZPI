@@ -1,312 +1,36 @@
-/* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { createServer, Model } from 'miragejs';
+import { createServer } from 'miragejs';
+
+import tests from './mockServerData/tests';
+import bugs from './mockServerData/bugs';
 
 // DOCS: https://miragejs.com/tutorial/part-1/
+// Create new feature and add it to this list below
+const features = [tests, bugs];
+
+const makeModels = () => Object.assign(...features.map((feature) => feature.models));
+
+const makeRoutes = (thisRef) => ({
+  ...features.map((feature) => feature.routes.map((route) => route(thisRef)))
+});
+
+const makeSeeds = (serverRef) => ({
+  ...features.map((feature) => feature.seeds.map((route) => route(serverRef)))
+});
+
 const makeServer = () =>
   createServer({
-    models: {
-      bug: Model
-    },
+    models: makeModels(),
     routes() {
       this.namespace = 'api/';
-
       this.post('signin', () => {
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpZCI6MSwicm9sZSI6ImRldiJ9.l3t9QmgNcBbwSiCK2i6aV7w1Wu51vDmVJuQe9d6DDPA';
       });
 
-      this.get('test/:id', (_, request) => {
-        const { id } = request.params;
-        return {
-          testId: id,
-          testName: 'Test the best',
-          testCategories: ['login', 'register', 'API'],
-          testCasesIds: ['tc1', 'tc2', 'tc3'],
-          testProceduresIds: ['tp1', 'tp2', 'tp3'],
-          selectedTestCategory: 'login',
-          selectedTestCaseId: 'tc2',
-          selectedTestProcedureId: 'tp3'
-        };
-      });
-
-      this.put('test/:id', (_, request) => {
-        const { id } = request.params;
-        const data = JSON.parse(request.requestBody);
-        console.log(`PUT/test/${id}: ${data}`);
-      });
-
-      this.get('testProcedure/:id', () => {
-        return {
-          selectedTestProcedure: {
-            testStepsIds: ['Test Step 1#987', 'Login#657', 'Register#123'],
-            result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
-          }
-        };
-      });
-
-      this.get('testCase/:id', () => {
-        return {
-          selectedTestCase: {
-            preconditions: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-            deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`,
-            entryData: []
-          }
-        };
-      });
-
-      this.get('bugs', (schema) => {
-        return schema.bugs.all().models;
-      });
-
-      this.put('bugs/take/:id', (_, request) => {
-        const { id } = request.params;
-        const personId = JSON.parse(request.requestBody);
-        console.log(personId, id);
-      });
-
-      this.put('bugs/resign/:id', (_, request) => {
-        const { id } = request.params;
-        const personId = JSON.parse(request.requestBody);
-        console.log(personId, id);
-      });
-
-      this.put('bugs/reject/:id', (schema, request) => {
-        const { id } = request.params;
-        schema.bugs.findBy({ id }).update('state', 'Rejected');
-      });
-
-      this.put('bugs/resolve/:id', (schema, request) => {
-        const { id } = request.params;
-        const requiredRetests = JSON.parse(request.requestBody);
-        console.log(requiredRetests, id);
-        schema.bugs.findBy({ id }).update('state', 'Resolved');
-      });
-
-      this.put('bugs/:id', (schema, request) => {
-        const { id } = request.params;
-        const json = JSON.parse(request.requestBody);
-
-        schema.bugs.findBy({ id }).update(json);
-      });
+      makeRoutes(this);
     },
     seeds(server) {
-      [
-        {
-          id: 1,
-          code: 'E-12323',
-          name: 'Not responding',
-          state: 'New',
-          functionality: 'Login',
-          type: 'Functional',
-          impact: 'High',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/20/2022',
-          endDate: '12/05/2022'
-        },
-        {
-          id: 2,
-          code: 'E-45432',
-          name: 'Table not visible',
-          state: 'New',
-          functionality: 'Register',
-          type: 'Functional',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 3,
-          code: 'E-95783',
-          name: 'Internet down',
-          state: 'In testing',
-          functionality: 'Add product',
-          type: 'Logical',
-          impact: 'Medium',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 4,
-          code: 'E-769478',
-          name: 'Christmas early this year',
-          state: 'Fixed',
-          functionality: 'Login',
-          type: 'Logical',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 5,
-          code: 'E-654865',
-          name: 'Big bang',
-          state: 'For retest',
-          functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'Medium',
-          priority: 'High',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 6,
-          code: 'E-234504',
-          name: 'Rain is raining',
-          state: 'Resolved',
-          functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'High',
-          priority: 'High',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 7,
-          code: 'E-090123',
-          name: 'Goblins attack',
-          state: 'Rejected',
-          functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Low',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 8,
-          code: 'E-325980',
-          name: 'Lorem ipsum dolor',
-          state: 'Resolved',
-          functionality: 'Login',
-          type: 'Logical',
-          impact: 'Medium',
-          priority: 'Medium',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 9,
-          code: 'E-123423',
-          name: 'Lorem ipsum dolor',
-          state: 'Resolved',
-          functionality: 'Login',
-          type: 'Logical',
-          impact: 'High',
-          priority: 'High',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 10,
-          code: 'E-112223',
-          name: 'Lorem ipsum dolor',
-          state: 'Fixed',
-          functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Medium',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 11,
-          code: 'E-123432',
-          name: 'Lorem ipsum dolor',
-          state: 'Fixed',
-          functionality: 'Login',
-          type: 'Code duplication',
-          impact: 'Low',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 12,
-          code: 'E-123290',
-          name: 'Lorem ipsum dolor',
-          state: 'New',
-          functionality: 'Login',
-          type: 'Wrong datatype',
-          impact: 'Low',
-          priority: 'Medium',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        },
-        {
-          id: 13,
-          code: 'E-123003',
-          name: 'Lorem ipsum dolor',
-          state: 'In testing',
-          functionality: 'Login',
-          type: 'Security',
-          impact: 'High',
-          priority: 'Low',
-          retests: '1/1/1',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
-          deadline: '12/15/2022',
-          reportDate: '12/15/2022',
-          endDate: '12/15/2022'
-        }
-      ].forEach((bug) => {
-        server.create('bug', bug);
-      });
+      makeSeeds(server);
     }
   });
 

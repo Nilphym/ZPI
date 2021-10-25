@@ -1,25 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch } from 'react-redux';
 import TableItem from './TableItem';
+import { editTestStepTestData, editTestCaseTable } from '../../redux/reducers/test/testSlice';
 
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
 
-const demo = {
-  tableName: 'aaa',
-  RowName1: '',
-  Data1: ['ac', '1', '2', 'b', '3', 'c'],
-  RowName2: 'Ble ble',
-  Data2: ['x', 'y', 'z', 't', 'r', 'w']
-};
-
 const processData = (data) => {
   const originalDataKeys = Object.keys(data);
-  const dataKeys = originalDataKeys.slice(1);
+  const tableNameIndex = originalDataKeys.indexOf('tableName');
+  originalDataKeys.splice(tableNameIndex, 1);
+  const dataKeys = originalDataKeys;
   const processedData = [];
   let array = [];
   dataKeys.forEach((key) => {
@@ -32,43 +28,49 @@ const processData = (data) => {
       array.length = 0;
     }
   });
-
   return processedData;
 };
 
 const prepareOutputData = (values) => {
   let iterator = 1;
-  const dataKeys = Object.keys(values);
+  const dataKeys = Object.keys(values).sort();
+  console.log(dataKeys);
   const processedData = {};
   const array = [];
   dataKeys.forEach((key) => {
     if (key.toString().includes('-0-0')) {
       processedData[`RowName${iterator}`] = values[key];
-    } else if (key.toString().substring(key.length - 2).includes('-0')) {
+    } else if (
+      key
+        .toString()
+        .substring(key.length - 2)
+        .includes('-0')
+    ) {
       processedData[`Data${iterator}`] = [...array];
       iterator += 1;
       array.length = 0;
       processedData[`RowName${iterator}`] = values[key];
     } else if (key === dataKeys[dataKeys.length - 1]) {
-        array.push(values[key]);
-       processedData[`Data${iterator}`] = [...array];
-     }
-    else {
+      array.push(values[key]);
+      processedData[`Data${iterator}`] = [...array];
+    } else {
       array.push(values[key]);
     }
   });
+  console.log(processedData);
   return processedData;
 };
 
-// TODO: Add control from outer form !!!
-const EditableTable = ({ name, disabled, deleteTable, data }) => {
-  const { control: tableControl, getValues, setValue } = useForm();
+const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) => {
+  const { control: tableControl, getValues } = useForm();
 
-  const defaultData = processData(demo);
+  const defaultData = processData(data);
   const [rowsNumber, setRowsNumber] = useState(defaultData.length);
   const [columnsNumber, setColumnsNumber] = useState(defaultData[0].length);
   const [currentData, setCurrentData] = useState(defaultData);
   const [isEditing, setIsEditing] = useState(false);
+
+  const dispatch = useDispatch();
 
   const addRow = () => {
     setRowsNumber((number) => number + 1);
@@ -100,7 +102,14 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
 
   const saveTable = () => {
     setIsEditing(false);
-    console.log(prepareOutputData(getValues()));
+    const tableObject = prepareOutputData(getValues());
+    tableObject.tableName = data.tableName;
+    if (parentComp === 'testStep') {
+      dispatch(editTestStepTestData({ id: testStepId, editedTable: tableObject }));
+    }
+    else {
+      dispatch(editTestCaseTable({ editedTable: tableObject }));
+    }
   };
 
   return (
@@ -114,7 +123,7 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
           fontWeight: '700'
         }}
       >
-        {`Table name: ${demo.tableName}`}
+        {`Table name: ${data.tableName}`}
       </Typography>
       <Box
         sx={{
@@ -156,7 +165,7 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
             sx={{
               position: 'absolute',
               top: '-6vh',
-              right: '4vw',
+              right: '5vw',
               border: '1px solid black',
               borderRadius: '50%',
               padding: '2px',
@@ -179,19 +188,20 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
           >
             {currentData.map((row, rowIndex) => (
               <Box
-                key={`row-${row[0]}`}
+                key={`${data.tableName}-row-${row[0]}`}
                 sx={{
                   display: 'flex'
                 }}
               >
                 {row.map((item, columnIndex) => (
                   <TableItem
-                    key={`${row[0]}-${item}`}
-                    name={demo.tableName}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${data.tableName}-${rowIndex}-${columnIndex}`}
+                    name={data.tableName}
                     row={rowIndex}
                     column={columnIndex}
                     control={tableControl}
-                    disabled={disabled}
+                    disabled={!isEditing}
                     defaultValue={item}
                   />
                 ))}
@@ -200,7 +210,7 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
           </Box>
         </Box>
       </Box>
-      <Button
+      <Button // TODO: Delete !!!!
         sx={{
           position: 'absolute',
           left: '50vw'
@@ -218,12 +228,16 @@ const EditableTable = ({ name, disabled, deleteTable, data }) => {
   );
 };
 
+EditableTable.defaultProps = {
+  testStepId: ''
+};
+
 EditableTable.propTypes = {
-  name: PropTypes.string.isRequired,
-  // control: PropTypes.object.isRequired,
+  parentComp: PropTypes.string.isRequired,
   disabled: PropTypes.bool.isRequired,
   deleteTable: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  testStepId: PropTypes.string
 };
 
 export default EditableTable;

@@ -9,6 +9,7 @@ namespace Funtest.Services.Interfaces
     public interface ITestCaseService
     {
         Task<bool> AddTestCase(AddTestCaseRequest testCaseRequest);
+        Task<bool> ExistTestCase(Guid id);
         Task<GetTestCaseResponse> GetTestCaseById(Guid id);
         Task<bool> EditTestCase(Guid id, EditTestCaseRequest request);
         List<GetTestCaseIdentityValueResponse> GetAllTestCases();

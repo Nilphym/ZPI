@@ -15,5 +15,7 @@ namespace Funtest.Services.Interfaces
         List<GetErrorResponse> GetAllErrorsAssignedToDeveloper(string developerId);
         Task<bool> EditError(Guid id, EditErrorRequest request);
         Task<bool> AssignBugToDeveloper(Guid errorId, AssignBugToDeveloperRequest request);
+        Task<bool> ResolveError(Guid id, ResolveErrorRequest resolve);
+        bool IsErrorExist(Guid id);
     }
 }

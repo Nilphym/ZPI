@@ -18,7 +18,7 @@ namespace Funtest.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
             var token = await _authService.Login(loginRequest);

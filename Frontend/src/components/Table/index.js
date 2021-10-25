@@ -1,3 +1,2 @@
-import Table from './Table';
-
-export default Table;
+export { default } from './Table';
+export { default as EnhancedIconButton, icons } from './EnhancedIconButton';

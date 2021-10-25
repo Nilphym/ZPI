@@ -37,7 +37,7 @@ namespace Funtest.Services
             var step = _mapper.Map<Step>(await Context.Steps.FindAsync(id));
             step.Name = dtoStep.Name;
             step.TestDataObject = dtoStep.EntryDataObject;
-            step.TestData = (string)JsonConvert.DeserializeObject<JObject>(string.IsNullOrEmpty(step.TestData) ? "{}" : step.TestData.ToString());
+            step.TestData = JsonConvert.SerializeObject(step.TestDataObject); 
             step.ControlPoint = dtoStep.ControlPoint;
 
             Context.Steps.Update(step);

@@ -36,8 +36,11 @@ namespace Funtest.Controllers
         [HttpPut("{testCaseId}")]
         public async Task<ActionResult> EditTestCase([FromRoute] Guid testCaseId, EditTestCaseRequest request)
         {
-            var response = await _testCaseService.EditTestCase(testCaseId, request);
+            var isExist = await _testCaseService.ExistTestCase(testCaseId);
+            if (!isExist)
+                return NotFound("Test case with the given id doesn't exist.");
 
+            var response = await _testCaseService.EditTestCase(testCaseId, request);
             if (!response)
                 return Problem("Not saved! Problem during saving object in database!");
 
