@@ -2,6 +2,8 @@ package com.example.funtest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -63,18 +65,55 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
         button_resign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
-                //intent.putExtra("position",bug_list_position);
-                //intent.putExtra("sourceActivityName","BugDetailsActivity");
-                //startActivity(intent);
-                Toast.makeText(getApplicationContext(), "Resign Button", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(BugDetailsActivityMyBugs.this);
+                builder.setMessage("Do You Want To Resign From This Bug?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // do something
+                                Toast.makeText(getApplicationContext(), "Resigned From Bug", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder.show();
+
             }
         });
 
         button_changeState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Change State Button", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(BugDetailsActivityMyBugs.this);
+                builder.setMessage("Choose An Action:")
+                        .setPositiveButton("Set As Fixed", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // do something
+                                Toast.makeText(getApplicationContext(), "Bug Set As Fixed", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNeutralButton("Reject", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // do something
+                                Toast.makeText(getApplicationContext(), "Bug Rejected", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder.show();
+
 
             }
         });

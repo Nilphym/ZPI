@@ -40,4 +40,21 @@ public class BugActivityMyBugs extends AppCompatActivity {
     private void getBugListMyBugs() {
         BugActivityMyBugs.bugListMyBugs = MainActivity.bugList;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //get bug list again
+
+
+        recyclerView = findViewById(R.id.bl_recyclerView);
+        recyclerView.setHasFixedSize(true);
+
+        if(bugListMyBugs.size() > 0 ){
+            bugAdapter = new BugAdapterMyBugs(getApplicationContext(),bugListMyBugs);
+            recyclerView.setAdapter(bugAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+        }
+    }
 }

@@ -40,4 +40,20 @@ public class BugActivityToFix extends AppCompatActivity {
     private void getBugListToFix() {
         BugActivityToFix.bugListToFix = MainActivity.bugList;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //get bug list again
+
+        recyclerView = findViewById(R.id.bl_recyclerView);
+        recyclerView.setHasFixedSize(true);
+
+        if(bugListToFix.size() > 0 ){
+            bugAdapter = new BugAdapterToFix(getApplicationContext(),bugListToFix);
+            recyclerView.setAdapter(bugAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+        }
+    }
 }
