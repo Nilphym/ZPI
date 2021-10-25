@@ -29,7 +29,7 @@ const getComparator = (order, orderBy) => {
     : (a, b) => -descendingComparator(a, b, orderBy);
 };
 
-const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
+export const EnhancedTable = ({ headCells, rowCells, rows, rowsPerPageOptions, onSubmit }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(headCells[0].id);
   const [page, setPage] = useState(0);

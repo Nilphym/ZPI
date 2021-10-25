@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Paper, Box } from '@mui/material';
 
-import TestRunTable from '../../components/TestRunTable';
+import { TestRunTable } from '../../components';
 
 const Preconditions = ({ preconditions }) => {
   return (
@@ -30,7 +30,7 @@ ExpectedResult.propTypes = {
   result: PropTypes.string.isRequired
 };
 
-const TestRun = ({ preconditions, expectedResult, rows }) => {
+export const TestRun = ({ preconditions, expectedResult, rows }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
       <Preconditions preconditions={preconditions} />

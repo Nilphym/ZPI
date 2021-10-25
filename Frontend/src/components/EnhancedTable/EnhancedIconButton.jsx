@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@mui/material';
 import { Settings, Repeat, Done, Add, NotInterested, CallMissed } from '@mui/icons-material';
 
-export const icons = {
+export const enhancedButtonIcons = {
   resolve: <Done />,
   reject: <NotInterested />,
   resign: <CallMissed />,
@@ -27,6 +27,6 @@ const EnhancedIconButton = ({ icon, onClick }) => (
 export default EnhancedIconButton;
 
 EnhancedIconButton.propTypes = {
-  icon: PropTypes.oneOf(Object.values(icons)).isRequired,
+  icon: PropTypes.oneOf(Object.values(enhancedButtonIcons)).isRequired,
   onClick: PropTypes.func.isRequired
 };

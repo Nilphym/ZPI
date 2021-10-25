@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '../../redux/reducers/auth/authSlice';
 
-export const AuthServiceManager = ({ children }) => {
+export const AuthManager = ({ children }) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -26,8 +26,9 @@ export const AuthServiceManager = ({ children }) => {
   return children;
 };
 
-export default AuthServiceManager;
+export default AuthManager;
+export { default as RequireAuth } from './RequireAuth';
 
-AuthServiceManager.propTypes = {
+AuthManager.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired
 };

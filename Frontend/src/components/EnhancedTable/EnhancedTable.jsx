@@ -26,7 +26,7 @@ import TableToolbar from './TableToolbar';
 import ExpandableRow from './ExpandableRow';
 import { DefaultFilter } from './CustomFilter';
 
-const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
+export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
   const defaultColumn = useMemo(() => ({ Filter: DefaultFilter }), []);
 
   const {
@@ -160,3 +160,5 @@ EnhancedTable.propTypes = {
 };
 
 export default EnhancedTable;
+export { default as EnhancedIconButton, enhancedButtonIcons } from './EnhancedIconButton';
+export { SelectColumnFilter } from './CustomFilter';

@@ -29,7 +29,7 @@ const schema = yup.object().shape({
   [formFields.newTestStepName]: yup.string().required()
 });
 
-const TestProcedure = ({ isEditable }) => {
+export const TestProcedure = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTestStep, setIsAddingTestStep] = useState(false);
 
@@ -204,8 +204,8 @@ const TestProcedure = ({ isEditable }) => {
                   multiline
                   rows={3}
                   {...field}
-                  onChange={e => {
-                    dispatch(editTestProcedureResult({result: e.target.value }));
+                  onChange={(e) => {
+                    dispatch(editTestProcedureResult({ result: e.target.value }));
                   }}
                   value={result}
                   sx={{
