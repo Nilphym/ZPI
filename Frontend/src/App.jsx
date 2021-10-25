@@ -25,7 +25,8 @@ const App = () => {
           }
         />
         <Route path="testPlan-:testPlanId" element={<TestPlan />} />
-        <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable />} />
+        <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
+        <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false}/>} />
         <Route path="logout" element={<Logout />} />
       </Route>
       <Route path="*" element={<NoMatch />} />

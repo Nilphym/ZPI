@@ -49,7 +49,7 @@ export const TestPlan = ({ isEditable }) => {
   async function addTest() {
     const newTestId = await dispatch(postTest());
     dispatch(setTestId(newTestId.payload));
-    navigate(`${pathname}/test-${newTestId.payload}`);
+    navigate(`${pathname}/test-e-${newTestId.payload}`);
   }
 
   async function saveTestPlan() {
@@ -189,7 +189,7 @@ export const TestPlan = ({ isEditable }) => {
         Add a new Test (TO DELETE)
       </Button>
       {isEditing && (
-        <Button variant="outlined" onClick={() => saveTestPlan()} sx={{marginTop: '1.25rem'}}>
+        <Button variant="outlined" onClick={() => saveTestPlan()} sx={{ marginTop: '1.25rem' }}>
           Save Test Plan
         </Button>
       )}
