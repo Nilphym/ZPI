@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
