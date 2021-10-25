@@ -7,8 +7,8 @@ import { LocalizationProvider } from '@mui/lab';
 import DateAdapter from '@mui/lab/AdapterLuxon';
 
 import theme from '../src/utils/theme';
-import MockServer from '../src/services/server/MockServer';
 import store from '../src/redux/store';
+import { MockServer } from '../src/providers';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

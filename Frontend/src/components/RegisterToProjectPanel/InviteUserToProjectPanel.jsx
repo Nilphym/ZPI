@@ -18,7 +18,7 @@ const schema = yup.object().shape({
   [formFields.email]: yup.string().email().required()
 });
 
-const InviteUserToProjectPanel = () => {
+export const InviteUserToProjectPanel = () => {
   const {
     control,
     handleSubmit,

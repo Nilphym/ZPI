@@ -29,6 +29,7 @@
     "no-shadow": "off",
     "semi": "error",
     "arrow-body-style": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "import/no-named-as-default": "off"
   }
 }

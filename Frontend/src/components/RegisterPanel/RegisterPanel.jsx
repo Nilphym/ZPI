@@ -44,7 +44,7 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-const RegisterPanel = () => {
+export const RegisterPanel = () => {
   const dispatch = useDispatch();
 
   const {

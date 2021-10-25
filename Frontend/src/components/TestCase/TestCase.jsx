@@ -48,7 +48,7 @@ const createTable = (tablesCount, rowsCount, columnsCount) => {
   return tableObject;
 };
 
-const TestCase = ({ isEditable }) => {
+export const TestCase = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTextField, setIsAddingTextField] = useState(false);
   const [isAddingTable, setIsAddingTable] = useState(false);
@@ -104,14 +104,14 @@ const TestCase = ({ isEditable }) => {
     dispatch(deleteTestCaseTable({ tableName }));
   };
 
-  async function saveTestCase(){
+  async function saveTestCase() {
     setIsEditing(false);
     setIsAddingTable(false);
     setIsAddingTextField(false);
     await dispatch(putTestCaseById());
     dispatch(setTestCaseLoading(true));
     await dispatch(getTestCaseById());
-  };
+  }
 
   useEffect(() => {
     async function getTestCaseData() {

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { createServer } from 'miragejs';
 
-import tests from './mockServerData/tests';
-import bugs from './mockServerData/bugs';
+import tests from './data/tests';
+import bugs from './data/bugs';
 
 // DOCS: https://miragejs.com/tutorial/part-1/
 // Create new feature and add it to this list below
@@ -34,7 +34,7 @@ const makeServer = () =>
     }
   });
 
-const MockServer = ({ children }) => {
+export const MockServer = ({ children }) => {
   makeServer();
   return children;
 };

@@ -18,8 +18,12 @@ import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
-import Table, { EnhancedIconButton, icons } from '../../components/Table';
-import { SelectColumnFilter } from '../../components/Table/CustomFilter';
+import {
+  EnhancedTable,
+  EnhancedIconButton,
+  enhancedButtonIcons,
+  SelectColumnFilter
+} from '../../components';
 import {
   getRows,
   putRows,
@@ -30,14 +34,14 @@ import {
   getPossibleValues
 } from '../../redux/reducers/bugs/bugsSlice';
 
-export const tableTypes = {
+export const bugTableTypes = {
   all: 'all',
   myBugs: 'my-bugs',
   toFix: 'to-fix',
   toReview: 'to-review'
 };
 
-const BugTable = ({ type }) => {
+export const BugTable = ({ type }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { handleSubmit, setValue, control } = useForm();
@@ -199,7 +203,7 @@ const BugTable = ({ type }) => {
           accessor: 'retests',
           disableFilters: true,
           disableSortBy: true,
-          visible: type === tableTypes.toReview || type === tableTypes.all,
+          visible: type === bugTableTypes.toReview || type === bugTableTypes.all,
           minWidth: 100,
           maxWidth: 100,
           align: 'center'
@@ -212,8 +216,10 @@ const BugTable = ({ type }) => {
             row: {
               original: { id }
             }
-          }) => <EnhancedIconButton icon={icons.resign} onClick={() => onResign(id)} />,
-          visible: type === tableTypes.myBugs,
+          }) => (
+            <EnhancedIconButton icon={enhancedButtonIcons.resign} onClick={() => onResign(id)} />
+          ),
+          visible: type === bugTableTypes.myBugs,
           align: 'center'
         },
         {
@@ -224,8 +230,10 @@ const BugTable = ({ type }) => {
             row: {
               original: { id }
             }
-          }) => <EnhancedIconButton icon={icons.reject} onClick={() => onReject(id)} />,
-          visible: type === tableTypes.myBugs,
+          }) => (
+            <EnhancedIconButton icon={enhancedButtonIcons.reject} onClick={() => onReject(id)} />
+          ),
+          visible: type === bugTableTypes.myBugs,
           align: 'center'
         },
         {
@@ -236,8 +244,10 @@ const BugTable = ({ type }) => {
             row: {
               original: { id }
             }
-          }) => <EnhancedIconButton icon={icons.resolve} onClick={() => onResolve(id)} />,
-          visible: type === tableTypes.myBugs,
+          }) => (
+            <EnhancedIconButton icon={enhancedButtonIcons.resolve} onClick={() => onResolve(id)} />
+          ),
+          visible: type === bugTableTypes.myBugs,
           align: 'center'
         },
         {
@@ -248,8 +258,8 @@ const BugTable = ({ type }) => {
             row: {
               original: { id }
             }
-          }) => <EnhancedIconButton icon={icons.take} onClick={() => onTake(id)} />,
-          visible: type === tableTypes.toFix,
+          }) => <EnhancedIconButton icon={enhancedButtonIcons.take} onClick={() => onTake(id)} />,
+          visible: type === bugTableTypes.toFix,
           align: 'center'
         },
         {
@@ -259,8 +269,10 @@ const BugTable = ({ type }) => {
             row: {
               original: { id }
             }
-          }) => <EnhancedIconButton icon={icons.retest} onClick={() => onRetest(id)} />,
-          visible: type === tableTypes.toReview,
+          }) => (
+            <EnhancedIconButton icon={enhancedButtonIcons.retest} onClick={() => onRetest(id)} />
+          ),
+          visible: type === bugTableTypes.toReview,
           align: 'center'
         }
       ].filter((column) => column.visible),
@@ -334,7 +346,7 @@ const BugTable = ({ type }) => {
     </Box>
   ) : (
     <>
-      <Table title="Bugs" initialPageSize={5} data={prepareRows(rows)} columns={columns} />
+      <EnhancedTable title="Bugs" initialPageSize={5} data={prepareRows(rows)} columns={columns} />
       <Dialog open={dialog.open} onClose={closeDialog}>
         <form onSubmit={handleSubmit(onSubmitBugStatus)}>
           <DialogTitle>Are you sure?</DialogTitle>
@@ -352,5 +364,5 @@ const BugTable = ({ type }) => {
 export default BugTable;
 
 BugTable.propTypes = {
-  type: PropTypes.oneOf(Object.values(tableTypes)).isRequired
+  type: PropTypes.oneOf(Object.values(bugTableTypes)).isRequired
 };

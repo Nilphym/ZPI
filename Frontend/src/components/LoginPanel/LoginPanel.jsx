@@ -34,7 +34,7 @@ const schema = yup.object().shape({
   [formFields.password]: yup.string().required().min(6)
 });
 
-const LoginPanel = () => {
+export const LoginPanel = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);

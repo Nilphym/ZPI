@@ -80,7 +80,7 @@ Row.propTypes = {
   }).isRequired
 };
 
-const TestPlanTable = ({ rows }) => {
+export const TestPlanTable = ({ rows }) => {
   return (
     <TableContainer component={Paper}>
       <Table size="small">

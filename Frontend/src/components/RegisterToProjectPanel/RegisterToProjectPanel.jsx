@@ -40,7 +40,7 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-const RegisterToProjectPanel = ({ projectName }) => {
+export const RegisterToProjectPanel = ({ projectName }) => {
   const {
     control,
     handleSubmit,

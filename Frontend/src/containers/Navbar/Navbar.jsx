@@ -167,7 +167,7 @@ Profile.defaultProps = {
   avatar: null
 };
 
-const Navbar = ({ links }) => {
+export const Navbar = ({ links }) => {
   const { pathname } = useLocation();
   const theme = useTheme();
   const name = useSelector((state) => state.auth.token.name);

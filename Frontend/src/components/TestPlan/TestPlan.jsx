@@ -5,11 +5,10 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { postTest, setTestId } from '../../redux/reducers/test/testSlice';
 
-const TestPlan = ({ isEditable }) => {
+export const TestPlan = ({ isEditable }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {pathname} = useLocation();
-
+  const { pathname } = useLocation();
 
   async function addTest() {
     const newTestId = await dispatch(postTest());
