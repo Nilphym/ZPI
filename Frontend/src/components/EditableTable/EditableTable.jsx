@@ -211,15 +211,6 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
           </Box>
         </Box>
       </Box>
-      <Button // TODO: Delete !!!!
-        sx={{
-          position: 'absolute',
-          left: '50vw'
-        }}
-        onClick={() => console.log(getValues())}
-      >
-        Get Values
-      </Button>
       {isEditing && (
         <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTable()}>
           Save Table
