@@ -28,6 +28,13 @@ namespace Funtest.Controllers
         [HttpPost]
         public async Task<ActionResult> AddTest(AddTestRequest test)
         {
+            //TODO
+            //var isProductExist = 
+
+            var isTestSuiteExist = _testSuitService.IsTestSuiteExist(test.PlanSuiteId);
+            if (!isTestSuiteExist)
+                return NotFound("Tet suite with given id doesn't exist.");
+
             var response = await _testService.AddTest(test);
             if (response)
                 return Ok();
@@ -38,6 +45,10 @@ namespace Funtest.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GetTestResponse>> GetTest(Guid id)
         {
+            var isTestExist = _testService.IsTestExist(id);
+            if (!isTestExist)
+                NotFound("Test with given id doesn't exist.");
+
             var response = await _testService.GetTestById(id);
             response.TestProcedures = _testProcedureService.GetAllTestProcedures();
             response.TestCases = _testCaseService.GetAllTestCases();

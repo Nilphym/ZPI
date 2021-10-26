@@ -4,18 +4,12 @@ namespace Data.Enums
 {
     public enum ErrorState
     {
-        [Display(Name = "New")]
         New,
-
-        [Display(Name = "In progress")]
-        In_progress,
-        Repaired,
+        Open,
+        Fixed,
         Retest,
-        Approved,
-
-        [Display(Name = "Not approved")]
-        Not_approved,
+        Closed,
         Rejected,
-
+        Reopened,
     }
 }

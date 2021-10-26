@@ -100,7 +100,7 @@ namespace Funtest.Services
         public async Task<bool> ResolveError(Guid id, ResolveErrorRequest request)
         {
             var error = await Context.Errors.FindAsync(id);
-            error.ErrorState = ErrorState.Repaired;
+            error.ErrorState = ErrorState.Fixed;
             error.RetestsRequired = request.RetestRequired;
 
             Context.Errors.Update(error);
@@ -136,7 +136,6 @@ namespace Funtest.Services
             }
             return displaynames;
         }
-
 
         public List<string> ErrorStates()
         {

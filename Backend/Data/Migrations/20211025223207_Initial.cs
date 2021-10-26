@@ -67,8 +67,9 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Preconditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntryData = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Preconditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntryData = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,6 +207,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Result = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TestCaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -245,7 +247,7 @@ namespace Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StepNumber = table.Column<int>(type: "int", nullable: false),
-                    TestData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TestData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ControlPoint = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TestProcedureId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -266,6 +268,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Version = table.Column<int>(type: "int", nullable: false),
                     ExecutionCounter = table.Column<int>(type: "int", nullable: false),
                     TestSuiteId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -299,16 +302,17 @@ namespace Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FilingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Deadline = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RequiredReviewCounter = table.Column<int>(type: "int", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RetestsRequired = table.Column<int>(type: "int", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ErrorState = table.Column<int>(type: "int", nullable: false),
                     ErrorImpact = table.Column<int>(type: "int", nullable: false),
                     ErrorPriority = table.Column<int>(type: "int", nullable: false),
-                    ErrorCategory = table.Column<int>(type: "int", nullable: false),
+                    ErrorType = table.Column<int>(type: "int", nullable: false),
                     StepId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DeveloperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TesterId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -334,6 +338,27 @@ namespace Data.Migrations
                         principalTable: "Steps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attachments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Image = table.Column<string>(type: "ntext", nullable: true),
+                    FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    ErrorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attachments_Errors_ErrorId",
+                        column: x => x.ErrorId,
+                        principalTable: "Errors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -401,6 +426,11 @@ namespace Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachments_ErrorId",
+                table: "Attachments",
+                column: "ErrorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Errors_DeveloperId",
@@ -479,6 +509,9 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

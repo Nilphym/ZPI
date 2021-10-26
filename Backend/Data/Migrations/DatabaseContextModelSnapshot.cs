@@ -31,14 +31,17 @@ namespace Data.Migrations
                     b.Property<string>("FileExtension")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Photo")
+                    b.Property<string>("Image")
                         .HasColumnType("ntext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ErrorId");
 
-                    b.ToTable("Attachment");
+                    b.ToTable("Attachments");
                 });
 
             modelBuilder.Entity("Data.Models.Error", b =>
@@ -108,7 +111,7 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3fbe6104-13a7-437e-81d5-21fb025ffec6"),
+                            Id = new Guid("4f4a5a7d-0157-4586-b0b9-0a19e0bd28d7"),
                             Category = "Authorization",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -120,14 +123,14 @@ namespace Data.Migrations
                             ErrorState = 0,
                             ErrorType = 0,
                             Name = "Bug #1",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReportDate = new DateTime(2021, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             RetestsRequired = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("f6ea2962-845d-4262-944a-5c4bc22c65dc"),
+                            Id = new Guid("538e4f8c-f5c2-42e6-80fe-bb6c5db6e9b8"),
                             Category = "Functional",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -146,7 +149,7 @@ namespace Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c261445f-12f1-4805-aa72-c6d0d90c5a26"),
+                            Id = new Guid("b3a24575-970e-41c0-acdb-96d6750b0070"),
                             Category = "UX",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -158,14 +161,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 1,
                             Name = "Bug #3",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReportDate = new DateTime(2021, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             RetestsRequired = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("d649c737-341b-4994-9c20-47f8c1194999"),
+                            Id = new Guid("57e59f01-abfa-4c54-b6ee-9e6038bde02d"),
                             Category = "Database",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -177,14 +180,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #4",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReportDate = new DateTime(2021, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             RetestsRequired = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("7ffeb14f-4c09-43e1-8091-d689f85c956c"),
+                            Id = new Guid("13e548b0-3b29-4372-be05-44939ac824d0"),
                             Category = "Database",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -196,14 +199,14 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #5",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReportDate = new DateTime(2021, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             RetestsRequired = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
                         },
                         new
                         {
-                            Id = new Guid("6420282b-e2a2-41ba-b4bd-5b8321c0c93b"),
+                            Id = new Guid("9c95eff7-c4c1-46a5-90e6-e3c0c0ac3770"),
                             Category = "Database",
                             Code = "B-2434343",
                             Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -215,7 +218,7 @@ namespace Data.Migrations
                             ErrorState = 3,
                             ErrorType = 2,
                             Name = "Bug #6",
-                            ReportDate = new DateTime(2021, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReportDate = new DateTime(2021, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             RetestsRequired = 2,
                             StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
                             TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
@@ -655,7 +658,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Models.Attachment", b =>
                 {
                     b.HasOne("Data.Models.Error", "Error")
-                        .WithMany("Attachment")
+                        .WithMany("Attachments")
                         .HasForeignKey("ErrorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -809,7 +812,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
-                    b.Navigation("Attachment");
+                    b.Navigation("Attachments");
 
                     b.Navigation("Reviews");
                 });

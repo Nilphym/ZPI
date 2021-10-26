@@ -1,4 +1,6 @@
-﻿namespace Funtest.TransferObject.Test.Requests
+﻿using System;
+
+namespace Funtest.TransferObject.Test.Requests
 {
     public class EditTestRequest
     {

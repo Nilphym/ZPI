@@ -10,16 +10,41 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211017094103_AddNameForTest")]
-    partial class AddNameForTest
+    [Migration("20211025223207_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Data.Models.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ErrorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileExtension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("ntext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ErrorId");
+
+                    b.ToTable("Attachments");
+                });
 
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
@@ -28,6 +53,10 @@ namespace Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Deadline")
@@ -40,8 +69,8 @@ namespace Data.Migrations
                     b.Property<string>("DeveloperId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ErrorCategory")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ErrorImpact")
                         .HasColumnType("int");
@@ -52,17 +81,17 @@ namespace Data.Migrations
                     b.Property<int>("ErrorState")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FilingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FinishDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ErrorType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RequiredReviewCounter")
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RetestsRequired")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("StepId")
@@ -202,12 +231,14 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EntryData")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EntryData")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Preconditions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -240,6 +271,10 @@ namespace Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Result")
                         .IsRequired()
@@ -497,6 +532,17 @@ namespace Data.Migrations
                     b.HasDiscriminator().HasValue("Tester");
                 });
 
+            modelBuilder.Entity("Data.Models.Attachment", b =>
+                {
+                    b.HasOne("Data.Models.Error", "Error")
+                        .WithMany("Attachments")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+                });
+
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
                     b.HasOne("Data.Models.Developer", "Developer")
@@ -643,6 +689,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Models.Error", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("Reviews");
                 });
 

@@ -14,6 +14,8 @@ namespace Data.Models
         [Required]
         public string Name { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         public virtual ICollection<TestPlan> TestPlans { get; set; }
     }
 }

@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Data;
+using Data.Models;
+using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Attachment.Responses;
+using Funtest.TransferObject.Attachment.Requests;
+
+namespace Funtest.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AttachmentsController : ControllerBase
+    {
+        private readonly IAttachmentService _attachmentService;
+        private readonly IErrorService _errorService;
+
+        public AttachmentsController(IAttachmentService attachmentService, IErrorService errorService)
+        {
+            _attachmentService = attachmentService;
+            _errorService = errorService;
+        }
+
+        [HttpGet("error/{id}")]
+        public ActionResult<List<GetAttachmentResponse>> GetAttachmentsForError([FromRoute] Guid id)
+        {
+            if (_errorService.IsErrorExist(id))
+                return Ok(_attachmentService.GetAttachmentForError(id));
+            return NotFound("Object with given id doesn't exist");
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Attachment>> GetAttachment(Guid id)
+        {
+            var attachment = await _attachmentService.GetAttachment(id);
+            return attachment == null ? NotFound("Attachment with the given id doesn't exist.") : Ok(attachment);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> DeleteAttachment([FromRoute] Guid id)
+        {
+            var result = await _attachmentService.DeleteAttachment(id);
+            if (result)
+                return Ok();
+            return NotFound("Object with given id doesn't exist");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Attachment>> PostAttachment(AddAttachmentRequest request)
+        {
+            var isErrorExist = _errorService.IsErrorExist(request.ErrorId);
+            if (!isErrorExist)
+                return NotFound("Error with given id doesn't exist.");
+
+            var result = await _attachmentService.AddNewAttachment(request);
+            if (result)
+                return Ok();
+
+            return NotFound("Problem with saving object in database!");
+        }
+    }
+}

@@ -2,6 +2,7 @@
 using Data.Models;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Attachment.Requests;
+using Funtest.TransferObject.Attachment.Responses;
 using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
@@ -53,6 +54,7 @@ namespace Funtest.Infrastructure
 
             //Mapowanie dla Załącznika
             CreateMap<AddAttachmentRequest, Attachment>();
+            CreateMap<Attachment, GetAttachmentResponse>();
         }
     }
 }

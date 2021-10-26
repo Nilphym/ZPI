@@ -41,7 +41,7 @@ namespace Data.Seed
                          EndDate = Convert.ToDateTime("12.12.2021"),
                          Code = "B-2434343",
                          Category = "Functional",
-                         ErrorState = ErrorState.Repaired,
+                         ErrorState = ErrorState.Fixed,
                          ErrorImpact = ErrorImpact.High,
                          ErrorPriority = ErrorPriority.Low,
                          ErrorType = ErrorType.Functional,

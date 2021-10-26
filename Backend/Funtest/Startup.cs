@@ -52,6 +52,7 @@ namespace Funtest
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ITestSuiteService, TestSuiteService>();
+            services.AddTransient<IAttachmentService, AttachmentService>();
 
             services.AddCors(options =>
             {

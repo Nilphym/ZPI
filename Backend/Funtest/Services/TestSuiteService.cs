@@ -4,6 +4,7 @@ using Funtest.TransferObject.TestSuite.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Funtest.Services
 {
@@ -19,6 +20,11 @@ namespace Funtest.Services
         public List<GetTestSuiteResponse> GetAllTestSuites()
         {
             return Context.TestSuites.AsQueryable().Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
+        }
+
+        public bool IsTestSuiteExist(Guid id)
+        {
+            return Context.TestSuites.Any(x => x.Id == id);
         }
     }
 }

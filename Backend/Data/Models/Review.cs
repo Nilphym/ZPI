@@ -11,6 +11,8 @@ namespace Data.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
         public DateTime PublishDate { get; set; }
 
+        public bool Result { get; set; }
+
         public bool IsActual { get; set; }
 
         public virtual Error Error{ get; set; }

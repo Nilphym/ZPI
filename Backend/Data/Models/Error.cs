@@ -52,6 +52,6 @@ namespace Data.Models
 
         public virtual ICollection<Review> Reviews { get; set; }
 
-        public virtual ICollection<Attachment> Attachment { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
     }
 }

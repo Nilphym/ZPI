@@ -12,8 +12,6 @@ namespace Funtest.TransferObject.Test.Response
 
         public DateTime CreationDate { get; set; }
 
-        public int Version { get; set; }
-
         public int ExecutionCounter { get; set; }
 
         public string Name { get; set; }
