@@ -64,6 +64,10 @@ public class BugDetailsActivityToReview extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "Execute Button", Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
+                //intent.putExtra("position",bug_list_position);
+                //intent.putExtra("sourceActivityName","BugDetailsActivity");
+                //startActivity(intent);
             }
         });
     }

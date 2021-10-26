@@ -40,4 +40,21 @@ public class BugActivityToReview extends AppCompatActivity {
     private void getBugListToReview() {
         BugActivityToReview.bugListToReview = MainActivity.bugList;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //get bug list again
+
+
+        recyclerView = findViewById(R.id.bl_recyclerView);
+        recyclerView.setHasFixedSize(true);
+
+        if(bugListToReview.size() > 0 ){
+            bugAdapter = new BugAdapterToReview(getApplicationContext(),bugListToReview);
+            recyclerView.setAdapter(bugAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+        }
+    }
 }

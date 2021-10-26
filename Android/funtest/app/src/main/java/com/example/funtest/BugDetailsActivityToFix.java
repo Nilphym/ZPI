@@ -2,6 +2,8 @@ package com.example.funtest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +65,25 @@ public class BugDetailsActivityToFix extends AppCompatActivity {
         button_bugAssign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Assign Button", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(BugDetailsActivityToFix.this);
+                builder.setMessage("Do You Want To Assign This Bug To Yourself?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // do something
+                                Toast.makeText(getApplicationContext(), "Bug Assigned", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder.show();
+
+
             }
         });
     }
