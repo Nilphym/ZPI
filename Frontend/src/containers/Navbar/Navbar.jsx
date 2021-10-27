@@ -56,7 +56,7 @@ export const Navbar = ({ links }) => {
   return (
     <>
       <Slide direction="right" in={open} mountOnEnter unmountOnExit>
-        <Box
+        <Paper
           sx={{
             height: '100vh',
             minWidth: '15rem',
@@ -65,10 +65,12 @@ export const Navbar = ({ links }) => {
             gridTemplateRows: '7rem 1fr 7rem',
             borderRight: `2px solid ${grey[100]}`,
             backgroundColor: 'white',
-            position: 'sticky',
+            position: largeMedia ? 'sticky' : 'fixed',
             top: 0,
-            zIndex: 2
+            zIndex: 3
           }}
+          elevation={1}
+          component={Box}
         >
           <Box
             sx={{
@@ -93,7 +95,6 @@ export const Navbar = ({ links }) => {
                   name={link.name}
                   icon={icons[link.icon]}
                   links={link.links}
-                  compact={!open}
                 />
               ) : (
                 <NavLink
@@ -102,63 +103,61 @@ export const Navbar = ({ links }) => {
                   icon={icons[link.icon]}
                   text={link.text}
                   destination={link.destination}
-                  compact={!open}
                 />
               )
             )}
           </Box>
-          <NavProfile compact={!open} name={name} />
-        </Box>
-      </Slide>
-      <Slide direction="right" in={!open} mountOnEnter unmountOnExit>
-        <Paper
-          sx={{
-            height: '100vh',
-            minWidth: '4rem',
-            maxWidth: '4rem',
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            backgroundColor: 'white',
-            position: 'sticky',
-            top: 0,
-            zIndex: 2
-          }}
-          elevation={2}
-          component={Box}
-        >
-          <SmallLogo src={logoIcon} alt="logo" />
-          <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
-          <IconButton sx={{ margin: '1rem 0' }} onClick={toggleOpen}>
-            <MenuIcon sx={{ color: 'primary.dark' }} />
-          </IconButton>
-          <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {links.map((link) =>
-              link.name ? (
-                <NavMultiLink
-                  key={link.name}
-                  name={link.name}
-                  icon={icons[link.icon]}
-                  links={link.links}
-                  compact={!open}
-                />
-              ) : (
-                <NavLink
-                  key={link.destination}
-                  icon={icons[link.icon]}
-                  pathname={pathname}
-                  text={link.text}
-                  destination={link.destination}
-                  compact={!open}
-                />
-              )
-            )}
-          </Box>
-          <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
-          <NavProfile compact={!open} name={name} />
+          <NavProfile name={name} />
         </Paper>
       </Slide>
+      <Paper
+        sx={{
+          height: '100vh',
+          minWidth: '4rem',
+          maxWidth: '4rem',
+          display: largeMedia ? 'none' : 'flex',
+          opacity: open ? 0 : '100%',
+          alignItems: 'center',
+          flexDirection: 'column',
+          backgroundColor: 'white',
+          position: 'sticky',
+          top: 0,
+          zIndex: 2
+        }}
+        elevation={1}
+        component={Box}
+      >
+        <SmallLogo src={logoIcon} alt="logo" />
+        <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
+        <IconButton sx={{ margin: '1rem 0' }} onClick={toggleOpen}>
+          <MenuIcon sx={{ color: 'primary.dark' }} />
+        </IconButton>
+        <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          {links.map((link) =>
+            link.name ? (
+              <NavMultiLink
+                key={link.name}
+                name={link.name}
+                icon={icons[link.icon]}
+                links={link.links}
+                compact
+              />
+            ) : (
+              <NavLink
+                key={link.destination}
+                icon={icons[link.icon]}
+                pathname={pathname}
+                text={link.text}
+                destination={link.destination}
+                compact
+              />
+            )
+          )}
+        </Box>
+        <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
+        <NavProfile compact name={name} />
+      </Paper>
       <Fade in={!largeMedia && open} mountOnEnter unmountOnExit>
         <Box
           sx={{
