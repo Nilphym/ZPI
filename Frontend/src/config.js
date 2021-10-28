@@ -1,3 +1,2 @@
-export const API_URL = '/api/';
-// export const API_URL = 'https://localhost:44360/api/';
+export const API_URL = 'http://elentiya121-001-site1.itempurl.com/api/';
 export const TOKEN_KEY = 'token';

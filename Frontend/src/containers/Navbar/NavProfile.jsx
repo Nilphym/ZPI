@@ -33,9 +33,10 @@ export default NavProfile;
 NavProfile.propTypes = {
   avatar: PropTypes.string,
   name: PropTypes.string.isRequired,
-  compact: PropTypes.bool.isRequired
+  compact: PropTypes.bool
 };
 
 NavProfile.defaultProps = {
-  avatar: ''
+  avatar: '',
+  compact: false
 };

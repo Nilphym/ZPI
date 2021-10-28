@@ -72,5 +72,9 @@ NavMultiLink.propTypes = {
   name: PropTypes.string.isRequired,
   icon: PropTypes.element.isRequired,
   links: PropTypes.array.isRequired,
-  compact: PropTypes.bool.isRequired
+  compact: PropTypes.bool
+};
+
+NavMultiLink.defaultProps = {
+  compact: false
 };

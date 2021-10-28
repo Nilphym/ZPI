@@ -46,7 +46,11 @@ NavLink.propTypes = {
   icon: PropTypes.element.isRequired,
   text: PropTypes.string.isRequired,
   destination: PropTypes.string.isRequired,
-  compact: PropTypes.bool.isRequired
+  compact: PropTypes.bool
+};
+
+NavLink.defaultProps = {
+  compact: false
 };
 
 export default NavLink;

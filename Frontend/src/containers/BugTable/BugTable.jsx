@@ -46,17 +46,17 @@ const getStateColor = (value) => {
   switch (value) {
     case 'New':
       return 'warning';
-    case 'Active':
+    case 'Open':
       return 'default';
     case 'Fixed':
       return 'info';
     case 'Retest':
       return 'info';
-    case 'Resolved':
+    case 'Closed':
       return 'success';
     case 'Rejected':
       return 'error';
-    case 'Unresolved':
+    case 'Reopened':
       return 'warning';
     default:
       return 'default';
