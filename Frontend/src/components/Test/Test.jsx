@@ -26,8 +26,8 @@ import {
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase
-  // setTestId
+  postTestCase,
+  setTestId
 } from '../../redux/store';
 
 export const Test = ({ isEditable }) => {
@@ -48,7 +48,7 @@ export const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // dispatch(setTestId('t1'));
+    dispatch(setTestId('t1'));
 
     async function getTestData() {
       await dispatch(getTestById());
@@ -105,7 +105,9 @@ export const Test = ({ isEditable }) => {
         <CircularProgress />
       ) : (
         <Box>
-          <Typography variant="h2">Test:</Typography>
+          <Typography variant="h2" sx={{ color: 'rgb(46, 115, 171)' }}>
+            Test
+          </Typography>
           <Box
             sx={{
               position: 'absolute',
@@ -139,7 +141,7 @@ export const Test = ({ isEditable }) => {
                 top: '3rem',
                 right: '3rem'
               }}
-              variant="outlined"
+              variant="contained"
               onClick={() => setIsEditing(true)}
             >
               Edit Test
@@ -240,10 +242,13 @@ export const Test = ({ isEditable }) => {
           </Box>
           {isEditing && (
             <Button
-              variant="outlined"
+              variant="contained"
               sx={{
                 marginTop: '1.5rem',
-                marginBottom: '1.5rem'
+                marginBottom: '1.5rem',
+                bgcolor: '#0077c2',
+                fontWeight: '700',
+                color: 'white'
               }}
               onClick={() => saveTest()}
             >

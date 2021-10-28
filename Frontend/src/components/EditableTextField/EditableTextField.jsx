@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import CreateIcon from '@mui/icons-material/Create';
@@ -33,42 +33,58 @@ export const EditableTextField = ({ disabled, deleteTextField, data }) => {
     >
       <Box
         sx={{
-          position: 'relative',
           marginTop: '0.625rem'
         }}
       >
-        {!disabled && (
-          <DeleteIcon
+        <Box
+          sx={{
+            display: 'flex'
+          }}
+        >
+          <Typography
             sx={{
-              position: 'absolute',
-              top: '-2.5vh',
-              right: '1vw',
-              border: '1px solid black',
-              borderRadius: '50%',
-              padding: '2px',
-              '&:hover': {
-                cursor: 'pointer'
-              }
+              fontWeight: '700'
             }}
-            onClick={() => deleteTextField()}
-          />
-        )}
-        {!disabled && !isEditing && (
-          <CreateIcon
-            sx={{
-              position: 'absolute',
-              top: '-2.5vh',
-              right: '5vw',
-              border: '1px solid black',
-              borderRadius: '50%',
-              padding: '2px',
-              '&:hover': {
-                cursor: 'pointer'
+          >
+            {`TextField ${data.textFieldId}`}
+          </Typography>
+          {!disabled && !isEditing && (
+            <Button
+              variant="contained"
+              sx={{ margin: '0 0.625rem 1.25rem 49rem' }}
+              onClick={() => setIsEditing(true)}
+              startIcon={<CreateIcon />}
+            >
+              Edit TextField
+            </Button>
+          )}
+          {!disabled && (
+            <Button
+              variant="contained"
+              sx={
+                !isEditing
+                  ? {
+                      margin: '0 0.625rem 1.25rem 0',
+                      backgroundColor: '#dd2c00',
+                      '&:hover': {
+                        backgroundColor: '#a30000'
+                      }
+                    }
+                  : {
+                      margin: '0 0.625rem 1.25rem 60rem',
+                      backgroundColor: '#dd2c00',
+                      '&:hover': {
+                        backgroundColor: '#a30000'
+                      }
+                    }
               }
-            }}
-            onClick={() => setIsEditing(true)}
-          />
-        )}
+              onClick={() => deleteTextField()}
+              startIcon={<DeleteIcon />}
+            >
+              Delete TextField
+            </Button>
+          )}
+        </Box>
         <Box
           sx={{
             width: '100%'
@@ -93,7 +109,6 @@ export const EditableTextField = ({ disabled, deleteTextField, data }) => {
                   disabled={!isEditing}
                   {...field}
                   sx={{
-                    marginTop: '0.625rem',
                     width: '100%'
                   }}
                 />
