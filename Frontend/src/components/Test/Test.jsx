@@ -134,20 +134,8 @@ export const Test = ({ isEditable }) => {
               {`Execution Counter: ${executionCounter}`}
             </Typography>
           </Box>
-          {isEditable && !isEditing && (
-            <Button
-              sx={{
-                position: 'absolute',
-                top: '3rem',
-                right: '3rem'
-              }}
-              variant="contained"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Test
-            </Button>
-          )}
           <Box>
+            {/* Information TODO: DELETE */}
             <Controller
               shouldUnregister
               name="testName"
@@ -167,79 +155,89 @@ export const Test = ({ isEditable }) => {
                 />
               )}
             />
+            <Controller
+              name="suiteSelect"
+              control={mainControl}
+              defaultValue={selectedTestSuiteId}
+              render={({ field }) => (
+                <Box>
+                  <InputLabel id="suiteSelect">Test Suite</InputLabel>
+                  <Select
+                    labelId="suiteSelect-label"
+                    id="suiteSelect"
+                    sx={{ width: '10rem' }}
+                    disabled={!isEditing}
+                    {...field}
+                  >
+                    {testSuites.map(({ testSuiteId, testSuite }) => (
+                      <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
+                        {testSuite}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
+              )}
+            />
             <Box sx={{ marginTop: '1rem' }}>
-              <Controller
-                name="suiteSelect"
-                control={mainControl}
-                defaultValue={selectedTestSuiteId}
-                render={({ field }) => (
-                  <Box>
-                    <InputLabel id="suiteSelect">Test Suite:</InputLabel>
-                    <Select
-                      labelId="suiteSelect-label"
-                      id="suiteSelect"
-                      sx={{ width: '10rem' }}
-                      disabled={!isEditing}
-                      {...field}
-                    >
-                      {testSuites.map(({ testSuiteId, testSuite }) => (
-                        <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
-                          {testSuite}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Box>
-                )}
-              />
+              <InputLabel id="caseSelect-label">Test Case</InputLabel>
+              <Select
+                labelId="caseSelect-label"
+                id="caseSelect"
+                sx={{ width: '10rem' }}
+                disabled={!isEditing}
+                onChange={(e) => handleTestCaseChange(e)}
+                value={selectedTestCaseId}
+              >
+                {testCasesCodes.length > 0 &&
+                  testCasesCodes.map(({ testCaseId, testCaseCode }) => (
+                    <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
+                      {testCaseCode}
+                    </MenuItem>
+                  ))}
+                <MenuItem value="">
+                  <Button onClick={() => addTestCase()}>+ Add Case</Button>
+                </MenuItem>
+              </Select>
+            </Box>
+            <Box sx={{ marginTop: '1rem' }}>
+              <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
+              <Select
+                labelId="procedureSelect-label"
+                id="procedureSelect"
+                sx={{ width: '10rem' }}
+                disabled={!isEditing}
+                onChange={(e) => handleTestProcedureChange(e)}
+                value={selectedTestProcedureId}
+              >
+                {testProceduresCodes.length > 0 &&
+                  testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
+                    <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                      {testProcedureCode}
+                    </MenuItem>
+                  ))}
+                <MenuItem value="">
+                  <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+                </MenuItem>
+              </Select>
             </Box>
           </Box>
-
-          <Box sx={{ marginTop: '1rem' }}>
-            <InputLabel id="caseSelect-label">Test Case:</InputLabel>
-            <Select
-              labelId="caseSelect-label"
-              id="caseSelect"
-              sx={{ width: '10rem' }}
-              disabled={!isEditing}
-              onChange={(e) => handleTestCaseChange(e)}
-              value={selectedTestCaseId}
+          {isEditable && !isEditing && (
+            <Button
+              sx={{
+                position: 'absolute',
+                top: '3rem',
+                right: '3rem'
+              }}
+              variant="contained"
+              onClick={() => setIsEditing(true)}
             >
-              {testCasesCodes.length > 0 &&
-                testCasesCodes.map(({ testCaseId, testCaseCode }) => (
-                  <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
-                    {testCaseCode}
-                  </MenuItem>
-                ))}
-              <MenuItem value="">
-                <Button onClick={() => addTestCase()}>+ Add Case</Button>
-              </MenuItem>
-            </Select>
+              Edit Test
+            </Button>
+          )}
 
-            {selectedTestCaseId && <TestCase isEditable={isEditing} />}
-          </Box>
-          <Box sx={{ marginTop: '1rem' }}>
-            <InputLabel id="procedureSelect-label">Test Procedure</InputLabel>
-            <Select
-              labelId="procedureSelect-label"
-              id="procedureSelect"
-              sx={{ width: '10rem' }}
-              disabled={!isEditing}
-              onChange={(e) => handleTestProcedureChange(e)}
-              value={selectedTestProcedureId}
-            >
-              {testProceduresCodes.length > 0 &&
-                testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
-                  <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                    {testProcedureCode}
-                  </MenuItem>
-                ))}
-              <MenuItem value="">
-                <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
-              </MenuItem>
-            </Select>
+          {selectedTestCaseId && <TestCase isEditable={isEditing} />}
 
-            {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
-          </Box>
+          {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           {isEditing && (
             <Button
               variant="contained"
