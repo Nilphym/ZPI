@@ -679,7 +679,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_below="@+id/divider5"
-                    app:backgroundTint="#b71c1c"
+                    app:backgroundTint="@color/red"
                     android:text="Resign"
                     />
 

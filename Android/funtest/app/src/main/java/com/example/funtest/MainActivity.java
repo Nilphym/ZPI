@@ -26,6 +26,7 @@ import com.example.funtest.fragments.BugsFragment;
 import com.example.funtest.fragments.DashboardFragment;
 import com.example.funtest.fragments.TestsFragment;
 import com.example.funtest.objects.Bug;
+import com.example.funtest.objects.TestPlan;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.ByteArrayOutputStream;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //item lists
     public static ArrayList<Bug> bugList;
+    public static ArrayList<TestPlan> testPlanList;
 
 
 
@@ -84,12 +86,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //DASHBOARD get user stats / If PM: get project stats
 
         //TESTS get public data
+        getTestPlanList();
 
         //BUGS get public data
         getBugList();
 
 
 
+
+    }
+
+    private void getTestPlanList() {
+        MainActivity.testPlanList = new ArrayList<>();
+
+        MainActivity.testPlanList.add(new TestPlan(1,"Test Plan 1", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(2,"Test Plan 2", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(3,"Test Plan 3", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(4,"Test Plan 4", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(5,"Test Plan 5", new ArrayList<>()));
 
     }
 
@@ -162,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if(item.getItemId() == R.id.menu_item_logout){
+            finish();
 
         }
         return true;
