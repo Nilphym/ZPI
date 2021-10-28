@@ -5,6 +5,7 @@ using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Test.Requests;
 using System;
 using Funtest.TransferObject.Test.Response;
+using System.Collections.Generic;
 
 namespace Funtest.Controllers
 {
@@ -15,11 +16,13 @@ namespace Funtest.Controllers
         private readonly ITestService _testService;
         private readonly ITestCaseService _testCaseService;
         private readonly ITestSuiteService _testSuitService;
+        private readonly ITestPlanService _testPlanService;
         private readonly ITestProcedureService _testProcedureService;
 
-        public TestsController(ITestService testService, ITestProcedureService testProcedureService, ITestCaseService testCaseService, ITestSuiteService testSuiteService)
+        public TestsController(ITestPlanService testPlanService, ITestService testService, ITestProcedureService testProcedureService, ITestCaseService testCaseService, ITestSuiteService testSuiteService)
         {
             _testService = testService;
+            _testPlanService = testPlanService;
             _testCaseService = testCaseService;
             _testSuitService = testSuiteService;
             _testProcedureService = testProcedureService;
@@ -28,12 +31,13 @@ namespace Funtest.Controllers
         [HttpPost]
         public async Task<ActionResult> AddTest(AddTestRequest test)
         {
-            //TODO
-            //var isProductExist = 
+            var isPlanTestExist = _testPlanService.IsTestPlanExist(test.PlanTestId);
+            if (!isPlanTestExist)
+                return Conflict("Test plan with given id doesn't exist.");
 
             var isTestSuiteExist = _testSuitService.IsTestSuiteExist(test.PlanSuiteId);
             if (!isTestSuiteExist)
-                return NotFound("Tet suite with given id doesn't exist.");
+                return NotFound("Test suite with given id doesn't exist.");
 
             var response = await _testService.AddTest(test);
             if (response)
@@ -68,6 +72,17 @@ namespace Funtest.Controllers
                 return Ok();
 
             return Problem("Problem with saving an object in the database");
+        }
+
+        [HttpGet("/api/TestPlan/{testPlanId}/[controller]")]
+        public ActionResult<List<GetTestBasicInformationResponse>> GetAllTestsForTestPlan([FromRoute] Guid testPlanId)
+        {
+            var isTestPlanExist = _testPlanService.IsTestPlanExist(testPlanId);
+            if (!isTestPlanExist)
+                return NotFound("Test plan with given id doesn't exist.");
+
+            var result = _testService.GetAllTestsForTestPlan(testPlanId);
+            return Ok(result);
         }
     }
 }

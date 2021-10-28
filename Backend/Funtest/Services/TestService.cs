@@ -42,11 +42,28 @@ namespace Funtest.Services
 
             test.Name = request.Name;
 
+            if (request.TestCaseId != null)
+                test.TestCaseId = request.TestCaseId;
+
+
+            if (request.TestProcedureId != null)
+                test.TestProcedureId = request.TestProcedureId;
+
+
+            if (request.TestSuiteId != null)
+                test.TestSuiteId = request.TestSuiteId;
+
             Context.Tests.Update(test);
 
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
+        }
+
+        public List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId)
+        {
+            var tests = Context.Tests.Where(x => x.TestSuite.TestPlanId == testPlanId).AsQueryable();
+            return tests.Select(x => _mapper.Map<GetTestBasicInformationResponse>(x)).ToList();
         }
 
         public async Task<int> GetExecutionCounterForTest(Guid id)

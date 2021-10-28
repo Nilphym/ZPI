@@ -13,6 +13,7 @@ namespace Funtest.Services.Interfaces
         Task<bool> EditTest(Guid id, EditTestRequest request);
         bool IsTestExist(Guid id);
         Task<int> GetExecutionCounterForTest(Guid id);
+        List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestSuite(Guid testSuiteId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId);
     }

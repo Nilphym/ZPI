@@ -42,7 +42,6 @@
     <Folder Include="TransferObject\Admin\Responses\" />
     <Folder Include="TransferObject\Email\Responses\" />
     <Folder Include="TransferObject\Product\Responses\" />
-    <Folder Include="TransferObject\TestSuite\Requests\" />
   </ItemGroup>
 
 </Project>

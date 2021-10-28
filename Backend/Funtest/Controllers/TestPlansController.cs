@@ -20,7 +20,7 @@ namespace Funtest.Controllers
         private readonly ITestService _testService;
         private readonly IProductService _productService;
 
-        public TestPlansController(ITestPlanService testPlanService, ITestSuiteService testSuiteService, ITestService testService,IProductService productService)
+        public TestPlansController(ITestPlanService testPlanService, ITestSuiteService testSuiteService, ITestService testService, IProductService productService)
         {
             _testSuiteService = testSuiteService;
             _testPlanService = testPlanService;
@@ -41,18 +41,43 @@ namespace Funtest.Controllers
             return testPlan;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddTestPlan(AddTestPlanRequest request)
+        [HttpPost("/api/{productId}/[controller]")]
+        public async Task<ActionResult> AddTestPlan([FromRoute] Guid productId, AddTestPlanRequest request)
         {
-            var isProductExist = _productService.IsProductExist(request.ProductId);
+            var isProductExist = _productService.IsProductExist(productId);
             if (!isProductExist)
                 return Conflict("Product with given id doesn't exist.");
 
-            var result = await _testPlanService.AddTestPlan(request);
+            var result = await _testPlanService.AddTestPlan(productId, request);
 
             if (result)
                 return Ok();
             return Conflict("Problem with saving an object in the database");
+        }
+
+
+        [HttpPut("{testPlanId}")]
+        public async Task<ActionResult> EditTestPlan([FromRoute] Guid testPlanId, EditTestPlanRequest request)
+        {
+            var isTestPlanExist = _testPlanService.IsTestPlanExist(testPlanId);
+            if (!isTestPlanExist)
+                return NotFound("Test plan with given id doesn't exist");
+
+            var result = await _testPlanService.EditTestPlan(testPlanId, request);
+            if (result)
+                return Ok();
+            return Conflict("Problem with saving an object in the database");
+        }
+
+        [HttpGet("/api/Product/{productId}/[controller]")]
+        public ActionResult<List<GetTestPlanIdentityValueResponse>> GetAllTestPlanForProduct([FromRoute] Guid productId)
+        {
+            var isProductExist = _productService.IsProductExist(productId);
+            if (!isProductExist)
+                return Conflict("Product with given id doesn't exist.");
+
+            var result = _testPlanService.GetAllTestPlansForProduct(productId);
+            return Ok(result);
         }
     }
 }

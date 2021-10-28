@@ -36,10 +36,10 @@ namespace Funtest.Controllers
             return Ok(error);
         }
 
-        [HttpGet()]
-        public ActionResult<GetErrorResponse> GetAllErrors()
+        [HttpGet("/api/Project/{productId}/[controller]")]
+        public ActionResult<GetErrorResponse> GetAllErrors([FromRoute] Guid productId)
         {
-            var errors = _errorService.GetAllErrors();
+            var errors = _errorService.GetAllErrors(productId);
             return Ok(errors);
         }
 
@@ -78,7 +78,7 @@ namespace Funtest.Controllers
             return Problem("Problem with saving changes in database.");
         }
 
-        [HttpPut("resolve/{id}")]
+        [HttpPut("closed/{id}")]
         public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(id);
@@ -115,8 +115,8 @@ namespace Funtest.Controllers
             return _errorService.ErrorTypes();
         }
 
-        [HttpPut("assign/{errorId}")]
-        public async Task<ActionResult> AssignBugToDeveloper([FromRoute] Guid errorId, [FromBody] AssignBugToDeveloperRequest request)
+        [HttpPut("open/{errorId}")]
+        public async Task<ActionResult> AssignBugToDeveloper([FromRoute] Guid errorId, [FromBody] DeveloperAssignedToErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(errorId);
             if (!isErrorExist)
@@ -134,6 +134,26 @@ namespace Funtest.Controllers
             if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
-        }   
+        } 
+        
+        [HttpPut("reject/{errorId}")]
+        public async Task<ActionResult> RejectError([FromRoute] Guid errorId, DeveloperAssignedToErrorRequest request)
+        {
+            var result = await _errorService.RejectError(errorId, request);
+
+            if (result)
+                return Ok();
+            return Conflict("An error has occurred.");
+        }
+
+        [HttpPut("resign/{errorId}")]
+        public async Task<ActionResult> ResignTheError([FromRoute] Guid errorId, DeveloperAssignedToErrorRequest request)
+        {
+            var result = await _errorService.ResignError(errorId, request);
+
+            if (result)
+                return Ok();
+            return Conflict("An error has occurred.");
+        }
     }
 }

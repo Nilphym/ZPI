@@ -23,12 +23,12 @@ namespace Funtest.Services
         public async Task<GetErrorResponse> GetErrorById(Guid id)
         {
             var error = await Context.Errors.FindAsync(id);
-           return  _mapper.Map<GetErrorResponse>(error);
+            return _mapper.Map<GetErrorResponse>(error);
         }
 
-        public List<GetErrorResponse> GetAllErrors()
+        public List<GetErrorResponse> GetAllErrors(Guid productId)
         {
-            var errors = Context.Errors.AsQueryable();
+            var errors = Context.Errors.Where(x => x.Step.TestProcedure.TestCase.ProductId == productId).AsQueryable();
             return errors.Select(x => _mapper.Map<GetErrorResponse>(x)).ToList();
         }
 
@@ -85,23 +85,32 @@ namespace Funtest.Services
             return true;
         }
 
-        public async Task<bool> AssignBugToDeveloper(Guid errorId, AssignBugToDeveloperRequest request)
+        public async Task<bool> AssignBugToDeveloper(Guid errorId, DeveloperAssignedToErrorRequest request)
         {
             var error = await Context.Errors.FindAsync(errorId);
-            error.DeveloperId = request.DeveloperId;
 
-            Context.Errors.Update(error);
-            if (await Context.SaveChangesAsync() == 0)
+            if (error == null)
                 return false;
 
-            return true;
+            if (error.DeveloperId == null)
+            {
+                error.DeveloperId = request.DeveloperId;
+                error.ErrorState = ErrorState.Open;
+
+                Context.Errors.Update(error);
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> ResolveError(Guid id, ResolveErrorRequest request)
         {
             var error = await Context.Errors.FindAsync(id);
             error.ErrorState = ErrorState.Fixed;
-            error.RetestsRequired = request.RetestRequired;
+            error.RetestsRequired = request.RetestsRequired;
 
             Context.Errors.Update(error);
             if (await Context.SaveChangesAsync() == 0)
@@ -139,7 +148,7 @@ namespace Funtest.Services
 
         public List<string> ErrorStates()
         {
-            return GetDisplayNames(ErrorState.New.GetType());   
+            return GetDisplayNames(ErrorState.New.GetType());
         }
 
         public List<string> ErrorImpacts()
@@ -160,6 +169,48 @@ namespace Funtest.Services
         public async Task<bool> IsErrorNotAssigned(Guid errorId)
         {
             return (await Context.Errors.FindAsync(errorId)).DeveloperId == null;
+        }
+
+        public async Task<bool> RejectError(Guid id, DeveloperAssignedToErrorRequest request)
+        {
+            var error = await Context.Errors.FindAsync(id);
+
+            if (error == null)
+                return false;
+
+            if (error.DeveloperId == request.DeveloperId)
+            {
+                error.ErrorState = ErrorState.Rejected;
+                error.DeveloperId = null;
+
+                Context.Errors.Update(error);
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> ResignError(Guid id, DeveloperAssignedToErrorRequest request)
+        {
+            var error = await Context.Errors.FindAsync(id);
+
+            if (error == null)
+                return false;
+
+            if (error.DeveloperId == request.DeveloperId)
+            {
+                error.DeveloperId = null;
+                error.ErrorState = ErrorState.New;
+
+                Context.Errors.Update(error);
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+                return true;
+            }
+
+            return false;
         }
     }
 }

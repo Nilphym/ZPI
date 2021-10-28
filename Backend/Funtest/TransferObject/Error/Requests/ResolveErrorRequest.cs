@@ -2,6 +2,6 @@
 {
     public class ResolveErrorRequest
     {
-        public int RetestRequired { get; set; }
+        public int RetestsRequired { get; set; }
     }
 }

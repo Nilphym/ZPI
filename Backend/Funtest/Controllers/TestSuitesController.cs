@@ -1,4 +1,5 @@
 ﻿using Funtest.Services.Interfaces;
+using Funtest.TransferObject.TestSuite.Requests;
 using Funtest.TransferObject.TestSuite.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,5 +32,15 @@ namespace Funtest.Controllers
 
             return Ok(testSuite);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> AddTestSuite(AddTestSuiteRequest request)
+        {
+            var result = await _testSuiteService.AddTestSuite(request);
+
+            if (result)
+                return Ok();
+            return Conflict("Problem with saving data in database");
+        } 
     }
 }

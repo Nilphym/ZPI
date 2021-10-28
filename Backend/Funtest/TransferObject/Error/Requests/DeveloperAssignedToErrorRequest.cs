@@ -2,7 +2,7 @@
 
 namespace Funtest.TransferObject.Error.Requests
 {
-    public class AssignBugToDeveloperRequest
+    public class DeveloperAssignedToErrorRequest
     {
         public string DeveloperId { get; set; }
     }

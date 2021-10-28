@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Models;
 using Funtest.Services.Interfaces;
+using Funtest.TransferObject.TestSuite.Requests;
 using Funtest.TransferObject.TestSuite.Responses;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,17 @@ namespace Funtest.Services
         public TestSuiteService(IServiceProvider serviceProvider, IMapper mapper) : base(serviceProvider)
         {
             _mapper = mapper;
+        }
+
+        public async Task<bool> AddTestSuite(AddTestSuiteRequest request)
+        {
+            var testSuite = _mapper.Map<TestSuite>(request);
+            Context.Add(testSuite);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+
+            return true;
         }
 
         public List<GetTestSuiteResponse> GetAllTestSuites()

@@ -17,5 +17,6 @@ namespace Data.Models
         public DateTime CreationDate { get; set; }
 
         public virtual ICollection<TestPlan> TestPlans { get; set; }
+        public virtual ICollection<TestCase> TestCases { get; set; }
     }
 }
