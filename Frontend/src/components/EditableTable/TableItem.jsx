@@ -5,10 +5,20 @@ import { Controller } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
-  textField: {
+  textFieldBasic: {
     '& input': {
-      color: '#000000',
-      outline: 'none'
+      color: 'black',
+      textAlign: 'center'
+    },
+    '& input:disabled': {
+      '-webkit-text-fill-color': 'rgba(0,0,0,0.7)'
+    }
+  },
+  textFieldRow: {
+    '& input': {
+      color: 'black',
+      textAlign: 'center',
+      fontWeight: '700'
     },
     '& input:disabled': {
       '-webkit-text-fill-color': 'rgba(0,0,0,0.7)'
@@ -20,11 +30,26 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
   const classes = useStyles();
   return (
     <Box
-    // sx={{
-    //   border: '0.0625rem solid #b0bec5',
-    //   width: '9.2rem',
-    //   height: '3.5rem'
-    // }}
+      sx={
+        row === 0
+          ? {
+              border: '0.0625rem solid #b0bec5',
+              width: '7rem',
+              height: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              fontFamily: 'Arial, Helvetica, sans-serif'
+            }
+          : {
+              border: '0.0625rem solid #b0bec5',
+              width: '7rem',
+              height: '2.2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }
+      }
     >
       <Controller
         shouldUnregister
@@ -40,6 +65,7 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
               placeholder=""
               required
               {...field}
+              InputProps={{ disableUnderline: true }}
               variant="standard"
             />
           ) : (
@@ -50,7 +76,8 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
               placeholder={(row === 0 && 'Column Name') || (column === 0 && 'Row Name')}
               required
               {...field}
-              className={classes.textField}
+              className={row === 0 ? classes.textFieldRow : classes.textFieldBasic}
+              InputProps={{ disableUnderline: true }}
               variant="standard"
             />
           )

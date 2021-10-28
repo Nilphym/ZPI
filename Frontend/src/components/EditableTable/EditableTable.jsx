@@ -128,7 +128,7 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
       </Typography>
       <Box
         sx={{
-          border: '1px solid black',
+          // border: '1px solid black',
           position: 'relative',
           marginTop: '0.625rem'
         }}
