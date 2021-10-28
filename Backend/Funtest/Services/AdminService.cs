@@ -35,7 +35,7 @@ namespace Funtest.Services
 
             var user = _mapper.Map<User>(request);
             user.Id = Guid.NewGuid().ToString();
-            user.UserName = request.Email;
+            user.UserName = request.Email;//mail zrobic z workspacem
 
             var result = await UserManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)

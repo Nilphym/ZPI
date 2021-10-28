@@ -11,6 +11,8 @@ using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using Funtest.TransferObject.TestCase.Requests;
 using Funtest.TransferObject.TestCase.Responses;
+using Funtest.TransferObject.TestPlan.Requests;
+using Funtest.TransferObject.TestPlan.Responses;
 using Funtest.TransferObject.TestProcedure.Requests;
 using Funtest.TransferObject.TestProcedure.Responses;
 using Funtest.TransferObject.TestSuite.Responses;
@@ -42,12 +44,18 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla TestSuite
             CreateMap<TestSuite, GetTestSuiteResponse>();
+            CreateMap<TestSuite, GetTestSuiteWithTestsResponse>();
+
+            //Mapowania dla Test Planów
+            CreateMap<AddTestPlanRequest, TestPlan>();
+            CreateMap<TestPlan, GetTestPlanWithTestSuitesAndTestsResponse>();
 
             //Mapowanie dla Błędów
             CreateMap<Error, GetErrorResponse>();
 
             //Mapowani dla testu
             CreateMap<Test, GetTestResponse>();
+            CreateMap<Test, GetTestIdentityInformationResponse>();
 
             //Mapowanie dla Usera
             CreateMap<AddProjectManageRequest, User>();

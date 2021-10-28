@@ -1,6 +1,7 @@
 ﻿using Funtest.TransferObject.TestSuite.Responses;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Funtest.Services.Interfaces
 {
@@ -8,5 +9,7 @@ namespace Funtest.Services.Interfaces
     {
         List<GetTestSuiteResponse> GetAllTestSuites();
         bool IsTestSuiteExist(Guid id);
+        Task<GetTestSuiteWithTestsResponse> GetTestSuiteWithTests(Guid id);
+        List<GetTestSuiteResponse> GetTestSuiteForTestPlan(Guid testPlanId);
     }
 }

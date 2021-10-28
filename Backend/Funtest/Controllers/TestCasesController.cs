@@ -13,10 +13,12 @@ namespace Funtest.Controllers
     public class TestCasesController : ControllerBase
     {
         private readonly ITestCaseService _testCaseService;
+        private readonly ITestService _testService;
 
-        public TestCasesController(ITestCaseService testCaseService)
+        public TestCasesController(ITestCaseService testCaseService, ITestService testService)
         {
             _testCaseService = testCaseService;
+            _testService = testService;
         }
 
         [HttpPost]
@@ -39,6 +41,10 @@ namespace Funtest.Controllers
             var isExist = await _testCaseService.ExistTestCase(testCaseId);
             if (!isExist)
                 return NotFound("Test case with the given id doesn't exist.");
+
+            var testExecutionCounter = await _testService.GetExecutionCounterForTest(request.TestId);
+            if (testExecutionCounter > 0)
+                return Conflict("Test case can't be modified.");
 
             var response = await _testCaseService.EditTestCase(testCaseId, request);
             if (!response)

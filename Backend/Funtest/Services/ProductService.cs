@@ -26,13 +26,19 @@ namespace Funtest.Services
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
-                Version = FIRST_VERSION
+                Version = FIRST_VERSION,
+                CreationDate = DateTime.Now
             };
 
             Context.Products.Add(product);
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
+        }
+
+        public bool IsProductExist(Guid id)
+        {
+            return Context.Products.Any(x => x.Id == id);
         }
     }
 }

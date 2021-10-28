@@ -36,7 +36,7 @@ namespace Funtest.Controllers
             });
 
             if (!userResult)
-                return Problem("Problem with creating Project Manager. Try again.");
+                return Conflict("Problem with creating Project Manager. Try again.");
 
             var projectManagerId = (await _authService.FindUser(request.Email)).Id;
             var result = await _productService.CreateNewProduct(request, projectManagerId);

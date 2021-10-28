@@ -28,19 +28,14 @@ namespace Funtest
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //po³¹czenie z baz¹ danych
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            //po³¹czenie automapera
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-            //rejestracja DI
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IJWTService, JWTService>();
             services.AddTransient<IUserService, UserService>();
@@ -53,14 +48,16 @@ namespace Funtest
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ITestSuiteService, TestSuiteService>();
             services.AddTransient<IAttachmentService, AttachmentService>();
+            services.AddTransient<ITestPlanService, TestPlanService>();
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("funtest");
-                    });
+                options.AddPolicy("CorsPolicy",
+                builder => builder
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .SetIsOriginAllowed(origin => true) // allow any origin
+                   .AllowCredentials());
             });
 
             services.AddIdentity<User, IdentityRole>(opt =>
@@ -85,16 +82,16 @@ namespace Funtest
                 };
             });
 
-              services.AddAuthorization(options =>
-            {
-                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-                    JwtBearerDefaults.AuthenticationScheme);
+            services.AddAuthorization(options =>
+          {
+              var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+                  JwtBearerDefaults.AuthenticationScheme);
 
-                defaultAuthorizationPolicyBuilder =
-                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+              defaultAuthorizationPolicyBuilder =
+                  defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
 
-                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-            }); 
+              options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+          });
 
             services.AddMvc().AddNewtonsoftJson();
 
@@ -112,25 +109,24 @@ namespace Funtest
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
 
+            app.UseCors("CorsPolicy");
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
+
+            app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors(x => x
-                       .AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHttpsRedirection();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

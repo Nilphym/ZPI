@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestSuite.Responses;
 using System;
@@ -20,6 +21,21 @@ namespace Funtest.Services
         public List<GetTestSuiteResponse> GetAllTestSuites()
         {
             return Context.TestSuites.AsQueryable().Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
+        }
+
+        public List<GetTestSuiteResponse> GetTestSuiteForTestPlan(Guid testPlanId)
+        {
+            var testSuites =  Context.TestSuites.Where(x => x.TestPlanId == testPlanId).ToList();
+            return testSuites.Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
+        }
+
+        public async Task<GetTestSuiteWithTestsResponse> GetTestSuiteWithTests(Guid id)
+        {
+            var testSuite = await Context.TestSuites.FindAsync(id);
+            if (testSuite == null)
+                return null;
+
+            return _mapper.Map<GetTestSuiteWithTestsResponse>(testSuite);
         }
 
         public bool IsTestSuiteExist(Guid id)

@@ -114,5 +114,26 @@ namespace Funtest.Controllers
         {
             return _errorService.ErrorTypes();
         }
+
+        [HttpPut("assign/{errorId}")]
+        public async Task<ActionResult> AssignBugToDeveloper([FromRoute] Guid errorId, [FromBody] AssignBugToDeveloperRequest request)
+        {
+            var isErrorExist = _errorService.IsErrorExist(errorId);
+            if (!isErrorExist)
+                return NotFound("Error with given id doesn't exist");
+            var notAssigned = await _errorService.IsErrorNotAssigned(errorId);
+
+            if(!notAssigned)
+                return Conflict("Someone is working on this error.");
+
+            var isDeveloperExist = await _userService.IsDeveloperExist(request.DeveloperId);
+            if (!isDeveloperExist)
+                return NotFound("Developer with given id doesn't exist");
+
+            var result = await _errorService.AssignBugToDeveloper(errorId, request);
+            if (result)
+                return Ok();
+            return Problem("Problem with saving changes in database.");
+        }   
     }
 }

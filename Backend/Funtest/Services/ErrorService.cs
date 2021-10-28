@@ -35,7 +35,7 @@ namespace Funtest.Services
         public List<GetErrorResponse> GetAllErrorsToRetest()
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == Data.Enums.ErrorState.Retest)
+                .Where(x => x.ErrorState == ErrorState.Retest)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
@@ -43,7 +43,7 @@ namespace Funtest.Services
         public List<GetErrorResponse> GetAllErrorsToFix()
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == Data.Enums.ErrorState.New)
+                .Where(x => x.ErrorState == ErrorState.New)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
@@ -155,6 +155,11 @@ namespace Funtest.Services
         public List<string> ErrorTypes()
         {
             return GetDisplayNames(ErrorType.Functional.GetType());
+        }
+
+        public async Task<bool> IsErrorNotAssigned(Guid errorId)
+        {
+            return (await Context.Errors.FindAsync(errorId)).DeveloperId == null;
         }
     }
 }
