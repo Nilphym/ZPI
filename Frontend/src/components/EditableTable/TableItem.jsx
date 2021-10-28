@@ -8,7 +8,8 @@ const useStyles = makeStyles(() => ({
   textFieldBasic: {
     '& input': {
       color: 'black',
-      textAlign: 'center'
+      textAlign: 'center',
+      fontSize: '14px'
     },
     '& input:disabled': {
       '-webkit-text-fill-color': 'rgba(0,0,0,0.7)'
@@ -18,7 +19,8 @@ const useStyles = makeStyles(() => ({
     '& input': {
       color: 'black',
       textAlign: 'center',
-      fontWeight: '700'
+      fontWeight: '700',
+      fontSize: '16px'
     },
     '& input:disabled': {
       '-webkit-text-fill-color': 'rgba(0,0,0,0.7)'
@@ -33,13 +35,16 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
       sx={
         row === 0
           ? {
-              border: '0.0625rem solid #b0bec5',
+              border: '0.0625rem dotted black',
+              // borderTop: '0',
+              // borderLeft: '0',
+              // borderRight: '0',
+              backgroundColor: '#bdbdbd',
               width: '7rem',
               height: '1.5rem',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
-              fontFamily: 'Arial, Helvetica, sans-serif'
+              justifyContent: 'center'
             }
           : {
               border: '0.0625rem solid #b0bec5',
@@ -57,18 +62,19 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
         control={control}
         defaultValue={defaultValue}
         render={({ field }) =>
-          row === 0 && column === 0 ? (
-            <TextField
-              id={`${name}-${row}-${column}`}
-              type="text"
-              disabled
-              placeholder=""
-              required
-              {...field}
-              InputProps={{ disableUnderline: true }}
-              variant="standard"
-            />
-          ) : (
+          // row === 0 && column === 0 ? (
+          //   <TextField
+          //     id={`${name}-${row}-${column}`}
+          //     type="text"
+          //     disabled={disabled}
+          //     placeholder=""
+          //     required
+          //     {...field}
+          //     className={row === 0 ? classes.textFieldRow : classes.textFieldBasic}
+          //     InputProps={{ disableUnderline: true }}
+          //     variant="standard"
+          //   />
+          // ) : (
             <TextField
               id={`${name}-${row}-${column}`}
               type="text"
@@ -80,7 +86,7 @@ const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
               InputProps={{ disableUnderline: true }}
               variant="standard"
             />
-          )
+          // )
         }
       />
     </Box>
