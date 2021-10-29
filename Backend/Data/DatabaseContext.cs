@@ -42,7 +42,7 @@ namespace Data
               .HasForeignKey(p => p.TestProcedureId)
               .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Seed();
+            // builder.Seed();
         }
     }
 }
