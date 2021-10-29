@@ -1,2 +1,2 @@
-export const API_URL = 'http://elentiya121-001-site1.itempurl.com/api/';
+export const API_URL = 'https://fun-test-zpi.herokuapp.com/api/';
 export const TOKEN_KEY = 'token';

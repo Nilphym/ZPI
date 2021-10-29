@@ -41,7 +41,7 @@ const prepareDataForView = (rows) => {
 };
 
 export const getRows = createAsyncThunk('bugs/get/rows', async () => {
-  const data = await server().get({ url: 'Errors' });
+  const data = await server().get({ url: 'Errors/toFix' });
   return prepareDataForView(data);
 });
 
