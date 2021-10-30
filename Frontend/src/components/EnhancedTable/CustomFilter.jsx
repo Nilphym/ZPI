@@ -23,12 +23,13 @@ export const DefaultFilter = ({ column: { filterValue, setFilter }, toggleAllRow
       }}
       InputProps={{
         startAdornment: !inputContent && (
-          <InputAdornment position="start">
-            <Search color="action" sx={{ height: '25px' }} />
+          <InputAdornment sx={{ pointerEvents: 'none' }} position="start">
+            <Search color="action" sx={{ height: '1.5rem' }} />
           </InputAdornment>
         )
       }}
       sx={{
+        width: '100%',
         '.MuiInputBase-root': {
           height: '2.2rem',
           paddingLeft: inputContent ? 0 : '0.5rem'

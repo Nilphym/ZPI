@@ -18,7 +18,8 @@ import {
   TableContainer,
   TableSortLabel,
   Paper,
-  Box
+  Box,
+  Typography
 } from '@mui/material';
 
 import TablePagination from './TablePagination';
@@ -118,32 +119,44 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
           ))}
         </Paper>
         <TableBody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return row.originalSubRows ? (
-              <React.Fragment key={row.getRowProps().key}>
-                <TableRow role={row.getRowProps().role}>
-                  {row.cells.map((cell) => (
-                    <TableCell
-                      sx={{
-                        minWidth: cell.column.minWidth,
-                        maxWidth: cell.column.maxWidth,
-                        textAlign: cell.column.align
-                      }}
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render('Cell')}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                <ExpandableRow
-                  colSpan={visibleColumns.length}
-                  data={row.originalSubRows[0]}
-                  open={row.isExpanded}
-                />
-              </React.Fragment>
-            ) : null;
-          })}
+          {page.length ? (
+            page.map((row) => {
+              prepareRow(row);
+              return row.originalSubRows ? (
+                <React.Fragment key={row.getRowProps().key}>
+                  <TableRow role={row.getRowProps().role}>
+                    {row.cells.map((cell) => (
+                      <TableCell
+                        sx={{
+                          minWidth: cell.column.minWidth,
+                          maxWidth: cell.column.maxWidth,
+                          textAlign: cell.column.align
+                        }}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render('Cell')}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  <ExpandableRow
+                    colSpan={visibleColumns.length}
+                    data={row.originalSubRows[0]}
+                    open={row.isExpanded}
+                  />
+                </React.Fragment>
+              ) : null;
+            })
+          ) : (
+            <TableRow>
+              <TableCell colSpan={visibleColumns.length}>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Typography sx={{ fontSize: '1rem' }} variant="overline">
+                    No data
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
         <TableFooter>
           <TableRow>
