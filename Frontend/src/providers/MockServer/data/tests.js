@@ -14,29 +14,34 @@ const models = {
 const routes = [
 
   // TestSuites requests
-   (thisRef) =>
-   thisRef.post('TestSuites', (schema, request) => {
-     const newTestSuiteId = Math.floor(Math.random() * 10000);
-     const { testPlanId, newTestSuiteName } = JSON.parse(request.requestBody);
+  (thisRef) =>
+  thisRef.post('TestSuites', (schema, request) => {
+    const newTestSuiteId = Math.floor(Math.random() * 10000);
+    const {
+      testPlanId,
+      newTestSuiteName
+    } = JSON.parse(request.requestBody);
 
-     const newTestSuite = {
-       testSuiteId: newTestSuiteId,
-       testSuite: newTestSuiteName
-     };
+    const newTestSuite = {
+      testSuiteId: newTestSuiteId,
+      testSuite: newTestSuiteName
+    };
 
-     const {
-       testSuites
-     } = schema.testPlans.findBy({
-       id: testPlanId
-     }).attrs;
+    const {
+      testSuites
+    } = schema.testPlans.findBy({
+      id: testPlanId
+    }).attrs;
 
-     schema.testPlans.findBy({ id: testPlanId }).update({
-       testSuites: [
-         ...testSuites,
-          newTestSuite
-       ]
-     });
-   }),
+    schema.testPlans.findBy({
+      id: testPlanId
+    }).update({
+      testSuites: [
+        ...testSuites,
+        newTestSuite
+      ]
+    });
+  }),
 
   // TestPlans requests
   (thisRef) =>
@@ -48,16 +53,6 @@ const routes = [
       id
     }).attrs;
 
-    const tests = [];
-    findingItem.testsIds.forEach(id => {
-      const test = schema.tests.findBy({
-        id
-      }).attrs;
-      tests.push(test);
-    });
-
-    findingItem.tests = tests;
-
     return findingItem;
   }),
 
@@ -67,8 +62,7 @@ const routes = [
       id
     } = request.params;
     const {
-      name,
-      testSuites
+      name
     } = JSON.parse(
       request.requestBody
     );
@@ -77,9 +71,24 @@ const routes = [
         id
       })
       .update({
-        name,
-        testSuites
+        name
       });
+  }),
+
+  (thisRef) =>
+  thisRef.post('TestPlans', (schema, request) => {
+    const newTestPlanId = Math.floor(Math.random() * 10000);
+    const {
+      name
+    } = JSON.parse(request.requestBody);
+
+    schema.testPlans.create({
+      id: newTestPlanId,
+      name,
+      testSuites: [],
+      testIds: []
+    });
+    return newTestPlanId;
   }),
 
   // Test requests
@@ -120,17 +129,25 @@ const routes = [
   }),
 
   (thisRef) =>
-  thisRef.post('Tests', (schema) => {
-    // , request)
+  thisRef.post('Tests', (schema, request) => {
     const newTestId = Math.floor(Math.random() * 10000);
-    // const { testPlanId } = JSON.parse(request.requestBody);
+    const {
+      testPlanId
+    } = JSON.parse(request.requestBody);
+    const {
+      testsIds
+    } = schema.testPlans.findBy({
+      id: testPlanId
+    }).attrs;
+    schema.testPlans.findBy({
+      id: testPlanId
+    }).update({
+      testsIds: [
+        ...testsIds,
+        newTestId
+      ]
+    });
 
-    // schema.testPlans.findBy({ id: testPlanId }).update({
-    //   testsIds: [
-    //     ...testsIds,
-    //      newTestId
-    //   ]
-    // });
     schema.tests.create({
       id: newTestId,
       name: '',
@@ -1232,7 +1249,16 @@ const seeds = [
         testSuite: 'API'
       }
     ],
-    testsIds: ['t1', 't2', 't3']
+    tests: [{
+      id: 't1',
+      name: 'Test the best'
+    }, {
+      id: 't2',
+      name: 'Test 2'
+    }, {
+      id: 't3',
+      name: 'Test 3'
+    }]
   }].forEach((testPlan) => {
     serverRef.create('testPlan', testPlan);
   })
