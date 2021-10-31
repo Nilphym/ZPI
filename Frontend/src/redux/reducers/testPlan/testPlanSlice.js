@@ -9,6 +9,7 @@ import server from '../../../services/server';
 const initialState = {
   selectedTestPlanId: '',
   selectedTestPlan: {},
+  isLoadingTestSuites: {},
   isLoading: true
 };
 
@@ -42,6 +43,15 @@ export const putTestPlanById = createAsyncThunk('testPlan/put/ById', async (_, {
 });
 
 // ----------------------------------------- Test Suite API
+
+export const getTestSuiteTests = createAsyncThunk('testSuite/test/get', async (testSuiteId) => {
+
+  const response = await server().get({
+    url: `TestSuites/${testSuiteId}/tests`
+  });
+  return response;
+});
+
 export const postTestSuite = createAsyncThunk('testSuite/post', async (testSuiteName, {
   getState
 }) => {
@@ -61,16 +71,6 @@ export const postTestSuite = createAsyncThunk('testSuite/post', async (testSuite
   return response;
 });
 
-// export const postTest = createAsyncThunk('testPlan/post', async (testPlanId) => {
-//   const response = await server().post({
-//     url: 'TestPlans',
-//     data: {
-//       testPlanId
-//     }
-//   });
-//   return response;
-// }); TODO: Move to projectSlice
-
 export const testPlanSlice = createSlice({
   name: 'testPlans',
   initialState,
@@ -85,8 +85,14 @@ export const testPlanSlice = createSlice({
       state.selectedTestPlan.testSuites = state.selectedTestPlan.testSuites.filter(testSuite => testSuite.testSuiteId !== action.payload.testSuiteId);
     },
     changeTestSuiteName: (state, action) => {
-      const { newTestSuiteName, testSuiteId } = action.payload;
+      const {
+        newTestSuiteName,
+        testSuiteId
+      } = action.payload;
       state.selectedTestPlan.testSuites[state.selectedTestPlan.testSuites.findIndex(testSuite => testSuite.testSuiteId === testSuiteId)].testSuite = newTestSuiteName;
+    },
+    setLoading: (state, action) => {
+      state.isLoading = action.payload.isLoading;
     }
   },
   extraReducers: (builder) => {
@@ -95,13 +101,18 @@ export const testPlanSlice = createSlice({
         const {
           id,
           name,
-          testSuites,
-          tests
+          testSuites
         } = action.payload;
         state.selectedTestPlan.id = id;
         state.selectedTestPlan.name = name;
         state.selectedTestPlan.testSuites = testSuites;
-        state.selectedTestPlan.tests = tests;
+        state.selectedTestPlan.tests = {};
+        state.isLoadingTestSuites = {};
+        testSuites.forEach(({
+          id
+        }) => {
+          state.isLoadingTestSuites[id] = true;
+        });
         state.isLoading = false;
       })
       .addCase(getTestPlanById.rejected, (_, action) => {
@@ -109,6 +120,17 @@ export const testPlanSlice = createSlice({
       })
       .addCase(putTestPlanById.fulfilled, () => {
         alert('Object changed');
+      })
+      .addCase(getTestSuiteTests.fulfilled, (state, action) => {
+        const {
+          id: testSuiteId,
+          tests
+        } = action.payload;
+        state.selectedTestPlan.tests[testSuiteId] = tests;
+        state.isLoadingTestSuites[testSuiteId] = false;
+      })
+      .addCase(getTestSuiteTests.rejected, (_, action) => {
+        alert(action.error.message);
       })
       .addCase(putTestPlanById.rejected, (_, action) => {
         alert(action.error.message);
@@ -126,6 +148,7 @@ export const {
   setTestPlanId,
   editTestPlanName,
   deleteTestSuite,
-  changeTestSuiteName
+  changeTestSuiteName,
+  setLoading
 } = testPlanSlice.actions;
 export default testPlanSlice.reducer;

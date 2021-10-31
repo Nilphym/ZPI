@@ -76,6 +76,37 @@ const routes = [
   }),
 
   // TestSuites requests
+
+  (thisRef) =>
+  thisRef.get('TestSuites/:testSuiteId/tests', (_, request) => {
+    const {
+      testSuiteId
+    } = request.params;
+    const testSuite = {
+      id: testSuiteId,
+      category: 'login',
+      tests: [{
+          id: 't1',
+          name: 'Test the best'
+        },
+        {
+          id: 't2',
+          name: 'Test 2'
+        },
+        {
+          id: 't3',
+          name: 'Test 3'
+        },
+        {
+          id: 't4',
+          name: 'Test 4'
+        }
+      ]
+    };
+
+    return testSuite;
+  }),
+
   (thisRef) =>
   thisRef.post('TestSuites', (schema, request) => {
     const newTestSuiteId = Math.floor(Math.random() * 10000);
@@ -292,7 +323,11 @@ const routes = [
         ...testProceduresCodes,
         {
           testProcedureId: newProcedureId,
-          testProcedureCode: `TP#${newProcedureId}`
+          testProcedureCode: `
+            TP# $ {
+              newProcedureId
+            }
+            `
         }
       ]
     });
@@ -354,7 +389,11 @@ const routes = [
         ...testCasesCodes,
         {
           testCaseId: newCaseId,
-          testCaseCode: `TC#${newCaseId}`
+          testCaseCode: `
+            TC# $ {
+              newCaseId
+            }
+            `
         }
       ]
     });
@@ -455,10 +494,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       },
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts2',
@@ -483,10 +528,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts3',
@@ -501,10 +552,16 @@ const seeds = [
         RowName3: 'Tse Tse',
         Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
       }],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts4',
@@ -545,10 +602,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts5',
@@ -581,10 +644,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       },
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts6',
@@ -609,10 +678,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts7',
@@ -627,10 +702,16 @@ const seeds = [
         RowName3: 'Tse Tse',
         Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
       }],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts8',
@@ -671,10 +752,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts9',
@@ -707,10 +794,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       },
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts10',
@@ -735,10 +828,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts11',
@@ -753,10 +852,16 @@ const seeds = [
         RowName3: 'Tse Tse',
         Data3: ['a', 'b', 'c', 'd', 'ro', 'p']
       }],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'ts12',
@@ -797,10 +902,16 @@ const seeds = [
           Data3: ['x', 'y', 'z', 't', 'r', 'w']
         }
       ],
-      controlPoint: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      controlPoint: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     }
   ].forEach((testStep) => {
     serverRef.create('testStep', testStep);
@@ -808,34 +919,58 @@ const seeds = [
   (serverRef) => [{
       id: 'tp1',
       testStepsIds: ['ts1', 'ts2'],
-      result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      result: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'tp2',
       testStepsIds: ['ts3', 'ts4', 'ts5', 'ts6'],
-      result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      result: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'tp3',
       testStepsIds: ['ts7'],
-      result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      result: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     },
     {
       id: 'tp4',
       testStepsIds: ['ts8', 'ts9', 'ts10'],
-      result: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint, temporibus inventore totam.In, et dolor provident est quaerat blanditiis amet pariatur doloremque,
-        saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas! Pariatur sed necessitatibus omnis dicta ullam itaque amet, placeat facere quibusdam laboriosam nemo!`
+      result: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisci nemo ut eveniet itaque assumenda consequatur quaerat sint,
+            temporibus inventore totam.In,
+            et dolor provident est quaerat blanditiis amet pariatur doloremque,
+            saepe ut illo quo natus aut aspernatur non laboriosam possimus quidem sapiente voluptatum eius voluptas!Pariatur sed necessitatibus omnis dicta ullam itaque amet,
+            placeat facere quibusdam laboriosam nemo!`
     }
   ].forEach((testProcedure) => {
     serverRef.create('testProcedure', testProcedure);
@@ -843,8 +978,11 @@ const seeds = [
 
   (serverRef) => [{
       id: 'tc1',
-      preconditions: `gggggggggggggggggggggLorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
+      preconditions: `
+            gggggggggggggggggggggLorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
       entryDataObject: {
         Data0: {
           tableName: 'Table 1',
@@ -913,11 +1051,16 @@ const seeds = [
     },
     {
       id: 'tc4',
-      preconditions: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse dicta cum molestiae omnis quidem? Pariatur vel labore quas corrupti quae voluptatibus earum, 
-        deleniti fugiat iusto, laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
+      preconditions: `
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.Esse dicta cum molestiae omnis quidem ? Pariatur vel labore quas corrupti quae voluptatibus earum,
+            deleniti fugiat iusto,
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium `,
       entryDataObject: {
-        Data0: `laborum dolor unde error veniam esse alias animi nulla aliquid voluptas? Reprehenderit, dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium 
-        minus vel deleniti doloremque adipisc`,
+        Data0: `
+            laborum dolor unde error veniam esse alias animi nulla aliquid voluptas ? Reprehenderit,
+            dolore ratione delectus suscipit praesentium omnis tenetur eligendi laudantium
+            minus vel deleniti doloremque adipisc `,
         Data1: {
           tableName: 'Table 1',
           RowName1: '',
@@ -1314,28 +1457,18 @@ const seeds = [
     id: 'tplan1',
     name: 'Test Plan 1',
     testSuites: [{
-        testSuiteId: 1,
-        testSuite: 'login'
+        id: 1,
+        category: 'login'
       },
       {
-        testSuiteId: 2,
-        testSuite: 'register'
+        id: 2,
+        category: 'register'
       },
       {
-        testSuiteId: 3,
-        testSuite: 'API'
+        id: 3,
+        category: 'API'
       }
-    ],
-    tests: [{
-      id: 't1',
-      name: 'Test the best'
-    }, {
-      id: 't2',
-      name: 'Test 2'
-    }, {
-      id: 't3',
-      name: 'Test 3'
-    }]
+    ]
   }].forEach((testPlan) => {
     serverRef.create('testPlan', testPlan);
   }),

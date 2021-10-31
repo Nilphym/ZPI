@@ -14,13 +14,14 @@ import {
   putTestPlanById,
   editTestPlanName,
   setTestPlanId,
-  postTestSuite
+  postTestSuite,
+  setLoading
 } from '../../redux/store';
 import TestSuiteItem from './TestSuiteItem';
 
 export const TestPlan = ({ isEditable }) => {
   const {
-    selectedTestPlan: { id, name: testPlanName, testSuites, tests },
+    selectedTestPlan: { name: testPlanName, testSuites},
     isLoading
   } = useSelector((state) => state.testPlan);
 
@@ -39,7 +40,7 @@ export const TestPlan = ({ isEditable }) => {
 
   useEffect(() => {
     dispatch(setTestPlanId({ id: 'tplan1' }));
-
+    dispatch(setLoading({isLoading: true}));
     async function getTestPlanData() {
       await dispatch(getTestPlanById());
     }
@@ -113,12 +114,11 @@ export const TestPlan = ({ isEditable }) => {
             />
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
-            {testSuites.map(({ testSuite, testSuiteId }) => (
+            {testSuites.map(({ id, category }) => (
               <TestSuiteItem
                 isEditable={isEditing}
-                testSuite={testSuite}
-                testSuiteId={testSuiteId}
-                tests={tests}
+                testSuite={category}
+                testSuiteId={id}
               />
             ))}
             {!isAddingTestSuite && isEditing && (
@@ -186,13 +186,7 @@ export const TestPlan = ({ isEditable }) => {
           )}
         </Box>
       )}
-      <Button
-        sx={{ position: 'absolute', top: '5vh', left: '30vw', backgroundColor: 'yellow' }}
-        variant="outlined"
-        onClick={() => addTest()}
-      >
-        Add a new Test (TO DELETE)
-      </Button>
+
       {isEditing && (
         <Button variant="outlined" onClick={() => saveTestPlan()} sx={{ marginTop: '1.25rem' }}>
           Save Test Plan
