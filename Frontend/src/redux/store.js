@@ -7,7 +7,7 @@ import counterReducer from './reducers/counter/counterSlice';
 import testReducer from './reducers/test/testSlice';
 import bugsReducer from './reducers/bugs/bugsSlice';
 import testPlanReducer from './reducers/testPlan/testPlanSlice';
-import projectReducer from './reducers/project/projectSlice';
+import productReducer from './reducers/product/productSlice';
 
 const reducer = {
   counter: counterReducer,
@@ -15,7 +15,7 @@ const reducer = {
   test: testReducer,
   bugs: bugsReducer,
   testPlan: testPlanReducer,
-  project: projectReducer
+  product: productReducer
 };
 
 const store = configureStore({
@@ -29,4 +29,4 @@ export * from './reducers/counter/counterSlice';
 export * from './reducers/test/testSlice';
 export * from './reducers/bugs/bugsSlice';
 export * from './reducers/testPlan/testPlanSlice';
-export * from './reducers/project/projectSlice';
+export * from './reducers/product/productSlice';

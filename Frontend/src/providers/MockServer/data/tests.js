@@ -8,10 +8,72 @@ const models = {
   testProcedure: Model,
   testCase: Model,
   test: Model,
-  testPlan: Model
+  testPlan: Model,
+  product: Model
 };
 
 const routes = [
+
+  // product requests
+  (thisRef) =>
+  thisRef.get('Product/:id', (schema, request) => {
+    const {
+      id
+    } = request.params;
+    const findingItem = schema.products.findBy({
+      id
+    }).attrs;
+    return findingItem;
+  }),
+
+  (thisRef) =>
+  thisRef.get('Product/:productId/TestPlans', (schema, request) => {
+    const {
+      productId
+    } = request.params;
+    const {
+      testPlans
+    } = schema.products.findBy({
+      id: productId
+    }).attrs;
+    return testPlans;
+  }),
+
+  (thisRef) =>
+  thisRef.put('Product/:id', (schema, request) => {
+    const {
+      id
+    } = request.params;
+    const {
+      name
+    } = JSON.parse(
+      request.requestBody
+    );
+    schema.products
+      .findBy({
+        id
+      })
+      .update({
+        name
+      });
+  }),
+
+  (thisRef) =>
+  thisRef.post('Product', (schema, request) => {
+    const newProductId = Math.floor(Math.random() * 10000);
+    const {
+      name
+    } = JSON.parse(request.requestBody);
+
+    schema.products.create({
+      id: newProductId,
+      name,
+      creationDate: new Date().toISOString().split('T')[0],
+      version: 0,
+      testPlansIds: []
+    });
+    return newProductId;
+  }),
 
   // TestSuites requests
   (thisRef) =>
@@ -76,7 +138,10 @@ const routes = [
   }),
 
   (thisRef) =>
-  thisRef.post('TestPlans', (schema, request) => {
+  thisRef.post(':productId/TestPlans', (schema, request) => {
+    const {
+      productId
+    } = request.params;
     const newTestPlanId = Math.floor(Math.random() * 10000);
     const {
       name
@@ -87,6 +152,18 @@ const routes = [
       name,
       testSuites: [],
       testIds: []
+    });
+
+    const {
+      testPlansIds
+    } = schema.products.findBy({
+      id: productId
+    }).attrs;
+
+    schema.products.findBy({
+      id: productId
+    }).update({
+      testPlansIds: [...testPlansIds, newTestPlanId]
     });
     return newTestPlanId;
   }),
@@ -1261,6 +1338,24 @@ const seeds = [
     }]
   }].forEach((testPlan) => {
     serverRef.create('testPlan', testPlan);
+  }),
+  (serverRef) => [{
+    id: '43463',
+    name: 'FunTest',
+    creationDate: '30.10.2021',
+    version: 0,
+    testPlans: [{
+      id: 'tplan1',
+      name: 'Test Plan 1'
+    }, {
+      id: 'tplan2',
+      name: 'Test Plan 2'
+    }, {
+      id: 'tplan3',
+      name: 'Test Plan 3'
+    }]
+  }].forEach((product) => {
+    serverRef.create('product', product);
   })
 ];
 

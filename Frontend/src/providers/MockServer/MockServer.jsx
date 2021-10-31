@@ -3,11 +3,10 @@ import { createServer } from 'miragejs';
 
 import tests from './data/tests';
 import bugs from './data/bugs';
-import projects from './data/projects';
 
 // DOCS: https://miragejs.com/tutorial/part-1/
 // Create new feature and add it to this list below
-const features = [tests, bugs, projects];
+const features = [tests, bugs];
 
 const makeModels = () => Object.assign(...features.map((feature) => feature.models));
 
