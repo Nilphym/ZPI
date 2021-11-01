@@ -6,7 +6,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CloseIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import TestItem from './TestItem';
 import {
@@ -21,9 +22,11 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
   const dispatch = useDispatch();
   const [isOpened, setIsOpened] = useState(false);
   const [isChangingTestSuiteName, setIsChangingTestSuiteName] = useState(false);
+  const [isAddingTest, setIsAddingTest] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const {
+    selectedTestPlanId,
     selectedTestPlan: { tests },
     isLoadingTestSuites
   } = useSelector((state) => state.testPlan);
@@ -32,6 +35,11 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
     control,
     handleSubmit,
     formState: { errors }
+  } = useForm();
+  const {
+    control: controlTest,
+    handleSubmit: handleSubmitTest,
+    formState: { errors: errorsTest }
   } = useForm();
 
   useEffect(() => {
@@ -43,8 +51,12 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
     setIsChangingTestSuiteName(false);
   };
 
-  async function addTest() {
-    const newTestId = await dispatch(postTest());
+  async function addTest({testName}) {
+    const newTestId = await dispatch(postTest({
+      testPlanId: selectedTestPlanId,
+      testSuiteId,
+      testName
+    }));
     dispatch(setTestId(newTestId.payload));
     navigate(`${pathname}/test-${newTestId.payload}`);
   }
@@ -66,8 +78,11 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                 !isChangingTestSuiteName && (isEditable || tests[testSuiteId].length) > 0
                   ? {
                       position: 'relative',
-                      backgroundColor: '#42a5f5',
-                      border: '0.125rem solid #0077c2',
+                      height: '5rem',
+                      width: '100%',
+                      backgroundColor: '#00000',
+                      borderTop: '0.0625rem solid #b0bec5',
+                      borderBottom: '0.0625rem solid #b0bec5',
                       padding: '0.625rem',
                       '&:hover': {
                         cursor: 'pointer'
@@ -75,42 +90,83 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                     }
                   : {
                       position: 'relative',
-                      backgroundColor: '#42a5f5',
-                      border: '0.125rem solid #0077c2',
+                      height: '5rem',
+                      width: '100%',
+                      backgroundColor: '#00000',
+                      borderTop: '0.0625rem solid #b0bec5',
+                      borderBottom: '0.0625rem solid #b0bec5',
                       padding: '0.625rem'
                     }
               }
             >
-              <Typography
-                sx={{
-                  marginLeft: '0.625rem',
-                  userSelect: 'none',
-                  fontWeight: '700'
-                }}
-              >
-                {testSuite}
-              </Typography>
+              {!isChangingTestSuiteName && (
+                <KeyboardArrowDownIcon
+                  sx={
+                    isOpened
+                      ? {
+                          position: 'absolute',
+                          top: '50%',
+                          transform: 'translateY(-50%) rotate(180deg)',
+                          left: '2.5%',
+                          zIndex: '1'
+                        }
+                      : {
+                          position: 'absolute',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          left: '2.5%',
+                          zIndex: '1'
+                        }
+                  }
+                />
+              )}
+
+              {!isChangingTestSuiteName && (
+                <Typography
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '7%',
+                    transform: 'translateY(-50%)',
+                    userSelect: 'none',
+                    fontWeight: '700'
+                  }}
+                >
+                  {testSuite}
+                </Typography>
+              )}
+
               {isEditable &&
                 (!isChangingTestSuiteName ? (
-                  <CreateIcon
-                    onClick={() => setIsChangingTestSuiteName(true)}
+                  <Button
+                    onClick={() => {
+                      setIsOpened(false);
+                      setIsChangingTestSuiteName(true);
+                    }}
                     sx={{
                       position: 'absolute',
                       top: '50%',
-                      right: '3.5vw',
+                      right: '2.5%',
                       transform: 'translateY(-50%)',
-                      border: '1px solid black',
-                      borderRadius: '50%',
-                      padding: '2px',
                       zIndex: 2,
                       '&:hover': {
                         cursor: 'pointer'
                       }
                     }}
-                  />
+                    variant="contained"
+                    startIcon={<CreateIcon />}
+                  >
+                    Edit Suite
+                  </Button>
                 ) : (
                   <Box
-                    sx={{ position: 'relative' }}
+                    sx={{
+                      position: 'absolute',
+                      height: '5rem',
+                      width: '100%',
+                      top: '0%',
+                      left: '0%'
+                    }}
                     component="form"
                     onSubmit={handleSubmit(changeSuiteName)}
                   >
@@ -129,7 +185,10 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                           error={!!errors.testSuiteName}
                           helperText={!!errors.testSuiteName && 'Field cannot be empty!'}
                           sx={{
-                            marginTop: '0.625rem',
+                            position: 'absolute',
+                            top: '50%',
+                            left: '1.5%',
+                            transform: 'translateY(-50%)',
                             width: '15rem'
                           }}
                         />
@@ -139,29 +198,33 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                       sx={{
                         position: 'absolute',
                         zIndex: 1,
-                        color: 'black',
-                        border: '0.0625rem solid black',
-                        transform: 'translateY(50%)',
-                        left: '16rem'
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        left: '23%'
                       }}
-                      variant="outlined"
+                      variant="contained"
                       type="submit"
+                      startIcon={<CreateIcon />}
                     >
                       Change
                     </Button>
-                    <HighlightOffIcon
+                    <Button
                       sx={{
                         position: 'absolute',
-                        zIndex: 2,
-                        color: 'black',
-                        top: '0.5rem',
-                        left: '13.6rem',
-                        '&:hover': {
-                          cursor: 'pointer'
-                        }
+                        zIndex: 1,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        left: '35%'
                       }}
-                      onClick={() => setIsChangingTestSuiteName(false)}
-                    />
+                      onClick={() => {
+                        setIsChangingTestSuiteName(false);
+                        setIsOpened(false);
+                      }}
+                      variant="contained"
+                      startIcon={<CloseIcon />}
+                    >
+                      Close
+                    </Button>
                   </Box>
                 ))}
               {isEditable && tests[testSuiteId].length === 0 && (
@@ -185,23 +248,83 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
             </Box>
 
             <Box>
-              {isOpened &&
+              {!isChangingTestSuiteName &&
+                isOpened &&
                 tests[testSuiteId].map(({ id, name }) => (
                   <TestItem isEditable={isEditable} testName={name} testId={id} />
                 ))}
             </Box>
           </Box>
-          {isOpened && isEditable && (
-            <Button
-              sx={{
-                margin: '0.625rem 0 0.625rem 1rem'
-              }}
-              onClick={() => addTest()}
-              variant="outlined"
-              startIcon={<AddIcon />}
-            >
-              Add a new test
-            </Button>
+          {!isChangingTestSuiteName && isOpened && isEditable && (
+            <Box>
+              {!isAddingTest ? (
+                <Button
+                  sx={{
+                    margin: '0.625rem 0 0.625rem 1rem'
+                  }}
+                  onClick={() => setIsAddingTest(true)}
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                >
+                  Add a new test
+                </Button>
+              ) : (
+                <Box
+                  sx={{ position: 'relative', height: '5rem' }}
+                  component="form"
+                  onSubmit={handleSubmitTest(addTest)}
+                >
+                  <Controller
+                    shouldUnregister
+                    name="testName"
+                    control={controlTest}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        id="testName"
+                        label="Test Name"
+                        type="text"
+                        {...field}
+                        error={!!errorsTest.testName}
+                        helperText={!!errorsTest.testName && 'Field cannot be empty!'}
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '1.5%',
+                          transform: 'translateY(-50%)',
+                          width: '15rem'
+                        }}
+                      />
+                    )}
+                  />
+                  <Button
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '23%',
+                      transform: 'translateY(-50%)'
+                    }}
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '32%',
+                      transform: 'translateY(-50%)'
+                    }}
+                    variant="contained"
+                    startIcon={<CloseIcon />}
+                    onClick={() => setIsAddingTest(false)}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              )}
+            </Box>
           )}
         </Box>
       )}

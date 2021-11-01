@@ -4,12 +4,11 @@ import { Box, Typography, Button, TextField, CircularProgress } from '@mui/mater
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
+import CreateIcon from '@mui/icons-material/Create';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Controller, useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import {
-  postTest,
-  setTestId,
   getTestPlanById,
   putTestPlanById,
   editTestPlanName,
@@ -47,12 +46,6 @@ export const TestPlan = ({ isEditable }) => {
     getTestPlanData();
   }, []);
 
-  async function addTest() {
-    const newTestId = await dispatch(postTest());
-    dispatch(setTestId(newTestId.payload));
-    navigate(`${pathname}/test-e-${newTestId.payload}`);
-  }
-
   async function saveTestPlan() {
     setIsEditing(false);
     setIsAddingTestSuite(false);
@@ -84,14 +77,17 @@ export const TestPlan = ({ isEditable }) => {
                 top: '3rem',
                 right: '3rem'
               }}
-              variant="outlined"
+              variant="contained"
               onClick={() => setIsEditing(true)}
+              startIcon={<CreateIcon />}
             >
               Edit Test Plan
             </Button>
           )}
           <Box>
-            <Typography variant="h2">Test Plan:</Typography>
+            <Typography variant="h2" sx={{ userSelect: 'none' }}>
+              Test Plan:
+            </Typography>
             <Controller
               shouldUnregister
               name="testPlanName"
@@ -107,7 +103,8 @@ export const TestPlan = ({ isEditable }) => {
                   onChange={(e) => dispatch(editTestPlanName({ newTestName: e.target.value }))}
                   sx={{
                     marginTop: '1.25rem',
-                    width: '15rem'
+                    width: '15rem',
+                    userSelect: 'none'
                   }}
                 />
               )}
@@ -115,17 +112,13 @@ export const TestPlan = ({ isEditable }) => {
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
             {testSuites.map(({ id, category }) => (
-              <TestSuiteItem
-                isEditable={isEditing}
-                testSuite={category}
-                testSuiteId={id}
-              />
+              <TestSuiteItem isEditable={isEditing} testSuite={category} testSuiteId={id} />
             ))}
             {!isAddingTestSuite && isEditing && (
               <Button
-                variant="outlined"
+                variant="contained"
                 onClick={() => setIsAddingTestSuite(true)}
-                sx={{ marginTop: '0.625rem', marginBottom: '0.625rem' }}
+                sx={{ marginTop: '1rem', marginBottom: '0.625rem' }}
                 startIcon={<AddIcon />}
               >
                 Add a new Suite

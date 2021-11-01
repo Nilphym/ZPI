@@ -240,7 +240,7 @@ const routes = [
   thisRef.post('Tests', (schema, request) => {
     const newTestId = Math.floor(Math.random() * 10000);
     const {
-      testPlanId
+      planTestId: testPlanId, planSuiteId, name
     } = JSON.parse(request.requestBody);
     const {
       testsIds
@@ -258,7 +258,7 @@ const routes = [
 
     schema.tests.create({
       id: newTestId,
-      name: '',
+      name,
       creationDate: new Date().toISOString().split('T')[0],
       version: 'v.0.0',
       executionCounter: 0,

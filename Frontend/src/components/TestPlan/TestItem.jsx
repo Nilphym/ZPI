@@ -19,10 +19,11 @@ const TestItem = ({ isEditable, testName, testId }) => {
   return (
     <Box
       sx={{
-        height: '3rem',
+        height: '4rem',
         width: '100%',
-        backgroundColor: '#80d6ff',
-        border: '0.0625rem solid #42a5f5',
+        backgroundColor: '#e1e1e1',
+        borderTop: '0.0625rem solid #aeaeae',
+        borderBottom: '0.0625rem solid #aeaeae',
         position: 'relative'
       }}
     >
@@ -31,7 +32,8 @@ const TestItem = ({ isEditable, testName, testId }) => {
           position: 'absolute',
           top: '50%',
           left: '2.5%',
-          transform: 'translateY(-50%)'
+          transform: 'translateY(-50%)',
+          userSelect: 'none'
         }}
       >
         {testName}
@@ -42,9 +44,9 @@ const TestItem = ({ isEditable, testName, testId }) => {
           position: 'absolute',
           top: '50%',
           right: '1.5%',
-          transform: 'translateY(-50%)',
-          border: '0.125rem solid #0077c2'
-        }}s
+          transform: 'translateY(-50%)'
+        }}
+        s
         variant="contained"
       >
         View
@@ -56,8 +58,7 @@ const TestItem = ({ isEditable, testName, testId }) => {
             position: 'absolute',
             top: '50%',
             right: '9.5%',
-            transform: 'translateY(-50%)',
-            border: '0.125rem solid #0077c2'
+            transform: 'translateY(-50%)'
           }}
           variant="contained"
         >
