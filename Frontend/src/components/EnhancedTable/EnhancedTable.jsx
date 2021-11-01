@@ -160,7 +160,7 @@ export const EnhancedTable = ({ title, data, columns, initialPageSize }) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={Object.keys(data[0]).length}>
+            <TableCell colSpan={Object.keys(columns).length}>
               <TablePagination
                 canPreviousPage={canPreviousPage}
                 canNextPage={canNextPage}

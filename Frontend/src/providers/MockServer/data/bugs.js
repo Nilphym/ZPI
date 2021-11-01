@@ -10,22 +10,22 @@ const models = {
 
 const routes = [
   (thisRef) =>
-    thisRef.get('Errors', (schema) => {
+    thisRef.get('Errors/toFix', (schema) => {
       return schema.bugs.all().models;
     }),
 
   (thisRef) =>
-    thisRef.get('Errors/types', (schema) => {
+    thisRef.get('Errors/ErrorTypes', (schema) => {
       return schema.types.all().models.map((model) => model.text);
     }),
 
   (thisRef) =>
-    thisRef.get('Errors/impacts', (schema) => {
+    thisRef.get('Errors/ErrorImpacts', (schema) => {
       return schema.impacts.all().models.map((model) => model.text);
     }),
 
   (thisRef) =>
-    thisRef.get('Errors/priorities', (schema) => {
+    thisRef.get('Errors/ErrorPriorities', (schema) => {
       return schema.priorities.all().models.map((model) => model.text);
     }),
 
