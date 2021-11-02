@@ -33,7 +33,6 @@ const Layout = () => {
               { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
-            profile={{ name: 'John Snow' }}
           />
           <Outlet />
         </Box>
@@ -57,7 +56,6 @@ const Layout = () => {
               { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
-            profile={{ name: 'John Snow' }}
           />
           <Outlet />
         </Box>
@@ -79,7 +77,6 @@ const Layout = () => {
               { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
-            profile={{ name: 'John Snow' }}
           />
           <Outlet />
         </Box>

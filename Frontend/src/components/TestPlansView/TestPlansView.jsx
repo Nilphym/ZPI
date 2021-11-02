@@ -8,7 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { postTestPlan, setProductId, getProductTestPlansById } from '../../redux/store';
 import TestPlanItem from './TestPlanItem';
 
-const TestPlansView = () => {
+export const TestPlansView = () => {
   const dispatch = useDispatch();
   const {
     control,
