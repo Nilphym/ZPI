@@ -1,6 +1,7 @@
 ﻿using Data.Enums;
 using Data.Models;
 using Funtest.TransferObject.Error.Requests;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Error.Responses;
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,6 @@ namespace Funtest.Services.Interfaces
         List<string> ErrorImpacts();
         List<string> ErrorPriorities();
         List<string> ErrorTypes();
+        Task<ErrorTestResponse> GetErrorTest(Guid errorId);
     }
 }
