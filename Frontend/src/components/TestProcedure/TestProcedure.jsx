@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
+import WarningIcon from '@mui/icons-material/Warning';
 import { useSelector, useDispatch } from 'react-redux';
 import TestStep from '../TestStep/TestStep';
 import {
@@ -85,101 +86,115 @@ export const TestProcedure = ({ isEditable }) => {
       ) : (
         <Box sx={{ position: 'relative', marginTop: '1.5rem' }}>
           {isEditable && !isEditing && (
-            <CreateIcon
+            <Button
+              variant="contained"
               sx={{
                 position: 'absolute',
-                top: '6vh',
-                right: '2vw',
-                border: '1px solid black',
-                borderRadius: '50%',
-                padding: '2px',
-                '&:hover': {
-                  cursor: 'pointer'
-                }
+                top: '5vh',
+                right: '2vw'
               }}
               onClick={() => setIsEditing(true)}
-            />
+              startIcon={<CreateIcon />}
+            >
+              Edit Procedure
+            </Button>
           )}
-          <Typography variant="h4" sx={{ fontSize: '1.9rem' }}>
-            Test Procedure:
+          <Typography variant="h4" sx={{ fontSize: '1.9rem', fontWeight: '700' }}>
+            Test Procedure
           </Typography>
-          <Typography
-            variant="h5"
-            sx={{ textDecoration: 'underline', marginTop: '0.625rem', marginBottom: '0.625rem' }}
-          >
-            Test Steps:
-          </Typography>
-          {testStepsIds ? (
+
+          <Box sx={{ display: 'flex' }}>
+            <Typography
+              variant="h5"
+              sx={{ textDecoration: 'underline', marginTop: '0.625rem', marginBottom: '0.625rem' }}
+            >
+              Test Steps
+            </Typography>
+            {isEditable && isEditing && (
+              <Box sx={{ marginTop: '0.2rem', marginLeft: '0.8rem' }}>
+                {!isAddingTestStep ? (
+                  <Button
+                    onClick={() => setIsAddingTestStep(true)}
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                  >
+                    Add Test Step
+                  </Button>
+                ) : (
+                  <Box component="form" onSubmit={innerHandleSubmit(addTestStep)}>
+                    <Controller
+                      shouldUnregister
+                      name={formFields.newTestStepName}
+                      control={innerControl}
+                      render={({ field }) => (
+                        <TextField
+                          id={formFields.newTestStepName}
+                          label="New test step name"
+                          type="text"
+                          error={!!errors.newTestStepName}
+                          helperText={
+                            !!errors.newTestStepName && 'Test Step field cannot be empty!'
+                          }
+                          {...field}
+                          sx={{
+                            marginTop: '0.625rem'
+                          }}
+                        />
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        height: '3.125rem',
+                        width: '7rem',
+                        margin: '0.625rem 0.625rem 1.25rem 0.625rem'
+                      }}
+                      startIcon={<AddIcon />}
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        height: '3.125rem',
+                        width: '7rem',
+                        marginTop: '0.625rem',
+                        marginBottom: '1.25rem'
+                      }}
+                      onClick={() => {
+                        setIsAddingTestStep(false);
+                        reset(defaultValues);
+                      }}
+                      startIcon={<CloseIcon />}
+                    >
+                      Close
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+
+          {testStepsIds && testStepsIds.length > 0 ? (
             testStepsIds.map((testStepId) => (
               <TestStep key={testStepId} testStepId={testStepId} isEditable={isEditing} />
             ))
           ) : (
-            <Typography>Loading Data ...</Typography>
+            <Button
+              sx={{
+                '&.Mui-disabled': {
+                  color: 'black'
+                }
+              }}
+              variant="body1"
+              startIcon={<WarningIcon />}
+              disabled
+            >
+              No Data
+            </Button>
           )}
-          {isEditable && isEditing && (
-            <Box>
-              {!isAddingTestStep ? (
-                <Button
-                  onClick={() => setIsAddingTestStep(true)}
-                  variant="outlined"
-                  sx={{
-                    marginTop: '0.625rem'
-                  }}
-                >
-                  Add Test Step
-                </Button>
-              ) : (
-                <Box component="form" onSubmit={innerHandleSubmit(addTestStep)}>
-                  <Controller
-                    shouldUnregister
-                    name={formFields.newTestStepName}
-                    control={innerControl}
-                    render={({ field }) => (
-                      <TextField
-                        id={formFields.newTestStepName}
-                        label="New test step name"
-                        type="text"
-                        error={!!errors.newTestStepName}
-                        helperText={!!errors.newTestStepName && 'Test Step field cannot be empty!'}
-                        {...field}
-                        sx={{
-                          marginTop: '0.625rem'
-                        }}
-                      />
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      margin: '0.625rem 0.625rem 1.25rem 0.625rem'
-                    }}
-                    startIcon={<AddIcon />}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      height: '3.125rem',
-                      width: '7rem',
-                      marginTop: '0.625rem',
-                      marginBottom: '1.25rem'
-                    }}
-                    onClick={() => {
-                      setIsAddingTestStep(false);
-                      reset(defaultValues);
-                    }}
-                    startIcon={<CloseIcon />}
-                  >
-                    Close
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          )}
+
           <Box>
             <Typography
               variant="h5"
@@ -189,7 +204,7 @@ export const TestProcedure = ({ isEditable }) => {
                 marginBottom: '0.625rem'
               }}
             >
-              Result:
+              Result
             </Typography>
             <Controller
               name="result"
@@ -219,8 +234,8 @@ export const TestProcedure = ({ isEditable }) => {
           </Box>
           {isEditing && (
             <Button
-              variant="outlined"
-              sx={{ marginTop: '0.625rem' }}
+              variant="contained"
+              sx={{ marginTop: '0.625rem', bgcolor: '#0077c2', fontWeight: '700', color: 'white' }}
               onClick={() => saveTestProcedure()}
             >
               Save Test Procedure

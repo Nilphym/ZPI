@@ -1,5 +1,6 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -47,6 +48,7 @@ const schema = yup.object().shape({
 
 export const RegisterPanel = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     control,
@@ -58,8 +60,9 @@ export const RegisterPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = ({ projectName, name, surname, email, password }) => {
-    dispatch(register({ projectName, name, surname, email, password }));
+  async function onSubmit({ projectName, name, surname, email, password }) {
+    await dispatch(register({ projectName, name, surname, email, password }));
+    navigate('/');
     reset(defaultValues, {
       keepIsValid: true
     });

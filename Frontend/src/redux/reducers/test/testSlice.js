@@ -121,11 +121,13 @@ export const putTestById = createAsyncThunk('test/put/ById', async (_, { getStat
   return response;
 });
 
-export const postTest = createAsyncThunk('test/post', async (testPlanId) => {
+export const postTest = createAsyncThunk('test/post', async ({testPlanId, testSuiteId, testName }) => {
   const response = await server().post({
     url: 'Tests',
     data: {
-      testPlanId
+      planTestId: testPlanId,
+      planSuiteId: testSuiteId,
+      name: testName
     }
   });
   return response;
