@@ -11,7 +11,6 @@
         android:id="@+id/bd_nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/textview_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -573,9 +572,103 @@
             <View
                 android:id="@+id/divider4"
                 android:layout_width="match_parent"
-                android:layout_marginTop="464dp"
                 android:layout_height="2dp"
+                android:layout_marginTop="464dp"
                 android:background="?android:attr/listDivider" />
+
+            /////
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="466dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/bd_textView_label_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:ellipsize="marquee"
+                        android:gravity="center_horizontal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:text="Description:"
+                        android:textColor="@color/primaryDarkColor"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            ///
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/bd_linearLayout_description"
+                android:layout_marginTop="506dp">
+
+                    <TextView
+                        android:id="@+id/bd_textView_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="left"
+                        android:text="Description:"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/bd_linearLayout_description"
+                android:background="?android:attr/listDivider" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_below="@+id/divider5">
+
+                <Button
+                    android:id="@+id/bd_button_attachments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/divider5"
+                    android:text="Attachments"
+                    />
+
+
+
+            </LinearLayout>
+
+
+
+
+
+
+
 
 
         </RelativeLayout>
@@ -588,74 +681,6 @@
 
 
 
-
-
-    <TextView
-        android:id="@+id/bd_textView_functionality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        android:text="Functionality"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/bd_textView_execs"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bd_textView_deadline" />
-
-    <TextView
-        android:id="@+id/bd_textView_execs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        android:text="Execs"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bd_textView_functionality"
-        app:layout_constraintTop_toBottomOf="@+id/bd_textView_deadline" />
-
-
-    <TextView
-        android:id="@+id/bd_textView_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:text="Description"
-        android:textColor="@color/black"
-        android:background="@drawable/textview_border"
-        android:layout_marginBottom="8dp"
-        android:padding="8dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/bd_button_attachments"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bd_textView_functionality" />
-
-    <Button
-        android:id="@+id/bd_button_attachments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginBottom="8dp"
-        android:text="Attachments"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bd_textView_description" />
         -->
 
 

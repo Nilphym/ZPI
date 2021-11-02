@@ -44,6 +44,15 @@ public class BugDetailsAttachmentsActivity extends AppCompatActivity {
         if(sourceActivityName.equals("BugDetailsActivity")){
             currentBugList = MainActivity.bugList;
         }
+        else if(sourceActivityName.equals("BugDetailsActivityToFix")){
+            currentBugList = MainActivity.bugList;
+        }
+        else if(sourceActivityName.equals("BugDetailsActivityToReview")){
+            currentBugList = MainActivity.bugList;
+        }
+        else if(sourceActivityName.equals("BugDetailsActivityMyBugs")){
+            currentBugList = MainActivity.bugList;
+        }
 
 
 

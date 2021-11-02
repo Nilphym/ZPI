@@ -27,7 +27,14 @@ RowDenseSelector.defaultProps = {
   shouldSetDense: false
 };
 
-const TableToolbar = ({ title, setGlobalFilter, globalFilter, dense, setDense }) => {
+const TableToolbar = ({
+  title,
+  setGlobalFilter,
+  globalFilter,
+  dense,
+  setDense,
+  toggleAllRowsExpanded
+}) => {
   return (
     <Toolbar
       sx={{
@@ -48,7 +55,11 @@ const TableToolbar = ({ title, setGlobalFilter, globalFilter, dense, setDense })
           alignItems: 'center'
         }}
       >
-        <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+        <GlobalFilter
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          toggleAllRowsExpanded={toggleAllRowsExpanded}
+        />
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <RowDenseSelector dense={dense} setDense={setDense} />
           <RowDenseSelector dense={dense} setDense={setDense} shouldSetDense />
@@ -63,7 +74,8 @@ TableToolbar.propTypes = {
   setGlobalFilter: PropTypes.func.isRequired,
   globalFilter: PropTypes.string,
   dense: PropTypes.bool.isRequired,
-  setDense: PropTypes.func.isRequired
+  setDense: PropTypes.func.isRequired,
+  toggleAllRowsExpanded: PropTypes.func.isRequired
 };
 
 TableToolbar.defaultProps = {

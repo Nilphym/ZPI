@@ -1,12 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import { Navbar } from './containers';
 
 const Layout = () => {
   const { token } = useSelector((state) => state.auth);
+  const { pathname } = useLocation();
+
+  if (!token && pathname === '/') {
+    return <Navigate to="login" />;
+  }
 
   switch (token?.role) {
     case 'tester':

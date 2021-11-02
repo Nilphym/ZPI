@@ -11,9 +11,9 @@ const initialState = {
 
 export const getPossibleValues = createAsyncThunk('bugs/get/values', async () => {
   const promises = [];
-  promises.push(server().get({ url: 'Errors/types' }));
-  promises.push(server().get({ url: 'Errors/impacts' }));
-  promises.push(server().get({ url: 'Errors/priorities' }));
+  promises.push(server().get({ url: 'Errors/ErrorTypes' }));
+  promises.push(server().get({ url: 'Errors/ErrorImpacts' }));
+  promises.push(server().get({ url: 'Errors/ErrorPriorities' }));
 
   const resolved = await Promise.all(promises);
 
@@ -33,9 +33,6 @@ const prepareDataForView = (rows) => {
     type: row.errorType,
     impact: row.errorImpact,
     priority: row.errorPriority,
-    // required: row.retestsRequired,
-    // done: row.retestsDone,
-    // failed: row.retestsFailed,
     retests: [row.retestsRequired, row.retestsDone, row.retestsFailed].join(' / '),
     deadline: row.deadline ? DateTime.fromISO(row.deadline).toFormat('MM/dd/yyyy') : '',
     reportDate: DateTime.fromISO(row.reportDate).toFormat('MM/dd/yyyy'),
@@ -44,7 +41,7 @@ const prepareDataForView = (rows) => {
 };
 
 export const getRows = createAsyncThunk('bugs/get/rows', async () => {
-  const data = await server().get({ url: 'Errors' });
+  const data = await server().get({ url: 'Errors/toFix' });
   return prepareDataForView(data);
 });
 
