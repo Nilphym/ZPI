@@ -5,11 +5,14 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestCase.Requests;
 using Funtest.TransferObject.TestCase.Responses;
+using Data.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class TestCasesController : ControllerBase
     {
         private readonly ITestCaseService _testCaseService;

@@ -6,11 +6,14 @@ using Funtest.TransferObject.TestProcedure.Requests;
 using Funtest.TransferObject.TestProcedure.Responses;
 using Funtest.Interfaces;
 using System.Linq;
+using Data.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class TestProceduresController : ControllerBase
     {
         private readonly ITestProcedureService _testProcedureService;

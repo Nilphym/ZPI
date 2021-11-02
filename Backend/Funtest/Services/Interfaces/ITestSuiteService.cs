@@ -11,6 +11,7 @@ namespace Funtest.Services.Interfaces
         List<GetTestSuiteResponse> GetAllTestSuites();
         Task<bool> AddTestSuite(AddTestSuiteRequest request);
         bool IsTestSuiteExist(Guid id);
+        Task<bool> EditTestSuite(Guid id, EditTestSuiteRequest request);
         Task<GetTestSuiteWithTestsResponse> GetTestSuiteWithTests(Guid id);
         List<GetTestSuiteResponse> GetTestSuiteForTestPlan(Guid testPlanId);
     }

@@ -2,14 +2,15 @@
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Product.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;

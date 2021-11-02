@@ -6,11 +6,14 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Attachment.Responses;
 using Funtest.TransferObject.Attachment.Requests;
+using Data.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class AttachmentsController : ControllerBase
     {
         private readonly IAttachmentService _attachmentService;

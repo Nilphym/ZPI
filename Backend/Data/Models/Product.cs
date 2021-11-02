@@ -18,5 +18,6 @@ namespace Data.Models
 
         public virtual ICollection<TestPlan> TestPlans { get; set; }
         public virtual ICollection<TestCase> TestCases { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }
