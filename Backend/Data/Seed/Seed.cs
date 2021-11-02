@@ -77,7 +77,7 @@ namespace Data.Seed
                         FirstName = "Jan",
                         LastName = "Kwiatkowski",
                         UserName = "kwiatkowski@workspace.com",
-                        Email = "kwaitkowski@workspace.com",
+                        Email = "kwiatkowski@workspace.com",
                     },
                     new Tester
                     {

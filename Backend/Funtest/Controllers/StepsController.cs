@@ -7,11 +7,14 @@ using System;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Steps.Requests;
 using Funtest.TransferObject.Steps.Responses;
+using Microsoft.AspNetCore.Authorization;
+using Data.Roles;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class StepsController : ControllerBase
     {
         private readonly IStepService _stepService;

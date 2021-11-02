@@ -8,6 +8,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         public readonly IAuthService _authService;
@@ -17,7 +18,6 @@ namespace Funtest.Controllers
             _authService = authService;
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {

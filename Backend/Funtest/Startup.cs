@@ -18,6 +18,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Data.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest
 {
@@ -35,6 +36,15 @@ namespace Funtest
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services
+               .AddIdentity<User, IdentityRole>(opt =>
+               {
+                   opt.Lockout.AllowedForNewUsers = false;
+               })
+               .AddSignInManager<SignInManager<User>>()
+               .AddEntityFrameworkStores<DatabaseContext>();
+
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -61,16 +71,7 @@ namespace Funtest
                    .SetIsOriginAllowed(origin => true) // allow any origin
                    .AllowCredentials());
             });
-
-            services
-               .AddIdentity<User, IdentityRole>(opt =>
-               {
-                   opt.Lockout.AllowedForNewUsers = false;
-               })
-               .AddSignInManager<SignInManager<User>>()
-               .AddEntityFrameworkStores<DatabaseContext>()
-               .AddDefaultTokenProviders();
-
+            
             services.AddMvc().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
@@ -103,28 +104,27 @@ namespace Funtest
                 });
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidAudience = Configuration["JWT:Issuer"],
+                    ValidIssuer = Configuration["JWT:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"]))
                 };
             });
-
-
-            /*services.AddAuthorization(options =>
-
-           options.AddPolicy("Role",
-           policy => policy.RequireClaim(claimType: ClaimTypes.Role, Roles.Administrator, Roles.Developer, Roles.Tester, Roles.ProjectManager)));
-        
-            */}
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -137,6 +137,7 @@ namespace Funtest
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -144,7 +145,6 @@ namespace Funtest
             {
                 endpoints.MapControllers();
             });
-
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));

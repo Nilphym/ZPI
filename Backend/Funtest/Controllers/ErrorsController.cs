@@ -12,8 +12,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = "Role")]
-    //[Authorize(Roles = Roles.Developer)]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class ErrorsController : ControllerBase
     {
         private readonly IErrorService _errorService;

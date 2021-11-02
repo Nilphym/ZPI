@@ -6,11 +6,14 @@ using Funtest.TransferObject.Test.Requests;
 using System;
 using Funtest.TransferObject.Test.Response;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Data.Roles;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class TestsController : ControllerBase
     {
         private readonly ITestService _testService;
@@ -51,7 +54,7 @@ namespace Funtest.Controllers
         {
             var isTestExist = _testService.IsTestExist(id);
             if (!isTestExist)
-                NotFound("Test with given id doesn't exist.");
+                return NotFound("Test with given id doesn't exist.");
 
             var response = await _testService.GetTestById(id);
             response.TestProcedures = _testProcedureService.GetAllTestProcedures();
