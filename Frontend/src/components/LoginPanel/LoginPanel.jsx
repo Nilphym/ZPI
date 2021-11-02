@@ -155,7 +155,7 @@ export const LoginPanel = () => {
           </Button>
           <Box>
             <Typography>{`Have you forgot you password? ${' '}`}</Typography>
-            <StyledLink to="#!">Reset password</StyledLink>
+            <StyledLink to="/resetPassword">Reset password</StyledLink>
           </Box>
         </Box>
       </Box>

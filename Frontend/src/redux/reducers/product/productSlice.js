@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-alert */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
 
 import server from '../../../services/server';
 
@@ -10,11 +13,37 @@ const initialState = {
   creationDate: '',
   version: '',
   testPlans: [],
-  isLoading: true
+  users: [],
+  isLoading: true,
+  isLoadingUsers: true
 };
 
+// ----------------------------------------- Users API
+export const getUsers = createAsyncThunk('users/get', async (_, {
+  getState
+}) => {
+  const response = await server().get({
+    url: `Product/${getState().product.productId}`
+  });
+  return response;
+});
+
+export const deleteUser = createAsyncThunk('user/delete', async ({
+  userId
+}, {
+  getState
+}) => {
+  const response = await server().delete({
+    url: `Users/${userId}`
+  });
+  return response;
+});
+
+
 // ----------------------------------------- Product API
-export const getProductById = createAsyncThunk('product/get/byId', async (_, { getState }) => {
+export const getProductById = createAsyncThunk('product/get/byId', async (_, {
+  getState
+}) => {
   const response = await server().get({
     url: `Product/${getState().product.productId}`
   });
@@ -23,7 +52,9 @@ export const getProductById = createAsyncThunk('product/get/byId', async (_, { g
 
 export const getProductTestPlansById = createAsyncThunk(
   'product/testPlans/get/byId',
-  async (_, { getState }) => {
+  async (_, {
+    getState
+  }) => {
     const response = await server().get({
       url: `Product/${getState().product.productId}/TestPlans`
     });
@@ -31,7 +62,9 @@ export const getProductTestPlansById = createAsyncThunk(
   }
 );
 
-export const putProductById = createAsyncThunk('product/put/byId', async (_, { getState }) => {
+export const putProductById = createAsyncThunk('product/put/byId', async (_, {
+  getState
+}) => {
   const response = await server().put({
     url: `products/${getState().product.productId}`,
     data: {
@@ -54,7 +87,9 @@ export const postProduct = createAsyncThunk('product/post', async (productName) 
 // ----------------------------------------- Test Plan API
 export const postTestPlan = createAsyncThunk(
   'testPlan/post',
-  async (testPlanName, { getState }) => {
+  async (testPlanName, {
+    getState
+  }) => {
     const response = await server().post({
       url: `${getState().product.productId}/TestPlans`,
       data: {
@@ -79,7 +114,12 @@ export const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getProductById.fulfilled, (state, action) => {
-        const { id, name, creationDate, version } = action.payload;
+        const {
+          id,
+          name,
+          creationDate,
+          version
+        } = action.payload;
         state.productId = id;
         state.productName = name;
         state.creationDate = creationDate;
@@ -112,9 +152,25 @@ export const productSlice = createSlice({
       })
       .addCase(postTestPlan.rejected, (_, action) => {
         alert(action.error.message);
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.users = action.payload.users;
+      })
+      .addCase(getUsers.rejected, (_, action) => {
+        alert(action.error.message);
+
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        alert('User deleted');
+      })
+      .addCase(deleteUser.rejected, (_, action) => {
+        alert(action.error.message);
+
       });
   }
 });
 
-export const { setProductId } = productSlice.actions;
+export const {
+  setProductId
+} = productSlice.actions;
 export default productSlice.reducer;
