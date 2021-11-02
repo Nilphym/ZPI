@@ -7,6 +7,7 @@ using Funtest.TransferObject.Error.Responses;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
+using Funtest.Interfaces;
 
 namespace Funtest.Controllers
 {
@@ -18,12 +19,14 @@ namespace Funtest.Controllers
         private readonly IErrorService _errorService;
         private readonly IUserService _userService;
         private readonly ITestService _testService;
+        private readonly IStepService _stepService; 
 
-        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService)
+        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService, IStepService stepService)
         {
             _errorService = errorService;
             _userService = userService;
             _testService = testService;
+            _stepService = stepService;
         }
 
         [HttpPost]
@@ -35,6 +38,9 @@ namespace Funtest.Controllers
             var test = await _testService.FindTest(request.TestId);
             if (test == null)
                 return NotFound("Test with given id doesn't exist.");
+
+            if (!_stepService.IsStepExist(request.StepId))
+                return NotFound("Step with given id doesn't exist.");
 
             var result = await _errorService.AddError(request, test.TestSuite.Category);
             if (result)
