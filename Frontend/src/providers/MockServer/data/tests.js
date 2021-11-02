@@ -116,8 +116,8 @@ const routes = [
     } = JSON.parse(request.requestBody);
 
     const newTestSuite = {
-      testSuiteId: newTestSuiteId,
-      testSuite: newTestSuiteName
+      id: newTestSuiteId,
+      category: newTestSuiteName
     };
 
     const {
@@ -240,7 +240,8 @@ const routes = [
   thisRef.post('Tests', (schema, request) => {
     const newTestId = Math.floor(Math.random() * 10000);
     const {
-      planTestId: testPlanId, planSuiteId, name
+      // eslint-disable-next-line no-unused-vars
+      planTestId: testPlanId, planSuiteId: testSuiteId, name
     } = JSON.parse(request.requestBody);
     const {
       testsIds

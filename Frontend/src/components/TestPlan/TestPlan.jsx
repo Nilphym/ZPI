@@ -49,6 +49,7 @@ export const TestPlan = ({ isEditable }) => {
   async function saveTestPlan() {
     setIsEditing(false);
     setIsAddingTestSuite(false);
+    dispatch(setLoading({ isLoading: true }));
     await dispatch(putTestPlanById());
     await dispatch(getTestPlanById());
   }
@@ -56,6 +57,7 @@ export const TestPlan = ({ isEditable }) => {
   async function addTestSuite({ newTestSuite }) {
     setIsAddingTestSuite(false);
     dispatch(postTestSuite(newTestSuite));
+    dispatch(setLoading({ isLoading: true }));
     await dispatch(getTestPlanById());
   }
 
@@ -163,7 +165,7 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '23%'
+                  left: '17%'
                 }}
                 startIcon={<AddIcon />}
               >
@@ -175,7 +177,7 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '35%'
+                  left: '26%'
                 }}
                 startIcon={<CloseIcon />}
                 onClick={() => setIsAddingTestSuite(false)}
@@ -185,21 +187,20 @@ export const TestPlan = ({ isEditable }) => {
               </Button>
             </Box>
           )}
+          {isEditing && (
+            <Button variant="contained"
+              onClick={() => saveTestPlan()}
+              sx={{
+                marginTop: '1.5rem',
+                marginBottom: '1.5rem',
+                bgcolor: '#0077c2',
+                fontWeight: '700',
+                color: 'white'
+              }}>
+              Save Test Plan
+            </Button>
+          )}
         </Box>
-      )}
-
-      {isEditing && (
-        <Button variant="contained"
-          onClick={() => saveTestPlan()}
-          sx={{
-            marginTop: '1.5rem',
-            marginBottom: '1.5rem',
-            bgcolor: '#0077c2',
-            fontWeight: '700',
-            color: 'white'
-          }}>
-          Save Test Plan
-        </Button>
       )}
     </Box>
   );
