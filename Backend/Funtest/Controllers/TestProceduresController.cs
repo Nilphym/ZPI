@@ -15,10 +15,12 @@ namespace Funtest.Controllers
     {
         private readonly ITestProcedureService _testProcedureService;
         private readonly IStepService _stepService;
+        private readonly ITestService _testService;
 
-        public TestProceduresController(ITestProcedureService testProcedureService, IStepService stepService)
+        public TestProceduresController(ITestProcedureService testProcedureService, IStepService stepService, ITestService testService)
         {
             _testProcedureService = testProcedureService;
+            _testService = testService;
             _stepService = stepService;
         }
 
@@ -53,8 +55,11 @@ namespace Funtest.Controllers
             if (!isExist)
                 return NotFound("Object with the given id doesn't exist.");
 
-            var result = await _testProcedureService.EditTestProcedure(id, request);
+            var testExecutionCounter = await _testService.GetExecutionCounterForTest(request.TestId);
+            if (testExecutionCounter > 0)
+                return Conflict("Test procedura can't be modified.");
 
+            var result = await _testProcedureService.EditTestProcedure(id, request);
             if (result)
                 return Ok();
             return Problem("Problem with saving an object in the database");

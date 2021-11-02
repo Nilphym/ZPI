@@ -17,6 +17,7 @@ namespace Data
         public DbSet<Step> Steps { get; set; }
         public DbSet<Error> Errors { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -41,7 +42,7 @@ namespace Data
               .HasForeignKey(p => p.TestProcedureId)
               .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Seed();
+            // builder.Seed();
         }
     }
 }

@@ -30,7 +30,11 @@ namespace Data.Models
         {
                 EntryData = value == null ? "{}" : value.ToString();
             }
-        } 
+        }
+
+        [ForeignKey("ProductId")]
+        public virtual Product Product { get; set; }
+        public Guid ProductId { get; set; }
 
         public virtual ICollection<Test> Tests { get; set; }
 

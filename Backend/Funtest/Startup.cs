@@ -15,7 +15,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Data.Roles;
 
 namespace Funtest
 {
@@ -28,19 +30,14 @@ namespace Funtest
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //po³¹czenie z baz¹ danych
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            //po³¹czenie automapera
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-            //rejestracja DI
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IJWTService, JWTService>();
             services.AddTransient<IUserService, UserService>();
@@ -52,22 +49,59 @@ namespace Funtest
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ITestSuiteService, TestSuiteService>();
+            services.AddTransient<IAttachmentService, AttachmentService>();
+            services.AddTransient<ITestPlanService, TestPlanService>();
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("funtest");
-                    });
+                options.AddPolicy("CorsPolicy",
+                builder => builder
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .SetIsOriginAllowed(origin => true) // allow any origin
+                   .AllowCredentials());
             });
 
-            services.AddIdentity<User, IdentityRole>(opt =>
+            services
+               .AddIdentity<User, IdentityRole>(opt =>
+               {
+                   opt.Lockout.AllowedForNewUsers = false;
+               })
+               .AddSignInManager<SignInManager<User>>()
+               .AddEntityFrameworkStores<DatabaseContext>()
+               .AddDefaultTokenProviders();
+
+            services.AddMvc().AddNewtonsoftJson();
+
+            services.AddSwaggerGen(c =>
             {
-                opt.Lockout.AllowedForNewUsers = false;
-            })
-                .AddSignInManager<SignInManager<User>>()
-                .AddEntityFrameworkStores<DatabaseContext>();
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
+            });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -84,56 +118,36 @@ namespace Funtest
                 };
             });
 
-              services.AddAuthorization(options =>
-            {
-                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-                    JwtBearerDefaults.AuthenticationScheme);
 
-                defaultAuthorizationPolicyBuilder =
-                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+            /*services.AddAuthorization(options =>
 
-                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-            }); 
+           options.AddPolicy("Role",
+           policy => policy.RequireClaim(claimType: ClaimTypes.Role, Roles.Administrator, Roles.Developer, Roles.Tester, Roles.ProjectManager)));
+        
+            */}
 
-            services.AddMvc().AddNewtonsoftJson();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization.",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-            });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
             }
 
-            app.UseRouting();
-            app.UseCors(x => x
-                       .AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader());
+            app.UseCors("CorsPolicy");
 
+            app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHttpsRedirection();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
         }
     }
 }

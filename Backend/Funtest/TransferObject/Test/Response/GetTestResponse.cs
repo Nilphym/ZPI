@@ -12,17 +12,15 @@ namespace Funtest.TransferObject.Test.Response
 
         public DateTime CreationDate { get; set; }
 
-        public int Version { get; set; }
-
         public int ExecutionCounter { get; set; }
 
         public string Name { get; set; }
 
-        public Data.Models.TestSuite SelectedTestSuite { get; set; }
+        public Data.Models.TestSuite TestSuite { get; set; }
 
-        public Data.Models.TestProcedure SelectedTestProcedure { get; set; }
+        public Data.Models.TestProcedure TestProcedure { get; set; }
 
-        public Data.Models.TestCase SelectedTestCase { get; set; }
+        public Data.Models.TestCase TestCase { get; set; }
 
         public List<GetTestSuiteResponse> TestSuites { get; set; }
 

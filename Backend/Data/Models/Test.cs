@@ -14,8 +14,6 @@ namespace Data.Models
 
         [Required]
         public string Name { get; set; }
-        public int Version { get; set; }
-
         public int ExecutionCounter { get; set; }
 
         [ForeignKey("TestSuiteId")]

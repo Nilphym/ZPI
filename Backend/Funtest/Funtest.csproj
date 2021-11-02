@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <AllowUntrustedCertificate>True</AllowUntrustedCertificate>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,9 +40,8 @@
 
   <ItemGroup>
     <Folder Include="TransferObject\Admin\Responses\" />
-    <Folder Include="TransferObject\Attachment\Responses\" />
+    <Folder Include="TransferObject\Email\Responses\" />
     <Folder Include="TransferObject\Product\Responses\" />
-    <Folder Include="TransferObject\TestSuite\Requests\" />
   </ItemGroup>
 
 </Project>

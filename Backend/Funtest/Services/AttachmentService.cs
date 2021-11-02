@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Attachment.Requests;
+using Funtest.TransferObject.Attachment.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace Funtest.Services
@@ -18,11 +19,43 @@ namespace Funtest.Services
             _mapper = mapper;
         }
 
-        public Task<bool> AddNewAttachment(AddAttachmentRequest request)
+        public async Task<bool> AddNewAttachment(AddAttachmentRequest request)
         {
-            //_mapper.Map<Attachment>()
-            throw new NotImplementedException();
+            var attachment = _mapper.Map<Attachment>(request);
+            attachment.IsDeleted = false;
+            await Context.Attachments.AddAsync(attachment);
 
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAttachment(Guid id)
+        {
+            var attachment = await Context.Attachments.FindAsync(id);
+            if (attachment == null)
+                return false;
+
+            attachment.IsDeleted = true;
+
+            Context.Attachments.Update(attachment);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+
+            return true;
+        }
+
+        public async Task<GetAttachmentResponse> GetAttachment(Guid id)
+        {
+            return _mapper.Map<GetAttachmentResponse>(await Context.Attachments.FindAsync(id));
+        }
+
+        public List<GetAttachmentResponse> GetAttachmentForError(Guid errorId)
+        {
+            var errors = Context.Attachments.Where(x => x.ErrorId == errorId).ToList();
+            return errors.Select(x => _mapper.Map<GetAttachmentResponse>(x)).ToList();
         }
     }
 }

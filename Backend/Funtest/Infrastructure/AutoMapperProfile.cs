@@ -2,6 +2,8 @@
 using Data.Models;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Attachment.Requests;
+using Funtest.TransferObject.Attachment.Responses;
+using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
@@ -10,8 +12,11 @@ using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using Funtest.TransferObject.TestCase.Requests;
 using Funtest.TransferObject.TestCase.Responses;
+using Funtest.TransferObject.TestPlan.Requests;
+using Funtest.TransferObject.TestPlan.Responses;
 using Funtest.TransferObject.TestProcedure.Requests;
 using Funtest.TransferObject.TestProcedure.Responses;
+using Funtest.TransferObject.TestSuite.Requests;
 using Funtest.TransferObject.TestSuite.Responses;
 
 namespace Funtest.Infrastructure
@@ -41,18 +46,29 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla TestSuite
             CreateMap<TestSuite, GetTestSuiteResponse>();
+            CreateMap<TestSuite, GetTestSuiteWithTestsResponse>();
+            CreateMap<AddTestSuiteRequest, TestSuite>();
+
+            //Mapowania dla Test Planów
+            CreateMap<AddTestPlanRequest, TestPlan>();
+            CreateMap<TestPlan, GetTestPlanWithTestSuitesAndTestsResponse>();
+            CreateMap<TestPlan, GetTestPlanIdentityValueResponse>();
 
             //Mapowanie dla Błędów
             CreateMap<Error, GetErrorResponse>();
+            CreateMap<AddErrorRequest, Error>();
 
             //Mapowani dla testu
             CreateMap<Test, GetTestResponse>();
+            CreateMap<Test, GetTestIdentityInformationResponse>();
+            CreateMap<Test, GetTestBasicInformationResponse>();
 
             //Mapowanie dla Usera
             CreateMap<AddProjectManageRequest, User>();
 
             //Mapowanie dla Załącznika
             CreateMap<AddAttachmentRequest, Attachment>();
+            CreateMap<Attachment, GetAttachmentResponse>();
         }
     }
 }

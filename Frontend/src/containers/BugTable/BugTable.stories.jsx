@@ -12,8 +12,8 @@ const Template = (args) => <BugTable {...args} />;
 export const ToReview = Template.bind({});
 ToReview.args = { type: bugTableTypes.toReview };
 
-export const ToFix = Template.bind({});
-ToFix.args = { type: bugTableTypes.toFix };
+export const Active = Template.bind({});
+Active.args = { type: bugTableTypes.active };
 
-export const MyBugs = Template.bind({});
-MyBugs.args = { type: bugTableTypes.myBugs };
+export const Assigned = Template.bind({});
+Assigned.args = { type: bugTableTypes.assigned };
