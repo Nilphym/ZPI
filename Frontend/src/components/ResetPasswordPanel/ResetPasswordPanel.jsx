@@ -8,7 +8,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import logo from '../../assets/logo/logo2.png';
-import { register } from '../../redux/store';
+// import { ResetPassword } from '../../redux/store';
 
 const Logo = styled('img')({
   width: '12.5rem',
@@ -20,33 +20,24 @@ const Logo = styled('img')({
 });
 
 const formFields = {
-  projectName: 'projectName',
   email: 'email',
-  name: 'name',
-  surname: 'surname',
   password: 'password',
   repeatPassword: 'repeatPassword'
 };
 
 const defaultValues = {
-  [formFields.projectName]: '',
   [formFields.email]: '',
-  [formFields.name]: '',
-  [formFields.surname]: '',
   [formFields.password]: '',
   [formFields.repeatPassword]: ''
 };
 
 const schema = yup.object().shape({
-  [formFields.projectName]: yup.string().required(),
   [formFields.email]: yup.string().email().required(),
-  [formFields.name]: yup.string().required(),
-  [formFields.surname]: yup.string().required(),
   [formFields.password]: yup.string().required().min(6),
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-export const RegisterPanel = () => {
+export const ResetPasswordPanel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -61,7 +52,7 @@ export const RegisterPanel = () => {
   });
 
   async function onSubmit({ projectName, name, surname, email, password }) {
-    await dispatch(register({ projectName, name, surname, email, password }));
+    // await dispatch(ResetPassword({ projectName, name, surname, email, password }));
     navigate('/');
     reset(defaultValues, {
       keepIsValid: true
@@ -93,7 +84,7 @@ export const RegisterPanel = () => {
         }}
       >
         <Typography align="center" variant="h2" gutterBottom component="div">
-          Register Panel
+          Reset Password
         </Typography>
         <Box
           component="form"
@@ -103,24 +94,7 @@ export const RegisterPanel = () => {
             flexDirection: 'column'
           }}
         >
-          <Controller
-            name="projectName"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                id="projectName"
-                label="Project Name"
-                type="text"
-                error={!!errors.projectName}
-                helperText={!!errors.projectName && 'Project Name field cannot be empty!'}
-                {...field}
-                sx={{
-                  marginTop: '0.625rem'
-                }}
-              />
-            )}
-          />
+
           <Controller
             name="email"
             control={control}
@@ -140,49 +114,13 @@ export const RegisterPanel = () => {
             )}
           />
           <Controller
-            name="name"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                id="name"
-                label="Name"
-                type="text"
-                error={!!errors.name}
-                helperText={!!errors.name && 'Name field cannot be empty!'}
-                {...field}
-                sx={{
-                  marginTop: '0.625rem'
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="surname"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                id="surname"
-                label="Surname"
-                type="text"
-                error={!!errors.surname}
-                helperText={!!errors.surname && 'Surname field cannot be empty!'}
-                {...field}
-                sx={{
-                  marginTop: '0.625rem'
-                }}
-              />
-            )}
-          />
-          <Controller
             name="password"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
                 id="password"
-                label="Password"
+                label="New Password"
                 type="password"
                 error={!!errors.password}
                 helperText={
@@ -203,7 +141,7 @@ export const RegisterPanel = () => {
             render={({ field }) => (
               <TextField
                 id="repeatPassword"
-                label="Repeat Password"
+                label="Repeat New Password"
                 type="password"
                 error={!!errors.repeatPassword || !!errors.password}
                 helperText={
@@ -224,7 +162,7 @@ export const RegisterPanel = () => {
               marginTop: '0.625rem'
             }}
           >
-            Register
+            Reset
           </Button>
         </Box>
       </Box>
@@ -232,4 +170,4 @@ export const RegisterPanel = () => {
   );
 };
 
-export default RegisterPanel;
+export default ResetPasswordPanel;

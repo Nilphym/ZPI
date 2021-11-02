@@ -1,32 +1,44 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
 
 import authService from '../../../services/auth';
+import server from '../../../services/server';
 
 const token = authService.getDecodedToken();
-const initialState = token
-  ? {
-      isLoggedIn: true,
-      token
-    }
-  : {
-      isLoggedIn: false,
-      token: null
-    };
+const initialState = token ? {
+  isLoggedIn: true,
+  token
+} : {
+  isLoggedIn: false,
+  token: null
+};
 
-export const register = createAsyncThunk(
-  'auth/register',
-  async ({ projectName, name, surname, email, password }) => {
-    return authService.register({
-      projectName,
-      name,
-      surname,
+export const register = createAsyncThunk('auth/register', async ({
+  projectName,
+  name,
+  surname,
+  email,
+  password
+}) => {
+  const response = await server().post({
+    url: 'Products',
+    data: ({
+      name: projectName,
+      firstName: name,
+      lastName: surname,
       email,
       password
-    });
-  }
-);
+    })
+  });
+  return response;
+});
 
-export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
+export const login = createAsyncThunk('auth/login', async ({
+  username,
+  password
+}) => {
   const data = await authService.login({
     username,
     password
@@ -65,5 +77,7 @@ export const authSlice = createSlice({
   }
 });
 
-export const { logout } = authSlice.actions;
+export const {
+  logout
+} = authSlice.actions;
 export default authSlice.reducer;
