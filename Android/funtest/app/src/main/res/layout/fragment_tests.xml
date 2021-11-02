@@ -6,10 +6,11 @@
     android:layout_marginTop="?actionBarSize"
     tools:context=".fragments.TestsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tpl_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Tests fragment loaded" />
+        android:background="@color/white" />
+
 
 </FrameLayout>

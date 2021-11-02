@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box, TextField} from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
-
-const TableItem = ({ name, row, column, control, disabled }) => {
+const TableItem = ({ name, row, column, control, disabled, defaultValue }) => {
   return (
     <Box
       sx={{
@@ -17,6 +16,7 @@ const TableItem = ({ name, row, column, control, disabled }) => {
         shouldUnregister
         name={`${name}-${row}-${column}`}
         control={control}
+        defaultValue={defaultValue}
         render={({ field }) =>
           row === 0 && column === 0 ? (
             <TextField
@@ -49,7 +49,8 @@ TableItem.propTypes = {
   row: PropTypes.number.isRequired,
   column: PropTypes.number.isRequired,
   control: PropTypes.object.isRequired,
-  disabled: PropTypes.bool.isRequired
+  disabled: PropTypes.bool.isRequired,
+  defaultValue: PropTypes.string.isRequired
 };
 
 export default TableItem;

@@ -3,11 +3,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
-// import PropTypes from 'prop-types';
-import axios from 'axios';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import logo from '../../assets/logo/logo2.png';
+import { register } from '../../redux/store';
 
 const Logo = styled('img')({
   width: '12.5rem',
@@ -45,7 +45,9 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-const RegisterPanel = () => {
+export const RegisterPanel = () => {
+  const dispatch = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -56,17 +58,8 @@ const RegisterPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = (data) => {
-    try {
-      axios({
-        method: 'POST',
-        url: '/api/auth/register',
-        data
-      });
-    } catch (err) {
-      console.error(err.status);
-    }
-    console.log(data);
+  const onSubmit = ({ projectName, name, surname, email, password }) => {
+    dispatch(register({ projectName, name, surname, email, password }));
     reset(defaultValues, {
       keepIsValid: true
     });

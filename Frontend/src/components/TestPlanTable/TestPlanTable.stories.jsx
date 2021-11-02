@@ -3,7 +3,7 @@ import React from 'react';
 import TestPlanTable from './TestPlanTable';
 
 export default {
-  title: 'Test Plan Table',
+  title: 'Nilphym/Test Plan Table',
   component: TestPlanTable
 };
 

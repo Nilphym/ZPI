@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,7 +19,7 @@ const schema = yup.object().shape({
   [formFields.email]: yup.string().email().required()
 });
 
-const InviteUserToProjectPanel = () => {
+export const InviteUserToProjectPanel = () => {
   const {
     control,
     handleSubmit,

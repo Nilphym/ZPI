@@ -1,24 +1,23 @@
-import { Box, Typography, Button } from '@mui/material';
+/* eslint-disable no-console */
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/system';
 // import axios from 'axios';
-import React, { useEffect } from 'react';
 
- const StyledLink = styled(Link)({
-   color: 'blue',
-   textDecoration: 'none',
-   position: 'absolute',
-   right: '12rem',
-   top: '60%',
-   '&:visited, &:focus, &:hover, &:active': {
-     color: 'blue'
-   }
- });
+const StyledLink = styled(Link)({
+  color: 'blue',
+  textDecoration: 'none',
+  position: 'absolute',
+  right: '12rem',
+  top: '60%',
+  '&:visited, &:focus, &:hover, &:active': {
+    color: 'blue'
+  }
+});
 
-
-const WelcomeUserToProjectPanel = ({ user, projectName }) => {
-  
+export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
   useEffect(() => {
     console.log("Loading user's data");
     // TODO: Linking with Reducer
@@ -58,10 +57,12 @@ const WelcomeUserToProjectPanel = ({ user, projectName }) => {
       >
         Please, remember your data!
       </Typography>
-      <Box sx={{
-        position: 'relative',
-        height: '6.25rem'
-      }}>
+      <Box
+        sx={{
+          position: 'relative',
+          height: '6.25rem'
+        }}
+      >
         <StyledLink to="#!">
           <Button
             variant="contained"
@@ -82,6 +83,5 @@ WelcomeUserToProjectPanel.propTypes = {
   user: PropTypes.object.isRequired,
   projectName: PropTypes.string.isRequired
 };
-
 
 export default WelcomeUserToProjectPanel;

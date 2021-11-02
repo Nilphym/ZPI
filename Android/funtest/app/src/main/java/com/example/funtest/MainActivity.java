@@ -12,8 +12,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -21,11 +26,17 @@ import com.example.funtest.fragments.BugsFragment;
 import com.example.funtest.fragments.DashboardFragment;
 import com.example.funtest.fragments.TestsFragment;
 import com.example.funtest.objects.Bug;
+import com.example.funtest.objects.TestPlan;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DashboardFragment.onDashboardFragmentButtonSelected {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DashboardFragment.onDashboardFragmentButtonSelected, BugsFragment.onBugsFragmentButtonSelected {
 
     //Navigation Drawer
     DrawerLayout drawerLayout;
@@ -41,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //item lists
     public static ArrayList<Bug> bugList;
+    public static ArrayList<TestPlan> testPlanList;
 
 
 
@@ -74,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //DASHBOARD get user stats / If PM: get project stats
 
         //TESTS get public data
+        getTestPlanList();
 
         //BUGS get public data
         getBugList();
@@ -83,15 +96,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void getTestPlanList() {
+        MainActivity.testPlanList = new ArrayList<>();
+
+        MainActivity.testPlanList.add(new TestPlan(1,"Test Plan 1", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(2,"Test Plan 2", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(3,"Test Plan 3", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(4,"Test Plan 4", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan(5,"Test Plan 5", new ArrayList<>()));
+
+    }
+
     //fetching public bug list from API
     private void getBugList() {
         //CURRENTLY ADDING STATIC DATA
         MainActivity.bugList = new ArrayList<>();
-        MainActivity.bugList.add(new Bug("E-12323","Not responding","New","Login","Functional","High","High","1/1/1","12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim."));
-        MainActivity.bugList.add(new Bug("E-12324","Table not visible","New","Register","Functional","Medium","Low","1/1/1","12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim."));
-        MainActivity.bugList.add(new Bug("E-12325","Button not responding","New","Add to basket","Functional","High","Medium","1/1/1","12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim."));
-        MainActivity.bugList.add(new Bug("E-12326","Screen Freezes","New","Refresh page","Functional","Low","Low","1/1/1","12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim."));
-        MainActivity.bugList.add(new Bug("E-12327","Screen not responding","New","Refresh page","Functional","Low","Low","1/1/1","12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim."));
+
+
+        ArrayList<String> attachments1 = new ArrayList<>();
+        ArrayList<String> attachments2 = new ArrayList<>();
+        ArrayList<String> attachments3 = new ArrayList<>();
+        ArrayList<String> attachments4 = new ArrayList<>();
+        ArrayList<String> attachments5 = new ArrayList<>();
+
+        MainActivity.bugList.add(new Bug("E-12323","Not responding","New","Login","Functional","High","High",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.", attachments1));
+        MainActivity.bugList.add(new Bug("E-12324","Table not visible","New","Register","Functional","Medium","Low",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments2));
+        MainActivity.bugList.add(new Bug("E-12325","Button not respondingAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","New","Add to basket","Functional","High","Medium",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments3));
+        MainActivity.bugList.add(new Bug("E-12326","Screen Freezes","New","Refresh page","Functional","Low","Low",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments4));
+        MainActivity.bugList.add(new Bug("E-12327","Screen not responding","New","Refresh page","Functional","Low","Low",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments5));
         //
     }
 
@@ -144,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if(item.getItemId() == R.id.menu_item_logout){
+            finish();
 
         }
         return true;
@@ -153,6 +186,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onDasboardButtonSelected() {
         Toast.makeText(getApplicationContext(), "PM Reports Button", Toast.LENGTH_SHORT).show();
 
+    }
+
+    //BUGS FRAGMENT ACTIONS REACTIONS
+    @Override
+    public void onButtonSelectedMyBugs() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityMyBugs.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onButtonSelectedToFix() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityToFix.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onButtonSelectedToReview() {
+        Intent intent = new Intent(getApplicationContext(), BugActivityToReview.class);
+        //intent.putExtra("sourceActivityName","BugDetailsActivity");
+        startActivity(intent);
     }
     ////////////////////////////
 }

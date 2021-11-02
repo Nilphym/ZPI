@@ -1,7 +1,7 @@
+import React from 'react';
 import { Box, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
-import React from 'react';
 
 const StyledLink = styled(Link)({
   color: 'blue',
