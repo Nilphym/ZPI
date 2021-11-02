@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './Layout';
 import { RequireAuth } from './providers';
 import { Logout } from './containers';
-import { LoginPanel, TestPlan, Test, RegisterPanel, ResetPasswordPanel } from './components';
+import { LoginPanel, TestPlan, Test, RegisterPanel, ResetPasswordPanel, ChangeUserDataPanel } from './components';
 import { NoMatch, AllBugsPage, AssignedBugsPage, ActiveBugsPage } from './pages';
 
 const App = () => {
@@ -15,6 +15,7 @@ const App = () => {
         <Route path="logout" element={<Logout />} />
         <Route path="register" element={<RegisterPanel />} />
         <Route path="resetPassword" element={<ResetPasswordPanel />} />
+        <Route path="changeUserData" element={<ChangeUserDataPanel />} />
         <Route path="bugs" element={<AllBugsPage />} />
         <Route path="bugs/assigned" element={<AssignedBugsPage />} />
         <Route path="bugs/active" element={<ActiveBugsPage />} />

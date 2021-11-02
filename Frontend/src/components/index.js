@@ -3,6 +3,7 @@ export * from './EditableTextField/EditableTextField';
 export * from './LoginPanel/LoginPanel';
 export * from './RegisterPanel/RegisterPanel';
 export * from './ResetPasswordPanel/ResetPasswordPanel';
+export * from './ChangeUserDataPanel/ChangeUserDataPanel';
 export * from './RegisterToProjectPanel/InviteUserToProjectPanel';
 export * from './RegisterToProjectPanel/RegisterToProjectPanel';
 export * from './RegisterToProjectPanel/WelcomeUserToProjectPanel';

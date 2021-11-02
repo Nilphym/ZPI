@@ -8,15 +8,15 @@ import { changeUserName, changeUserSurname, changeUserPasswordById } from '../..
 
 
 const schemaName = yup.object().shape({
-  name: yup.string().isRequired()
+  name: yup.string().required()
 });
 
 const schemaSurname = yup.object().shape({
-  surname: yup.string().isRequired()
+  surname: yup.string().required()
 });
 
 const schemaPassword = yup.object().shape({
-  password: yup.string().isRequired().min(6),
+  password: yup.string().required().min(6),
   repeatPassword: yup.string().oneOf([yup.ref('password'), null])
 });
 
@@ -27,7 +27,8 @@ export const ChangeUserDataPanel = () => {
     control: controlName,
     handleSubmit: handleSubmitName,
     reset: resetName,
-    formState: { errors: errorsName }
+    formState: { errors: errorsName },
+    getValues
   } = useForm({
     resolver: yupResolver(schemaName)
   });
@@ -50,42 +51,52 @@ export const ChangeUserDataPanel = () => {
     resolver: yupResolver(schemaPassword)
   });
 
-  async function onSubmitName({ name }) {
-    await dispatch(changeUserName({ name }));
+  function onSubmitName({ name }) {
+    dispatch(changeUserName({ name }));
     resetName({ name: '' }, {
       keepIsValid: true
     });
-
+    console.log(getValues());
   };
-  async function onSubmitSurname({ surname }) {
-    await dispatch(changeUserSurname({ surname }));
+
+  function onSubmitSurname({ surname }) {
+    dispatch(changeUserSurname({ surname }));
     resetSurname({ surname: '' }, {
       keepIsValid: true
     });
 
   };
-  async function onSubmitPassword({ password }) {
-    await dispatch(changeUserPasswordById({ password }));
+  function onSubmitPassword({ password }) {
+    dispatch(changeUserPasswordById({ password }));
     resetPassword({ password: '', repeatPassword: '' }, {
       keepIsValid: true
     });
   };
 
   return (
-    <Box>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <Typography align="center" variant="h2" gutterBottom component="div" sx={{
+        position: 'absolute',
+        top: '5%',
+        left: '50%',
+        transform: 'translateX(-50%)'
+      }}>
+        Change User Data
+      </Typography>
       <Box
         sx={{
           position: 'absolute',
-          top: '23%',
+          top: '18%',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
           flexDirection: 'column'
         }}
       >
-        <Typography align="center" variant="h2" gutterBottom component="div">
-          Change User Data
-        </Typography>
+
         <Box
           component="form"
           onSubmit={handleSubmitName(onSubmitName)}
@@ -112,8 +123,6 @@ export const ChangeUserDataPanel = () => {
               />
             )}
           />
-
-
           <Button
             type="submit"
             variant="contained"
@@ -122,17 +131,20 @@ export const ChangeUserDataPanel = () => {
               marginTop: '0.625rem'
             }}
           >
-            Change Data
+            Change Name
           </Button>
         </Box>
       </Box>
-      <Box
+      <Box sx={{
+        position: 'absolute',
+        top: '40%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
         component="form"
         onSubmit={handleSubmitSurname(onSubmitSurname)}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column'
-        }}
       >
         <Controller
           name="surname"
@@ -161,13 +173,17 @@ export const ChangeUserDataPanel = () => {
             marginTop: '0.625rem'
           }}
         >
-          Change Data
+          Change Surname
         </Button>
       </Box>
       <Box
         component="form"
         onSubmit={handleSubmitPassword(onSubmitPassword)}
         sx={{
+          position: 'absolute',
+          top: '63%',
+          left: '50%',
+          transform: 'translateX(-50%)',
           display: 'flex',
           flexDirection: 'column'
         }}
@@ -221,7 +237,7 @@ export const ChangeUserDataPanel = () => {
             marginTop: '0.625rem'
           }}
         >
-          Change Data
+          Change Password
         </Button>
       </Box>
     </Box>
