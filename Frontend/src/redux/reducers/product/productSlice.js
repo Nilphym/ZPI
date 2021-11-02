@@ -30,8 +30,6 @@ export const getUsers = createAsyncThunk('users/get', async (_, {
 
 export const deleteUser = createAsyncThunk('user/delete', async ({
   userId
-}, {
-  getState
 }) => {
   const response = await server().delete({
     url: `Users/${userId}`
@@ -109,6 +107,9 @@ export const productSlice = createSlice({
     },
     setProductName: (state, action) => {
       state.productName = action.payload.productName;
+    },
+    setIsLoadingUsers: (state, action) => {
+      state.isLoadingUsers = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -171,6 +172,8 @@ export const productSlice = createSlice({
 });
 
 export const {
-  setProductId
+  setProductId,
+  setProductName,
+  setIsLoadingUsers
 } = productSlice.actions;
 export default productSlice.reducer;

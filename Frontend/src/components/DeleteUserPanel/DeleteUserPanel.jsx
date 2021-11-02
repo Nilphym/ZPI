@@ -1,7 +1,7 @@
 import { Box, Typography, CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUsers } from '../../redux/store';
+import { getUsers, deleteUser, setIsLoadingUsers } from '../../redux/store';
 import UserItem from './UserItem';
 
 
@@ -13,6 +13,11 @@ const DeleteUserPanel = () => {
         dispatch(getUsers());
     }, []);
 
+    const deleteUserById = (userId) => {
+        dispatch(deleteUser({ id: userId }));
+        setIsLoadingUsers(true);
+        dispatch(getUsers());
+    };
 
     return (
         <Box>
@@ -23,7 +28,7 @@ const DeleteUserPanel = () => {
                     <Box>
                         <Typography>Users List</Typography>
                         {users.map(({ id, name, surname, email }) => <UserItem
-                            userId={id} userEmail={email} userName={name} userSurname={surname} />)}
+                            userId={id} userEmail={email} userName={name} userSurname={surname} deleteUser={deleteUserById} />)}
                     </Box>
                 )}
         </Box>

@@ -1,16 +1,9 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { deleteUser } from '../../redux/store';
 
 
-const UserItem = ({ userId, userEmail, userName, userSurname }) => {
-    const dispatch = useDispatch();
-
-    const deleteUser = () => {
-        dispatch(deleteUser({ id: userId }));
-    };
+const UserItem = ({ userId, userEmail, userName, userSurname, deleteUser }) => {
 
     return (
         <Box>
@@ -28,7 +21,8 @@ UserItem.propTypes = {
     userId: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
-    userSurname: PropTypes.string.isRequired
+    userSurname: PropTypes.string.isRequired,
+    deleteUser: PropTypes.func.isRequired
 };
 
 export default UserItem;
