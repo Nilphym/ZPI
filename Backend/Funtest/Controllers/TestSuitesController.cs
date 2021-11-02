@@ -45,5 +45,15 @@ namespace Funtest.Controllers
                 return Ok();
             return Conflict("Problem with saving data in database");
         } 
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditTestSuite([FromRoute] Guid id, EditTestSuiteRequest request)
+        {
+            var result = await  _testSuiteService.EditTestSuite(id, request);
+
+            if (result)
+                return Ok();
+            return Conflict("Problem with updating object");
+        }
     }
 }
