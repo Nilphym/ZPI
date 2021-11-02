@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CreateIcon from '@mui/icons-material/Create';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CloseIcon from '@mui/icons-material/Close';
 import { Controller, useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import {
@@ -20,7 +20,7 @@ import TestSuiteItem from './TestSuiteItem';
 
 export const TestPlan = ({ isEditable }) => {
   const {
-    selectedTestPlan: { name: testPlanName, testSuites},
+    selectedTestPlan: { name: testPlanName, testSuites },
     isLoading
   } = useSelector((state) => state.testPlan);
 
@@ -39,7 +39,7 @@ export const TestPlan = ({ isEditable }) => {
 
   useEffect(() => {
     dispatch(setTestPlanId({ id: 'tplan1' }));
-    dispatch(setLoading({isLoading: true}));
+    dispatch(setLoading({ isLoading: true }));
     async function getTestPlanData() {
       await dispatch(getTestPlanById());
     }
@@ -128,7 +128,8 @@ export const TestPlan = ({ isEditable }) => {
           {isAddingTestSuite && (
             <Box
               sx={{
-                position: 'relative'
+                position: 'relative',
+                height: '5rem'
               }}
               component="form"
               onSubmit={handleTestSuite(addTestSuite)}
@@ -145,7 +146,10 @@ export const TestPlan = ({ isEditable }) => {
                     type="text"
                     {...field}
                     sx={{
-                      marginTop: '0.625rem',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '2%',
+                      transform: 'translateY(-50%)',
                       width: '10rem'
                     }}
                   />
@@ -153,35 +157,47 @@ export const TestPlan = ({ isEditable }) => {
               />
               <Button
                 type="submit"
-                variant="outlined"
-                sx={{
-                  height: '3.125rem',
-                  width: '3rem',
-                  margin: '0.8rem 0.625rem 1.25rem 0.625rem'
-                }}
-              >
-                Add
-              </Button>
-              <HighlightOffIcon
+                variant="contained"
                 sx={{
                   position: 'absolute',
                   zIndex: 2,
-                  color: 'black',
-                  top: '0.5rem',
-                  left: '8.6rem',
-                  '&:hover': {
-                    cursor: 'pointer'
-                  }
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  left: '23%'
                 }}
+                startIcon={<AddIcon />}
+              >
+                Add
+              </Button>
+              <Button
+                sx={{
+                  position: 'absolute',
+                  zIndex: 2,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  left: '35%'
+                }}
+                startIcon={<CloseIcon />}
                 onClick={() => setIsAddingTestSuite(false)}
-              />
+                variant="contained"
+              >
+                Close
+              </Button>
             </Box>
           )}
         </Box>
       )}
 
       {isEditing && (
-        <Button variant="outlined" onClick={() => saveTestPlan()} sx={{ marginTop: '1.25rem' }}>
+        <Button variant="contained"
+          onClick={() => saveTestPlan()}
+          sx={{
+            marginTop: '1.5rem',
+            marginBottom: '1.5rem',
+            bgcolor: '#0077c2',
+            fontWeight: '700',
+            color: 'white'
+          }}>
           Save Test Plan
         </Button>
       )}
