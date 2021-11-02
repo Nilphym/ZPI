@@ -26,9 +26,9 @@ export const register = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
+export const login = createAsyncThunk('auth/login', async ({ email, password }) => {
   const data = await authService.login({
-    username,
+    email,
     password
   });
   return data;

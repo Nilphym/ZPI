@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
@@ -14,7 +15,7 @@ const Layout = () => {
   }
 
   switch (token?.role) {
-    case 'tester':
+    case 'Tester':
       return (
         <Box sx={{ display: 'flex' }}>
           <Navbar
@@ -37,7 +38,7 @@ const Layout = () => {
           <Outlet />
         </Box>
       );
-    case 'dev':
+    case 'Developer':
       return (
         <Box sx={{ display: 'flex' }}>
           <Navbar
@@ -61,7 +62,7 @@ const Layout = () => {
           <Outlet />
         </Box>
       );
-    case 'pm':
+    case 'ProjectManager':
       return (
         <Box sx={{ display: 'flex' }}>
           <Navbar

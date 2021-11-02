@@ -85,7 +85,6 @@ export const resignFromBug = createAsyncThunk('bugs/resign', async ({ id, develo
 export const bugsSlice = createSlice({
   name: 'bugs',
   initialState,
-  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getRows.fulfilled, (state, action) => {

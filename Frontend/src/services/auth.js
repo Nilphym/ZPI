@@ -15,10 +15,12 @@ const authService = {
     const token = this.getToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
   },
-  async login({ username, password }) {
-    const { data } = await axios.post(`${API_URL}signin`, { username, password });
-    localStorage.setItem(TOKEN_KEY, data);
-    return jwtDecode(data);
+  async login({ email, password }) {
+    const {
+      data: { token }
+    } = await axios.post(`${API_URL}Auth/login`, { email, password });
+    localStorage.setItem(TOKEN_KEY, token);
+    return jwtDecode(token);
   },
   async register({ username, email, password }) {
     const { data } = await axios.post(`${API_URL}signup`, { username, email, password });
