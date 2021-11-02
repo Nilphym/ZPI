@@ -41,7 +41,7 @@ const SmallLogo = styled('img')({
 export const Navbar = ({ links }) => {
   const [open, setOpen] = useState(true);
   const { pathname } = useLocation();
-  const name = useSelector((state) => state.auth.token.name);
+  const name = useSelector((state) => state.auth.token.userData);
   const theme = useTheme();
   const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
 

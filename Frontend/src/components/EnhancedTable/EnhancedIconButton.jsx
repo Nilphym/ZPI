@@ -12,7 +12,7 @@ export const enhancedButtonIcons = {
   settings: <Settings />
 };
 
-const EnhancedIconButton = ({ icon, onClick }) => (
+export const EnhancedIconButton = ({ icon, onClick }) => (
   <IconButton
     sx={{ display: 'flex', alignItems: 'center' }}
     onClick={onClick}

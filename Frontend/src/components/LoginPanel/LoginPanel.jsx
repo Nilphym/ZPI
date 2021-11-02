@@ -12,7 +12,6 @@ import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
   width: '12.5rem',
-  height: '8vh',
   position: 'absolute',
   top: '50%',
   left: '2%',
@@ -50,8 +49,8 @@ export const LoginPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = async ({ login: username, password }) => {
-    await dispatch(login({ username, password }));
+  const onSubmit = async ({ login: email, password }) => {
+    await dispatch(login({ email, password }));
 
     reset(defaultValues, {
       keepIsValid: true

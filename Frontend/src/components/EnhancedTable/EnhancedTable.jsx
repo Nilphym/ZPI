@@ -187,5 +187,5 @@ EnhancedTable.propTypes = {
 };
 
 export default EnhancedTable;
-export { default as EnhancedIconButton, enhancedButtonIcons } from './EnhancedIconButton';
+export { EnhancedIconButton, enhancedButtonIcons } from './EnhancedIconButton';
 export { SelectColumnFilter } from './CustomFilter';
