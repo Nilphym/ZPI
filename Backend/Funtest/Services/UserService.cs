@@ -20,6 +20,15 @@ namespace Funtest.Services
             return (await UserManager.GetRolesAsync(user))[0] == Roles.Developer;
         }
 
+        public async Task<bool> IsTesterExist(string testerId)
+        {
+            var user = await Context.Users.FindAsync(testerId);
+            if (user == null)
+                return false;
+
+            return (await UserManager.GetRolesAsync(user))[0] == Roles.Tester;
+        }
+
         public async Task<bool> IsUserExist(string id)
         {
             var user = await Context.Users.FindAsync(id);

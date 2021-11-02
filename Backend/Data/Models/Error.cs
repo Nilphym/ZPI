@@ -30,7 +30,7 @@ namespace Data.Models
         [Required]
         public string Code { get; set; }
 
-        public string Category { get; set; }
+        public string Functionality { get; set; }
 
         public ErrorState ErrorState { get; set; }
 

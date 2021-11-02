@@ -3,6 +3,7 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,27 +38,38 @@ namespace Funtest.Services
         {
             var test = await Context.Tests.FindAsync(id);
 
-            if (test.ExecutionCounter > 0)
-                return false;
-
             test.Name = request.Name;
 
             if (request.TestCaseId != null)
+            {
                 test.TestCaseId = request.TestCaseId;
+                test.TestCase = await Context.TestCases.FindAsync(request.TestCaseId);
+            }
 
 
             if (request.TestProcedureId != null)
+            {
                 test.TestProcedureId = request.TestProcedureId;
+                test.TestProcedure = await Context.TestProcedures.FindAsync(request.TestProcedureId);
+            }
 
 
             if (request.TestSuiteId != null)
+            {
                 test.TestSuiteId = request.TestSuiteId;
+                test.TestSuite = await Context.TestSuites.FindAsync(request.TestSuiteId);
+            }
 
             Context.Tests.Update(test);
 
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
+        }
+
+        public async Task<Test> FindTest(Guid id)
+        {
+            return Context.Tests.Include(x => x.TestSuite).ToList().Where(x => x.Id == id).FirstOrDefault();
         }
 
         public List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId)

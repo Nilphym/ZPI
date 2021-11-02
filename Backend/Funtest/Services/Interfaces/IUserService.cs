@@ -7,5 +7,6 @@ namespace Funtest.Services.Interfaces
     {
         Task<bool> IsUserExist(string userId);
         Task<bool> IsDeveloperExist(string developerId);
+        Task<bool> IsTesterExist(string testerId);
     }
 }

@@ -2,27 +2,45 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Funtest.Services.Interfaces;
-using Data.Roles;
-using Microsoft.AspNetCore.Authorization;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
 using System.Collections.Generic;
-using Data.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Data.Roles;
 
 namespace Funtest.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Policy = "Role")]
+    //[Authorize(Roles = Roles.Developer)]
     public class ErrorsController : ControllerBase
     {
         private readonly IErrorService _errorService;
         private readonly IUserService _userService;
+        private readonly ITestService _testService;
 
-        public ErrorsController(IErrorService errorService, IUserService userService)
+        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService)
         {
             _errorService = errorService;
             _userService = userService;
+            _testService = testService;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddError(AddErrorRequest request)
+        {
+            if (!await _userService.IsTesterExist(request.TesterId))
+                return NotFound("Tester with given id doesn't exist.");
+
+            var test = await _testService.FindTest(request.TestId);
+            if (test == null)
+                return NotFound("Test with given id doesn't exist.");
+
+            var result = await _errorService.AddError(request, test.TestSuite.Category);
+            if (result)
+                return Ok();
+            return Problem("Problem with saving changes in database.");
         }
 
         [HttpGet("{id}")]
@@ -43,7 +61,7 @@ namespace Funtest.Controllers
             return Ok(errors);
         }
 
-       // [Authorize(Roles=Roles.Developer)]
+        [Authorize(Roles = Roles.Developer)]
         [HttpGet("developer/{developerId}")]
         public async Task<ActionResult<GetErrorResponse>> GetAllErrorsAssignedToDeveloper([FromRoute] string developerId)
         {
@@ -73,7 +91,7 @@ namespace Funtest.Controllers
         public async Task<ActionResult> EditError([FromRoute] Guid id, [FromBody] EditErrorRequest request)
         {
             var result = await _errorService.EditError(id, request);
-            if(result)
+            if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
         }
@@ -82,7 +100,7 @@ namespace Funtest.Controllers
         public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(id);
-            if(!isErrorExist)
+            if (!isErrorExist)
                 return NotFound("Object with given id doesn't exist");
 
             var result = await _errorService.ResolveError(id, request);
@@ -123,7 +141,7 @@ namespace Funtest.Controllers
                 return NotFound("Error with given id doesn't exist");
             var notAssigned = await _errorService.IsErrorNotAssigned(errorId);
 
-            if(!notAssigned)
+            if (!notAssigned)
                 return Conflict("Someone is working on this error.");
 
             var isDeveloperExist = await _userService.IsDeveloperExist(request.DeveloperId);
@@ -134,8 +152,8 @@ namespace Funtest.Controllers
             if (result)
                 return Ok();
             return Problem("Problem with saving changes in database.");
-        } 
-        
+        }
+
         [HttpPut("reject/{errorId}")]
         public async Task<ActionResult> RejectError([FromRoute] Guid errorId, DeveloperAssignedToErrorRequest request)
         {

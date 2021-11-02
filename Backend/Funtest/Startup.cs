@@ -15,7 +15,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Data.Roles;
 
 namespace Funtest
 {
@@ -60,12 +62,46 @@ namespace Funtest
                    .AllowCredentials());
             });
 
-            services.AddIdentity<User, IdentityRole>(opt =>
+            services
+               .AddIdentity<User, IdentityRole>(opt =>
+               {
+                   opt.Lockout.AllowedForNewUsers = false;
+               })
+               .AddSignInManager<SignInManager<User>>()
+               .AddEntityFrameworkStores<DatabaseContext>()
+               .AddDefaultTokenProviders();
+
+            services.AddMvc().AddNewtonsoftJson();
+
+            services.AddSwaggerGen(c =>
             {
-                opt.Lockout.AllowedForNewUsers = false;
-            })
-                .AddSignInManager<SignInManager<User>>()
-                .AddEntityFrameworkStores<DatabaseContext>();
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
+            });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -82,32 +118,13 @@ namespace Funtest
                 };
             });
 
-            services.AddAuthorization(options =>
-          {
-              var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-                  JwtBearerDefaults.AuthenticationScheme);
 
-              defaultAuthorizationPolicyBuilder =
-                  defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+            /*services.AddAuthorization(options =>
 
-              options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-          });
-
-            services.AddMvc().AddNewtonsoftJson();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization.",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-            });
-        }
+           options.AddPolicy("Role",
+           policy => policy.RequireClaim(claimType: ClaimTypes.Role, Roles.Administrator, Roles.Developer, Roles.Tester, Roles.ProjectManager)));
+        
+            */}
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -118,12 +135,8 @@ namespace Funtest
 
             app.UseCors("CorsPolicy");
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
-
             app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -131,6 +144,10 @@ namespace Funtest
             {
                 endpoints.MapControllers();
             });
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Funtest v1"));
         }
     }
 }

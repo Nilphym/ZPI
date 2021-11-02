@@ -67,6 +67,10 @@ namespace Funtest.Controllers
             if (!isExist)
                 return NotFound("Object with given id doesn't exist");
 
+            var testExecutionCounter = await _testService.GetExecutionCounterForTest(testId);
+            if (testExecutionCounter > 0)
+                return Conflict("Test can't be modified.");
+
             var result = await _testService.EditTest(testId, request);
             if (result)
                 return Ok();

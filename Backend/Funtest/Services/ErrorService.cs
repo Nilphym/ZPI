@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Enums;
+using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
@@ -13,6 +14,7 @@ namespace Funtest.Services
 {
     public class ErrorService : Service, IErrorService
     {
+        private static string ERROR_PREFIX = "B";
         public readonly IMapper _mapper;
 
         public ErrorService(IServiceProvider serviceProvider, IMapper mapper) : base(serviceProvider)
@@ -211,6 +213,31 @@ namespace Funtest.Services
             }
 
             return false;
+        }
+
+        public async Task<bool> AddError(AddErrorRequest request, string testSuiteCategory)
+        {
+            var error = _mapper.Map<Error>(request);
+            var index = Guid.NewGuid();
+            error.Id = index;
+            error.ErrorState = ErrorState.New;
+            error.Code = $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8)}";
+            error.Functionality = testSuiteCategory;
+            Context.Errors.Add(error);
+                        
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> SetErrorCategory(Error error, string category)
+        {
+            error.Functionality = category;
+
+            Context.Errors.Update(error);
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
         }
     }
 }
