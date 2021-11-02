@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-10-26T19:21:31.167Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36" etag="xb14uFg1XDWbMb02mbIx" version="15.5.9" type="github">
+<mxfile host="app.diagrams.net" modified="2021-11-02T15:57:13.386Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36" etag="EZBXavyTxCX8KHT88gUO" version="15.6.5" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="2317" dy="547" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2331" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -303,7 +303,7 @@
           <mxGeometry y="78" width="140" height="26" as="geometry" />
         </mxCell>
         <mxCell id="Vc3Eoi6ETg7o6c7sWArZ-52" value="Błąd" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="190" y="566" width="150" height="286" as="geometry" />
+          <mxGeometry x="190" y="566" width="150" height="312" as="geometry" />
         </mxCell>
         <mxCell id="Vc3Eoi6ETg7o6c7sWArZ-60" value="+kod [1..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Vc3Eoi6ETg7o6c7sWArZ-52" vertex="1">
           <mxGeometry y="26" width="150" height="26" as="geometry" />
@@ -334,6 +334,9 @@
         </mxCell>
         <mxCell id="UE96xgW0tEFk1YT_2X4H-3" value="/liczba_recenzji_oblanych (failed)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Vc3Eoi6ETg7o6c7sWArZ-52" vertex="1">
           <mxGeometry y="260" width="150" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="KdUFnfpS29X683ZeUwki-0" value="+testId [1..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Vc3Eoi6ETg7o6c7sWArZ-52">
+          <mxGeometry y="286" width="150" height="26" as="geometry" />
         </mxCell>
         <mxCell id="Vc3Eoi6ETg7o6c7sWArZ-63" value="" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Vc3Eoi6ETg7o6c7sWArZ-52" target="Vc3Eoi6ETg7o6c7sWArZ-81" edge="1">
           <mxGeometry relative="1" as="geometry">
