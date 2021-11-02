@@ -6,9 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { changeUserPasswordByEmail } from '../../redux/store';
 
 import logo from '../../assets/logo/logo2.png';
-// import { ResetPassword } from '../../redux/store';
 
 const Logo = styled('img')({
   width: '12.5rem',
@@ -51,12 +51,12 @@ export const ResetPasswordPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  async function onSubmit({ projectName, name, surname, email, password }) {
-    // await dispatch(ResetPassword({ projectName, name, surname, email, password }));
-    navigate('/');
+  function onSubmit({ email, password }) {
+    dispatch(changeUserPasswordByEmail({ email, password }));
     reset(defaultValues, {
       keepIsValid: true
     });
+    navigate('/login');
   };
 
   return (

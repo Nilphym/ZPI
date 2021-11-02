@@ -6,6 +6,46 @@ import {
 import authService from '../../../services/auth';
 import server from '../../../services/server';
 
+export const changeUserName = createAsyncThunk('user/change/name', async ({name}, {
+  getState
+}) => {
+  const response = await server().put({
+    url: `User/${getState().user.userId}/name`,
+    body: {name}
+  });
+  return response;
+});
+
+export const changeUserSurname = createAsyncThunk('user/change/surname', async ({surname}, {
+  getState
+}) => {
+  const response = await server().put({
+    url: `User/${getState().user.userId}/surname`,
+    body: {surname}
+  });
+  return response;
+});
+
+export const changeUserPasswordById = createAsyncThunk('user/change/password/byId', async ({password}, {
+  getState
+}) => {
+  const response = await server().put({
+    url: `User/${getState().user.userId}/passwordById`,
+    body: {password}
+  });
+  return response;
+});
+
+export const changeUserPasswordByEmail = createAsyncThunk('user/change/password/byId', async ({email, password}, {
+  getState
+}) => {
+  const response = await server().put({
+    url: `User/${getState().user.userId}/passwordByEmail`,
+    body: {email, password}
+  });
+  return response;
+});
+
 const token = authService.getDecodedToken();
 const initialState = token ? {
   isLoggedIn: true,
