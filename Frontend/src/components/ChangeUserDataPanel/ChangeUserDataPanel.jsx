@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -5,7 +6,6 @@ import * as yup from 'yup';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { changeUserName, changeUserSurname, changeUserPasswordById } from '../../redux/store';
-
 
 const schemaName = yup.object().shape({
   name: yup.string().required()
@@ -75,16 +75,24 @@ export const ChangeUserDataPanel = () => {
   };
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <Typography align="center" variant="h2" gutterBottom component="div" sx={{
-        position: 'absolute',
-        top: '5%',
-        left: '50%',
-        transform: 'translateX(-50%)'
-      }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      <Typography
+        align="center"
+        variant="h2"
+        gutterBottom
+        component="div"
+        sx={{
+          position: 'absolute',
+          top: '5%',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
+      >
         Change User Data
       </Typography>
       <Box
@@ -97,7 +105,6 @@ export const ChangeUserDataPanel = () => {
           flexDirection: 'column'
         }}
       >
-
         <Box
           component="form"
           onSubmit={handleSubmitName(onSubmitName)}
@@ -136,14 +143,15 @@ export const ChangeUserDataPanel = () => {
           </Button>
         </Box>
       </Box>
-      <Box sx={{
-        position: 'absolute',
-        top: '40%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
         component="form"
         onSubmit={handleSubmitSurname(onSubmitSurname)}
       >
@@ -221,7 +229,8 @@ export const ChangeUserDataPanel = () => {
               type="password"
               error={!!errorsPassword.repeatPassword || !!errorsPassword.password}
               helperText={
-                !!errorsPassword.repeatPassword || (!!errorsPassword.password && 'Passwords must be the same!')
+                !!errorsPassword.repeatPassword ||
+                (!!errorsPassword.password && 'Passwords must be the same!')
               }
               {...field}
               sx={{
@@ -242,7 +251,6 @@ export const ChangeUserDataPanel = () => {
         </Button>
       </Box>
     </Box>
-
   );
 };
 

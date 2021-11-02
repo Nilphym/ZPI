@@ -178,9 +178,5 @@ export const Navbar = ({ links }) => {
 export default Navbar;
 
 Navbar.propTypes = {
-  links: PropTypes.array.isRequired,
-  profile: PropTypes.shape({
-    avatar: PropTypes.string,
-    name: PropTypes.string.isRequired
-  }).isRequired
+  links: PropTypes.array.isRequired
 };
