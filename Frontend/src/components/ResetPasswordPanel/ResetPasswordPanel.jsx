@@ -1,17 +1,18 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Link, Navigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSelector, useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { changeUserPasswordByEmail } from '../../redux/store';
 
-import { login } from '../../redux/store';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
   width: '12.5rem',
+  height: '8vh',
   position: 'absolute',
   top: '50%',
   left: '2%',
@@ -19,25 +20,26 @@ const Logo = styled('img')({
 });
 
 const formFields = {
-  login: 'login',
-  password: 'password'
+  email: 'email',
+  password: 'password',
+  repeatPassword: 'repeatPassword'
 };
 
 const defaultValues = {
-  [formFields.login]: '',
-  [formFields.password]: ''
+  [formFields.email]: '',
+  [formFields.password]: '',
+  [formFields.repeatPassword]: ''
 };
 
 const schema = yup.object().shape({
-  [formFields.login]: yup.string().required(),
-  [formFields.password]: yup.string().required().min(6)
+  [formFields.email]: yup.string().email().required(),
+  [formFields.password]: yup.string().required().min(6),
+  [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-export const LoginPanel = () => {
+export const ResetPasswordPanel = () => {
   const dispatch = useDispatch();
-  const { state } = useLocation();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const from = state ? state.from.pathname : '/dashboard';
+  const navigate = useNavigate();
 
   const {
     control,
@@ -49,34 +51,22 @@ export const LoginPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = async ({ login: email, password }) => {
-    await dispatch(login({ email, password }));
-
+  function onSubmit({ email, password }) {
+    dispatch(changeUserPasswordByEmail({ email, password }));
     reset(defaultValues, {
       keepIsValid: true
     });
+    navigate('/login');
   };
 
-  const StyledLink = styled(Link)({
-    color: 'blue',
-    '&:visited': {
-      color: 'blue'
-    },
-    '&:focus, &:hover, &:active': {
-      color: 'grey'
-    }
-  });
-  // 1rem <=> 16px
-  return isLoggedIn ? (
-    <Navigate to={from} replace />
-  ) : (
+  return (
     <Box>
       <Box
         sx={{
           width: '12.5rem',
           height: '8vh',
           position: 'absolute',
-          top: '20%',
+          top: '10%',
           left: '49%',
           transform: 'translateX(-50%)'
         }}
@@ -86,7 +76,7 @@ export const LoginPanel = () => {
       <Box
         sx={{
           position: 'absolute',
-          top: '33%',
+          top: '23%',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
@@ -94,7 +84,7 @@ export const LoginPanel = () => {
         }}
       >
         <Typography align="center" variant="h2" gutterBottom component="div">
-          Login Panel
+          Reset Password
         </Typography>
         <Box
           component="form"
@@ -104,16 +94,18 @@ export const LoginPanel = () => {
             flexDirection: 'column'
           }}
         >
+
           <Controller
-            name={formFields.login}
+            name="email"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                id={formFields.login}
-                label="Login"
-                type="text"
-                error={!!errors.login}
-                helperText={!!errors.login && 'Login field cannot be empty!'}
+                id="email"
+                label="Email"
+                type="email"
+                error={!!errors.email}
+                helperText={!!errors.email && 'Email field cannot be empty and must be in pattern!'}
                 {...field}
                 sx={{
                   marginTop: '0.625rem'
@@ -122,12 +114,13 @@ export const LoginPanel = () => {
             )}
           />
           <Controller
-            name={formFields.password}
+            name="password"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                id={formFields.password}
-                label="Password"
+                id="password"
+                label="New Password"
                 type="password"
                 error={!!errors.password}
                 helperText={
@@ -136,31 +129,45 @@ export const LoginPanel = () => {
                 }
                 {...field}
                 sx={{
+                  margin: '0.625rem 0 0 0'
+                }}
+              />
+            )}
+          />
+          <Controller
+            name="repeatPassword"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                id="repeatPassword"
+                label="Repeat New Password"
+                type="password"
+                error={!!errors.repeatPassword || !!errors.password}
+                helperText={
+                  !!errors.repeatPassword || (!!errors.password && 'Passwords must be the same!')
+                }
+                {...field}
+                sx={{
                   margin: '0.625rem 0 0.625rem 0'
                 }}
               />
             )}
           />
-          <StyledLink to="/register">Register a new product -&gt;</StyledLink>
           <Button
             type="submit"
             variant="contained"
             sx={{
               height: '3.125rem',
-              marginTop: '0.625rem',
-              marginBottom: '1.25rem'
+              marginTop: '0.625rem'
             }}
           >
-            Login
+            Reset
           </Button>
-          <Box>
-            <Typography>{`Have you forgot you password? ${' '}`}</Typography>
-            <StyledLink to="#!">Reset password</StyledLink>
-          </Box>
         </Box>
       </Box>
     </Box>
   );
 };
 
-export default LoginPanel;
+export default ResetPasswordPanel;

@@ -1,6 +1,51 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import authService from '../../../services/auth';
+import server from '../../../services/server';
+
+export const changeUserName = createAsyncThunk(
+  'user/change/name',
+  async ({ name }, { getState }) => {
+    const response = await server().put({
+      url: `User/${getState().user.userId}/name`,
+      body: { name }
+    });
+    return response;
+  }
+);
+
+export const changeUserSurname = createAsyncThunk(
+  'user/change/surname',
+  async ({ surname }, { getState }) => {
+    const response = await server().put({
+      url: `User/${getState().user.userId}/surname`,
+      body: { surname }
+    });
+    return response;
+  }
+);
+
+export const changeUserPasswordById = createAsyncThunk(
+  'user/change/password/byId',
+  async ({ password }, { getState }) => {
+    const response = await server().put({
+      url: `User/${getState().user.userId}/passwordById`,
+      body: { password }
+    });
+    return response;
+  }
+);
+
+export const changeUserPasswordByEmail = createAsyncThunk(
+  'user/change/password/byId',
+  async ({ email, password }, { getState }) => {
+    const response = await server().put({
+      url: `User/${getState().user.userId}/passwordByEmail`,
+      body: { email, password }
+    });
+    return response;
+  }
+);
 
 const token = authService.getDecodedToken();
 const initialState = token
@@ -16,19 +61,23 @@ const initialState = token
 export const register = createAsyncThunk(
   'auth/register',
   async ({ projectName, name, surname, email, password }) => {
-    return authService.register({
-      projectName,
-      name,
-      surname,
-      email,
-      password
+    const response = await server().post({
+      url: 'Products',
+      data: {
+        name: projectName,
+        firstName: name,
+        lastName: surname,
+        email,
+        password
+      }
     });
+    return response;
   }
 );
 
-export const login = createAsyncThunk('auth/login', async ({ username, password }) => {
+export const login = createAsyncThunk('auth/login', async ({ email, password }) => {
   const data = await authService.login({
-    username,
+    email,
     password
   });
   return data;

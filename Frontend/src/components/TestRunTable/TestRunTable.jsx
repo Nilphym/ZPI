@@ -1,143 +1,62 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTable } from 'react-table';
 import {
+  Paper,
+  TableContainer,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Box,
-  IconButton
+  TableRow
 } from '@mui/material';
-import { Done, Error } from '@mui/icons-material';
 
-import useTableSteps from '../../hooks/useTableSteps';
+import TableToolbar from './TableToolbar';
 
-const StepButtonTableCell = ({ row, useTableStepsRef }) => {
-  const [currentState, stepStates, doneAction, errorAction, clearAction] = useTableStepsRef;
+export const TestRunTable = ({ title, columns, data }) => {
+  // Use the state and functions returned from useTable to build your UI
+  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data
+  });
 
-  const handleClear = () => {
-    if (Object.values(currentState).some((stepState) => stepState === stepStates.error)) {
-      // TODO: add modal with info that you cannot clear after error has been reported
-    } else {
-      // TODO: add modal asking if you sure want to clear
-      clearAction(row.id);
-    }
-  };
-
-  switch (currentState[row.id]) {
-    case stepStates.choose:
-      return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-              onClick={() => doneAction(row.id)}
-            >
-              <Done />
-            </IconButton>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-              onClick={() => errorAction(row.id)}
-            >
-              <Error />
-            </IconButton>
-          </Box>
-        </TableCell>
-      );
-
-    case stepStates.done:
-      return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small" onClick={handleClear}>
-              <Done />
-            </IconButton>
-          </Box>
-        </TableCell>
-      );
-
-    case stepStates.error:
-      return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small">
-              <Error />
-            </IconButton>
-          </Box>
-        </TableCell>
-      );
-
-    default:
-      return <TableCell sx={{ width: '5rem' }} />;
-  }
-};
-
-StepButtonTableCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  useTableStepsRef: PropTypes.func.isRequired
-};
-
-const DataTableCell = ({ data, color }) => {
-  return (
-    <TableCell sx={{ width: '7rem' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        {data?.map((dataItem) => (
-          <Button key={dataItem} color={color}>
-            {dataItem}
-          </Button>
-        ))}
-      </Box>
-    </TableCell>
-  );
-};
-
-DataTableCell.propTypes = {
-  data: PropTypes.array.isRequired,
-  color: PropTypes.string.isRequired
-};
-
-// rows should be taken from redux
-export const TestRunTable = ({ rows }) => {
-  const useTableStepsRef = useTableSteps(rows.length);
-
+  // Render the UI for your table
   return (
     <TableContainer component={Paper}>
-      <Table>
+      <TableToolbar title={title} />
+      <Table {...getTableProps()}>
         <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Steps</TableCell>
-            <TableCell align="center">Associated bugs</TableCell>
-            <TableCell align="center">Test data</TableCell>
-            <TableCell>Control points</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover>
-              <StepButtonTableCell row={row} useTableStepsRef={useTableStepsRef} />
-              <TableCell>{row.step}</TableCell>
-              <DataTableCell data={row.associatedBugs} color="error" />
-              <DataTableCell data={row.testData} />
-              <TableCell>{row.controlPoint}</TableCell>
+          {headerGroups.map((headerGroup) => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <TableCell {...column.getHeaderProps()}>{column.render('Header')}</TableCell>
+              ))}
             </TableRow>
           ))}
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()} hover>
+                {row.cells.map((cell) => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
   );
 };
 
-export default TestRunTable;
-
 TestRunTable.propTypes = {
-  rows: PropTypes.array.isRequired
+  title: PropTypes.string.isRequired,
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
 };
+
+export default TestRunTable;
+export * from './ButtonStepCell';
+export * from './DataCell';

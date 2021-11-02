@@ -41,7 +41,7 @@ const SmallLogo = styled('img')({
 export const Navbar = ({ links }) => {
   const [open, setOpen] = useState(true);
   const { pathname } = useLocation();
-  const name = useSelector((state) => state.auth.token.name);
+  const name = useSelector((state) => state.auth.token.userData);
   const theme = useTheme();
   const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -178,9 +178,5 @@ export const Navbar = ({ links }) => {
 export default Navbar;
 
 Navbar.propTypes = {
-  links: PropTypes.array.isRequired,
-  profile: PropTypes.shape({
-    avatar: PropTypes.string,
-    name: PropTypes.string.isRequired
-  }).isRequired
+  links: PropTypes.array.isRequired
 };

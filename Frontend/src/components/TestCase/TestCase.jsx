@@ -128,23 +128,21 @@ export const TestCase = ({ isEditable }) => {
       ) : (
         <Box sx={{ position: 'relative', marginTop: '1.5rem' }}>
           {isEditable && !isEditing && (
-            <CreateIcon
+            <Button
+              variant="contained"
               sx={{
                 position: 'absolute',
                 top: '6vh',
-                right: '2vw',
-                border: '1px solid black',
-                borderRadius: '50%',
-                padding: '2px',
-                '&:hover': {
-                  cursor: 'pointer'
-                }
+                right: '2vw'
               }}
               onClick={() => setIsEditing(true)}
-            />
+              startIcon={<CreateIcon />}
+            >
+              Edit Case
+            </Button>
           )}
-          <Typography variant="h4" sx={{ fontSize: '1.9rem' }}>
-            Test Case:
+          <Typography variant="h4" sx={{ fontSize: '1.9rem', fontWeight: '700' }}>
+            Test Case
           </Typography>
           <Box>
             <Typography
@@ -155,7 +153,7 @@ export const TestCase = ({ isEditable }) => {
                 marginBottom: '0.625rem'
               }}
             >
-              Preconditions:
+              Preconditions
             </Typography>
             <Controller
               name="preconditions"
@@ -189,7 +187,7 @@ export const TestCase = ({ isEditable }) => {
                 marginBottom: '0.625rem'
               }}
             >
-              Entry Data:
+              Entry Data
             </Typography>
             {entryData.length > 0 ? (
               <Box>
@@ -243,13 +241,18 @@ export const TestCase = ({ isEditable }) => {
                         marginTop: '0.625rem'
                       }}
                     >
-                      <Button variant="outlined" onClick={() => setIsAddingTextField(true)}>
+                      <Button
+                        variant="contained"
+                        onClick={() => setIsAddingTextField(true)}
+                        startIcon={<AddIcon />}
+                      >
                         Add TextField
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         sx={{ marginLeft: '0.625rem' }}
                         onClick={() => setIsAddingTable(true)}
+                        startIcon={<AddIcon />}
                       >
                         Add Table
                       </Button>
@@ -304,7 +307,7 @@ export const TestCase = ({ isEditable }) => {
                           />
                           <Button
                             type="submit"
-                            variant="outlined"
+                            variant="contained"
                             sx={{
                               height: '3.125rem',
                               width: '7rem',
@@ -315,7 +318,7 @@ export const TestCase = ({ isEditable }) => {
                             Add
                           </Button>
                           <Button
-                            variant="outlined"
+                            variant="contained"
                             sx={{
                               height: '3.125rem',
                               width: '7rem',
@@ -336,7 +339,7 @@ export const TestCase = ({ isEditable }) => {
                         <Box>
                           <Button
                             onClick={() => addTextField()}
-                            variant="outlined"
+                            variant="contained"
                             sx={{
                               height: '3.125rem',
                               width: '7rem',
@@ -347,7 +350,7 @@ export const TestCase = ({ isEditable }) => {
                             Add
                           </Button>
                           <Button
-                            variant="outlined"
+                            variant="contained"
                             sx={{
                               height: '3.125rem',
                               width: '7rem',
@@ -374,7 +377,11 @@ export const TestCase = ({ isEditable }) => {
             </Box>
           </Box>
           {isEditing && (
-            <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTestCase()}>
+            <Button
+              variant="contained"
+              sx={{ marginTop: '1.5rem', bgcolor: '#0077c2', fontWeight:'700', color: 'white' }}
+              onClick={() => saveTestCase()}
+            >
               Save Test Case
             </Button>
           )}

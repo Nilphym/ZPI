@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import PropTypes from 'prop-types';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -141,41 +142,61 @@ export const TestStep = ({ testStepId, isEditable }) => {
             position: 'relative'
           }}
         >
-          <Button
-            onClick={
-              !isEditing
-                ? () => setIsOpened((state) => !state)
-                : () => alert('Cannot close the view in an editing mode!')
-            }
-            variant="contained"
-            sx={{
-              width: '100%',
-              bgcolor: '#0077c2',
-              color: 'white',
-              textTransform: 'capitalize'
-            }}
-          >
-            {selectedTestStep[testStepId]
-              ? `${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}`
-              : 'Loading ...'}
-          </Button>
+          <Box sx={{ position: 'relative' }}>
+            <KeyboardArrowDownIcon
+              sx={
+                isOpened
+                  ? {
+                      position: 'absolute',
+                      top: '30%',
+                      left: '2.5%',
+                      zIndex: '1',
+                      transform: 'rotate(180deg)'
+                    }
+                  : { position: 'absolute', top: '30%', left: '2.5%', zIndex: '1' }
+              }
+            />
+            <Button
+              onClick={
+                !isEditing
+                  ? () => setIsOpened((state) => !state)
+                  : () => alert('Cannot close the view in an editing mode!')
+              }
+              variant="contained"
+              sx={{
+                height: '3.5rem',
+                width: '100%',
+                bgcolor: 'white',
+                textTransform: 'capitalize',
+                borderTop: '0.0625rem solid #bdbdbd',
+                borderBottom: '0.0625rem solid #bdbdbd',
+                fontWeight: '700',
+                '&:hover': {
+                  bgcolor: 'white'
+                }
+              }}
+            >
+              {selectedTestStep[testStepId]
+                ? `${selectedTestStep[testStepId].stepNumber}. ${selectedTestStep[testStepId].name}`
+                : 'Loading ...'}
+            </Button>
+          </Box>
+
           {isOpened && (
             <Box>
               {isEditable && !isEditing && (
-                <CreateIcon
+                <Button
+                  variant="contained"
                   sx={{
                     position: 'absolute',
                     top: '7vh',
-                    right: '2vw',
-                    border: '1px solid black',
-                    borderRadius: '50%',
-                    padding: '2px',
-                    '&:hover': {
-                      cursor: 'pointer'
-                    }
+                    right: '2vw'
                   }}
                   onClick={() => setIsEditing(true)}
-                />
+                  startIcon={<CreateIcon />}
+                >
+                  Edit Step
+                </Button>
               )}
               <Box>
                 {isEditing &&
@@ -245,10 +266,11 @@ export const TestStep = ({ testStepId, isEditable }) => {
                 <Typography
                   variant="h5"
                   sx={{
-                    marginTop: '0.625rem'
+                    marginTop: '0.625rem',
+                    fontStyle: 'italic'
                   }}
                 >
-                  Test Data:
+                  Test Data
                 </Typography>
                 {selectedTestStep[testStepId].testData.length > 0 ? (
                   <Box>
@@ -280,7 +302,7 @@ export const TestStep = ({ testStepId, isEditable }) => {
                 {isEditing &&
                   (!isAddingTable ? (
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       sx={{ marginTop: '0.625rem' }}
                       onClick={() => setIsAddingTable(true)}
                       startIcon={<AddIcon />}
@@ -365,8 +387,8 @@ export const TestStep = ({ testStepId, isEditable }) => {
                   ))}
               </Box>
               <Box>
-                <Typography sx={{ marginTop: '1.25rem' }} variant="h5">
-                  Control Point:
+                <Typography sx={{ marginTop: '1.25rem', fontStyle: 'italic' }} variant="h5">
+                  Control Point
                 </Typography>
                 <Controller
                   name="controlPoint"
@@ -391,8 +413,13 @@ export const TestStep = ({ testStepId, isEditable }) => {
               </Box>
               {isEditing && (
                 <Button
-                  variant="outlined"
-                  sx={{ marginTop: '0.625rem' }}
+                  variant="contained"
+                  sx={{
+                    marginTop: '0.625rem',
+                    bgcolor: '#0077c2',
+                    fontWeight: '700',
+                    color: 'white'
+                  }}
                   onClick={() => saveTestStep()}
                 >
                   Save Test Step

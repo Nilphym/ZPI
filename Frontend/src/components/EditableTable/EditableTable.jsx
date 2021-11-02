@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { useDispatch } from 'react-redux';
 
 import TableItem from './TableItem';
@@ -113,70 +115,104 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
     }
   };
 
+  const functionalButtonStyle = {
+    margin: '0 0.625rem 1.25rem 0'
+  };
+
   return (
     <Box
       sx={{
         marginTop: '1.25rem'
       }}
     >
-      <Typography
-        sx={{
-          fontWeight: '700'
-        }}
-      >
-        {`Table name: ${data.tableName}`}
-      </Typography>
       <Box
         sx={{
-          border: '1px solid black',
+          // border: '1px solid black',
           position: 'relative',
           marginTop: '0.625rem'
         }}
       >
-        {!disabled && isEditing && rowsNumber < MAX_ROWS_NUMBER && (
-          <Button onClick={() => addRow()}>Add row</Button>
-        )}
-        {!disabled && isEditing && columnsNumber < MAX_COLUMNS_NUMBER && (
-          <Button onClick={() => addColumn()}>Add column</Button>
-        )}
-        {!disabled && isEditing && rowsNumber > 2 && (
-          <Button onClick={() => deleteRow()}>Delete row</Button>
-        )}
-        {!disabled && isEditing && columnsNumber > 2 && (
-          <Button onClick={() => deleteColumn()}>Delete column</Button>
-        )}
-        {!disabled && (
-          <DeleteIcon
+        <Box
+          sx={{
+            display: 'flex'
+          }}
+        >
+          <Typography
             sx={{
-              position: 'absolute',
-              top: '-6vh',
-              right: '1vw',
-              border: '1px solid black',
-              borderRadius: '50%',
-              padding: '2px',
-              '&:hover': {
-                cursor: 'pointer'
-              }
+              fontWeight: '700'
             }}
-            onClick={() => deleteTable()}
-          />
-        )}
-        {!disabled && !isEditing && (
-          <CreateIcon
-            sx={{
-              position: 'absolute',
-              top: '-6vh',
-              right: '5vw',
-              border: '1px solid black',
-              borderRadius: '50%',
-              padding: '2px',
-              '&:hover': {
-                cursor: 'pointer'
-              }
-            }}
-            onClick={() => setIsEditing(true)}
-          />
-        )}
+          >
+            {data.tableName}
+          </Typography>
+          {!disabled && isEditing && rowsNumber < MAX_ROWS_NUMBER && (
+            <Button
+              variant="contained"
+              sx={{ margin: '0 0.625rem 1.25rem 28rem' }}
+              onClick={() => addRow()}
+              startIcon={<AddIcon />}
+            >
+              Add row
+            </Button>
+          )}
+          {!disabled && isEditing && columnsNumber < MAX_COLUMNS_NUMBER && (
+            <Button
+              variant="contained"
+              sx={functionalButtonStyle}
+              onClick={() => addColumn()}
+              startIcon={<AddIcon />}
+            >
+              Add column
+            </Button>
+          )}
+          {!disabled && isEditing && rowsNumber > 2 && (
+            <Button
+              variant="contained"
+              sx={functionalButtonStyle}
+              onClick={() => deleteRow()}
+              startIcon={<RemoveIcon />}
+            >
+              Delete row
+            </Button>
+          )}
+          {!disabled && isEditing && columnsNumber > 2 && (
+            <Button
+              variant="contained"
+              sx={functionalButtonStyle}
+              onClick={() => deleteColumn()}
+              startIcon={<RemoveIcon />}
+            >
+              Delete column
+            </Button>
+          )}
+
+          {!disabled && !isEditing && (
+            <Button
+              variant="contained"
+              sx={{ margin: '0 0.625rem 1.25rem 55rem' }}
+              onClick={() => setIsEditing(true)}
+              startIcon={<CreateIcon />}
+            >
+              Edit Table
+            </Button>
+          )}
+          {!disabled && (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#dd2c00',
+                margin: '0 0.625rem 1.25rem 0',
+                '&:hover': {
+                  backgroundColor: '#a30000'
+                }
+              }}
+              onClick={() => deleteTable()}
+              startIcon={<DeleteIcon />}
+            >
+              Delete table
+            </Button>
+          )}
+        </Box>
+
         <Box
           sx={{
             width: '100%'
@@ -211,17 +247,8 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
           </Box>
         </Box>
       </Box>
-      <Button // TODO: Delete !!!!
-        sx={{
-          position: 'absolute',
-          left: '50vw'
-        }}
-        onClick={() => console.log(getValues())}
-      >
-        Get Values
-      </Button>
       {isEditing && (
-        <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTable()}>
+        <Button variant="contained" sx={{ marginTop: '1.5rem' }} onClick={() => saveTable()}>
           Save Table
         </Button>
       )}
