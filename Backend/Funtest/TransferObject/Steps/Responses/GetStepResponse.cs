@@ -5,7 +5,7 @@ namespace Funtest.TransferObject.Steps.Responses
 {
     public class GetStepResponse
     {
-        public Guid Id{ get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int StepNumber { get; set; }
         public JObject TestDataObject { get; set; }

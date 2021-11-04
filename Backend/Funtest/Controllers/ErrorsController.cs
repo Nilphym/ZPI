@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
 using Funtest.Interfaces;
+using Funtest.TransferObject.Error.Response;
 
 namespace Funtest.Controllers
 {
@@ -19,7 +20,7 @@ namespace Funtest.Controllers
         private readonly IErrorService _errorService;
         private readonly IUserService _userService;
         private readonly ITestService _testService;
-        private readonly IStepService _stepService; 
+        private readonly IStepService _stepService;
 
         public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService, IStepService stepService)
         {
@@ -177,6 +178,18 @@ namespace Funtest.Controllers
             if (result)
                 return Ok();
             return Conflict("An error has occurred.");
+        }
+
+        [HttpGet("ErrorTest/{errorId}")]
+        public async Task<ActionResult<ErrorTestResponse>> GetErrorTest([FromRoute] Guid errorId)
+        {
+            if (!_errorService.IsErrorExist(errorId))
+                return NotFound("Error with givenn id doesn't exist");
+
+            var errorTest = await _errorService.GetErrorTest(errorId);
+            errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+
+            return errorTest;
         }
     }
 }

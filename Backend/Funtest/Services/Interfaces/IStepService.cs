@@ -14,5 +14,6 @@ namespace Funtest.Interfaces
         IQueryable<GetStepResponse> GetAllSteps();
         Task<bool> EditStep(Guid id, EditStepRequest step);
         bool IsStepExist(Guid id);
+        Task<List<GetStepWithErrors>> GetStepsWithErrorsForTest(Guid testId);
     }
 }

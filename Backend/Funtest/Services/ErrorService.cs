@@ -3,7 +3,9 @@ using Data.Enums;
 using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Error.Requests;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Error.Responses;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -224,7 +226,7 @@ namespace Funtest.Services
             error.Code = $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8)}";
             error.Functionality = testSuiteCategory;
             Context.Errors.Add(error);
-                        
+
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
@@ -238,6 +240,31 @@ namespace Funtest.Services
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
+        }
+
+        public async Task<ErrorTestResponse> GetErrorTest(Guid errorId)
+        {
+            ErrorTestResponse errorTest = new ErrorTestResponse();
+
+            var error = await Context.Errors.Include(x => x.Test)
+                .Include(x => x.Step)
+                .Include(x => x.Step.TestProcedure)
+                .Include(x => x.Step.TestProcedure.TestCase)
+                .Where(x => x.Id == errorId)
+                .FirstAsync();
+
+            errorTest.TestId = (Guid)error.TestId;
+            errorTest.TestName = error.Test.Name;
+            errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryData;
+            errorTest.TestCaseProconditions = error.Step.TestProcedure.TestCase.Preconditions;
+
+            errorTest.Result = error.Step.TestProcedure.Result;
+            return errorTest;
+        }
+
+        public async Task<Error> GetModelErrorById(Guid id)
+        {
+            return await Context.Errors.FindAsync(id);
         }
     }
 }

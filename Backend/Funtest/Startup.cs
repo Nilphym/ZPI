@@ -16,20 +16,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
-using System.Security.Claims;
-using Data.Roles;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -62,6 +59,8 @@ namespace Funtest
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddTransient<ITestPlanService, TestPlanService>();
 
+            services.AddMvc().AddNewtonsoftJson();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -72,8 +71,6 @@ namespace Funtest
                    .AllowCredentials());
             });
             
-            services.AddMvc().AddNewtonsoftJson();
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });

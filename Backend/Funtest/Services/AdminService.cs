@@ -22,6 +22,11 @@ namespace Funtest.Services
             return null;
         }
 
+      /*  private string CreateUserName()
+        {
+
+        }*/
+
         /// <summary>
         /// TO DO: Jak zostanie czas przydałoby sie ogarnąc serwis do zwracania błędów z komunikatami
         /// </summary>
