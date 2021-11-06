@@ -73,17 +73,24 @@ namespace Funtest.Services
             if (request.Description != null)
                 error.Description = request.Description;
 
-            if (request.ErrorImpact != null)
-                error.ErrorImpact = (ErrorImpact)request.ErrorImpact;
-
-            if (request.ErrorPriority != null)
-                error.ErrorPriority = (ErrorPriority)request.ErrorPriority;
-
-            if (request.ErrorType != null)
-                error.ErrorType = (ErrorType)request.ErrorType;
-
             if (request.Name != null)
                 error.Name = request.Name;
+
+            try
+            {
+                if (request.ErrorImpact != null)
+                    error.ErrorImpact = (ErrorImpact)Enum.Parse(typeof(ErrorImpact), request.ErrorImpact);
+
+                if (request.ErrorPriority != null)
+                    error.ErrorPriority = (ErrorPriority)Enum.Parse(typeof(ErrorPriority), request.ErrorPriority);
+
+                if (request.ErrorType != null)
+                    error.ErrorType = (ErrorType)Enum.Parse(typeof(ErrorType), request.ErrorType);
+            }
+            catch
+            {
+                return false;
+            }
 
             Context.Errors.Update(error);
             if (await Context.SaveChangesAsync() == 0)
