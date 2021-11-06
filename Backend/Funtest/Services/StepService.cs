@@ -35,7 +35,7 @@ namespace Funtest.Services
         {
             var step = _mapper.Map<Step>(await Context.Steps.FindAsync(id));
             step.Name = dtoStep.Name;
-            step.TestDataObject = dtoStep.EntryDataObject;
+            step.TestDataObject = dtoStep.TestDataObject;
             step.TestData = JsonConvert.SerializeObject(step.TestDataObject);
             step.ControlPoint = dtoStep.ControlPoint;
 
@@ -56,6 +56,12 @@ namespace Funtest.Services
         {
             var steps = Context.Steps.Where(x => x.TestProcedureId == testProcedureId).AsQueryable();
             return steps.Select(x => _mapper.Map<GetStepResponse>(x)).ToList();
+        }
+
+        public async Task<GetStepResponse> GetStep(Guid stepId)
+        {
+            var step = await Context.Steps.FindAsync(stepId);
+            return _mapper.Map<GetStepResponse>(step);
         }
 
         public async Task<List<GetStepWithErrors>> GetStepsWithErrorsForTest(Guid testId)

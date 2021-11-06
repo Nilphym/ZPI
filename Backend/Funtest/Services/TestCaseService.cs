@@ -66,12 +66,13 @@ namespace Funtest.Services
         {
             var testCase = await Context.TestCases.FindAsync(id);
             return _mapper.Map<GetTestCaseResponse>(testCase);
-
         }
 
-        public List<GetTestCaseIdentityValueResponse> GetAllTestCases()
+        public List<GetTestCaseIdentityValueResponse> GetAllTestCasesForProduct(Guid productId)
         {
-            return Context.TestCases.AsQueryable().Select(x => _mapper.Map<GetTestCaseIdentityValueResponse>(x)).ToList();
+            return Context.TestCases.AsQueryable()
+                .Where(x => x.ProductId == productId)
+                .Select(x => _mapper.Map<GetTestCaseIdentityValueResponse>(x)).ToList();
         }
 
         public async Task<bool> ExistTestCase(Guid id)

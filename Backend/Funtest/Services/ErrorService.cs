@@ -32,22 +32,25 @@ namespace Funtest.Services
 
         public List<GetErrorResponse> GetAllErrors(Guid productId)
         {
-            var errors = Context.Errors.Where(x => x.Step.TestProcedure.TestCase.ProductId == productId).AsQueryable();
+            var errors = Context.Errors
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId)
+                .AsQueryable();
+
             return errors.Select(x => _mapper.Map<GetErrorResponse>(x)).ToList();
         }
 
-        public List<GetErrorResponse> GetAllErrorsToRetest()
+        public List<GetErrorResponse> GetAllErrorsToRetest(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == ErrorState.Retest)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.Retest)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
 
-        public List<GetErrorResponse> GetAllErrorsToFix()
+        public List<GetErrorResponse> GetAllErrorsToFix(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == ErrorState.New)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.New)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }

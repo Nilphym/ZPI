@@ -38,6 +38,7 @@ namespace Funtest
                .AddIdentity<User, IdentityRole>(opt =>
                {
                    opt.Lockout.AllowedForNewUsers = false;
+                   opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-._@+";
                })
                .AddSignInManager<SignInManager<User>>()
                .AddEntityFrameworkStores<DatabaseContext>();
@@ -53,7 +54,7 @@ namespace Funtest
             services.AddTransient<ITestCaseService, TestCaseService>();
             services.AddTransient<ITestService, TestService>();
             services.AddTransient<IErrorService, ErrorService>();
-            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ITestSuiteService, TestSuiteService>();
             services.AddTransient<IAttachmentService, AttachmentService>();

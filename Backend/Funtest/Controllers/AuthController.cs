@@ -1,4 +1,5 @@
 ﻿using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Auth.Requests;
 using Funtest.TransferObject.Email.Requests;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +13,10 @@ namespace Funtest.Controllers
     public class AuthController : ControllerBase
     {
         public readonly IAuthService _authService;
-        public readonly IEmailService _emailService;
 
-        public AuthController(IAuthService authService, IEmailService emailService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _emailService = emailService;
         }
 
         [HttpPost("login")]
@@ -30,15 +29,5 @@ namespace Funtest.Controllers
 
             return Unauthorized();
         }
-
-        [HttpPost("registration")]
-        public ActionResult UserRegistration(DataToInvitationLinkRequest request)
-        {
-            var result = _emailService.SendInvitationLink(request);
-            if (result)
-                return Ok();
-            return Problem("Problem with sending invitation email.");
-        }
-
     }
 }

@@ -19,6 +19,11 @@ namespace Funtest.Services
             _configuration = configuration;
         }
 
+        private string CreateInvitationUrl(string baseUrl, string role, Guid productId)
+        {
+            return $"{baseUrl}/{role}/{productId}";
+        }
+
         public bool SendInvitationLink(DataToInvitationLinkRequest request)
         {
             var mailMessage = new MimeMessage();
@@ -26,14 +31,14 @@ namespace Funtest.Services
             mailMessage.To.Add(new MailboxAddress(request.Email, request.Email));
             mailMessage.Subject = "Invitation link, Funtest";
 
-           // var builder = new BodyBuilder();
-           // builder.TextBody =
-            mailMessage.Body = new TextPart("plain")
-            {
-                Text = "Hello in Funtest Community",
-               
-            };
-           // mailMessage.HtmlBody = string.Format(@"<link href='dfdsewrewrw'");
+            var builder = new BodyBuilder();
+            builder.HtmlBody = string.Format(
+                @$"<h2>Hello in Funtest Community. </h2>
+                <p>{_configuration["EmailService:invitationMessage"]}</p>
+                <a href={CreateInvitationUrl("url", request.Role, request.ProductId)}>Click here to register</a>
+                <p>Best regards, {_configuration["EmailService:name"]}"
+            );
+            mailMessage.Body = builder.ToMessageBody();
 
             using (var smtpClient = new SmtpClient())
             {
