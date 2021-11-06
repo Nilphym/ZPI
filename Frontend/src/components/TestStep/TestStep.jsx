@@ -277,10 +277,10 @@ export const TestStep = ({ testStepId, isEditable }) => {
                     {selectedTestStep[testStepId].testData.map((data) => (
                       <EditableTable
                         parentComp="testStep"
-                        key={`${data.tableName}`}
+                        key={`${data.name}`}
                         disabled={!isEditing}
                         data={data}
-                        deleteTable={() => deleteTable(data.tableName)}
+                        deleteTable={() => deleteTable(data.name)}
                         testStepId={testStepId}
                       />
                     ))}
