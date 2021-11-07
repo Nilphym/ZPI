@@ -14,7 +14,7 @@ export const enhancedButtonIcons = {
 
 export const EnhancedIconButton = ({ icon, onClick }) => (
   <IconButton
-    sx={{ display: 'flex', alignItems: 'center' }}
+    sx={{ margin: '0 auto' }}
     onClick={onClick}
     component="span"
     color="primary"

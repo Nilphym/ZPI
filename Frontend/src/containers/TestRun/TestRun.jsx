@@ -1,96 +1,95 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { CircularProgress, Box } from '@mui/material';
 
-import { TestRunTable, ButtonStepCell, DataCell } from '../../components';
+import { TestRunTable, ButtonStepCell, ErrorDataCell, TestDataCell } from '../../components';
 import useTableSteps from '../../hooks/useTableSteps';
+import { getExecutionTest } from '../../redux/store';
 
-const Preconditions = ({ preconditions }) => {
-  return (
-    <Paper sx={{ padding: '0 .8rem .5rem .8rem' }}>
-      <Typography variant="overline">Preconditions</Typography>
-      <Typography variant="body1">{preconditions}</Typography>
-    </Paper>
-  );
-};
-
-Preconditions.propTypes = {
-  preconditions: PropTypes.string.isRequired
-};
-
-const ExpectedResult = ({ result }) => {
-  return (
-    <Paper sx={{ padding: '0 .8rem .5rem .8rem' }}>
-      <Typography variant="overline">Expected Result</Typography>
-      <Typography variant="body1">{result}</Typography>
-    </Paper>
-  );
-};
-
-ExpectedResult.propTypes = {
-  result: PropTypes.string.isRequired
-};
-
-// export const TestRun = ({ preconditions, expectedResult, rows }) => {
-//   return (
-//     <Box
-//       sx={{ width: '100%', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1em' }}
-//     >
-//       <Preconditions preconditions={preconditions} />
-//       <ExpectedResult result={expectedResult} />
-//       <TestRunTable rows={rows} />
-//     </Box>
-//   );
-// };
-export const TestRun = () => {
-  const data = React.useMemo(
-    () => [
-      {
-        checker: 'heheh',
-        steps: '',
-        associatedBugs: [''],
-        testData: '',
-        controlPoint: ['']
-      }
-    ],
-    []
-  );
-
-  const useTableStepsRef = useTableSteps(data.length);
+const TestRunOrigin = ({ test }) => {
+  const { steps } = test;
+  const useTableStepsRef = useTableSteps(steps.length);
 
   /* eslint-disable react/prop-types */
   const columns = React.useMemo(
     () => [
       {
-        id: 'checker',
-        minWidth: 35,
-        maxWidth: 35,
-        Cell: ({ row }) => <ButtonStepCell row={row} useTableStepsRef={useTableStepsRef} />
+        id: 'action',
+        minWidth: 45,
+        maxWidth: 45,
+        align: 'center',
+        Cell: ({ row }) => (
+          <ButtonStepCell
+            index={row.index}
+            id={row.original.stepId}
+            useTableStepsRef={useTableStepsRef}
+          />
+        )
       },
       {
-        Header: 'Steps',
-        accessor: 'steps'
+        Header: 'Step',
+        accessor: 'name',
+        minWidth: 100,
+        maxWidth: 100
       },
       {
-        Header: 'Associated bugs',
-        accessor: 'associatedBugs',
-        Cell: ({ row }) => <DataCell data={row.values.associatedBugs} />
+        Header: 'Associated errors',
+        accessor: 'errors',
+        minWidth: 65,
+        maxWidth: 65,
+        align: 'center',
+        Cell: ({ row }) => <ErrorDataCell errors={row.values.errors} />
       },
       {
         Header: 'Test data',
         accessor: 'testData',
-        Cell: ({ row }) => <DataCell data={row.values.associatedBugs} />
+        minWidth: 65,
+        maxWidth: 65,
+        align: 'center',
+        Cell: ({ row }) => <TestDataCell data={row.values.testData} />
       },
       {
-        Header: 'Control points',
-        accessor: 'controlPoint'
+        Header: 'Control point',
+        accessor: 'controlPoint',
+        minWidth: 100,
+        maxWidth: 100
       }
     ],
-    []
+    [useTableStepsRef.currentState]
   );
   /* eslint-enable react/prop-types */
 
-  return <TestRunTable columns={columns} data={data} />;
+  return <TestRunTable columns={columns} data={steps} />;
+};
+
+TestRunOrigin.propTypes = {
+  test: PropTypes.object.isRequired
+};
+
+export const TestRun = () => {
+  const dispatch = useDispatch();
+  const { test, loading } = useSelector((state) => state.testExecution);
+
+  useEffect(() => {
+    dispatch(getExecutionTest({ errorId: '91563764-7B2B-4FE9-AB0E-B40D5E62E9D6' }));
+  }, []);
+
+  return loading ? (
+    <Box
+      sx={{
+        width: '100%',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  ) : (
+    <TestRunOrigin test={test} />
+  );
 };
 
 export default TestRun;
