@@ -40,23 +40,6 @@ const routes = [
   }),
 
   (thisRef) =>
-  thisRef.put('Product/:id', (schema, request) => {
-    const {
-      id
-    } = request.params;
-    const {
-      name
-    } = JSON.parse(request.requestBody);
-    schema.products
-      .findBy({
-        id
-      })
-      .update({
-        name
-      });
-  }),
-
-  (thisRef) =>
   thisRef.post('Product', (schema, request) => {
     const newProductId = Math.floor(Math.random() * 10000);
     const {
