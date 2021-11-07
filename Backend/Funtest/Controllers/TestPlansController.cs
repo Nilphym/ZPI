@@ -8,11 +8,14 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestPlan.Responses;
 using Funtest.TransferObject.TestPlan.Requests;
+using Microsoft.AspNetCore.Authorization;
+using Data.Roles;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class TestPlansController : ControllerBase
     {
         private readonly ITestPlanService _testPlanService;

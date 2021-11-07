@@ -1,5 +1,7 @@
 ﻿using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Auth.Requests;
+using Funtest.TransferObject.Email.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -17,8 +19,8 @@ namespace Funtest.Controllers
             _authService = authService;
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
             var token = await _authService.Login(loginRequest);

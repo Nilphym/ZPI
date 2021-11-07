@@ -5,6 +5,7 @@ using Funtest.TransferObject.Attachment.Requests;
 using Funtest.TransferObject.Attachment.Responses;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
+using Funtest.TransferObject.Product.Responses;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
 using Funtest.TransferObject.Steps.Responses;
@@ -63,12 +64,15 @@ namespace Funtest.Infrastructure
             CreateMap<Test, GetTestIdentityInformationResponse>();
             CreateMap<Test, GetTestBasicInformationResponse>();
 
-            //Mapowanie dla Usera
-            CreateMap<AddProjectManageRequest, User>();
-
             //Mapowanie dla Załącznika
             CreateMap<AddAttachmentRequest, Attachment>();
             CreateMap<Attachment, GetAttachmentResponse>();
+
+            //Mapowania dla Usera
+            CreateMap<AddNewUserRequest, User>();
+
+            //Mapowania dla Produkty
+            CreateMap<Product, GetProductResponse>();
         }
     }
 }

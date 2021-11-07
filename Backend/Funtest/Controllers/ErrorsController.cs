@@ -7,24 +7,31 @@ using Funtest.TransferObject.Error.Responses;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
+using Funtest.Interfaces;
+using Funtest.TransferObject.Error.Response;
+using System.Net.Http.Headers;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = "Role")]
-    //[Authorize(Roles = Roles.Developer)]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class ErrorsController : ControllerBase
     {
         private readonly IErrorService _errorService;
         private readonly IUserService _userService;
         private readonly ITestService _testService;
+        private readonly IStepService _stepService;
 
-        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService)
+        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService, IStepService stepService)
         {
             _errorService = errorService;
             _userService = userService;
             _testService = testService;
+            _stepService = stepService;
         }
 
         [HttpPost]
@@ -36,6 +43,9 @@ namespace Funtest.Controllers
             var test = await _testService.FindTest(request.TestId);
             if (test == null)
                 return NotFound("Test with given id doesn't exist.");
+
+            if (!_stepService.IsStepExist(request.StepId))
+                return NotFound("Step with given id doesn't exist.");
 
             var result = await _errorService.AddError(request, test.TestSuite.Category);
             if (result)
@@ -76,14 +86,20 @@ namespace Funtest.Controllers
         [HttpGet("toFix")]
         public ActionResult<GetErrorResponse> GetAllErrorsToFix()
         {
-            var errors = _errorService.GetAllErrorsToFix();
+            var principal = HttpContext.User;
+            var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
+
+            var errors = _errorService.GetAllErrorsToFix(productId);
             return Ok(errors);
         }
 
         [HttpGet("toRetest")]
         public ActionResult<GetErrorResponse> GetAllErrorsToRetest()
         {
-            var errors = _errorService.GetAllErrorsToRetest();
+            var principal = HttpContext.User;
+            var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
+
+            var errors = _errorService.GetAllErrorsToRetest(productId);
             return Ok(errors);
         }
 
@@ -172,6 +188,18 @@ namespace Funtest.Controllers
             if (result)
                 return Ok();
             return Conflict("An error has occurred.");
+        }
+
+        [HttpGet("ErrorTest/{errorId}")]
+        public async Task<ActionResult<ErrorTestResponse>> GetErrorTest([FromRoute] Guid errorId)
+        {
+            if (!_errorService.IsErrorExist(errorId))
+                return NotFound("Error with givenn id doesn't exist");
+
+            var errorTest = await _errorService.GetErrorTest(errorId);
+            errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+
+            return errorTest;
         }
     }
 }

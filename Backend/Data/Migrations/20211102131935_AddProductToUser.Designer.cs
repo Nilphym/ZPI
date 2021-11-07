@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211102131935_AddProductToUser")]
+    partial class AddProductToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,9 +97,6 @@ namespace Data.Migrations
                     b.Property<Guid?>("StepId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TestId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("TesterId")
                         .HasColumnType("nvarchar(450)");
 
@@ -107,253 +106,9 @@ namespace Data.Migrations
 
                     b.HasIndex("StepId");
 
-                    b.HasIndex("TestId");
-
                     b.HasIndex("TesterId");
 
                     b.ToTable("Errors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("22bd1f84-b9e5-4183-9502-036eafe67622"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 0,
-                            ErrorType = 0,
-                            Functionality = "Authorization",
-                            Name = "Bug #1",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("e1c3e517-a777-47d7-8290-4eeb4d13711e"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 2,
-                            ErrorType = 0,
-                            Functionality = "Functional",
-                            Name = "Bug #2",
-                            ReportDate = new DateTime(2020, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("732e3666-43cd-4e3e-8e39-fdb5dbf82e25"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 3,
-                            ErrorType = 1,
-                            Functionality = "UX",
-                            Name = "Bug #3",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("32c006d0-179a-4322-bcf3-9a79eec57f22"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #4",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("bc28a86d-2e12-488d-9dde-1562b257a6fc"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #5",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("2fdd52ff-03bb-4e0b-adea-e77d5fcebfc3"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #6",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("636e8b23-d82e-4941-90cb-4c02c21839ba"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 0,
-                            ErrorType = 0,
-                            Functionality = "Authorization",
-                            Name = "Bug #1",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("691dd793-63af-4cca-8f0a-cdf807536fa0"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 2,
-                            ErrorType = 0,
-                            Functionality = "Functional",
-                            Name = "Bug #2",
-                            ReportDate = new DateTime(2020, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("7d50c21c-7bd9-433a-bd1d-647e2ca4c1cd"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "651799e0-fccf-4e6d-a5d2-1c153ae77f72",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 0,
-                            ErrorPriority = 2,
-                            ErrorState = 3,
-                            ErrorType = 1,
-                            Functionality = "UX",
-                            Name = "Bug #3",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("ca7de2bc-78e7-46b0-a3ad-a55ee4825671"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #4",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("0bc10098-4ae2-400c-8bd7-8a17ce46bb1a"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #5",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        },
-                        new
-                        {
-                            Id = new Guid("7927da93-68ad-473d-8e5c-1df60fd5ea7d"),
-                            Code = "B-2434343",
-                            Deadline = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Error description",
-                            DeveloperId = "4a15e2f7-52dd-4e22-b0f4-241944216775",
-                            EndDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ErrorImpact = 1,
-                            ErrorPriority = 0,
-                            ErrorState = 3,
-                            ErrorType = 2,
-                            Functionality = "Database",
-                            Name = "Bug #6",
-                            ReportDate = new DateTime(2021, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            RetestsRequired = 2,
-                            StepId = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            TestId = new Guid("8c890c1a-5803-4f7b-0e6d-08d99a2156c6"),
-                            TesterId = "5ffe2032-6c7c-48c6-950f-e47976b2389a"
-                        });
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>
@@ -435,15 +190,6 @@ namespace Data.Migrations
                     b.HasIndex("TestProcedureId");
 
                     b.ToTable("Steps");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b36f4804-5713-4e63-04d2-08d98ef5f25b"),
-                            ControlPoint = "Now you sholud see main page",
-                            Name = "Step #1",
-                            StepNumber = 1
-                        });
                 });
 
             modelBuilder.Entity("Data.Models.Test", b =>
@@ -820,10 +566,6 @@ namespace Data.Migrations
                         .WithMany("Errors")
                         .HasForeignKey("StepId");
 
-                    b.HasOne("Data.Models.Test", "Test")
-                        .WithMany("Errors")
-                        .HasForeignKey("TestId");
-
                     b.HasOne("Data.Models.Tester", "Tester")
                         .WithMany("Errors")
                         .HasForeignKey("TesterId");
@@ -831,8 +573,6 @@ namespace Data.Migrations
                     b.Navigation("Developer");
 
                     b.Navigation("Step");
-
-                    b.Navigation("Test");
 
                     b.Navigation("Tester");
                 });
@@ -997,11 +737,6 @@ namespace Data.Migrations
                 });
 
             modelBuilder.Entity("Data.Models.Step", b =>
-                {
-                    b.Navigation("Errors");
-                });
-
-            modelBuilder.Entity("Data.Models.Test", b =>
                 {
                     b.Navigation("Errors");
                 });

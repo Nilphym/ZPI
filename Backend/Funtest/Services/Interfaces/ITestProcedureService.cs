@@ -13,7 +13,7 @@ namespace Funtest.Services.Interfaces
         Task<bool> AddTestProcedure(AddTestProcedureRequest testProcedure);
         Task<GetTestProcedureResponse> GetTestProcedureById(Guid id);
         Task<bool> EditTestProcedure(Guid id, EditTestProcedureRequest request);
-        List<GetTestProcedureIdentityValueResponse> GetAllTestProcedures();
+        List<GetTestProcedureIdentityValueResponse> GetAllTestProceduresForProduct(Guid productId);
 
     }
 }

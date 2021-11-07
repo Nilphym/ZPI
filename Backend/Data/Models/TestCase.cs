@@ -16,18 +16,18 @@ namespace Data.Models
         public string Code { get; set; }
 
         public string Preconditions { get; set; }
-    
+
         public string EntryData { get; set; }
 
         [NotMapped]
         public JObject EntryDataObject
         {
             get
-        {
+            {
                 return JsonConvert.DeserializeObject<JObject>(string.IsNullOrEmpty(EntryData) ? "{}" : EntryData);
             }
             set
-        {
+            {
                 EntryData = value == null ? "{}" : value.ToString();
             }
         }

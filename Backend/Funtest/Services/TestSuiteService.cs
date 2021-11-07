@@ -30,14 +30,35 @@ namespace Funtest.Services
             return true;
         }
 
-        public List<GetTestSuiteResponse> GetAllTestSuites()
+        public async Task<bool> EditTestSuite(Guid id, EditTestSuiteRequest request)
         {
-            return Context.TestSuites.AsQueryable().Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
+            var testSuite = await Context.TestSuites.FindAsync(id);
+
+            if (testSuite == null)
+                return false;
+
+            if (request.Category == "")
+                return false;
+
+            testSuite.Category = request.Category;
+            Context.Update(testSuite);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+
+            return true;
+        }
+
+        public List<GetTestSuiteResponse> GetAllTestSuitesForProduct(Guid productId)
+        {
+            return Context.TestSuites.AsQueryable()
+                .Where(x => x.TestPlan.ProductId == productId)
+                .Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
         }
 
         public List<GetTestSuiteResponse> GetTestSuiteForTestPlan(Guid testPlanId)
         {
-            var testSuites =  Context.TestSuites.Where(x => x.TestPlanId == testPlanId).ToList();
+            var testSuites = Context.TestSuites.Where(x => x.TestPlanId == testPlanId).ToList();
             return testSuites.Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
         }
 

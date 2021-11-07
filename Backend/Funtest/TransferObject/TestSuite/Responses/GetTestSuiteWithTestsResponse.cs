@@ -10,6 +10,6 @@ namespace Funtest.TransferObject.TestSuite.Responses
 
         public string Category { get; set; }
         
-        public List<GetTestIdentityInformationResponse> Tests { get; set; }
+        public List<GetTestIdentityInformationResponse> TestsForTestSuite { get; set; }
     }
 }

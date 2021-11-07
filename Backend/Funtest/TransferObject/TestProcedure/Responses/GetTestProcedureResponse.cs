@@ -8,7 +8,7 @@ namespace Funtest.TransferObject.TestProcedure.Responses
         public Guid Id { get; set; }
         public string Result { get; set; }
         public string Code { get; set; }
-        public Guid TestCaseId { get; set; }
+        public Guid? TestCaseId { get; set; }
         public List<Guid> StepIds { get; set; }
     }
 }

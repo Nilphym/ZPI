@@ -1,6 +1,7 @@
 ﻿using Data.Enums;
 using Data.Models;
 using Funtest.TransferObject.Error.Requests;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Error.Responses;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,12 @@ namespace Funtest.Services.Interfaces
     public interface IErrorService
     {
         Task<GetErrorResponse> GetErrorById(Guid id);
+        Task<Error> GetModelErrorById(Guid id);
         Task<bool> AddError(AddErrorRequest request, string testSuiteCategory);
         Task<bool> SetErrorCategory(Error error, string category);
         List<GetErrorResponse> GetAllErrors(Guid productId);
-        List<GetErrorResponse> GetAllErrorsToRetest();
-        List<GetErrorResponse> GetAllErrorsToFix();
+        List<GetErrorResponse> GetAllErrorsToRetest(Guid productId);
+        List<GetErrorResponse> GetAllErrorsToFix(Guid productId);
         List<GetErrorResponse> GetAllErrorsAssignedToDeveloper(string developerId);
         Task<bool> EditError(Guid id, EditErrorRequest request);
         Task<bool> AssignBugToDeveloper(Guid errorId, DeveloperAssignedToErrorRequest request);
@@ -28,5 +30,6 @@ namespace Funtest.Services.Interfaces
         List<string> ErrorImpacts();
         List<string> ErrorPriorities();
         List<string> ErrorTypes();
+        Task<ErrorTestResponse> GetErrorTest(Guid errorId);
     }
 }

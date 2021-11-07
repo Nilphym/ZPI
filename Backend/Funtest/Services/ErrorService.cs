@@ -3,7 +3,9 @@ using Data.Enums;
 using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Error.Requests;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Error.Responses;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,22 +32,25 @@ namespace Funtest.Services
 
         public List<GetErrorResponse> GetAllErrors(Guid productId)
         {
-            var errors = Context.Errors.Where(x => x.Step.TestProcedure.TestCase.ProductId == productId).AsQueryable();
+            var errors = Context.Errors
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId)
+                .AsQueryable();
+
             return errors.Select(x => _mapper.Map<GetErrorResponse>(x)).ToList();
         }
 
-        public List<GetErrorResponse> GetAllErrorsToRetest()
+        public List<GetErrorResponse> GetAllErrorsToRetest(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == ErrorState.Retest)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.Retest)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
 
-        public List<GetErrorResponse> GetAllErrorsToFix()
+        public List<GetErrorResponse> GetAllErrorsToFix(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.ErrorState == ErrorState.New)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.New)
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
@@ -68,17 +73,24 @@ namespace Funtest.Services
             if (request.Description != null)
                 error.Description = request.Description;
 
-            if (request.ErrorImpact != null)
-                error.ErrorImpact = (ErrorImpact)request.ErrorImpact;
-
-            if (request.ErrorPriority != null)
-                error.ErrorPriority = (ErrorPriority)request.ErrorPriority;
-
-            if (request.ErrorType != null)
-                error.ErrorType = (ErrorType)request.ErrorType;
-
             if (request.Name != null)
                 error.Name = request.Name;
+
+            try
+            {
+                if (request.ErrorImpact != null)
+                    error.ErrorImpact = (ErrorImpact)Enum.Parse(typeof(ErrorImpact), request.ErrorImpact);
+
+                if (request.ErrorPriority != null)
+                    error.ErrorPriority = (ErrorPriority)Enum.Parse(typeof(ErrorPriority), request.ErrorPriority);
+
+                if (request.ErrorType != null)
+                    error.ErrorType = (ErrorType)Enum.Parse(typeof(ErrorType), request.ErrorType);
+            }
+            catch
+            {
+                return false;
+            }
 
             Context.Errors.Update(error);
             if (await Context.SaveChangesAsync() == 0)
@@ -224,7 +236,7 @@ namespace Funtest.Services
             error.Code = $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8)}";
             error.Functionality = testSuiteCategory;
             Context.Errors.Add(error);
-                        
+
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
@@ -238,6 +250,31 @@ namespace Funtest.Services
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
+        }
+
+        public async Task<ErrorTestResponse> GetErrorTest(Guid errorId)
+        {
+            ErrorTestResponse errorTest = new ErrorTestResponse();
+
+            var error = await Context.Errors.Include(x => x.Test)
+                .Include(x => x.Step)
+                .Include(x => x.Step.TestProcedure)
+                .Include(x => x.Step.TestProcedure.TestCase)
+                .Where(x => x.Id == errorId)
+                .FirstAsync();
+
+            errorTest.TestId = (Guid)error.TestId;
+            errorTest.TestName = error.Test.Name;
+            errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryData;
+            errorTest.TestCaseProconditions = error.Step.TestProcedure.TestCase.Preconditions;
+
+            errorTest.Result = error.Step.TestProcedure.Result;
+            return errorTest;
+        }
+
+        public async Task<Error> GetModelErrorById(Guid id)
+        {
+            return await Context.Errors.FindAsync(id);
         }
     }
 }
