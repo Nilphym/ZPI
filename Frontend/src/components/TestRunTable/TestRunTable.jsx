@@ -15,7 +15,7 @@ export const TestRunTable = ({ columns, data }) => {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({ columns, data });
 
   return (
-    <TableContainer sx={{ margin: 'auto 1rem' }} component={Paper}>
+    <TableContainer component={Paper}>
       <Table sx={{ minWidth: '800px' }} {...getTableProps()}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
@@ -74,3 +74,4 @@ export default TestRunTable;
 export * from './ButtonStepCell';
 export * from './TestDataCell';
 export * from './ErrorDataCell';
+export * from './TableDataDialog';

@@ -13,14 +13,28 @@ export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ e
   return data;
 });
 
+export const executeTest = createAsyncThunk('testExecution/execute', async ({ testId }) => {
+  const data = await server().put({ url: `Test/${testId}/execute` });
+  return data;
+});
+
 const prepareDataForView = (test) => ({
   ...test,
+  testCaseEntryData: Array.isArray(test.testCaseEntryData)
+    ? test.testCaseEntryData.map((dataItem, index) =>
+        typeof dataItem === 'object'
+          ? { ...dataItem, code: `Entry Data ${index + 1}` }
+          : { name: dataItem, code: `Entry Data ${index + 1}` }
+      )
+    : [],
   steps: test.steps.map((step) => ({
     ...step,
-    testData: step.testData.map((tableData) => ({
-      ...tableData,
-      code: `TD-${hash(tableData).slice(0, 8).toUpperCase()}`
-    })),
+    testData: Array.isArray(step.testData)
+      ? step.testData.map((tableData) => ({
+          ...tableData,
+          code: `TD-${hash(tableData).slice(0, 8).toUpperCase()}`
+        }))
+      : [],
     errors: step.errorIds.map((errorId) => ({
       id: errorId,
       code: `B-${errorId.slice(0, 8).toUpperCase()}`

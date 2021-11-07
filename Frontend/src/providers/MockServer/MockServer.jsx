@@ -25,7 +25,10 @@ const makeServer = () =>
     routes() {
       this.namespace = 'api/';
       this.post('Auth/login', () => {
-        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpZCI6MSwicm9sZSI6ImRldiJ9.l3t9QmgNcBbwSiCK2i6aV7w1Wu51vDmVJuQe9d6DDPA';
+        return {
+          token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0ZWZhbkB3b3Jrc3BhY2UuY29tIiwidXNlcklkIjoiNGExNWUyZjctNTJkZC00ZTIyLWIwZjQtMjQxOTQ0MjE2Nzc1IiwibmFtZSI6Ik5vcmJlcnQiLCJzdXJuYW1lIjoiU3RlZmFuIiwicHJvZHVjdElkIjoiOTYzNDdlZTktOGY3My00OTM5LWFmMmUtMTIxMTJlN2U3NjFhIiwicHJvZHVjdE5hbWUiOiJQcm9kdWt0IzEiLCJyb2xlIjoiRGV2ZWxvcGVyIiwiZXhwIjoyNjM2MzIwMzUwLCJpc3MiOiJGdW50ZXN0IiwiYXVkIjoiRnVudGVzdCJ9.xxInsV0kqM4hROoYCs3wqApbKpbhTWm7cCyhiNXcg0M'
+        };
       });
 
       makeRoutes(this);

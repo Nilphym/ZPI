@@ -12,14 +12,22 @@ import {
   DialogActions
 } from '@mui/material';
 
-import { getBug } from '../../redux/store';
+import { getBug, evaluateBug } from '../../redux/store';
 
 const Bold = styled('span')({
   fontWeight: 'bold'
 });
 
 const BugDetailsModal = ({ handleClose, open }) => {
-  const { name, description, functionality, type } = useSelector((state) => state.bugs.bugDetails);
+  const { id, name, description, functionality, type } = useSelector(
+    (state) => state.bugs.bugDetails
+  );
+  const dispatch = useDispatch();
+
+  const handleEvaluate = (result) => {
+    dispatch(evaluateBug({ errorId: id, result }));
+    handleClose();
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -44,8 +52,16 @@ const BugDetailsModal = ({ handleClose, open }) => {
           </Typography>
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
         <Button onClick={handleClose}>Close</Button>
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button variant="contained" color="error" onClick={() => handleEvaluate(false)}>
+            Mark as unfixed
+          </Button>
+          <Button variant="contained" onClick={() => handleEvaluate(true)}>
+            Mark as fixed
+          </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   );

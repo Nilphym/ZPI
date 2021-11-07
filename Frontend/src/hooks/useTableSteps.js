@@ -16,7 +16,8 @@ const stepStates = {
 };
 
 const reducer = (state, action) => {
-  const lastStepNumber = Object.keys(state).length;
+  const stepCount = Object.keys(state).length;
+  const lastStepNumber = stepCount - 1;
 
   switch (action.type) {
     case actionTypes.done:
@@ -27,8 +28,7 @@ const reducer = (state, action) => {
       return { ...state, [action.payload]: stepStates.error };
     case actionTypes.clear: {
       const newState = {};
-
-      for (let i = 0; i < lastStepNumber; i++) {
+      for (let i = 0; i < stepCount; i++) {
         if (i < action.payload) {
           newState[i] = state[i];
         } else if (i === action.payload) {

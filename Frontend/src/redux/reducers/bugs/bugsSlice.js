@@ -10,7 +10,7 @@ const initialState = {
   bugDetails: {}
 };
 
-export const getPossibleValues = createAsyncThunk('bugs/get/values', async () => {
+export const getPossibleBugValues = createAsyncThunk('bugs/get/values', async () => {
   const promises = [];
   promises.push(server().get({ url: 'Errors/ErrorTypes' }));
   promises.push(server().get({ url: 'Errors/ErrorImpacts' }));
@@ -49,6 +49,16 @@ export const getBugs = createAsyncThunk('bugs/get/all', async () => {
 export const getBug = createAsyncThunk('bugs/get', async ({ errorId }) => {
   const data = await server().get({ url: `Errors/${errorId}` });
   return prepareDataForView([data])[0];
+});
+
+export const evaluateBug = createAsyncThunk('bugs/evaluate', async ({ errorId, result }) => {
+  const data = await server().put({ url: `Errors/evaluate/${errorId}`, data: { result } });
+  return data;
+});
+
+export const postBug = createAsyncThunk('bugs/post', async ({ json }) => {
+  const data = await server().post({ url: 'Errors', data: json });
+  return data;
 });
 
 const prepareDataForServer = (json) => {
@@ -104,7 +114,7 @@ export const bugsSlice = createSlice({
       .addCase(getBugs.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getPossibleValues.fulfilled, (state, action) => {
+      .addCase(getPossibleBugValues.fulfilled, (state, action) => {
         state.possibleValues = action.payload;
       })
       .addCase(getBug.fulfilled, (state, action) => {

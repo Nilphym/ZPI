@@ -32,7 +32,7 @@ import {
   rejectBug,
   takeBug,
   resignFromBug,
-  getPossibleValues
+  getPossibleBugValues
 } from '../../redux/store';
 
 export const bugTableTypes = {
@@ -74,7 +74,7 @@ export const BugTable = ({ type }) => {
 
   useEffect(() => {
     dispatch(getBugs());
-    dispatch(getPossibleValues());
+    dispatch(getPossibleBugValues());
   }, []);
 
   const closeDialog = () => {

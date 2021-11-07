@@ -17,7 +17,7 @@ const Layout = () => {
   switch (token?.role) {
     case 'Tester':
       return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'min-content 1fr' }}>
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
@@ -39,7 +39,7 @@ const Layout = () => {
       );
     case 'Developer':
       return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'min-content 1fr' }}>
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
@@ -62,7 +62,7 @@ const Layout = () => {
       );
     case 'ProjectManager':
       return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'min-content 1fr' }}>
           <Navbar
             links={[
               {

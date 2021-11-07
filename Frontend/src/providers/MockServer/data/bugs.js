@@ -36,6 +36,11 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.post('Errors', (schema, request) => {
+      console.log(JSON.parse(request.requestBody));
+    }),
+
+  (thisRef) =>
     thisRef.put('Errors/take/:id', (_, request) => {
       const { id } = request.params;
       const personId = JSON.parse(request.requestBody);
@@ -61,6 +66,17 @@ const routes = [
       const requiredRetests = JSON.parse(request.requestBody);
       console.log(requiredRetests, id);
       schema.bugs.findBy({ id }).update('errorState', 'Resolved');
+    }),
+
+  (thisRef) =>
+    thisRef.put('Errors/evaluate/:id', (schema, request) => {
+      const { id } = request.params;
+      const result = JSON.parse(request.requestBody);
+      if (result) {
+        console.log(`bugId: ${id} || retestsDone + 1`);
+      } else {
+        console.log(`bugId: ${id} || retestsFailed + 1`);
+      }
     }),
 
   (thisRef) =>
