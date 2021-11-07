@@ -1,73 +1,68 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TableCell, IconButton, Box } from '@mui/material';
+import { IconButton, Box } from '@mui/material';
 import { Done, Error } from '@mui/icons-material';
 
-export const ButtonStepCell = ({ row, useTableStepsRef }) => {
-  const [currentState, stepStates, doneAction, errorAction, clearAction] = useTableStepsRef;
+// eslint-disable-next-line no-unused-vars
+export const ButtonStepCell = ({ index, id, useTableStepsRef }) => {
+  const { currentState, stepStates, doneAction, errorAction, clearAction } = useTableStepsRef;
 
-  const handleClear = () => {
-    if (Object.values(currentState).some((stepState) => stepState === stepStates.error)) {
-      // TODO: add modal with info that you cannot clear after error has been reported
-    } else {
-      // TODO: add modal asking if you sure want to clear
-      clearAction(row.index);
-    }
+  const handleErrorReport = async () => {
+    // TODO modal with error report
+    errorAction(index);
   };
 
-  switch (currentState[row.index]) {
+  switch (currentState[index]) {
     case stepStates.choose:
       return (
-        <TableCell sx={{ width: '5rem' }}>
+        <>
           <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
             <IconButton
               component="span"
               color="primary"
               size="small"
-              onClick={() => doneAction(row.index)}
+              onClick={() => doneAction(index)}
             >
               <Done />
             </IconButton>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-              onClick={() => errorAction(row.index)}
-            >
+            <IconButton component="span" color="primary" size="small" onClick={handleErrorReport}>
               <Error />
             </IconButton>
           </Box>
-        </TableCell>
+        </>
       );
 
     case stepStates.done:
       return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small" onClick={handleClear}>
-              <Done />
-            </IconButton>
-          </Box>
-        </TableCell>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IconButton
+            disabled={Object.values(currentState).some((state) => state === 'error')}
+            component="span"
+            color="primary"
+            size="small"
+            onClick={() => clearAction(index)}
+          >
+            <Done />
+          </IconButton>
+        </Box>
       );
 
     case stepStates.error:
       return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small">
-              <Error />
-            </IconButton>
-          </Box>
-        </TableCell>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IconButton disabled component="span" color="primary" size="small">
+            <Error />
+          </IconButton>
+        </Box>
       );
 
     default:
-      return <TableCell sx={{ width: '5rem' }} />;
+      return null;
   }
 };
 
 ButtonStepCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  useTableStepsRef: PropTypes.func.isRequired
+  index: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  useTableStepsRef: PropTypes.object.isRequired
 };

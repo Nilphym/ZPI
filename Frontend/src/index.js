@@ -15,6 +15,7 @@ import { AuthManager } from './providers';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
+      {/* <MockServer> */}
       <BrowserRouter>
         <AuthManager>
           <LocalizationProvider dateAdapter={DateAdapter}>
@@ -25,6 +26,7 @@ ReactDOM.render(
           </LocalizationProvider>
         </AuthManager>
       </BrowserRouter>
+      {/* </MockServer> */}
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

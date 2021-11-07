@@ -26,7 +26,7 @@ import {
   SelectColumnFilter
 } from '../../components';
 import {
-  getRows,
+  getBugs,
   putRows,
   resolveBug,
   rejectBug,
@@ -73,7 +73,7 @@ export const BugTable = ({ type }) => {
   const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
 
   useEffect(() => {
-    dispatch(getRows());
+    dispatch(getBugs());
     dispatch(getPossibleValues());
   }, []);
 
@@ -327,14 +327,14 @@ export const BugTable = ({ type }) => {
   const onSubmitBugStatus = async (arg) => {
     closeDialog();
     await dispatch(dialog.action(arg));
-    await dispatch(getRows());
+    await dispatch(getBugs());
   };
 
   const onSubmitBugDetails = async (json) => {
     const { id } = json;
     delete json.id;
     await dispatch(putRows({ id, json }));
-    await dispatch(getRows());
+    await dispatch(getBugs());
   };
 
   const prepareRows = (rows) =>

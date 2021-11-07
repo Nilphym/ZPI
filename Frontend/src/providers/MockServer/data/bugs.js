@@ -30,6 +30,12 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.get('Errors/:id', (schema, request) => {
+      const { id } = request.params;
+      return schema.bugs.findBy({ id }).attrs;
+    }),
+
+  (thisRef) =>
     thisRef.put('Errors/take/:id', (_, request) => {
       const { id } = request.params;
       const personId = JSON.parse(request.requestBody);

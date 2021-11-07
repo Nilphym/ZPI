@@ -6,7 +6,8 @@ import server from '../../../services/server';
 const initialState = {
   rows: [],
   loading: true,
-  possibleValues: {}
+  possibleValues: {},
+  bugDetails: {}
 };
 
 export const getPossibleValues = createAsyncThunk('bugs/get/values', async () => {
@@ -40,9 +41,14 @@ const prepareDataForView = (rows) => {
   }));
 };
 
-export const getRows = createAsyncThunk('bugs/get/rows', async () => {
+export const getBugs = createAsyncThunk('bugs/get/all', async () => {
   const data = await server().get({ url: 'Errors/toFix' });
   return prepareDataForView(data);
+});
+
+export const getBug = createAsyncThunk('bugs/get', async ({ errorId }) => {
+  const data = await server().get({ url: `Errors/${errorId}` });
+  return prepareDataForView([data])[0];
 });
 
 const prepareDataForServer = (json) => {
@@ -57,7 +63,7 @@ const prepareDataForServer = (json) => {
   };
 };
 
-export const putRows = createAsyncThunk('bugs/put/rows', async ({ id, json }) => {
+export const putRows = createAsyncThunk('bugs/put/all', async ({ id, json }) => {
   const data = await server().put({ url: `Errors/${id}`, data: prepareDataForServer(json) });
   return data;
 });
@@ -87,19 +93,30 @@ export const bugsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getRows.fulfilled, (state, action) => {
+      .addCase(getBugs.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getRows.rejected, (state) => {
+      .addCase(getBugs.rejected, (state) => {
         state.loading = false;
         state.rows = [];
       })
-      .addCase(getRows.pending, (state) => {
+      .addCase(getBugs.pending, (state) => {
         state.loading = true;
       })
       .addCase(getPossibleValues.fulfilled, (state, action) => {
         state.possibleValues = action.payload;
+      })
+      .addCase(getBug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bugDetails = action.payload;
+      })
+      .addCase(getBug.rejected, (state) => {
+        state.loading = false;
+        state.bugDetails = {};
+      })
+      .addCase(getBug.pending, (state) => {
+        state.loading = true;
       });
   }
 });

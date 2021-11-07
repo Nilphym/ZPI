@@ -3,10 +3,11 @@ import { createServer } from 'miragejs';
 
 import tests from './data/tests';
 import bugs from './data/bugs';
+import testExecution from './data/testExecution';
 
 // DOCS: https://miragejs.com/tutorial/part-1/
 // Create new feature and add it to this list below
-const features = [tests, bugs];
+const features = [tests, bugs, testExecution];
 
 const makeModels = () => Object.assign(...features.map((feature) => feature.models));
 
@@ -23,7 +24,7 @@ const makeServer = () =>
     models: makeModels(),
     routes() {
       this.namespace = 'api/';
-      this.post('signin', () => {
+      this.post('Auth/login', () => {
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpZCI6MSwicm9sZSI6ImRldiJ9.l3t9QmgNcBbwSiCK2i6aV7w1Wu51vDmVJuQe9d6DDPA';
       });
 
