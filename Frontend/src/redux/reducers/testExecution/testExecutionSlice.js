@@ -45,6 +45,11 @@ const prepareDataForView = (test) => ({
 export const testExecutionSlice = createSlice({
   name: 'testExecution',
   initialState,
+  reducers: {
+    setExecutionTestId: (state, action) => {
+      state.test.testId = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getExecutionTest.fulfilled, (state, action) => {
