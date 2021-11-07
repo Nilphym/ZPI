@@ -30,7 +30,14 @@ const defaultValues = {
 
 const schema = yup.object().shape({
   [formFields.login]: yup.string().required(),
-  [formFields.password]: yup.string().required().min(6)
+  [formFields.password]: yup
+    .string()
+    .required()
+    .min(8)
+    .matches(RegExp('(.*[a-z].*)'), 'Lowercase')
+    .matches(RegExp('(.*[A-Z].*)'), 'Uppercase')
+    .matches(RegExp('(.*\\d.*)'), 'Number')
+    .matches(RegExp('[!@#$%^&*(),.?":{}|<>]'), 'Special')
 });
 
 export const LoginPanel = () => {
@@ -116,7 +123,8 @@ export const LoginPanel = () => {
                 helperText={!!errors.login && 'Login field cannot be empty!'}
                 {...field}
                 sx={{
-                  marginTop: '0.625rem'
+                  marginTop: '0.625rem',
+                  width: '21.875rem'
                 }}
               />
             )}
@@ -132,11 +140,13 @@ export const LoginPanel = () => {
                 error={!!errors.password}
                 helperText={
                   !!errors.password &&
-                  'Password field cannot be empty and must contain min. 6 letters!'
+                  `Password field cannot be empty and must contain min. 8 letters, 
+                  lowercase, uppercase, digit and special sign!`
                 }
                 {...field}
                 sx={{
-                  margin: '0.625rem 0 0.625rem 0'
+                  margin: '0.625rem 0 0.625rem 0',
+                  width: '21.875rem'
                 }}
               />
             )}

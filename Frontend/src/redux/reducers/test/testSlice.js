@@ -422,11 +422,13 @@ export const testSlice = createSlice({
         const {
           id,
           result,
+          testCaseId,
           stepsIds: testStepsIds
         } = action.payload;
         state.selectedTestProcedure.id = id;
         state.selectedTestProcedure.testStepsIds = testStepsIds;
         state.selectedTestProcedure.result = result;
+        state.selectedTestProcedure.testCaseId = testCaseId;
         state.isLoadingTestProcedure = false;
         state.isLoadingTestStep = {};
         state.selectedTestStep = {};

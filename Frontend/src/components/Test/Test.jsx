@@ -214,13 +214,21 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                  testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
-                    <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                      {testProcedureCode}
-                    </MenuItem>
-                  ))}
+                  testProceduresCodes.filter(true).map(
+                    (
+                      { testProcedureId, testProcedureCode } // TODO: Poprawić ....
+                    ) => (
+                      <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                        {testProcedureCode}
+                      </MenuItem>
+                    )
+                  )}
                 <MenuItem value="">
-                  <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+                  {selectedTestCaseId ? (
+                    <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+                  ) : (
+                    <Typography>Choose Test Case First</Typography>
+                  )}
                 </MenuItem>
               </Select>
             </Box>

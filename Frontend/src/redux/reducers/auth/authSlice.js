@@ -136,6 +136,26 @@ export const changeUserPasswordByEmail = createAsyncThunk(
   }
 );
 
+export const inviteUser = createAsyncThunk(
+  'user/invite/byPM',
+  async ({
+    email,
+    role
+  }, {
+    getState
+  }) => {
+    const response = await server().post({
+      url: `User/${getState().auth.token.userId}/passwordByEmail`, // TODO: Poprawić
+      body: {
+        projectId: getState().auth.token.projectId,
+        email,
+        role
+      }
+    });
+    return response;
+  }
+);
+
 const token = authService.getDecodedToken();
 const initialState = token ? {
   isLoggedIn: true,
@@ -255,14 +275,18 @@ export const authSlice = createSlice({
       })
       .addCase(getUsers.rejected, (_, action) => {
         alert(action.error.message);
-
       })
       .addCase(deleteUser.fulfilled, () => {
         alert('User deleted');
       })
       .addCase(deleteUser.rejected, (_, action) => {
         alert(action.error.message);
-
+      })
+      .addCase(inviteUser.fulfilled, () => {
+        alert('User invited');
+      })
+      .addCase(inviteUser.rejected, (_, action) => {
+        alert(action.error.message);
       });
   }
 });
