@@ -43,7 +43,14 @@ namespace Funtest.Controllers
             return Ok(_stepService.GetAllSteps());
         }
 
-        [HttpGet("{testProcedureId}")]
+        [HttpGet("{stepId}")]
+        public async Task<ActionResult<GetStepResponse>> GetStep([FromRoute] Guid stepId)
+        {
+            var step = await _stepService.GetStep(stepId);
+            return step != null ? Ok(step) : NotFound();
+        }
+
+        [HttpGet("testprocedure/{testProcedureId}")]
         public ActionResult<IEnumerable<GetStepResponse>> GetStepsForTestProcedure([FromRoute] Guid testProcedureId)
         {
             if (_testProcedureService.IsTestProcedureExist(testProcedureId))

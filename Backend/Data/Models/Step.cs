@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,11 +13,11 @@ namespace Data.Models
         public Guid Id { get; set; }
 
         [Required]
-        public string Name{ get; set; }
+        public string Name { get; set; }
 
         public int StepNumber { get; set; }
-        
-        public string  TestData { get; set; }
+
+        public string TestData { get; set; }
 
         [NotMapped]
         public JObject? TestDataObject
@@ -37,9 +36,9 @@ namespace Data.Models
         public string ControlPoint { get; set; }
 
 
-        public virtual TestProcedure TestProcedure{ get; set; }
+        public virtual TestProcedure TestProcedure { get; set; }
         public Guid? TestProcedureId { get; set; }
 
-        public virtual ICollection<Error> Errors{ get; set; }
+        public virtual ICollection<Error> Errors { get; set; }
     }
 }

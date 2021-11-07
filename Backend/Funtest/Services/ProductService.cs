@@ -2,8 +2,8 @@
 using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Product.Requests;
+using Funtest.TransferObject.Product.Responses;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +20,7 @@ namespace Funtest.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateNewProduct(CreateNewProductRequest request, string projectManagerId)
+        public async Task<bool> CreateNewProduct(CreateNewProductRequest request)
         {
             Product product = new Product()
             {
@@ -36,9 +36,30 @@ namespace Funtest.Services
             return true;
         }
 
+        public Product FindByName(string productName)
+        {
+            return Context.Products.Where(x => x.Name == productName).FirstOrDefault();
+        }
+
+        public async Task<Product> GetProduct(Guid id)
+        {
+            return await Context.Products.FindAsync(id);
+        }
+
+        public async Task<GetProductResponse> GetProductResponse(Guid id)
+        {
+            var product = await Context.Products.FindAsync(id);
+            return _mapper.Map<GetProductResponse>(product);
+        }
+
         public bool IsProductExist(Guid id)
         {
             return Context.Products.Any(x => x.Id == id);
+        }
+
+        public bool IsProductNameUnique(string productName)
+        {
+            return !Context.Products.Any(x => x.Name == productName);
         }
     }
 }

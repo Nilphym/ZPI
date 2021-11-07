@@ -16,20 +16,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
-using System.Security.Claims;
-using Data.Roles;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Funtest
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -41,6 +38,7 @@ namespace Funtest
                .AddIdentity<User, IdentityRole>(opt =>
                {
                    opt.Lockout.AllowedForNewUsers = false;
+                   opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-._@+";
                })
                .AddSignInManager<SignInManager<User>>()
                .AddEntityFrameworkStores<DatabaseContext>();
@@ -56,11 +54,14 @@ namespace Funtest
             services.AddTransient<ITestCaseService, TestCaseService>();
             services.AddTransient<ITestService, TestService>();
             services.AddTransient<IErrorService, ErrorService>();
-            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ITestSuiteService, TestSuiteService>();
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddTransient<ITestPlanService, TestPlanService>();
+            services.AddTransient<IEmailService, EmailService>();
+
+            services.AddMvc().AddNewtonsoftJson();
 
             services.AddCors(options =>
             {
@@ -72,8 +73,6 @@ namespace Funtest
                    .AllowCredentials());
             });
             
-            services.AddMvc().AddNewtonsoftJson();
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });

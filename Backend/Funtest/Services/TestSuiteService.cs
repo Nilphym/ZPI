@@ -49,9 +49,11 @@ namespace Funtest.Services
             return true;
         }
 
-        public List<GetTestSuiteResponse> GetAllTestSuites()
+        public List<GetTestSuiteResponse> GetAllTestSuitesForProduct(Guid productId)
         {
-            return Context.TestSuites.AsQueryable().Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
+            return Context.TestSuites.AsQueryable()
+                .Where(x => x.TestPlan.ProductId == productId)
+                .Select(x => _mapper.Map<GetTestSuiteResponse>(x)).ToList();
         }
 
         public List<GetTestSuiteResponse> GetTestSuiteForTestPlan(Guid testPlanId)

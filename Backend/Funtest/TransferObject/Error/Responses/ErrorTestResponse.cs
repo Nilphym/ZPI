@@ -1,12 +1,16 @@
-﻿using Funtest.TransferObject.Test.Response;
+﻿using Funtest.TransferObject.Steps.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace Funtest.TransferObject.Error.Response
 {
     public class ErrorTestResponse
     {
-        public GetTestIdentityInformationResponse Test;
-        public string Proconditions { get; set; }
-        public int MyProperty { get; set; }
+        public Guid TestId { get; set; }
+        public string TestName { get; set; }
+        public string TestCaseProconditions { get; set; }
+        public string TestCaseEntryData { get; set; }
+        public string Result { get; set; }
+        public List<GetStepWithErrors> Steps { get; set; }
     }
 }

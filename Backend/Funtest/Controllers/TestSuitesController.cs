@@ -31,7 +31,7 @@ namespace Funtest.Controllers
             if (testSuite == null)
                 return NotFound("Test suite with given id doesn't exist.");
 
-            testSuite.Tests = _testService.GetTestsDataForTestSuite(testSuiteId);
+            testSuite.TestsForTestSuite = _testService.GetTestsDataForTestSuite(testSuiteId);
 
             return Ok(testSuite);
         }

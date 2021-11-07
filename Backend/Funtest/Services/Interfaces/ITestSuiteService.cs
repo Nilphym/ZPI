@@ -8,7 +8,7 @@ namespace Funtest.Services.Interfaces
 {
     public interface ITestSuiteService
     {
-        List<GetTestSuiteResponse> GetAllTestSuites();
+        List<GetTestSuiteResponse> GetAllTestSuitesForProduct(Guid productId);
         Task<bool> AddTestSuite(AddTestSuiteRequest request);
         bool IsTestSuiteExist(Guid id);
         Task<bool> EditTestSuite(Guid id, EditTestSuiteRequest request);

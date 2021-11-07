@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
@@ -48,8 +49,12 @@ namespace Data.Models
         public string DeveloperId { get; set; }
 
         public virtual Tester Tester { get; set; }
-        public string TesterId { get; set; }
 
+        [ForeignKey("TestId")]
+        public string TesterId { get; set; }
+        public virtual Test Test { get; set; }
+
+        public Guid? TestId { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
 
         public virtual ICollection<Attachment> Attachments { get; set; }
