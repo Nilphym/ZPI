@@ -45,6 +45,10 @@ export const Test = ({ isEditable }) => {
     isLoadingTest: isLoading
   } = useSelector((state) => state.test);
 
+  const {
+    token: { productId }
+  } = useSelector((state) => state.auth);
+
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export const Test = ({ isEditable }) => {
 
   async function addTestCase() {
     await dispatch(putTestById());
-    dispatch(postTestCase());
+    dispatch(postTestCase(productId));
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
   }

@@ -83,38 +83,12 @@ export const putTestById = createAsyncThunk('test/put/ById', async (_, {
   getState
 }) => {
   const body = {
-    name: getState().test.testData.testName
+    name: getState().test.testData.testName,
+    testSuiteId: getState().test.selectedTestSuiteId,
+    testCaseId: getState().test.selectedTestCaseId,
+    testProcedureId: getState().test.selectedTestProcedureId
   };
-  if (getState().test.selectedTestSuiteId) {
-    body.selectedTestSuiteId = {
-      testSuiteId: getState().test.selectedTestSuiteId,
-      testSuite: getState().test.testSuites.filter(
-        (testSuite) => testSuite.testSuiteId === getState().test.selectedTestSuiteId
-      )[0].testSuite
-    };
-  } else {
-    body.selectedTestSuiteId = {};
-  }
-  if (getState().test.selectedTestCaseId) {
-    body.selectedTestCaseId = {
-      testCaseId: getState().test.selectedTestCaseId,
-      testCaseCode: getState().test.testCasesCodes.filter(
-        (caseCode) => caseCode.testCaseId === getState().test.selectedTestCaseId
-      )[0].testCaseCode
-    };
-  } else {
-    body.selectedTestCaseId = {};
-  }
-  if (getState().test.selectedTestProcedureId) {
-    body.selectedTestProcedureId = {
-      testProcedureId: getState().test.selectedTestProcedureId,
-      testProcedureCode: getState().test.testProceduresCodes.filter(
-        (procedureCode) => procedureCode.testProcedureId === getState().test.selectedTestProcedureId
-      )[0].testProcedureCode
-    };
-  } else {
-    body.selectedTestProcedureId = {};
-  }
+
   const response = await server().put({
     url: `Tests/${getState().test.testId}`,
     data: body
@@ -159,6 +133,7 @@ export const putTestProcedureById = createAsyncThunk(
     const response = await server().put({
       url: `TestProcedures/${getState().test.selectedTestProcedureId}`,
       data: {
+        testId: getState().test.testId,
         result: getState().test.selectedTestProcedure.result
       }
     });
@@ -174,7 +149,8 @@ export const postTestProcedure = createAsyncThunk(
     const response = await server().post({
       url: 'TestProcedures',
       data: {
-        testId: getState().test.testId
+        testCaseId: getState().test.selectedTestCaseId,
+        result: 'No final result'
       }
     });
     return response;
@@ -195,6 +171,7 @@ export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_
   getState
 }) => {
   const transferObject = {
+    testId: getState().test.testId,
     preconditions: getState().test.selectedTestCase.preconditions,
     entryDataObject: prepareOutputEntryData(getState().test.selectedTestCase.entryData)
   };
@@ -206,12 +183,13 @@ export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_
   return response;
 });
 
-export const postTestCase = createAsyncThunk('test/postTestCase', async (_, {
+export const postTestCase = createAsyncThunk('test/postTestCase', async (productId, {
   getState
 }) => {
   const response = await server().post({
     url: 'TestCases',
     data: {
+      productId,
       testId: getState().test.testId
     }
   });
@@ -408,9 +386,9 @@ export const testSlice = createSlice({
           testSuites,
           testCasesCodes,
           testProceduresCodes,
-          selectedTestSuiteId,
-          selectedTestCaseId,
-          selectedTestProcedureId
+          testSuite,
+          testCase,
+          testProcedure
         } = action.payload;
         state.testId = id;
         state.testData.testName = name;
@@ -420,9 +398,9 @@ export const testSlice = createSlice({
         state.testSuites = testSuites;
         state.testCasesCodes = testCasesCodes;
         state.testProceduresCodes = testProceduresCodes;
-        state.selectedTestSuiteId = selectedTestSuiteId.testSuiteId;
-        state.selectedTestCaseId = selectedTestCaseId.testCaseId;
-        state.selectedTestProcedureId = selectedTestProcedureId.testProcedureId;
+        state.selectedTestSuiteId = testSuite.id;
+        state.selectedTestCaseId = testCase.id;
+        state.selectedTestProcedureId = testProcedure.id;
         state.isLoadingTest = false;
       })
       .addCase(getTestById.rejected, (_, action) => {
@@ -444,7 +422,7 @@ export const testSlice = createSlice({
         const {
           id,
           result,
-          testStepsIds
+          stepsIds: testStepsIds
         } = action.payload;
         state.selectedTestProcedure.id = id;
         state.selectedTestProcedure.testStepsIds = testStepsIds;
