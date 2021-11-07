@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-alert */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
 
 import server from '../../../services/server';
 
@@ -12,19 +15,24 @@ const initialState = {
 };
 
 // ----------------------------------------- Test Plan API
-export const getTestPlanById = createAsyncThunk('testPlan/get/byId', async (_, { getState }) => {
+export const getTestPlanById = createAsyncThunk('testPlan/get/byId', async (_, {
+  getState
+}) => {
   const response = await server().get({
     url: `TestPlans/${getState().testPlan.selectedTestPlanId}`
   });
   return response;
 });
 
-export const putTestPlanById = createAsyncThunk('testPlan/put/ById', async (_, { getState }) => {
-  const { selectedTestPlan } = getState().testPlan;
+export const putTestPlanById = createAsyncThunk('testPlan/put/ById', async (_, {
+  getState
+}) => {
+  const {
+    selectedTestPlan
+  } = getState().testPlan;
 
   const body = {
-    name: selectedTestPlan.name,
-    testSuites: selectedTestPlan.testSuites
+    name: selectedTestPlan.name
   };
 
   const response = await server().put({
@@ -45,16 +53,39 @@ export const getTestSuiteTests = createAsyncThunk('testSuite/test/get', async (t
 
 export const postTestSuite = createAsyncThunk(
   'testSuite/post',
-  async (testSuiteName, { getState }) => {
-    const { selectedTestPlanId } = getState().testPlan;
+  async (testSuiteName, {
+    getState
+  }) => {
+    const {
+      selectedTestPlanId
+    } = getState().testPlan;
 
     const body = {
       testPlanId: selectedTestPlanId,
-      newTestSuiteName: testSuiteName
+      category: testSuiteName
     };
 
     const response = await server().post({
       url: 'TestSuites',
+      data: body
+    });
+    return response;
+  }
+);
+
+export const putTestSuite = createAsyncThunk(
+  'testSuite/put',
+  async ({
+    newTestSuiteName,
+    testSuiteId
+  }) => {
+
+    const body = {
+      category: newTestSuiteName
+    };
+
+    const response = await server().post({
+      url: `TestSuites/${testSuiteId}`,
       data: body
     });
     return response;
@@ -76,14 +107,6 @@ export const testPlanSlice = createSlice({
         (testSuite) => testSuite.testSuiteId !== action.payload.testSuiteId
       );
     },
-    changeTestSuiteName: (state, action) => {
-      const { newTestSuiteName, testSuiteId } = action.payload;
-      state.selectedTestPlan.testSuites[
-        state.selectedTestPlan.testSuites.findIndex(
-          (testSuite) => testSuite.testSuiteId === testSuiteId
-        )
-      ].testSuite = newTestSuiteName;
-    },
     setLoading: (state, action) => {
       state.isLoading = action.payload.isLoading;
     }
@@ -91,13 +114,19 @@ export const testPlanSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getTestPlanById.fulfilled, (state, action) => {
-        const { id, name, testSuites } = action.payload;
+        const {
+          id,
+          name,
+          testSuites
+        } = action.payload;
         state.selectedTestPlan.id = id;
         state.selectedTestPlan.name = name;
         state.selectedTestPlan.testSuites = testSuites;
         state.selectedTestPlan.tests = {};
         state.isLoadingTestSuites = {};
-        testSuites.forEach(({ id }) => {
+        testSuites.forEach(({
+          id
+        }) => {
           state.isLoadingTestSuites[id] = true;
         });
         state.isLoading = false;
@@ -109,8 +138,11 @@ export const testPlanSlice = createSlice({
         alert('Object changed');
       })
       .addCase(getTestSuiteTests.fulfilled, (state, action) => {
-        const { id: testSuiteId, tests } = action.payload;
-        state.selectedTestPlan.tests[testSuiteId] = tests;
+        const {
+          id: testSuiteId,
+          testsForTestSuite
+        } = action.payload;
+        state.selectedTestPlan.tests[testSuiteId] = testsForTestSuite;
         state.isLoadingTestSuites[testSuiteId] = false;
       })
       .addCase(getTestSuiteTests.rejected, (_, action) => {
@@ -124,10 +156,20 @@ export const testPlanSlice = createSlice({
       })
       .addCase(postTestSuite.rejected, (_, action) => {
         alert(action.error.message);
+      }).addCase(putTestSuite.fulfilled, () => {
+        alert('Test Suite modified');
+      })
+      .addCase(putTestSuite.rejected, (_, action) => {
+        alert(action.error.message);
       });
   }
 });
 
-export const { setTestPlanId, editTestPlanName, deleteTestSuite, changeTestSuiteName, setLoading } =
-  testPlanSlice.actions;
+export const {
+  setTestPlanId,
+  editTestPlanName,
+  deleteTestSuite,
+  setLoading
+} =
+testPlanSlice.actions;
 export default testPlanSlice.reducer;

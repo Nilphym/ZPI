@@ -27,8 +27,7 @@ export const ChangeUserDataPanel = () => {
     control: controlName,
     handleSubmit: handleSubmitName,
     reset: resetName,
-    formState: { errors: errorsName },
-    getValues
+    formState: { errors: errorsName }
   } = useForm({
     resolver: yupResolver(schemaName)
   });
@@ -53,33 +52,27 @@ export const ChangeUserDataPanel = () => {
 
   function onSubmitName({ name }) {
     dispatch(changeUserName({ name }));
-    resetName(
-      { name: '' },
-      {
-        keepIsValid: true
-      }
-    );
-    console.log(getValues());
-  }
+    resetName({ name: '' }, {
+      keepIsValid: true
+    });
+    // navigate TODO: Ew
+  };
 
   function onSubmitSurname({ surname }) {
     dispatch(changeUserSurname({ surname }));
-    resetSurname(
-      { surname: '' },
-      {
-        keepIsValid: true
-      }
-    );
-  }
+    resetSurname({ surname: '' }, {
+      keepIsValid: true
+    });
+    // navigate TODO: Ew
+  };
+
   function onSubmitPassword({ password }) {
     dispatch(changeUserPasswordById({ password }));
-    resetPassword(
-      { password: '', repeatPassword: '' },
-      {
-        keepIsValid: true
-      }
-    );
-  }
+    resetPassword({ password: '', repeatPassword: '' }, {
+      keepIsValid: true
+    });
+    // navigate TODO: Ew
+  };
 
   return (
     <Box

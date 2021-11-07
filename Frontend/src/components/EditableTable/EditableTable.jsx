@@ -15,48 +15,30 @@ import { editTestStepTestData, editTestCaseTable } from '../../redux/store';
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
 
+
 const processData = (data) => {
-  const originalDataKeys = Object.keys(data);
-  const tableNameIndex = originalDataKeys.indexOf('tableName');
-  originalDataKeys.splice(tableNameIndex, 1);
-  const dataKeys = originalDataKeys;
-  const processedData = [];
-  let array = [];
-  dataKeys.forEach((key) => {
-    if (key.toString().includes('RowName')) {
-      array = [data[key]];
-    }
-    if (key.toString().includes('Data')) {
-      array = [...array, ...data[key]];
-      processedData.push([...array]);
-      array.length = 0;
-    }
-  });
-  return processedData;
+  return data.table;
 };
 
 const prepareOutputData = (values) => {
-  let iterator = 1;
   const dataKeys = Object.keys(values).sort();
   console.log(dataKeys);
-  const processedData = {};
+  const processedData = [];
   const array = [];
   dataKeys.forEach((key) => {
     if (key.toString().includes('-0-0')) {
-      processedData[`RowName${iterator}`] = values[key];
+      array.push(values[key]);
     } else if (
       key
         .toString()
         .substring(key.length - 2)
         .includes('-0')
     ) {
-      processedData[`Data${iterator}`] = [...array];
-      iterator += 1;
+      processedData.push(array);
       array.length = 0;
-      processedData[`RowName${iterator}`] = values[key];
     } else if (key === dataKeys[dataKeys.length - 1]) {
       array.push(values[key]);
-      processedData[`Data${iterator}`] = [...array];
+      processedData.push(array);
     } else {
       array.push(values[key]);
     }
@@ -106,8 +88,9 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
 
   const saveTable = () => {
     setIsEditing(false);
-    const tableObject = prepareOutputData(getValues());
-    tableObject.tableName = data.tableName;
+    const tableObject = {};
+    tableObject.table = prepareOutputData(getValues());
+    tableObject.name = data.name;
     if (parentComp === 'testStep') {
       dispatch(editTestStepTestData({ id: testStepId, editedTable: tableObject }));
     } else {
@@ -142,7 +125,7 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
               fontWeight: '700'
             }}
           >
-            {data.tableName}
+            {data.name}
           </Typography>
           {!disabled && isEditing && rowsNumber < MAX_ROWS_NUMBER && (
             <Button
