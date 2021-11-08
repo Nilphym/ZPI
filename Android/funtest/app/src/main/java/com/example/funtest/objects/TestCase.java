@@ -2,12 +2,12 @@ package com.example.funtest.objects;
 
 public class TestCase {
 
-    private int id;
+    private String id;
     private String code;
     private String preconditions;
     private String entryData;
 
-    public TestCase(int id, String code, String preconditions, String entryData) {
+    public TestCase(String id, String code, String preconditions, String entryData) {
         this.id = id;
         this.code = code;
         this.preconditions = preconditions;
@@ -17,11 +17,11 @@ public class TestCase {
     public TestCase() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
