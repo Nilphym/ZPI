@@ -15,24 +15,30 @@ namespace Funtest.Services
     public class JWTService : Service, IJWTService
     {
         public readonly IJWTService _JWThService;
+        private readonly IProductService _productService;
+
         private IConfiguration _configuration;
 
 
-        public JWTService(IServiceProvider serviceProvider, IConfiguration configuration) : base(serviceProvider)
+        public JWTService(IServiceProvider serviceProvider, IConfiguration configuration, IProductService productService) : base(serviceProvider)
         {
             _configuration = configuration;
+            _productService = productService;
         }
 
         public async Task<string> GenerateJWToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var product = await _productService.GetProductResponse((Guid)user.ProductId);
 
             var claims = new List<Claim>{
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("userId", user.Id),
-                new Claim("userData", $"{user.FirstName} {user.LastName}"),
-                new Claim("productId", user.ProductId.ToString())
+                new Claim("name", user.FirstName),
+                new Claim("surname", user.LastName),
+                new Claim("productId", user.ProductId.ToString()),
+                new Claim("productName", product.Name)
             };
 
             var userClaims = await UserManager.GetClaimsAsync(user);

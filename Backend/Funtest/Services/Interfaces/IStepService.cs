@@ -10,6 +10,7 @@ namespace Funtest.Interfaces
     public interface IStepService
     {
         Task<bool> AddStep(AddStepRequest step);
+        Task<GetStepResponse> GetStep(Guid stepId);
         List<GetStepResponse> GetAllStepsForTestProcedure(Guid testProcedureId);
         IQueryable<GetStepResponse> GetAllSteps();
         Task<bool> EditStep(Guid id, EditStepRequest step);

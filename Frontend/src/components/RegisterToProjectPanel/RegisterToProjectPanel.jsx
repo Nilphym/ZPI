@@ -37,7 +37,14 @@ const defaultValues = {
 const schema = yup.object().shape({
   [formFields.name]: yup.string().required(),
   [formFields.surname]: yup.string().required(),
-  [formFields.password]: yup.string().required().min(6),
+  [formFields.password]: yup
+    .string()
+    .required()
+    .min(8)
+    .matches(RegExp('(.*[a-z].*)'), 'Lowercase')
+    .matches(RegExp('(.*[A-Z].*)'), 'Uppercase')
+    .matches(RegExp('(.*\\d.*)'), 'Number')
+    .matches(RegExp('[!@#$%^&*(),.?":{}|<>]'), 'Special'),
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
@@ -153,7 +160,8 @@ export const RegisterToProjectPanel = ({ projectName }) => {
                 error={!!errors.password}
                 helperText={
                   !!errors.password &&
-                  'Password field cannot be empty and must contain min. 6 letters!'
+                  `Password field cannot be empty and must contain min. 8 letters, 
+                  lowercase, uppercase, digit and special sign!`
                 }
                 {...field}
                 sx={{

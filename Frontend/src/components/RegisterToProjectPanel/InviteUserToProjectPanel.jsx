@@ -1,18 +1,23 @@
 /* eslint-disable no-console */
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography, InputLabel, Select, MenuItem } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
-// import PropTypes from 'prop-types';
-import axios from 'axios';
 import React from 'react';
 
+import { inviteUser } from '../../redux/store';
+
+const roles = ['Project Manager', 'Developer', 'Tester'];
+
 const formFields = {
-  email: 'email'
+  email: 'email',
+  role: 'role'
 };
 
 const defaultValues = {
-  [formFields.email]: ''
+  [formFields.email]: '',
+  [formFields.role]: ''
 };
 
 const schema = yup.object().shape({
@@ -20,6 +25,7 @@ const schema = yup.object().shape({
 });
 
 export const InviteUserToProjectPanel = () => {
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
@@ -30,17 +36,8 @@ export const InviteUserToProjectPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = (data) => {
-    try {
-      axios({
-        method: 'POST',
-        url: '/api/project/invite-user',
-        data
-      });
-    } catch (err) {
-      console.error(err.status);
-    }
-    console.log(data);
+  const onSubmit = ({ email, role }) => {
+    dispatch(inviteUser({ email, role }));
     reset(defaultValues, {
       keepIsValid: true
     });
@@ -81,6 +78,34 @@ export const InviteUserToProjectPanel = () => {
           />
         )}
       />
+      <InputLabel
+        sx={{
+          marginTop: '0.625rem'
+        }}
+        id="roleSelect-label"
+      >
+        Role
+      </InputLabel>
+      <Controller
+        name="role"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Select
+            labelId="procedureSelect-label"
+            id="roleSelect"
+            sx={{ width: '21.875rem' }}
+            {...field}
+          >
+            {roles.map((role) => (
+              <MenuItem key={role} value={role}>
+                {role}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
+
       <Button
         type="submit"
         variant="contained"

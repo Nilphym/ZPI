@@ -10319,6 +10319,7 @@ fsevents@^1.2.7:
     jwt-decode: ^3.1.2
     luxon: ^2.0.2
     miragejs: ^0.1.42
+    object-hash: ^2.2.0
     prettier: ^2.4.1
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -14607,6 +14608,13 @@ fsevents@^1.2.7:
     define-property: ^0.2.5
     kind-of: ^3.0.3
   checksum: a9e35f07e3a2c882a7e979090360d1a20ab51d1fa19dfdac3aa8873b328a7c4c7683946ee97c824ae40079d848d6740a3788fa14f2185155dab7ed970a72c783
+  languageName: node
+  linkType: hard
+
+"object-hash@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "object-hash@npm:2.2.0"
+  checksum: 55ba841e3adce9c4f1b9b46b41983eda40f854e0d01af2802d3ae18a7085a17168d6b81731d43fdf1d6bcbb3c9f9c56d22c8fea992203ad90a38d7d919bc28f1
   languageName: node
   linkType: hard
 

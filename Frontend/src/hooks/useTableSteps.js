@@ -16,7 +16,8 @@ const stepStates = {
 };
 
 const reducer = (state, action) => {
-  const lastStepNumber = Object.keys(state).length;
+  const stepCount = Object.keys(state).length;
+  const lastStepNumber = stepCount - 1;
 
   switch (action.type) {
     case actionTypes.done:
@@ -27,8 +28,7 @@ const reducer = (state, action) => {
       return { ...state, [action.payload]: stepStates.error };
     case actionTypes.clear: {
       const newState = {};
-
-      for (let i = 1; i <= lastStepNumber; i++) {
+      for (let i = 0; i < stepCount; i++) {
         if (i < action.payload) {
           newState[i] = state[i];
         } else if (i === action.payload) {
@@ -44,10 +44,9 @@ const reducer = (state, action) => {
   }
 };
 
-// Steps should begin at 1
 const useTableSteps = (stepsCount) => {
-  for (let i = 1; i <= stepsCount; i++) {
-    initialState[i] = i === 1 ? stepStates.choose : stepStates.hidden;
+  for (let i = 0; i < stepsCount; i++) {
+    initialState[i] = i === 0 ? stepStates.choose : stepStates.hidden;
   }
 
   const [currentState, dispatch] = useReducer(reducer, initialState);
@@ -64,7 +63,7 @@ const useTableSteps = (stepsCount) => {
     dispatch({ type: actionTypes.clear, payload: id });
   };
 
-  return [currentState, stepStates, doneAction, errorAction, clearAction];
+  return { currentState, stepStates, doneAction, errorAction, clearAction };
 };
 
 export default useTableSteps;

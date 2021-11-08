@@ -56,9 +56,13 @@ namespace Funtest.Services
             return true;
         }
 
-        public List<GetTestProcedureIdentityValueResponse> GetAllTestProcedures()
+        public List<GetTestProcedureIdentityValueResponse> GetAllTestProceduresForProduct(Guid productId)
         {
-            return Context.TestProcedures.AsQueryable().Select(x => _mapper.Map<GetTestProcedureIdentityValueResponse>(x)).ToList();
+            return Context.TestProcedures
+                .AsQueryable()
+                .Where(x => x.TestCase.ProductId == productId)
+                .Select(x => _mapper.Map<GetTestProcedureIdentityValueResponse>(x))
+                .ToList();
         }
 
         public async Task<GetTestProcedureResponse> GetTestProcedureById(Guid id)

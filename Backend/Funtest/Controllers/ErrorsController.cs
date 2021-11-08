@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
 using Funtest.Interfaces;
 using Funtest.TransferObject.Error.Response;
+using System.Net.Http.Headers;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Funtest.Controllers
 {
@@ -82,14 +86,20 @@ namespace Funtest.Controllers
         [HttpGet("toFix")]
         public ActionResult<GetErrorResponse> GetAllErrorsToFix()
         {
-            var errors = _errorService.GetAllErrorsToFix();
+            var principal = HttpContext.User;
+            var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
+
+            var errors = _errorService.GetAllErrorsToFix(productId);
             return Ok(errors);
         }
 
         [HttpGet("toRetest")]
         public ActionResult<GetErrorResponse> GetAllErrorsToRetest()
         {
-            var errors = _errorService.GetAllErrorsToRetest();
+            var principal = HttpContext.User;
+            var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
+
+            var errors = _errorService.GetAllErrorsToRetest(productId);
             return Ok(errors);
         }
 

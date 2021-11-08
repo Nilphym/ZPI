@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-import { postTestPlan, setProductId, getProductTestPlansById } from '../../redux/store';
+import { postTestPlan, getProductTestPlansById } from '../../redux/store';
 import TestPlanItem from './TestPlanItem';
 
 export const TestPlansView = () => {
@@ -20,12 +20,10 @@ export const TestPlansView = () => {
   const [isAddingTestPlan, setIsAddingTestPlan] = useState(false);
   const [searchBarData, setSearchBarData] = useState('');
 
-  const { testPlans, isLoading } = useSelector((state) => state.product);
+  const { testPlans, isLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     async function getProductTestPlanData() {
-      dispatch(setProductId({ productId: '43463' })); // TODO: to DELETE
-      // await dispatch(getProductById()); // TODO: to DELETE
       await dispatch(getProductTestPlansById());
     }
     getProductTestPlanData();
