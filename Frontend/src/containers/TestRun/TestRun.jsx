@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { CircularProgress, Box, Paper, Typography } from '@mui/material';
 
 import {
@@ -11,7 +12,7 @@ import {
   TableDataDialog
 } from '../../components';
 import useTableSteps from '../../hooks/useTableSteps';
-import { getExecutionTest } from '../../redux/store';
+import { getExecutionTest, getExecutionTestFromErrorId } from '../../redux/store';
 
 const TestRunOrigin = ({ test }) => {
   const { steps } = test;
@@ -74,7 +75,7 @@ TestRunOrigin.propTypes = {
   test: PropTypes.object.isRequired
 };
 
-const Preconditions = ({ entryData }) => {
+const EntryData = ({ entryData }) => {
   const [open, setOpen] = useState(false);
   const [chosenDataItem, setChosenDataItem] = useState(null);
 
@@ -85,7 +86,7 @@ const Preconditions = ({ entryData }) => {
 
   return (
     <Box component={Paper} sx={{ padding: '0 0.8rem 0.5rem', display: 'grid', gap: '0.5rem' }}>
-      <Typography variant="overline">Preconditions</Typography>
+      <Typography variant="overline">Entry data</Typography>
       <Box
         sx={{
           display: 'flex',
@@ -105,8 +106,21 @@ const Preconditions = ({ entryData }) => {
   );
 };
 
-Preconditions.propTypes = {
+EntryData.propTypes = {
   entryData: PropTypes.array.isRequired
+};
+
+const Preconditions = ({ preconditions }) => {
+  return (
+    <Box component={Paper} sx={{ padding: '0 0.8rem 0.5rem', display: 'grid', gap: '0.5rem' }}>
+      <Typography variant="overline">Preconditions</Typography>
+      <Typography variant="body1">{preconditions}</Typography>
+    </Box>
+  );
+};
+
+Preconditions.propTypes = {
+  preconditions: PropTypes.string.isRequired
 };
 
 const ExpectedResult = ({ result }) => {
@@ -123,11 +137,20 @@ ExpectedResult.propTypes = {
 };
 
 export const TestRun = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { test, loading } = useSelector((state) => state.testExecution);
+  const { test, loading, pendingtestId, pendingErrorId } = useSelector(
+    (state) => state.testExecution
+  );
 
   useEffect(() => {
-    dispatch(getExecutionTest({ errorId: '22bd1f84-b9e5-4183-9502-036eafe67622' }));
+    if (pendingtestId) {
+      dispatch(getExecutionTest({ testId: pendingtestId }));
+    } else if (pendingErrorId) {
+      dispatch(getExecutionTestFromErrorId({ errorId: pendingErrorId }));
+    } else {
+      navigate('/');
+    }
   }, []);
 
   return loading ? (
@@ -148,9 +171,10 @@ export const TestRun = () => {
         gap: '1rem'
       }}
     >
-      <Preconditions entryData={test.testCaseEntryData} />
-      <ExpectedResult result={test.result} />
+      <Preconditions preconditions={test.testCaseProconditions} />
+      <EntryData entryData={test.testCaseEntryData} />
       <TestRunOrigin test={test} />
+      <ExpectedResult result={test.result} />
     </Box>
   );
 };

@@ -32,7 +32,8 @@ import {
   rejectBug,
   takeBug,
   resignFromBug,
-  getPossibleBugValues
+  getPossibleBugValues,
+  setExecutionBugId
 } from '../../redux/store';
 
 export const bugTableTypes = {
@@ -82,7 +83,8 @@ export const BugTable = ({ type }) => {
   };
 
   const onRetest = (id) => {
-    navigate(`/retest/${id}`);
+    dispatch(setExecutionBugId(id));
+    navigate('/test/execution');
   };
 
   const onResign = (id) => {

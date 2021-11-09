@@ -96,7 +96,7 @@ const seeds = [
   (serverRef) =>
     [
       {
-        id: '91563764-7B2B-4FE9-AB0E-B40D5E62E9D6',
+        id: '22bd1f84-b9e5-4183-9502-036eafe67622',
         code: 'E-91563764',
         name: 'Not responding',
         errorState: 'New',
