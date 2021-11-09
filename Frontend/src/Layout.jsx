@@ -21,7 +21,7 @@ const Layout = () => {
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
-              { icon: 'tests', text: 'Tests', destination: '/tests' },
+              { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               {
                 icon: 'bugs',
                 name: 'Bugs',
@@ -43,7 +43,7 @@ const Layout = () => {
           <Navbar
             links={[
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
-              { icon: 'tests', text: 'Tests', destination: '/tests' },
+              { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               {
                 icon: 'bugs',
                 name: 'Bugs',

@@ -26,8 +26,7 @@ import {
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase,
-  setTestId
+  postTestCase
 } from '../../redux/store';
 
 export const Test = ({ isEditable }) => {
@@ -35,7 +34,7 @@ export const Test = ({ isEditable }) => {
 
   const dispatch = useDispatch();
   const {
-    testData: { testName, creationDate, version, executionCounter },
+    testData: { testName, creationDate, executionCounter },
     testSuites,
     testCasesCodes,
     testProceduresCodes,
@@ -52,9 +51,7 @@ export const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestId('t1'));
-
-    async function getTestData() {
+      async function getTestData() {
       await dispatch(getTestById());
     }
 
@@ -128,7 +125,6 @@ export const Test = ({ isEditable }) => {
               Additional Info:
             </Typography>
             <Typography>{`Creation Date: ${creationDate}`}</Typography>
-            <Typography>{`Version: ${version}`}</Typography>
             <Typography
               sx={{
                 fontSize: '1rem',
@@ -214,7 +210,7 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                  testProceduresCodes.filter(true).map(
+                  testProceduresCodes.filter(() => true).map(
                     (
                       { testProcedureId, testProcedureCode } // TODO: Poprawić ....
                     ) => (

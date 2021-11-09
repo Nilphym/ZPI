@@ -2,17 +2,23 @@ import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  setTestId
+} from '../../redux/store';
 
-const TestItem = ({ isEditable, testName, testId }) => {
-
-    const navigate = useNavigate();
-    const { pathname } = useLocation();
+const TestItem = ({ testName, testId }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const editTestNavigate = () => {
-     navigate(`${pathname}/test-e-${testId}`);
+    dispatch(setTestId(testId));
+    navigate(`${pathname}/test-e-${testId}`);
   };
 
   const viewTestNavigate = () => {
+    dispatch(setTestId(testId));
     navigate(`${pathname}/test-${testId}`);
   };
 
@@ -51,7 +57,6 @@ const TestItem = ({ isEditable, testName, testId }) => {
       >
         View
       </Button>
-      {isEditable && (
         <Button
           onClick={() => editTestNavigate()}
           sx={{
@@ -64,13 +69,11 @@ const TestItem = ({ isEditable, testName, testId }) => {
         >
           Edit
         </Button>
-      )}
     </Box>
   );
 };
 
 TestItem.propTypes = {
-  isEditable: PropTypes.bool.isRequired,
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired
 };

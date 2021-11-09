@@ -231,6 +231,10 @@ export const postTestStep = createAsyncThunk(
     const dataToSend = {};
     dataToSend.testProcedureId = currentTestProcedureId;
     dataToSend.name = newStepName;
+    const selectedTestStep = getState().test.stepNumber;
+    const stepsKeys = Object.keys(selectedTestStep);
+    const newStepNumber = selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1;
+    dataToSend.stepNumber = newStepNumber;
     const response = await server().post({
       url: 'Steps',
       data: dataToSend
@@ -381,11 +385,10 @@ export const testSlice = createSlice({
           id,
           name,
           creationDate,
-          version,
           executionCounter,
           testSuites,
-          testCasesCodes,
-          testProceduresCodes,
+          testCases,
+          testProcedures,
           testSuite,
           testCase,
           testProcedure
@@ -393,14 +396,13 @@ export const testSlice = createSlice({
         state.testId = id;
         state.testData.testName = name;
         state.testData.creationDate = creationDate;
-        state.testData.version = version;
         state.testData.executionCounter = executionCounter;
         state.testSuites = testSuites;
-        state.testCasesCodes = testCasesCodes;
-        state.testProceduresCodes = testProceduresCodes;
-        state.selectedTestSuiteId = testSuite.id;
-        state.selectedTestCaseId = testCase.id;
-        state.selectedTestProcedureId = testProcedure.id;
+        state.testCasesCodes = testCases;
+        state.testProceduresCodes = testProcedures;
+        state.selectedTestSuiteId = testSuite ? testSuite.id : '';
+        state.selectedTestCaseId = testCase ? testCase.id : '';
+        state.selectedTestProcedureId = testProcedure ? testCase.id : '';
         state.isLoadingTest = false;
       })
       .addCase(getTestById.rejected, (_, action) => {

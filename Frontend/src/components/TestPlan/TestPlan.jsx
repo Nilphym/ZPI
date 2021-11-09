@@ -38,7 +38,6 @@ export const TestPlan = ({ isEditable }) => {
   const [isAddingTestSuite, setIsAddingTestSuite] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestPlanId({ id: 'tplan1' }));
     dispatch(setLoading({ isLoading: true }));
     async function getTestPlanData() {
       await dispatch(getTestPlanById());
@@ -65,7 +64,8 @@ export const TestPlan = ({ isEditable }) => {
     <Box
       sx={{
         position: 'relative',
-        margin: '1.5rem'
+        margin: '1.5rem',
+        minWidth: '70rem'
       }}
     >
       {isLoading ? (
