@@ -73,8 +73,9 @@ const initialState = {
 export const getTestById = createAsyncThunk('test/get/byId', async (_, {
   getState
 }) => {
+  const id = getState().test.testId ? getState().test.testId : localStorage.getItem('testId');
   const response = await server().get({
-    url: `Tests/${getState().test.testId}`
+    url: `Tests/${id}`
   });
   return response;
 });

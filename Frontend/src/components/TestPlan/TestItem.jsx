@@ -14,11 +14,13 @@ const TestItem = ({ isEditable, testName, testId }) => {
 
   const editTestNavigate = () => {
     dispatch(setTestId(testId));
+    localStorage.setItem('testId', testId);
     navigate(`${pathname}/test-e-${testId}`);
   };
 
   const viewTestNavigate = () => {
     dispatch(setTestId(testId));
+    localStorage.setItem('testId', testId);
     navigate(`${pathname}/test-${testId}`);
   };
 
