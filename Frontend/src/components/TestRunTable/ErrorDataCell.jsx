@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/system';
+import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import {
   Typography,
   Button,
@@ -95,7 +96,17 @@ export const ErrorDataCell = ({ errors }) => {
             color="error"
             sx={{ whiteSpace: 'nowrap' }}
           >
-            {error.code}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'min-content 5.25rem',
+                justifyItems: 'left',
+                gap: '0.5rem'
+              }}
+            >
+              {error.executed ? <CheckBox /> : <CheckBoxOutlineBlank />}
+              {error.code}
+            </Box>
           </Button>
         ))}
       </Box>
