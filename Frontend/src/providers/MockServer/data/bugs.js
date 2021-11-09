@@ -15,6 +15,21 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.get('Errors/toRetest', (schema) => {
+      return schema.bugs.all().models;
+    }),
+
+  (thisRef) =>
+    thisRef.get('Project/:productId/Errors', (schema) => {
+      return schema.bugs.all().models;
+    }),
+
+  (thisRef) =>
+    thisRef.get('Errors/developer/:developerId', (schema) => {
+      return schema.bugs.all().models;
+    }),
+
+  (thisRef) =>
     thisRef.get('Errors/ErrorTypes', (schema) => {
       return schema.types.all().models.map((model) => model.text);
     }),
@@ -80,6 +95,12 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.get('Errors/:id/executed', (schema, request) => {
+      const { id } = request.params;
+      return schema.bugs.findBy({ id }).attrs;
+    }),
+
+  (thisRef) =>
     thisRef.put('Errors/:id', (schema, request) => {
       const { id } = request.params;
       const json = JSON.parse(request.requestBody);
@@ -111,7 +132,14 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-05T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: true,
+        attachments: [
+          'https://i.ibb.co/StvZxmy/sample-image.jpg',
+          'https://i.ibb.co/zNXRSrg/photo-1579353977828-2a4eab540b9a.jpg',
+          'https://i.ibb.co/M5HM3sV/download.jpg',
+          'https://i.ibb.co/47VtZhY/0266554465.jpg'
+        ]
       },
       {
         id: '72AD77FC-B88D-4EC6-A757-A6A3864BAFFF',
@@ -129,7 +157,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: true,
+        attachments: ['https://i.ibb.co/StvZxmy/sample-image.jpg']
       },
       {
         id: 'A7C33D4D-AC7B-4353-B192-596D70327625',
@@ -147,7 +177,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: true,
+        attachments: []
       },
       {
         id: '2B7846E7-98A5-42E2-9E5C-C7D9BB779F25',
@@ -165,7 +197,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '5CE3FE96-872C-4541-A420-EA35F77A13E2',
@@ -183,7 +217,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '9D663266-3805-47F8-AFFA-0B17F1B78CCF',
@@ -201,7 +237,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '5AE2C988-F058-4555-ADF5-3B0F66326B2F',
@@ -219,7 +257,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: 'C9F996F3-6459-485E-8F30-E314FE6CC4BA',
@@ -237,7 +277,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '50C07E32-DEC9-4EBD-8DD1-30C631729BB2',
@@ -255,7 +297,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '99E4D145-5BA1-4FF1-BB60-C9D5A408C7C7',
@@ -273,7 +317,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: 'D9C27689-268B-4623-AFE2-53CC920B73EB',
@@ -291,7 +337,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: '1DB009F5-02B9-4B6B-8A00-B9346D07DB1D',
@@ -309,7 +357,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       },
       {
         id: 'BA4E6298-ADEF-40F6-9880-C6389C63436C',
@@ -327,7 +377,9 @@ const seeds = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea ipsam nemo, itaque iste excepturi voluptas eveniet ab quod laudantium quis!',
         deadline: '2021-12-20T00:00:00',
         reportDate: '2021-12-20T00:00:00',
-        endDate: '2021-12-20T00:00:00'
+        endDate: '2021-12-20T00:00:00',
+        executed: false,
+        attachments: []
       }
     ].forEach((bug) => {
       serverRef.create('bug', bug);

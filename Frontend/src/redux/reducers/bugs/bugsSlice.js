@@ -41,8 +41,23 @@ const prepareDataForView = (rows) => {
   }));
 };
 
-export const getBugs = createAsyncThunk('bugs/get/all', async () => {
+export const getBugsToFix = createAsyncThunk('bugs/get/fix', async () => {
   const data = await server().get({ url: 'Errors/toFix' });
+  return prepareDataForView(data);
+});
+
+export const getBugsToRetest = createAsyncThunk('bugs/get/retest', async () => {
+  const data = await server().get({ url: 'Errors/toRetest' });
+  return prepareDataForView(data);
+});
+
+export const getAllBugs = createAsyncThunk('bugs/get/all', async ({ productId }) => {
+  const data = await server().get({ url: `Project/${productId}/Errors` });
+  return prepareDataForView(data);
+});
+
+export const getBugsDeveloper = createAsyncThunk('bugs/get/developer', async ({ developerId }) => {
+  const data = await server().get({ url: `Errors/developer/${developerId}` });
   return prepareDataForView(data);
 });
 
@@ -103,15 +118,48 @@ export const bugsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getBugs.fulfilled, (state, action) => {
+      .addCase(getBugsToFix.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getBugs.rejected, (state) => {
+      .addCase(getBugsToFix.rejected, (state) => {
         state.loading = false;
         state.rows = [];
       })
-      .addCase(getBugs.pending, (state) => {
+      .addCase(getBugsToFix.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getBugsToRetest.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rows = action.payload;
+      })
+      .addCase(getBugsToRetest.rejected, (state) => {
+        state.loading = false;
+        state.rows = [];
+      })
+      .addCase(getBugsToRetest.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllBugs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rows = action.payload;
+      })
+      .addCase(getAllBugs.rejected, (state) => {
+        state.loading = false;
+        state.rows = [];
+      })
+      .addCase(getAllBugs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getBugsDeveloper.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rows = action.payload;
+      })
+      .addCase(getBugsDeveloper.rejected, (state) => {
+        state.loading = false;
+        state.rows = [];
+      })
+      .addCase(getBugsDeveloper.pending, (state) => {
         state.loading = true;
       })
       .addCase(getPossibleBugValues.fulfilled, (state, action) => {

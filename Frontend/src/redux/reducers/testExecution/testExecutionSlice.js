@@ -23,6 +23,27 @@ export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ t
   return data;
 });
 
+export const getIsExecutedByTester = createAsyncThunk(
+  'testExecution/get/isExecuted',
+  async (_, { getState }) => {
+    const { steps } = getState().testExecution.test;
+
+    const stepsWithExecutionInfo = await Promise.all(
+      steps.map(async (step) => ({
+        ...step,
+        errors: await Promise.all(
+          step.errors.map(async (error) => {
+            const data = await server().get({ url: `Errors/${error.id}/executed` });
+            return { ...error, executed: data.executed };
+          })
+        )
+      }))
+    );
+
+    return stepsWithExecutionInfo;
+  }
+);
+
 export const executeTest = createAsyncThunk('testExecution/execute', async ({ testId }) => {
   const data = await server().put({ url: `Tests/${testId}/execute` });
   return data;
@@ -77,6 +98,9 @@ export const testExecutionSlice = createSlice({
       })
       .addCase(getExecutionTestFromErrorId.pending, (state) => {
         state.loading = true;
+      })
+      .addCase(getIsExecutedByTester.fulfilled, (state, action) => {
+        state.test.steps = action.payload;
       });
   }
 });
