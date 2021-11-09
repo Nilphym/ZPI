@@ -49,12 +49,12 @@ namespace Data.Models
         public string DeveloperId { get; set; }
 
         public virtual Tester Tester { get; set; }
-
-        [ForeignKey("TestId")]
         public string TesterId { get; set; }
-        public virtual Test Test { get; set; }
 
+        public virtual Test Test { get; set; }
         public Guid? TestId { get; set; }
+
+
         public virtual ICollection<Review> Reviews { get; set; }
 
         public virtual ICollection<Attachment> Attachments { get; set; }

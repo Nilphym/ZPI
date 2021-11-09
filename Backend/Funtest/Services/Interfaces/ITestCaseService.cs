@@ -13,5 +13,7 @@ namespace Funtest.Services.Interfaces
         Task<GetTestCaseResponse> GetTestCaseById(Guid id);
         Task<bool> EditTestCase(Guid id, EditTestCaseRequest request);
         List<GetTestCaseIdentityValueResponse> GetAllTestCasesForProduct(Guid productId);
+        bool IsEditPossible(Guid testCaseId);
+        Task<Guid?> CreateNewTestCaseBaseOnExistTCWithModification(Guid testCaseId, EditTestCaseRequest editedTestCase);
     }
 }

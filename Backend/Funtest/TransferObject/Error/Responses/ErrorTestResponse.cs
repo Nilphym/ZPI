@@ -9,8 +9,8 @@ namespace Funtest.TransferObject.Error.Response
         public Guid TestId { get; set; }
         public string TestName { get; set; }
         public string TestCaseProconditions { get; set; }
-        public string TestCaseEntryData { get; set; }
+        public Newtonsoft.Json.Linq.JToken TestCaseEntryData { get; set; }
         public string Result { get; set; }
-        public List<GetStepWithErrors> Steps { get; set; }
+        public List<GetStepWithErrorIdsResponse> Steps { get; set; }
     }
 }

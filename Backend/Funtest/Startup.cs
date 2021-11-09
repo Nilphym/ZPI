@@ -60,6 +60,7 @@ namespace Funtest
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddTransient<ITestPlanService, TestPlanService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IReviewService, ReviewService>();
 
             services.AddMvc().AddNewtonsoftJson();
 
@@ -69,7 +70,7 @@ namespace Funtest
                 builder => builder
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .SetIsOriginAllowed(origin => true) // allow any origin
+                   .SetIsOriginAllowed(origin => true) 
                    .AllowCredentials());
             });
             

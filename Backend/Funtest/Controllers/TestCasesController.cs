@@ -36,7 +36,7 @@ namespace Funtest.Controllers
         {
             var testCase = await _testCaseService.GetTestCaseById(id);
             return testCase == null ? NotFound("Test case with the given id doesn't exist.") : Ok(testCase);
-        } 
+        }
 
         [HttpPut("{testCaseId}")]
         public async Task<ActionResult> EditTestCase([FromRoute] Guid testCaseId, EditTestCaseRequest request)
@@ -45,14 +45,22 @@ namespace Funtest.Controllers
             if (!isExist)
                 return NotFound("Test case with the given id doesn't exist.");
 
-            var testExecutionCounter = await _testService.GetExecutionCounterForTest(request.TestId);
-            if (testExecutionCounter > 0)
-                return Conflict("Test case can't be modified.");
+            var isEditPossible = _testCaseService.IsEditPossible(testCaseId);
 
-            var response = await _testCaseService.EditTestCase(testCaseId, request);
-            if (!response)
+            bool result;
+            if (isEditPossible)
+                result = await _testCaseService.EditTestCase(testCaseId, request);
+            else
+            {
+                var newTestCaseId = await _testCaseService.CreateNewTestCaseBaseOnExistTCWithModification(testCaseId, request);
+                if (newTestCaseId == null)
+                    result = false;
+                else 
+                    result = await _testService.AssignNewTestCase(request.TestId, (Guid)newTestCaseId);
+            }
+
+            if (!result)
                 return Problem("Not saved! Problem during saving object in database!");
-
             return Ok();
         }
     }

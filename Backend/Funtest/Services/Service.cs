@@ -3,6 +3,8 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Data.Models;
+using Data.Roles;
+using Microsoft.AspNetCore.Http;
 
 namespace Funtest.Services
 {

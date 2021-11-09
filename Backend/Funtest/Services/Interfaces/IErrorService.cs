@@ -1,5 +1,4 @@
-﻿using Data.Enums;
-using Data.Models;
+﻿using Data.Models;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Error.Responses;
@@ -31,5 +30,8 @@ namespace Funtest.Services.Interfaces
         List<string> ErrorPriorities();
         List<string> ErrorTypes();
         Task<ErrorTestResponse> GetErrorTest(Guid errorId);
+        Task<bool> ChangeErrorStatusToRetest(Guid id);
+        List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId);
+        Task<bool> IsErrorReviewed(Guid errorId);
     }
 }

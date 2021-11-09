@@ -7,5 +7,5 @@ namespace Funtest.TransferObject.TestProcedure.Responses
         public Guid Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-    }
+    } 
 }

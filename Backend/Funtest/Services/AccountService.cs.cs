@@ -1,21 +1,27 @@
 ﻿using AutoMapper;
 using Data.Models;
 using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Funtest.Services
 {
     public class AccountService : Service, IAccountService
     {
         private readonly IMapper _mapper;
-        public AccountService(IServiceProvider serviceProvider, IMapper mapper) : base(serviceProvider)
+        private readonly IEmailService _emailService;
+
+        public AccountService(IServiceProvider serviceProvider, IMapper mapper, IEmailService emailService) : base(serviceProvider)
         {
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         private string CreateUserName(User user, Product product)
@@ -32,8 +38,8 @@ namespace Funtest.Services
             {
                 userName += duplicat;
             }
-
-            return $"{userName.ToLower()}@{product.Name.ToLower()}.pl";
+            var workspace = Regex.Replace(product.Name, @"\s+", "").ToLower();
+            return $"{userName.ToLower()}@{workspace}.pl";
         }
 
         public async Task<string> AddNewUser(AddNewUserRequest request, Product product)
@@ -50,6 +56,20 @@ namespace Funtest.Services
 
             await UserManager.AddToRoleAsync(user, request.Role);
             return user.UserName;
+        }
+
+        public async Task<bool> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            var user = await UserManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
+            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, passwordResetToken, "URL");
+
+            return emailServiceResponse;
         }
     }
 }
