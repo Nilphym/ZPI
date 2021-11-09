@@ -402,7 +402,7 @@ export const testSlice = createSlice({
         state.testProceduresCodes = testProcedures;
         state.selectedTestSuiteId = testSuite ? testSuite.id : '';
         state.selectedTestCaseId = testCase ? testCase.id : '';
-        state.selectedTestProcedureId = testProcedure ? testCase.id : '';
+        state.selectedTestProcedureId = testProcedure ? testProcedure.id : '';
         state.isLoadingTest = false;
       })
       .addCase(getTestById.rejected, (_, action) => {

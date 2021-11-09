@@ -212,9 +212,9 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                  testProceduresCodes.filter(() => true).map(
+                    testProceduresCodes.filter(({ testCaseId }) => testCaseId === selectedTestCaseId).map(
                     (
-                      { id, code } // TODO: Poprawić ....
+                      { id, code }
                     ) => (
                       <MenuItem key={`TestProcedure-${id}`} value={id}>
                         {code}

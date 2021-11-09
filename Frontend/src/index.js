@@ -10,12 +10,12 @@ import DateAdapter from '@mui/lab/AdapterLuxon';
 import store from './redux/store';
 import App from './App';
 import theme from './utils/theme';
-import { AuthManager, MockServer } from './providers';
+import { AuthManager } from './providers';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <MockServer>
+      {/* <MockServer> */}
         <BrowserRouter>
           <AuthManager>
             <LocalizationProvider dateAdapter={DateAdapter}>
@@ -26,7 +26,7 @@ ReactDOM.render(
             </LocalizationProvider>
           </AuthManager>
         </BrowserRouter>
-      </MockServer>
+      {/* </MockServer> */}
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

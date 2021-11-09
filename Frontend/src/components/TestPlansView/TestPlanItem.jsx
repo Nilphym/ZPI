@@ -13,11 +13,13 @@ const TestPlanItem = ({ id, name }) => {
 
   const editTestPlanNavigate = () => {
     dispatch(setTestPlanId({ id }));
+    localStorage.setItem('testPlanId', id);
     navigate(`/testPlan-e-${id}`);
   };
 
   const viewTestPlanNavigate = () => {
     dispatch(setTestPlanId({ id }));
+    localStorage.setItem('testPlanId', id);
     navigate(`/testPlan-${id}`);
   };
 

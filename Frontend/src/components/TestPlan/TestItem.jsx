@@ -67,7 +67,7 @@ const TestItem = ({ isEditable, testName, testId }) => {
         sx={{
           position: 'absolute',
           top: '50%',
-          right: '9.5%',
+          right: '8.5%',
           transform: 'translateY(-50%)'
         }}
 
