@@ -41,7 +41,7 @@ const SmallLogo = styled('img')({
 export const Navbar = ({ links }) => {
   const [open, setOpen] = useState(true);
   const { pathname } = useLocation();
-  const name = useSelector((state) => state.auth.token.userData);
+  const { name, surname } = useSelector((state) => state.auth.token);
   const theme = useTheme();
   const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -107,7 +107,7 @@ export const Navbar = ({ links }) => {
               )
             )}
           </Box>
-          <NavProfile name={name} />
+          <NavProfile name={`${name} ${surname}`} />
         </Paper>
       </Slide>
       <Paper
@@ -156,7 +156,7 @@ export const Navbar = ({ links }) => {
           )}
         </Box>
         <Divider sx={{ alignSelf: 'stretch' }} variant="middle" />
-        <NavProfile compact name={name} />
+        <NavProfile compact name={`${name} ${surname}`} />
       </Paper>
       <Fade in={!largeMedia && open} mountOnEnter unmountOnExit>
         <Box

@@ -26,13 +26,14 @@ import {
   SelectColumnFilter
 } from '../../components';
 import {
-  getRows,
+  getBugs,
   putRows,
   resolveBug,
   rejectBug,
   takeBug,
   resignFromBug,
-  getPossibleValues
+  getPossibleBugValues,
+  setExecutionBugId
 } from '../../redux/store';
 
 export const bugTableTypes = {
@@ -73,8 +74,8 @@ export const BugTable = ({ type }) => {
   const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
 
   useEffect(() => {
-    dispatch(getRows());
-    dispatch(getPossibleValues());
+    dispatch(getBugs());
+    dispatch(getPossibleBugValues());
   }, []);
 
   const closeDialog = () => {
@@ -82,7 +83,8 @@ export const BugTable = ({ type }) => {
   };
 
   const onRetest = (id) => {
-    navigate(`/retest/${id}`);
+    dispatch(setExecutionBugId(id));
+    navigate('/test/execution');
   };
 
   const onResign = (id) => {
@@ -327,14 +329,14 @@ export const BugTable = ({ type }) => {
   const onSubmitBugStatus = async (arg) => {
     closeDialog();
     await dispatch(dialog.action(arg));
-    await dispatch(getRows());
+    await dispatch(getBugs());
   };
 
   const onSubmitBugDetails = async (json) => {
     const { id } = json;
     delete json.id;
     await dispatch(putRows({ id, json }));
-    await dispatch(getRows());
+    await dispatch(getBugs());
   };
 
   const prepareRows = (rows) =>

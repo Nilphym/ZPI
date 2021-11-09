@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import TestItem from './TestItem';
 import {
   deleteTestSuite,
-  changeTestSuiteName,
+  putTestSuite,
   postTest,
   setTestId,
   getTestSuiteTests
@@ -28,7 +28,8 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
   const {
     selectedTestPlanId,
     selectedTestPlan: { tests },
-    isLoadingTestSuites
+    isLoadingTestSuites,
+    setLoading
   } = useSelector((state) => state.testPlan);
 
   const {
@@ -47,16 +48,19 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
   }, [testSuiteId]);
 
   const changeSuiteName = ({ testSuiteName }) => {
-    dispatch(changeTestSuiteName({ newTestSuiteName: testSuiteName, testSuiteId }));
+    dispatch(putTestSuite({ newTestSuiteName: testSuiteName, testSuiteId }));
     setIsChangingTestSuiteName(false);
+    dispatch(setLoading(true));
   };
 
-  async function addTest({testName}) {
-    const newTestId = await dispatch(postTest({
-      testPlanId: selectedTestPlanId,
-      testSuiteId,
-      testName
-    }));
+  async function addTest({ testName }) {
+    const newTestId = await dispatch(
+      postTest({
+        testPlanId: selectedTestPlanId,
+        testSuiteId,
+        testName
+      })
+    );
     dispatch(setTestId(newTestId.payload));
     navigate(`${pathname}/test-${newTestId.payload}`);
   }

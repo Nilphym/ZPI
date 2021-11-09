@@ -45,6 +45,10 @@ export const Test = ({ isEditable }) => {
     isLoadingTest: isLoading
   } = useSelector((state) => state.test);
 
+  const {
+    token: { productId }
+  } = useSelector((state) => state.auth);
+
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export const Test = ({ isEditable }) => {
 
   async function addTestCase() {
     await dispatch(putTestById());
-    dispatch(postTestCase());
+    dispatch(postTestCase(productId));
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
   }
@@ -210,13 +214,21 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                  testProceduresCodes.map(({ testProcedureId, testProcedureCode }) => (
-                    <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                      {testProcedureCode}
-                    </MenuItem>
-                  ))}
+                  testProceduresCodes.filter(true).map(
+                    (
+                      { testProcedureId, testProcedureCode } // TODO: Poprawić ....
+                    ) => (
+                      <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
+                        {testProcedureCode}
+                      </MenuItem>
+                    )
+                  )}
                 <MenuItem value="">
-                  <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+                  {selectedTestCaseId ? (
+                    <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
+                  ) : (
+                    <Typography>Choose Test Case First</Typography>
+                  )}
                 </MenuItem>
               </Select>
             </Box>

@@ -30,6 +30,17 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.get('Errors/:id', (schema, request) => {
+      const { id } = request.params;
+      return schema.bugs.findBy({ id }).attrs;
+    }),
+
+  (thisRef) =>
+    thisRef.post('Errors', (schema, request) => {
+      console.log(JSON.parse(request.requestBody));
+    }),
+
+  (thisRef) =>
     thisRef.put('Errors/take/:id', (_, request) => {
       const { id } = request.params;
       const personId = JSON.parse(request.requestBody);
@@ -58,6 +69,17 @@ const routes = [
     }),
 
   (thisRef) =>
+    thisRef.put('Errors/evaluate/:id', (schema, request) => {
+      const { id } = request.params;
+      const result = JSON.parse(request.requestBody);
+      if (result) {
+        console.log(`bugId: ${id} || retestsDone + 1`);
+      } else {
+        console.log(`bugId: ${id} || retestsFailed + 1`);
+      }
+    }),
+
+  (thisRef) =>
     thisRef.put('Errors/:id', (schema, request) => {
       const { id } = request.params;
       const json = JSON.parse(request.requestBody);
@@ -74,7 +96,7 @@ const seeds = [
   (serverRef) =>
     [
       {
-        id: '91563764-7B2B-4FE9-AB0E-B40D5E62E9D6',
+        id: '22bd1f84-b9e5-4183-9502-036eafe67622',
         code: 'E-91563764',
         name: 'Not responding',
         errorState: 'New',

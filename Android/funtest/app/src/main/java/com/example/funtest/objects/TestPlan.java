@@ -3,11 +3,11 @@ package com.example.funtest.objects;
 import java.util.ArrayList;
 
 public class TestPlan {
-    private int id;
+    private String id;
     private String name;
     private ArrayList<TestSuite> testSuites;
 
-    public TestPlan(int id, String name, ArrayList<TestSuite> testSuites) {
+    public TestPlan(String id, String name, ArrayList<TestSuite> testSuites) {
         this.id = id;
         this.name = name;
         this.testSuites = testSuites;
@@ -16,11 +16,11 @@ public class TestPlan {
     public TestPlan() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

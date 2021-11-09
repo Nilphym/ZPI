@@ -4,8 +4,22 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './Layout';
 import { RequireAuth } from './providers';
 import { Logout } from './containers';
-import { LoginPanel, TestPlan, Test, RegisterPanel, ResetPasswordPanel, ChangeUserDataPanel } from './components';
-import { NoMatch, AllBugsPage, AssignedBugsPage, ActiveBugsPage } from './pages';
+import {
+  LoginPanel,
+  TestPlan,
+  Test,
+  RegisterPanel,
+  ResetPasswordPanel,
+  ChangeUserDataPanel
+} from './components';
+import {
+  NoMatch,
+  AssignedBugsPage,
+  ActiveBugsPage,
+  AllBugsPage,
+  TestRunPage,
+  RetestBugsPage
+} from './pages';
 
 const App = () => {
   return (
@@ -19,6 +33,8 @@ const App = () => {
         <Route path="bugs" element={<AllBugsPage />} />
         <Route path="bugs/assigned" element={<AssignedBugsPage />} />
         <Route path="bugs/active" element={<ActiveBugsPage />} />
+        <Route path="bugs/retest" element={<RetestBugsPage />} />
+        <Route path="test/execution" element={<TestRunPage />} />
         <Route
           path="dashboard"
           element={

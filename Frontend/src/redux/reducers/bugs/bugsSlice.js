@@ -6,10 +6,11 @@ import server from '../../../services/server';
 const initialState = {
   rows: [],
   loading: true,
-  possibleValues: {}
+  possibleValues: {},
+  bugDetails: {}
 };
 
-export const getPossibleValues = createAsyncThunk('bugs/get/values', async () => {
+export const getPossibleBugValues = createAsyncThunk('bugs/get/values', async () => {
   const promises = [];
   promises.push(server().get({ url: 'Errors/ErrorTypes' }));
   promises.push(server().get({ url: 'Errors/ErrorImpacts' }));
@@ -40,9 +41,24 @@ const prepareDataForView = (rows) => {
   }));
 };
 
-export const getRows = createAsyncThunk('bugs/get/rows', async () => {
+export const getBugs = createAsyncThunk('bugs/get/all', async () => {
   const data = await server().get({ url: 'Errors/toFix' });
   return prepareDataForView(data);
+});
+
+export const getBug = createAsyncThunk('bugs/get', async ({ errorId }) => {
+  const data = await server().get({ url: `Errors/${errorId}` });
+  return prepareDataForView([data])[0];
+});
+
+export const evaluateBug = createAsyncThunk('bugs/evaluate', async ({ errorId, result }) => {
+  const data = await server().put({ url: `Errors/evaluate/${errorId}`, data: { result } });
+  return data;
+});
+
+export const postBug = createAsyncThunk('bugs/post', async ({ json }) => {
+  const data = await server().post({ url: 'Errors', data: json });
+  return data;
 });
 
 const prepareDataForServer = (json) => {
@@ -57,7 +73,7 @@ const prepareDataForServer = (json) => {
   };
 };
 
-export const putRows = createAsyncThunk('bugs/put/rows', async ({ id, json }) => {
+export const putRows = createAsyncThunk('bugs/put/all', async ({ id, json }) => {
   const data = await server().put({ url: `Errors/${id}`, data: prepareDataForServer(json) });
   return data;
 });
@@ -87,19 +103,30 @@ export const bugsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getRows.fulfilled, (state, action) => {
+      .addCase(getBugs.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getRows.rejected, (state) => {
+      .addCase(getBugs.rejected, (state) => {
         state.loading = false;
         state.rows = [];
       })
-      .addCase(getRows.pending, (state) => {
+      .addCase(getBugs.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getPossibleValues.fulfilled, (state, action) => {
+      .addCase(getPossibleBugValues.fulfilled, (state, action) => {
         state.possibleValues = action.payload;
+      })
+      .addCase(getBug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bugDetails = action.payload;
+      })
+      .addCase(getBug.rejected, (state) => {
+        state.loading = false;
+        state.bugDetails = {};
+      })
+      .addCase(getBug.pending, (state) => {
+        state.loading = true;
       });
   }
 });

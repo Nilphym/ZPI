@@ -1,73 +1,256 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { TableCell, IconButton, Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Controller, useForm } from 'react-hook-form';
+import { DatePicker } from '@mui/lab';
 import { Done, Error } from '@mui/icons-material';
+import { DateTime } from 'luxon';
+import {
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 
-export const ButtonStepCell = ({ row, useTableStepsRef }) => {
-  const [currentState, stepStates, doneAction, errorAction, clearAction] = useTableStepsRef;
+import { executeTest, postBug, getPossibleBugValues } from '../../redux/store';
 
-  const handleClear = () => {
-    if (Object.values(currentState).some((stepState) => stepState === stepStates.error)) {
-      // TODO: add modal with info that you cannot clear after error has been reported
+export const ButtonStepCell = ({ index, stepId, testId, useTableStepsRef }) => {
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.token.userId);
+  const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
+  const { handleSubmit, setValue, control } = useForm();
+  const { currentState, stepStates, doneAction, errorAction, clearAction } = useTableStepsRef;
+  const [openExecutionDialog, setOpenExecutionDialog] = useState(false);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const lastStepNumber = Object.keys(currentState).length - 1;
+
+  useEffect(() => {
+    dispatch(getPossibleBugValues());
+  }, []);
+
+  const handleNextStep = () => {
+    if (index !== lastStepNumber) {
+      doneAction(index);
     } else {
-      // TODO: add modal asking if you sure want to clear
-      clearAction(row.index);
+      setOpenExecutionDialog(true);
     }
   };
 
-  switch (currentState[row.index]) {
+  const onSubmitNewError = ({ name, description, deadline, impact, priority, type }) => {
+    const newErrorData = {
+      testId,
+      stepId,
+      testerId: userId,
+      name,
+      description,
+      deadline: DateTime.fromFormat(deadline, 'MM/dd/yyyy').toISO().substring(0, 19),
+      errorImpact: impact,
+      errorPriority: priority,
+      errorType: type,
+      reportDate: DateTime.now().toISO().substring(0, 19)
+    };
+    dispatch(postBug({ json: newErrorData }));
+    errorAction(index);
+  };
+
+  const handleTestExecution = () => {
+    dispatch(executeTest({ testId }));
+    doneAction(index);
+  };
+
+  switch (currentState[index]) {
     case stepStates.choose:
       return (
-        <TableCell sx={{ width: '5rem' }}>
+        <>
           <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton
-              component="span"
-              color="primary"
-              size="small"
-              onClick={() => doneAction(row.index)}
-            >
+            <IconButton component="span" color="primary" size="small" onClick={handleNextStep}>
               <Done />
             </IconButton>
             <IconButton
               component="span"
               color="primary"
               size="small"
-              onClick={() => errorAction(row.index)}
+              onClick={() => setOpenErrorDialog(true)}
             >
               <Error />
             </IconButton>
           </Box>
-        </TableCell>
+          <Dialog
+            fullWidth
+            open={openExecutionDialog}
+            onClose={() => setOpenExecutionDialog(false)}
+          >
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogContent>You will mark this test as executed successfully</DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenExecutionDialog(false)}>Close</Button>
+              <Button onClick={handleTestExecution}>Confirm</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog fullWidth open={openErrorDialog} onClose={() => setOpenErrorDialog(false)}>
+            <form onSubmit={handleSubmit(onSubmitNewError)}>
+              <DialogTitle>Report new error</DialogTitle>
+              <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <Controller
+                  control={control}
+                  defaultValue=""
+                  name="name"
+                  render={({ field }) => (
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Name"
+                      type="text"
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="description"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      fullWidth
+                      multiline
+                      rows={3}
+                      id="description"
+                      label="Description"
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="deadline"
+                  defaultValue={DateTime.now().toFormat('MM/dd/yyyy')}
+                  render={({ field }) => (
+                    <DatePicker
+                      label="Deadline"
+                      inputFormat="MM/dd/yyyy"
+                      renderInput={(params) => <TextField size="small" {...params} />}
+                      {...field}
+                      onChange={(date) => {
+                        setValue('deadline', date?.toFormat('MM/dd/yyyy'));
+                      }}
+                    />
+                  )}
+                />
+                <FormControl size="small">
+                  <InputLabel id="errorImpact">Error impact</InputLabel>
+                  <Controller
+                    control={control}
+                    name="errorImpact"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Select
+                        labelId="errorImpact"
+                        id="errorImpact"
+                        label="Error impact"
+                        {...field}
+                      >
+                        {impacts.map((value) => (
+                          <MenuItem key={value} value={value}>
+                            {value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+                <FormControl size="small">
+                  <InputLabel id="errorPriority">Error priority</InputLabel>
+                  <Controller
+                    control={control}
+                    name="errorPriority"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Select
+                        labelId="errorPriority"
+                        id="errorPriority"
+                        label="Error priority"
+                        {...field}
+                      >
+                        {priorities.map((value) => (
+                          <MenuItem key={value} value={value}>
+                            {value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+                <FormControl size="small">
+                  <InputLabel id="errorType">Error type</InputLabel>
+                  <Controller
+                    control={control}
+                    name="errorType"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Select labelId="errorType" id="errorType" label="Error type" {...field}>
+                        {types.map((value) => (
+                          <MenuItem key={value} value={value}>
+                            {value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpenErrorDialog(false)}>Close</Button>
+                <Button type="submit">Confirm</Button>
+              </DialogActions>
+            </form>
+          </Dialog>
+        </>
       );
 
     case stepStates.done:
       return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small" onClick={handleClear}>
-              <Done />
-            </IconButton>
-          </Box>
-        </TableCell>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IconButton
+            disabled={Object.values(currentState).some(
+              (state) => state === 'error' || currentState[lastStepNumber] === 'done'
+            )}
+            component="span"
+            color="primary"
+            size="small"
+            onClick={() => clearAction(index)}
+          >
+            <Done />
+          </IconButton>
+        </Box>
       );
 
     case stepStates.error:
       return (
-        <TableCell sx={{ width: '5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <IconButton component="span" color="primary" size="small">
-              <Error />
-            </IconButton>
-          </Box>
-        </TableCell>
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <IconButton disabled component="span" color="primary" size="small">
+            <Error />
+          </IconButton>
+        </Box>
       );
 
     default:
-      return <TableCell sx={{ width: '5rem' }} />;
+      return null;
   }
 };
 
 ButtonStepCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  useTableStepsRef: PropTypes.func.isRequired
+  index: PropTypes.number.isRequired,
+  stepId: PropTypes.string.isRequired,
+  testId: PropTypes.string.isRequired,
+  useTableStepsRef: PropTypes.object.isRequired
 };
