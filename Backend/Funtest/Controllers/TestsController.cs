@@ -63,6 +63,7 @@ namespace Funtest.Controllers
                                 .FirstOrDefault());
 
             var response = await _testService.GetTestById(id);
+
             response.TestProcedures = _testProcedureService.GetAllTestProceduresForProduct(productId);
             response.TestCases = _testCaseService.GetAllTestCasesForProduct(productId);
             response.TestSuites = _testSuitService.GetAllTestSuitesForProduct(productId);

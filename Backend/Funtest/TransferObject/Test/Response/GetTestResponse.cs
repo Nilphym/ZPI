@@ -16,15 +16,15 @@ namespace Funtest.TransferObject.Test.Response
 
         public string Name { get; set; }
 
-        public Data.Models.TestSuite TestSuite { get; set; }
+        public GetTestSuiteResponse TestSuite { get; set; }
 
-        public Data.Models.TestProcedure TestProcedure { get; set; }
+        public GetTestProcedureIdResponse TestProcedure { get; set; }
 
-        public Data.Models.TestCase TestCase { get; set; }
+        public GetTestCaseResponse TestCase { get; set; }
 
         public List<GetTestSuiteResponse> TestSuites { get; set; }
 
-        public List<GetTestProcedureIdentityValueResponse> TestProcedures { get; set; }
+        public List<GetTestProcedureWithTestCaseResponse> TestProcedures { get; set; }
 
         public List<GetTestCaseIdentityValueResponse> TestCases { get; set; }
 

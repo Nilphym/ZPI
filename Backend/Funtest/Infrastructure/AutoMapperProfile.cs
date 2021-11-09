@@ -42,6 +42,8 @@ namespace Funtest.Infrastructure
             CreateMap<AddTestProcedureRequest, TestProcedure>();
             CreateMap<TestProcedure, GetTestProcedureResponse>();
             CreateMap<TestProcedure, GetTestProcedureIdentityValueResponse>();
+            CreateMap<TestProcedure, GetTestProcedureWithTestCaseResponse>();
+            CreateMap<TestProcedure, GetTestProcedureIdResponse>();
 
             //Mapowania dla TestProcedure
             CreateMap<AddTestRequest, Test>();

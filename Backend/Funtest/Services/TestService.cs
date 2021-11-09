@@ -122,7 +122,13 @@ namespace Funtest.Services
 
         public async Task<GetTestResponse> GetTestById(Guid id)
         {
-            var test = await Context.Tests.FindAsync(id);
+            var test = await Context.Tests
+                .Include(x => x.TestProcedure)
+                .Include(x => x.TestSuite)
+                .Include(x => x.TestCase)
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
             return _mapper.Map<GetTestResponse>(test);
         }
 
