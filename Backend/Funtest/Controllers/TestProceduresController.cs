@@ -51,18 +51,26 @@ namespace Funtest.Controllers
             return Ok(testProcedure);
         }
 
-        [HttpPut("{id}") ]
+        [HttpPut("{id}")]
         public async Task<ActionResult> EditTestProcedure([FromRoute] Guid id, EditTestProcedureRequest request)
         {
             var isExist = _testProcedureService.IsTestProcedureExist(id);
             if (!isExist)
                 return NotFound("Object with the given id doesn't exist.");
+            var isEditPossible = _testProcedureService.IsEditPossible(id);
 
-            var testExecutionCounter = await _testService.GetExecutionCounterForTest(request.TestId);
-            if (testExecutionCounter > 0)
-                return Conflict("Test procedura can't be modified.");
+            bool result;
+            if (isEditPossible)
+                result = await _testProcedureService.EditTestProcedure(id, request);
+            else
+            {
+                var newTestProcedureId = await _testProcedureService.CreateNewTestProcedureBaseOnExistTPWithModification(id, request);
+                if (newTestProcedureId == null)
+                    result = false;
+                else             
+                    result = await _testService.AssignNewTestProcedure(request.TestId, (Guid)newTestProcedureId);   
+            }
 
-            var result = await _testProcedureService.EditTestProcedure(id, request);
             if (result)
                 return Ok();
             return Problem("Problem with saving an object in the database");

@@ -17,5 +17,8 @@ namespace Data.Models
 
         public virtual Error Error{ get; set; }
         public Guid? ErrorId { get; set; }
+
+        public virtual Tester Tester { get; set; }
+        public string TesterId { get; set; }
     }
 }

@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using Data.Models;
 using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Email.Requests;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Funtest.Services
 {
@@ -24,7 +28,7 @@ namespace Funtest.Services
             return $"{baseUrl}/{role}/{productId}";
         }
 
-        public bool SendInvitationLink(DataToInvitationLinkRequest request)
+        public async Task<bool> SendInvitationLinkAsync(DataToInvitationLinkRequest request)
         {
             var mailMessage = new MimeMessage();
             mailMessage.From.Add(new MailboxAddress(_configuration["EmailService:name"], _configuration["EmailService:email"]));
@@ -40,6 +44,11 @@ namespace Funtest.Services
             );
             mailMessage.Body = builder.ToMessageBody();
 
+            return await Send(mailMessage);
+        }
+
+        private async Task<bool> Send(MimeMessage message)
+        {
             using (var smtpClient = new SmtpClient())
             {
                 try
@@ -47,7 +56,7 @@ namespace Funtest.Services
                     smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     smtpClient.Connect(_configuration["EmailService:host"], Int32.Parse(_configuration["EmailService:port"]), false);
                     smtpClient.Authenticate(_configuration["EmailService:email"], _configuration["EmailService:password"]);
-                    smtpClient.Send(mailMessage);
+                    smtpClient.Send(message);
                     smtpClient.Disconnect(true);
                 }
                 catch
@@ -57,6 +66,34 @@ namespace Funtest.Services
 
             }
             return true;
+        }
+
+        public async Task<bool> SendResetPasswordMail(User user, string passwordResetToken, string baseUrl)
+        {
+            var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
+            baseUrl = "https://localhost:44360/api/auth";
+            string url = $"{baseUrl}/{user.Id}/{encodedToken}";
+
+            var mailMessage = new MimeMessage();
+            mailMessage.From.Add(new MailboxAddress(_configuration["EmailService:name"], _configuration["EmailService:email"]));
+            mailMessage.To.Add(new MailboxAddress(user.Email, user.Email));
+            mailMessage.Subject = "Reset password, Funtest";
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = string.Format(
+                @$"<h2>Hello in Funtest Community. </h2>
+                <p>Click in lint to reset pssword.</p>
+                <a href='{url}'>REser password link</a>
+                <p>Best regards, {_configuration["EmailService:name"]}"
+            );
+            mailMessage.Body = builder.ToMessageBody();
+
+            var result = await Send(mailMessage);
+
+            if (result)
+                return true;
+
+            return false; ;
         }
     }
 }

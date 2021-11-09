@@ -14,6 +14,8 @@ namespace Funtest.Services.Interfaces
         Task<GetTestProcedureResponse> GetTestProcedureById(Guid id);
         Task<bool> EditTestProcedure(Guid id, EditTestProcedureRequest request);
         List<GetTestProcedureIdentityValueResponse> GetAllTestProceduresForProduct(Guid productId);
+        bool IsEditPossible(Guid testProcedureId);
+        Task<Guid?> CreateNewTestProcedureBaseOnExistTPWithModification(Guid testProcedureId, EditTestProcedureRequest editedTestProcedure);
 
     }
 }

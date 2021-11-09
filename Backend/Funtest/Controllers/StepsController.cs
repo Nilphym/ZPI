@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Funtest.Interfaces;
-using Funtest.TransferObject.Steps;
 using System;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Steps.Requests;
@@ -18,17 +17,24 @@ namespace Funtest.Controllers
     public class StepsController : ControllerBase
     {
         private readonly IStepService _stepService;
+        private readonly IErrorService _errorService;
         private readonly ITestProcedureService _testProcedureService;
 
-        public StepsController(IStepService stepService, ITestProcedureService testProcedureService)
+        public StepsController(IStepService stepService, IErrorService errorService, ITestProcedureService testProcedureService)
         {
             _stepService = stepService;
+            _errorService = errorService;
             _testProcedureService = testProcedureService;
         }
 
         [HttpPost]
         public async Task<ActionResult> AddStep(AddStepRequest step)
         {
+            var isTetProcedureExist = _testProcedureService.IsTestProcedureExist(step.TestProcedureId);
+
+            if (!isTetProcedureExist)
+                return NotFound("Test procedured doesn't exist.");
+
             var correctResult = await _stepService.AddStep(step);
 
             if (correctResult)
@@ -51,12 +57,16 @@ namespace Funtest.Controllers
         }
 
         [HttpGet("testprocedure/{testProcedureId}")]
-        public ActionResult<IEnumerable<GetStepResponse>> GetStepsForTestProcedure([FromRoute] Guid testProcedureId)
+        public ActionResult<IEnumerable<GetStepWithErrorResponse>> GetStepsForTestProcedureAsync([FromRoute] Guid testProcedureId)
         {
-            if (_testProcedureService.IsTestProcedureExist(testProcedureId))
-                return Ok(_stepService.GetAllStepsForTestProcedure(testProcedureId));
+            if (!_testProcedureService.IsTestProcedureExist(testProcedureId))
+                return NotFound("Test procedure with the given id doesn't exist.");
 
-            return NotFound("Test procedure with the given id doesn't exist.");
+            var steps = _stepService.GetAllStepsForTestProcedure(testProcedureId);
+            foreach (var step in steps)
+                step.Errors = _errorService.GetAllErrorsForStep(step.Id);
+
+            return Ok(steps);
         }
 
         [HttpPut("{stepId}")]

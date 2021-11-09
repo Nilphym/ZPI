@@ -67,8 +67,10 @@ namespace Funtest.Services
         {
             var error = await Context.Errors.FindAsync(id);
 
-            if (request.Deadline != DateTime.MinValue)
+            if (request.Deadline != DateTime.MinValue && request.Deadline > DateTime.Today)
                 error.Deadline = request.Deadline;
+            else if (request.Deadline == DateTime.Today)
+                error.Deadline = DateTime.Today;
 
             if (request.Description != null)
                 error.Description = request.Description;
@@ -227,13 +229,18 @@ namespace Funtest.Services
             return false;
         }
 
+        private string GetCode(Guid index)
+        {
+            return $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8).ToUpper()}";
+        }
+
         public async Task<bool> AddError(AddErrorRequest request, string testSuiteCategory)
         {
             var error = _mapper.Map<Error>(request);
             var index = Guid.NewGuid();
             error.Id = index;
             error.ErrorState = ErrorState.New;
-            error.Code = $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8)}";
+            error.Code = GetCode(index);
             error.Functionality = testSuiteCategory;
             Context.Errors.Add(error);
 
@@ -265,7 +272,12 @@ namespace Funtest.Services
 
             errorTest.TestId = (Guid)error.TestId;
             errorTest.TestName = error.Test.Name;
-            errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryData;
+
+            if (error.Step.TestProcedure.TestCase.EntryDataObject != null)
+                errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryDataObject.GetValue("data");
+            else
+                errorTest.TestCaseEntryData = "";
+
             errorTest.TestCaseProconditions = error.Step.TestProcedure.TestCase.Preconditions;
 
             errorTest.Result = error.Step.TestProcedure.Result;
@@ -275,6 +287,28 @@ namespace Funtest.Services
         public async Task<Error> GetModelErrorById(Guid id)
         {
             return await Context.Errors.FindAsync(id);
+        }
+
+        public async Task<bool> ChangeErrorStatusToRetest(Guid id)
+        {
+            var error = await Context.Errors.FindAsync(id);
+            error.ErrorState = ErrorState.Retest;
+
+            Context.Errors.Update(error);
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId)
+        {
+            var errors = Context.Errors.Where(x => x.StepId == stepId).ToList();
+            return errors.Select(x => _mapper.Map<GetIdentityErrorInformationRespons>(x)).ToList();
+        }
+
+        public async Task<bool> IsErrorReviewed(Guid errorId)
+        {
+            return Context.Reviews.Where(x => x.ErrorId ==errorId && x.IsActual).Count() > 0;
         }
     }
 }

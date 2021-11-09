@@ -6,5 +6,6 @@ namespace Funtest.TransferObject.Steps.Requests
     {
         public string Name { get; set; }
         public Guid TestProcedureId { get; set; }
+        public int StepNumber { get; set; }
     }
 }

@@ -13,8 +13,11 @@ namespace Funtest.Services.Interfaces
         Task<Test> FindTest(Guid id);
         Task<GetTestResponse> GetTestById(Guid id);
         Task<bool> EditTest(Guid id, EditTestRequest request);
-        bool IsTestExist(Guid id);
+        bool IsTestExist(Guid testId);
+        Task<bool> AssignNewTestCase(Guid testId, Guid testCaseId);
+        Task<bool> AssignNewTestProcedure(Guid testId, Guid testProcedureId);
         Task<int> GetExecutionCounterForTest(Guid id);
+        Task<bool> ExecuteTest(Guid id);
         List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestSuite(Guid testSuiteId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId);
