@@ -7,15 +7,15 @@ public class TestStep {
     private String id;
     private String name;
     private int stepNumber;
-    private String testDataObject;
+    private ArrayList<String> testData;
     private String controlPoint;
-    private ArrayList<String> stepErrors;
+    private ArrayList<Bug> stepErrors;
 
-    public TestStep(String id, String name, int stepNumber, String testDataObject, String controlPoint, ArrayList<String> stepErrors) {
+    public TestStep(String id, String name, int stepNumber, ArrayList<String> testData, String controlPoint, ArrayList<Bug> stepErrors) {
         this.id = id;
         this.name = name;
         this.stepNumber = stepNumber;
-        this.testDataObject = testDataObject;
+        this.testData = testData;
         this.controlPoint = controlPoint;
         this.stepErrors = stepErrors;
     }
@@ -47,12 +47,12 @@ public class TestStep {
         this.stepNumber = stepNumber;
     }
 
-    public String getTestDataObject() {
-        return testDataObject;
+    public ArrayList<String> getTestData() {
+        return testData;
     }
 
-    public void setTestDataObject(String testDataObject) {
-        this.testDataObject = testDataObject;
+    public void setTestData(ArrayList<String> testData) {
+        this.testData = testData;
     }
 
     public String getControlPoint() {
@@ -63,11 +63,11 @@ public class TestStep {
         this.controlPoint = controlPoint;
     }
 
-    public ArrayList<String> getStepErrors() {
+    public ArrayList<Bug> getStepErrors() {
         return stepErrors;
     }
 
-    public void setStepErrors(ArrayList<String> stepErrors) {
+    public void setStepErrors(ArrayList<Bug> stepErrors) {
         this.stepErrors = stepErrors;
     }
 }
