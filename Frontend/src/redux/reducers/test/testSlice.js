@@ -425,7 +425,7 @@ export const testSlice = createSlice({
           id,
           result,
           testCaseId,
-          stepsIds: testStepsIds
+          stepIds: testStepsIds
         } = action.payload;
         state.selectedTestProcedure.id = id;
         state.selectedTestProcedure.testStepsIds = testStepsIds;
@@ -455,7 +455,7 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
-        state.selectedTestCase.entryData = transformEntryData(action.payload.entryDataObject);
+        state.selectedTestCase.entryData = action.payload.entryDataObject === {} ? transformEntryData(action.payload.entryDataObject) : [];
         state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })

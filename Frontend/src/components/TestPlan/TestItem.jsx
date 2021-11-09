@@ -4,10 +4,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  setTestId
+  setTestId, setExecutionTestId
 } from '../../redux/store';
 
-const TestItem = ({ testName, testId }) => {
+const TestItem = ({ isEditable, testName, testId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -20,6 +20,11 @@ const TestItem = ({ testName, testId }) => {
   const viewTestNavigate = () => {
     dispatch(setTestId(testId));
     navigate(`${pathname}/test-${testId}`);
+  };
+
+  const executeTestNavigate = () => {
+    dispatch(setExecutionTestId(testId));
+    navigate('/test/execution');
   };
 
   return (
@@ -52,28 +57,43 @@ const TestItem = ({ testName, testId }) => {
           right: '1.5%',
           transform: 'translateY(-50%)'
         }}
-        s
+
         variant="contained"
       >
         View
       </Button>
-        <Button
-          onClick={() => editTestNavigate()}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: '9.5%',
-            transform: 'translateY(-50%)'
-          }}
-          variant="contained"
-        >
-          Edit
-        </Button>
+      <Button
+        onClick={() => executeTestNavigate()}
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          right: '9.5%',
+          transform: 'translateY(-50%)'
+        }}
+
+        variant="contained"
+      >
+        Execute
+      </Button>
+      {isEditable && (<Button
+        onClick={() => editTestNavigate()}
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          right: '17.5%',
+          transform: 'translateY(-50%)'
+        }}
+        variant="contained"
+      >
+        Edit
+      </Button>)}
+
     </Box>
   );
 };
 
 TestItem.propTypes = {
+  isEditable: PropTypes.bool.isRequired,
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired
 };

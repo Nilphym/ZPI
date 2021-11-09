@@ -18,7 +18,7 @@ import {
   getTestSuiteTests
 } from '../../redux/store';
 
-const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
+const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
   const dispatch = useDispatch();
   const [isOpened, setIsOpened] = useState(false);
   const [isChangingTestSuiteName, setIsChangingTestSuiteName] = useState(false);
@@ -255,7 +255,7 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
               {!isChangingTestSuiteName &&
                 isOpened &&
                 tests[testSuiteId].map(({ id, name }) => (
-                  <TestItem isEditable={isEditable} testName={name} testId={id} />
+                  <TestItem isEditable={editTest} testName={name} testId={id} />
                 ))}
             </Box>
           </Box>
@@ -338,6 +338,7 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
 
 TestSuiteItem.propTypes = {
   isEditable: PropTypes.bool.isRequired,
+  editTest: PropTypes.bool.isRequired,
   testSuite: PropTypes.string.isRequired,
   testSuiteId: PropTypes.string.isRequired
 };
