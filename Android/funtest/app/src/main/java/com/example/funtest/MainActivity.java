@@ -13,13 +13,17 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.funtest.fragments.BugsFragment;
@@ -29,8 +33,12 @@ import com.example.funtest.objects.Bug;
 import com.example.funtest.objects.TestPlan;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -83,6 +91,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //check necessary permissons
         checkPermissions();
 
+        //set username in nav drawer
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView textView_username = headerLayout.findViewById(R.id.ndh_user_name);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase(""))
+        {
+            String[] split_token = token.split("\\.");
+            try {
+                String string_body = getJson(split_token[1]);
+                JSONObject json_body = new JSONObject(string_body);
+                String name = json_body.getString("name");
+                String surname = json_body.getString("surname");
+                textView_username.setText(name + " " + surname);
+            } catch (UnsupportedEncodingException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         //DASHBOARD get user stats / If PM: get project stats
 
         //TESTS get public data
@@ -99,11 +127,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getTestPlanList() {
         MainActivity.testPlanList = new ArrayList<>();
 
-        MainActivity.testPlanList.add(new TestPlan(1,"Test Plan 1", new ArrayList<>()));
-        MainActivity.testPlanList.add(new TestPlan(2,"Test Plan 2", new ArrayList<>()));
-        MainActivity.testPlanList.add(new TestPlan(3,"Test Plan 3", new ArrayList<>()));
-        MainActivity.testPlanList.add(new TestPlan(4,"Test Plan 4", new ArrayList<>()));
-        MainActivity.testPlanList.add(new TestPlan(5,"Test Plan 5", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan("1","Test Plan 1", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan("2","Test Plan 2", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan("3","Test Plan 3", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan("4","Test Plan 4", new ArrayList<>()));
+        MainActivity.testPlanList.add(new TestPlan("5","Test Plan 5", new ArrayList<>()));
 
     }
 
@@ -210,4 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
     ////////////////////////////
+    private static String getJson(String strEncoded) throws UnsupportedEncodingException {
+        byte[] decodedBytes = Base64.decode(strEncoded, Base64.URL_SAFE);
+        return new String(decodedBytes, "UTF-8");
+    }
 }

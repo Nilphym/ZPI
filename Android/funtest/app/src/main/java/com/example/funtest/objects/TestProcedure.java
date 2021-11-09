@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class TestProcedure {
 
-    private int id;
+    private String id;
     private String result;
     private String code;
     private ArrayList<TestStep> stepIds;
 
-    public TestProcedure(int id, String result, String code, ArrayList<TestStep> stepIds) {
+    public TestProcedure(String id, String result, String code, ArrayList<TestStep> stepIds) {
         this.id = id;
         this.result = result;
         this.code = code;
@@ -19,11 +19,11 @@ public class TestProcedure {
     public TestProcedure() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -2,13 +2,13 @@ package com.example.funtest.objects;
 
 public class Test {
 
-    private int id;
+    private String id;
     private String creationDate;
     private String name;
     private TestProcedure testProcedure;
     private  TestCase testCase;
 
-    public Test(int id, String creationDate, String name, TestProcedure testProcedure, TestCase testCase) {
+    public Test(String id, String creationDate, String name, TestProcedure testProcedure, TestCase testCase) {
         this.id = id;
         this.creationDate = creationDate;
         this.name = name;
@@ -19,11 +19,11 @@ public class Test {
     public Test() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

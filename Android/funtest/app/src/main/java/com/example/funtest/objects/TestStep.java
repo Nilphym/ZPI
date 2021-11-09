@@ -1,29 +1,33 @@
 package com.example.funtest.objects;
 
+import java.util.ArrayList;
+
 public class TestStep {
 
-    private int id;
+    private String id;
     private String name;
     private int stepNumber;
     private String testDataObject;
     private String controlPoint;
+    private ArrayList<String> stepErrors;
 
-    public TestStep(int id, String name, int stepNumber, String testDataObject, String controlPoint) {
+    public TestStep(String id, String name, int stepNumber, String testDataObject, String controlPoint, ArrayList<String> stepErrors) {
         this.id = id;
         this.name = name;
         this.stepNumber = stepNumber;
         this.testDataObject = testDataObject;
         this.controlPoint = controlPoint;
+        this.stepErrors = stepErrors;
     }
 
     public TestStep() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -57,5 +61,13 @@ public class TestStep {
 
     public void setControlPoint(String controlPoint) {
         this.controlPoint = controlPoint;
+    }
+
+    public ArrayList<String> getStepErrors() {
+        return stepErrors;
+    }
+
+    public void setStepErrors(ArrayList<String> stepErrors) {
+        this.stepErrors = stepErrors;
     }
 }

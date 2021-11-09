@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class TestSuite {
 
-    private int id;
+    private String id;
     private String category;
     private ArrayList<Test> tests;
 
-    public TestSuite(int id, String category, ArrayList<Test> tests) {
+    public TestSuite(String id, String category, ArrayList<Test> tests) {
         this.id = id;
         this.category = category;
         this.tests = tests;
@@ -17,11 +17,11 @@ public class TestSuite {
     public TestSuite() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
