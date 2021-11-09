@@ -12,7 +12,14 @@ import {
   ResetPasswordPanel,
   ChangeUserDataPanel
 } from './components';
-import { NoMatch, AssignedBugsPage, ActiveBugsPage, TestRunPage } from './pages';
+import {
+  NoMatch,
+  AssignedBugsPage,
+  ActiveBugsPage,
+  AllBugsPage,
+  TestRunPage,
+  RetestBugsPage
+} from './pages';
 
 const App = () => {
   return (
@@ -23,9 +30,11 @@ const App = () => {
         <Route path="register" element={<RegisterPanel />} />
         <Route path="resetPassword" element={<ResetPasswordPanel />} />
         <Route path="changeUserData" element={<ChangeUserDataPanel />} />
-        <Route path="bugs" element={<TestRunPage />} />
+        <Route path="bugs" element={<AllBugsPage />} />
         <Route path="bugs/assigned" element={<AssignedBugsPage />} />
         <Route path="bugs/active" element={<ActiveBugsPage />} />
+        <Route path="bugs/retest" element={<RetestBugsPage />} />
+        <Route path="test/execution" element={<TestRunPage />} />
         <Route
           path="dashboard"
           element={

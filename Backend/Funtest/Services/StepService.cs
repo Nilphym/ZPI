@@ -52,10 +52,10 @@ namespace Funtest.Services
             return steps.Select(x => _mapper.Map<GetStepResponse>(x));
         }
 
-        public List<GetStepResponse> GetAllStepsForTestProcedure(Guid testProcedureId)
+        public List<GetStepWithErrorResponse> GetAllStepsForTestProcedure(Guid testProcedureId)
         {
             var steps = Context.Steps.Where(x => x.TestProcedureId == testProcedureId).AsQueryable();
-            return steps.Select(x => _mapper.Map<GetStepResponse>(x)).ToList();
+            return steps.Select(x => _mapper.Map<GetStepWithErrorResponse>(x)).ToList();
         }
 
         public async Task<GetStepResponse> GetStep(Guid stepId)
@@ -64,9 +64,9 @@ namespace Funtest.Services
             return _mapper.Map<GetStepResponse>(step);
         }
 
-        public async Task<List<GetStepWithErrors>> GetStepsWithErrorsForTest(Guid testId)
+        public async Task<List<GetStepWithErrorIdsResponse>> GetStepsWithErrorsForTest(Guid testId)
         {
-            var result = new List<GetStepWithErrors>();
+            var result = new List<GetStepWithErrorIdsResponse>();
             var testProcedureId = (await Context.Tests.FindAsync(testId)).TestProcedure.Id;
             var steps = Context.Steps.Where(x => x.TestProcedureId == testProcedureId).ToList();
 
@@ -75,14 +75,18 @@ namespace Funtest.Services
                 var errorsInStep = Context.Errors.Where(x => x.StepId == step.Id).ToList();
                 var errorIds = Context.Errors.Where(x => x.StepId == step.Id).Select(x => x.Id).ToList();
 
-                var newStep = new GetStepWithErrors()
+                var newStep = new GetStepWithErrorIdsResponse()
                 {
                     Id = step.Id,
                     Name = step.Name,
-                    TestData = step.TestData,
                     ControlPoint = step.ControlPoint,
                     ErrorIds = errorIds
                 };
+
+                if (step.TestDataObject != null)
+                    newStep.TestData = step.TestDataObject.GetValue("data");
+                else
+                    newStep.TestData = "";
 
                 result.Add(newStep);
             }

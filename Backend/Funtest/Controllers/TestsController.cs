@@ -63,6 +63,7 @@ namespace Funtest.Controllers
                                 .FirstOrDefault());
 
             var response = await _testService.GetTestById(id);
+
             response.TestProcedures = _testProcedureService.GetAllTestProceduresForProduct(productId);
             response.TestCases = _testCaseService.GetAllTestCasesForProduct(productId);
             response.TestSuites = _testSuitService.GetAllTestSuitesForProduct(productId);
@@ -96,6 +97,17 @@ namespace Funtest.Controllers
 
             var result = _testService.GetAllTestsForTestPlan(testPlanId);
             return Ok(result);
+        }
+
+        [HttpPut("{testId}/execute")]
+        public async Task<ActionResult> ExecuteTest([FromRoute] Guid testId)
+        {
+            var result = await _testService.ExecuteTest(testId);
+
+            if (!result)
+                return NotFound("Test plan with given id doesn't exist.");
+
+            return Ok();
         }
     }
 }

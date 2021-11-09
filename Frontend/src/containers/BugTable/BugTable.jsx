@@ -26,20 +26,24 @@ import {
   SelectColumnFilter
 } from '../../components';
 import {
-  getBugs,
+  getBugsToFix,
+  getBugsToRetest,
+  getAllBugs,
+  getBugsDeveloper,
   putRows,
   resolveBug,
   rejectBug,
   takeBug,
   resignFromBug,
-  getPossibleBugValues
+  getPossibleBugValues,
+  setExecutionBugId
 } from '../../redux/store';
 
 export const bugTableTypes = {
   all: 'all',
   assigned: 'assigned',
   active: 'active',
-  toReview: 'to-review'
+  toRetest: 'to-retest'
 };
 
 const getStateColor = (value) => {
@@ -68,12 +72,32 @@ export const BugTable = ({ type }) => {
   const navigate = useNavigate();
   const { handleSubmit, setValue, control } = useForm();
   const [dialog, setDialog] = useState({ open: false, content: null, action: null });
-  const { id: developerId } = useSelector((state) => state.auth.token);
+  const { productId, userId: developerId } = useSelector((state) => state.auth.token);
   const { rows, loading } = useSelector((state) => state.bugs);
   const { types, impacts, priorities } = useSelector((state) => state.bugs.possibleValues);
 
+  const fetchBugs = async () => {
+    switch (type) {
+      case bugTableTypes.all:
+        await dispatch(getAllBugs({ productId }));
+        break;
+      case bugTableTypes.toRetest:
+        await dispatch(getBugsToRetest());
+        break;
+      case bugTableTypes.active:
+        await dispatch(getBugsToFix());
+        break;
+      case bugTableTypes.assigned:
+        await dispatch(getBugsDeveloper({ developerId }));
+        break;
+      default:
+        navigate('/dashboard');
+        break;
+    }
+  };
+
   useEffect(() => {
-    dispatch(getBugs());
+    fetchBugs();
     dispatch(getPossibleBugValues());
   }, []);
 
@@ -82,7 +106,8 @@ export const BugTable = ({ type }) => {
   };
 
   const onRetest = (id) => {
-    navigate(`/retest/${id}`);
+    dispatch(setExecutionBugId(id));
+    navigate('/test/execution');
   };
 
   const onResign = (id) => {
@@ -180,10 +205,7 @@ export const BugTable = ({ type }) => {
           accessor: 'state',
           Filter: SelectColumnFilter,
           Cell: ({ value }) => <Chip label={value} color={getStateColor(value)} />,
-          visible:
-            type === bugTableTypes.all ||
-            type === bugTableTypes.assigned ||
-            type === bugTableTypes.toReview
+          visible: type === bugTableTypes.all || type === bugTableTypes.assigned
         },
         {
           Header: 'Functionality',
@@ -196,19 +218,19 @@ export const BugTable = ({ type }) => {
           Header: 'Type',
           accessor: 'type',
           Filter: SelectColumnFilter,
-          visible: type === bugTableTypes.all || type === bugTableTypes.toReview
+          visible: type === bugTableTypes.all
         },
         {
           Header: 'Impact',
           accessor: 'impact',
           Filter: SelectColumnFilter,
-          visible: type === bugTableTypes.active || type === bugTableTypes.toReview
+          visible: type === bugTableTypes.active || type === bugTableTypes.toRetest
         },
         {
           Header: 'Priority',
           accessor: 'priority',
           Filter: SelectColumnFilter,
-          visible: type === bugTableTypes.active || type === bugTableTypes.toReview
+          visible: type === bugTableTypes.active || type === bugTableTypes.toRetest
         },
         {
           Header: (
@@ -231,7 +253,7 @@ export const BugTable = ({ type }) => {
           accessor: 'retests',
           disableFilters: true,
           disableSortBy: true,
-          visible: type === bugTableTypes.toReview || type === bugTableTypes.all,
+          visible: type === bugTableTypes.toRetest || type === bugTableTypes.all,
           minWidth: 100,
           maxWidth: 100,
           align: 'center'
@@ -316,7 +338,7 @@ export const BugTable = ({ type }) => {
           ),
           minWidth: 75,
           maxWidth: 75,
-          visible: type === bugTableTypes.toReview,
+          visible: type === bugTableTypes.toRetest,
           align: 'center'
         }
       ].filter((column) => column.visible),
@@ -327,14 +349,14 @@ export const BugTable = ({ type }) => {
   const onSubmitBugStatus = async (arg) => {
     closeDialog();
     await dispatch(dialog.action(arg));
-    await dispatch(getBugs());
+    await fetchBugs();
   };
 
   const onSubmitBugDetails = async (json) => {
     const { id } = json;
     delete json.id;
     await dispatch(putRows({ id, json }));
-    await dispatch(getBugs());
+    await fetchBugs();
   };
 
   const prepareRows = (rows) =>

@@ -25,13 +25,15 @@ namespace Funtest.Controllers
         private readonly IUserService _userService;
         private readonly ITestService _testService;
         private readonly IStepService _stepService;
+        private readonly IReviewService _reviewService;
 
-        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService, IStepService stepService)
+        public ErrorsController(IErrorService errorService, IUserService userService, ITestService testService, IStepService stepService, IReviewService reviewService)
         {
             _errorService = errorService;
             _userService = userService;
             _testService = testService;
             _stepService = stepService;
+            _reviewService = reviewService;
         }
 
         [HttpPost]
@@ -61,6 +63,9 @@ namespace Funtest.Controllers
             if (error == null)
                 return NotFound("Object with given id doesn't exist");
 
+            error.RetestsFailed = _reviewService.CountFailedReviewsForError(id);
+            error.RetestsDone = _reviewService.CountReviewsForError(id);
+
             return Ok(error);
         }
 
@@ -68,6 +73,12 @@ namespace Funtest.Controllers
         public ActionResult<GetErrorResponse> GetAllErrors([FromRoute] Guid productId)
         {
             var errors = _errorService.GetAllErrors(productId);
+            foreach(var error in errors)
+            {
+                error.RetestsFailed = _reviewService.CountFailedReviewsForError(error.Id);
+                error.RetestsDone = _reviewService.CountReviewsForError(error.Id);
+            }
+
             return Ok(errors);
         }
 
@@ -80,6 +91,12 @@ namespace Funtest.Controllers
                 return NotFound("User with given id doesn't exist.");
 
             var errors = _errorService.GetAllErrorsAssignedToDeveloper(developerId);
+            foreach (var error in errors)
+            {
+                error.RetestsFailed = _reviewService.CountFailedReviewsForError(error.Id);
+                error.RetestsDone = _reviewService.CountReviewsForError(error.Id);
+            }
+
             return Ok(errors);
         }
 
@@ -100,6 +117,11 @@ namespace Funtest.Controllers
             var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
 
             var errors = _errorService.GetAllErrorsToRetest(productId);
+            foreach (var error in errors)
+            {
+                error.RetestsFailed = _reviewService.CountFailedReviewsForError(error.Id);
+                error.RetestsDone = _reviewService.CountReviewsForError(error.Id);
+            }
             return Ok(errors);
         }
 
@@ -200,6 +222,18 @@ namespace Funtest.Controllers
             errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
 
             return errorTest;
+        }
+
+        [HttpGet("/{errorId}/reviewed")]
+        public async Task<ActionResult<bool>> IsErrorReviewed(Guid errorId)
+        {
+            var isErrorExist = _errorService.IsErrorExist(errorId);
+            if (!isErrorExist)
+                return NotFound("Error with given id doesn't exist");
+
+            var result = await _errorService.IsErrorReviewed(errorId);
+
+            return Ok(result);
         }
     }
 }

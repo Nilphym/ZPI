@@ -13,7 +13,6 @@ namespace Funtest.Services
     public class TestProcedureService : Service, ITestProcedureService
     {
         private static string PREFIX = "TP";
-        private int START_PREFIX_LENGTH = 6;
 
         public readonly IMapper _mapper;
 
@@ -22,21 +21,17 @@ namespace Funtest.Services
             _mapper = mapper;
         }
 
-        private string GetCode()
+        private string GetCode(Guid index)
         {
-            var number = Context.TestCases.AsQueryable().Count();
-            var numberOfDigits = Math.Floor(Math.Log10(number));
-
-            if (numberOfDigits > START_PREFIX_LENGTH)
-                START_PREFIX_LENGTH = (int)numberOfDigits + 2;
-
-            return $"{PREFIX}-{number.ToString("D" + START_PREFIX_LENGTH.ToString())}";
+            return $"{PREFIX}-{index.ToString().Substring(0, 8).ToUpper()}";
         }
 
         public async Task<bool> AddTestProcedure(AddTestProcedureRequest dtoTestProcedure)
         {
             var testProcedure = _mapper.Map<TestProcedure>(dtoTestProcedure);
-            testProcedure.Code = GetCode();
+            var index = Guid.NewGuid();
+            testProcedure.Id = index;
+            testProcedure.Code = GetCode(index);
             Context.TestProcedures.Add(testProcedure);
 
             if (await Context.SaveChangesAsync() == 0)
@@ -56,12 +51,12 @@ namespace Funtest.Services
             return true;
         }
 
-        public List<GetTestProcedureIdentityValueResponse> GetAllTestProceduresForProduct(Guid productId)
+        public List<GetTestProcedureWithTestCaseResponse> GetAllTestProceduresForProduct(Guid productId)
         {
             return Context.TestProcedures
                 .AsQueryable()
                 .Where(x => x.TestCase.ProductId == productId)
-                .Select(x => _mapper.Map<GetTestProcedureIdentityValueResponse>(x))
+                .Select(x => _mapper.Map<GetTestProcedureWithTestCaseResponse>(x))
                 .ToList();
         }
 
@@ -82,6 +77,33 @@ namespace Funtest.Services
                 .Where(x => x.Id == id)
                 .Join(Context.Steps, x => x.Id, x => x.TestProcedureId, (testProcedure, step) => new { testProcedure, step })
                 .Count(x => x.testProcedure.Steps.Count == 0) == 0 ? false : true;
+        }
+
+        public bool IsEditPossible(Guid testProcedureId)
+        {
+            return Context.Tests
+                           .Where(x => x.TestProcedureId == testProcedureId && x.ExecutionCounter > 0)
+                           .Count() == 0;
+        }
+
+        public async Task<Guid?> CreateNewTestProcedureBaseOnExistTPWithModification(Guid testProcedureId, Guid testCaseId, EditTestProcedureRequest editedTestProcedure)
+        {
+            var testProcedure = await Context.TestProcedures.FindAsync(testProcedureId);
+
+            var index = Guid.NewGuid();
+            TestProcedure copyTestProcedures = new TestProcedure()
+            {
+                Id = index,
+                Code = GetCode(index),
+                Result = editedTestProcedure.Result,
+                TestCaseId = testCaseId
+            };
+
+            Context.TestProcedures.Add(copyTestProcedures);
+            if (await Context.SaveChangesAsync() == 0)
+                return null;
+
+            return index;
         }
     }
 }

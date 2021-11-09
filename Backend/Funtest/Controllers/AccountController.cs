@@ -1,7 +1,9 @@
 ﻿using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Email.Requests;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Funtest.Controllers
@@ -20,11 +22,11 @@ namespace Funtest.Controllers
             _accountservice = accountservice;
             _productService = productService;
         }
-   
+
         [HttpPost("invitation")]
-        public ActionResult UserInvitation(DataToInvitationLinkRequest request)
+        public async Task<ActionResult> UserInvitationAsync(DataToInvitationLinkRequest request)
         {
-            var result = _emailService.SendInvitationLink(request);
+            var result = await _emailService.SendInvitationLinkAsync(request);
             if (result)
                 return Ok();
             return Problem("Problem with sending invitation email.");
@@ -39,6 +41,16 @@ namespace Funtest.Controllers
             if (userName != null)
                 return Ok(userName);
             return Problem("Problem with creating nre user.");
+        }
+
+        [HttpPost] 
+        public async Task<ActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            var result = await _accountservice.ForgotPassword(request);
+
+            if (result)
+                return Ok();
+            return Conflict("Problem with sending email.");
         }
     }
 }

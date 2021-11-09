@@ -22,12 +22,37 @@ namespace Funtest.Services
         public async Task<bool> AddTest(AddTestRequest dtoTest)
         {
             var test = _mapper.Map<Test>(dtoTest);
+            test.CreationDate = DateTime.Now;
+            test.TestSuiteId = dtoTest.PlanSuiteId;
             Context.Tests.Add(test);
 
             if (await Context.SaveChangesAsync() == 0)
                 return false;
             return true;
         }
+
+        public async Task<bool> AssignNewTestCase(Guid testId, Guid testCaseId)
+        {
+            var test = await Context.Tests.FindAsync(testId);
+            test.TestCaseId = testCaseId;
+            Context.Tests.Update(test);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> AssignNewTestProcedure(Guid testId, Guid testProcedureId)
+        {
+            var test = await Context.Tests.FindAsync(testId);
+            test.TestProcedureId = testProcedureId;
+            Context.Tests.Update(test);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
         /// <summary>
         /// TO DO: KOMUNIKATY ODPOWIEDNIE 
         /// </summary>
@@ -67,6 +92,18 @@ namespace Funtest.Services
             return true;
         }
 
+        public async Task<bool> ExecuteTest(Guid id)
+        {
+            var test = await Context.Tests.FindAsync(id);
+            if (test == null)
+                return false;
+
+            test.ExecutionCounter++;
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
         public async Task<Test> FindTest(Guid id)
         {
             return Context.Tests.Include(x => x.TestSuite).ToList().Where(x => x.Id == id).FirstOrDefault();
@@ -85,7 +122,13 @@ namespace Funtest.Services
 
         public async Task<GetTestResponse> GetTestById(Guid id)
         {
-            var test = await Context.Tests.FindAsync(id);
+            var test = await Context.Tests
+                .Include(x => x.TestProcedure)
+                .Include(x => x.TestSuite)
+                .Include(x => x.TestCase)
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
             return _mapper.Map<GetTestResponse>(test);
         }
 

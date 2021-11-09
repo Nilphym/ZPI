@@ -24,7 +24,7 @@ namespace Funtest.Services
 
         public async Task<LoginResponse> Login(LoginRequest request)
         {
-            var user = await UserManager.FindByEmailAsync(request.Email);
+            var user = await UserManager.FindByNameAsync(request.Email);
 
             if (user == null)
                 return null;

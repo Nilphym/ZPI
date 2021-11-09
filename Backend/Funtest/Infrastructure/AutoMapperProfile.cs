@@ -6,6 +6,7 @@ using Funtest.TransferObject.Attachment.Responses;
 using Funtest.TransferObject.Error.Requests;
 using Funtest.TransferObject.Error.Responses;
 using Funtest.TransferObject.Product.Responses;
+using Funtest.TransferObject.Review.Requests;
 using Funtest.TransferObject.Steps;
 using Funtest.TransferObject.Steps.Requests;
 using Funtest.TransferObject.Steps.Responses;
@@ -30,6 +31,7 @@ namespace Funtest.Infrastructure
             CreateMap<AddStepRequest, Step>();
             CreateMap<GetStepResponse, Step>();
             CreateMap<Step, GetStepResponse>();
+            CreateMap<Step, GetStepWithErrorResponse>();
 
             //Mapowania dla TestCase
             CreateMap<AddTestCaseRequest, TestCase>();
@@ -40,6 +42,8 @@ namespace Funtest.Infrastructure
             CreateMap<AddTestProcedureRequest, TestProcedure>();
             CreateMap<TestProcedure, GetTestProcedureResponse>();
             CreateMap<TestProcedure, GetTestProcedureIdentityValueResponse>();
+            CreateMap<TestProcedure, GetTestProcedureWithTestCaseResponse>();
+            CreateMap<TestProcedure, GetTestProcedureIdResponse>();
 
             //Mapowania dla TestProcedure
             CreateMap<AddTestRequest, Test>();
@@ -58,6 +62,7 @@ namespace Funtest.Infrastructure
             //Mapowanie dla Błędów
             CreateMap<Error, GetErrorResponse>();
             CreateMap<AddErrorRequest, Error>();
+            CreateMap<Error, GetIdentityErrorInformationRespons>();
 
             //Mapowani dla testu
             CreateMap<Test, GetTestResponse>();
@@ -73,6 +78,9 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla Produkty
             CreateMap<Product, GetProductResponse>();
+
+            //Mapowania dla Review
+            CreateMap<AddReviewRequest, Review>();
         }
     }
 }

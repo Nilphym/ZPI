@@ -32,7 +32,6 @@ namespace Data.Models
             }
         }
 
-        [Required]
         public string ControlPoint { get; set; }
 
 

@@ -25,6 +25,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult> CreateNewProject(CreateNewProductRequest request)
         {
             var isName = _productService.IsProductNameUnique(request.Name);
