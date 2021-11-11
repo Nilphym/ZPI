@@ -1,13 +1,15 @@
 package com.example.funtest.objects;
 
+import java.util.ArrayList;
+
 public class TestCase {
 
     private String id;
     private String code;
     private String preconditions;
-    private String entryData;
+    private ArrayList<String> entryData;
 
-    public TestCase(String id, String code, String preconditions, String entryData) {
+    public TestCase(String id, String code, String preconditions, ArrayList<String> entryData) {
         this.id = id;
         this.code = code;
         this.preconditions = preconditions;
@@ -41,11 +43,11 @@ public class TestCase {
         this.preconditions = preconditions;
     }
 
-    public String getEntryData() {
+    public ArrayList<String> getEntryData() {
         return entryData;
     }
 
-    public void setEntryData(String entryData) {
+    public void setEntryData(ArrayList<String> entryData) {
         this.entryData = entryData;
     }
 }
