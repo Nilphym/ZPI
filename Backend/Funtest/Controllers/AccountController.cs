@@ -1,7 +1,9 @@
-﻿using Funtest.Services.Interfaces;
+﻿using Data.Roles;
+using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Email.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost("invitation")]
+        [Authorize(Roles = Roles.ProjectManager)]
         public async Task<ActionResult> UserInvitationAsync(DataToInvitationLinkRequest request)
         {
             var result = await _emailService.SendInvitationLinkAsync(request);
@@ -43,14 +46,24 @@ namespace Funtest.Controllers
             return Problem("Problem with creating nre user.");
         }
 
-        [HttpPost] 
+        [HttpPost("forgotPassword")]
         public async Task<ActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var result = await _accountservice.ForgotPassword(request);
-
+            
             if (result)
                 return Ok();
             return Conflict("Problem with sending email.");
+        }
+
+        [HttpPut("resetPassword")]
+        public async Task<ActionResult> ResetForgotPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _accountservice.ResetPassword(request);
+
+            if (result)
+                return Ok();
+            return Conflict("Problem with saving new password.");
         }
     }
 }

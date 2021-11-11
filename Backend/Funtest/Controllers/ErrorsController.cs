@@ -224,7 +224,7 @@ namespace Funtest.Controllers
             return errorTest;
         }
 
-        [HttpGet("/{errorId}/reviewed")]
+        [HttpGet("{errorId}/executed")]
         public async Task<ActionResult<bool>> IsErrorReviewed(Guid errorId)
         {
             var isErrorExist = _errorService.IsErrorExist(errorId);

@@ -21,5 +21,6 @@ namespace Funtest.Services.Interfaces
         List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestSuite(Guid testSuiteId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId);
+
     }
 }

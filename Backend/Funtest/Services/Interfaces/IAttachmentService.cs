@@ -11,6 +11,6 @@ namespace Funtest.Services.Interfaces
         Task<bool> AddNewAttachment(AddAttachmentRequest request);
         Task<bool> DeleteAttachment(Guid id);
         Task<GetAttachmentResponse> GetAttachment(Guid id);
-        List<GetAttachmentResponse> GetAttachmentForError(Guid errorId);
+        List<GetAttachmentResponse> GetAttachmentsForError(Guid errorId);
     }
 }

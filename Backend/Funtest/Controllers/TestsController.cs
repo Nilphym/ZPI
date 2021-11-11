@@ -109,5 +109,16 @@ namespace Funtest.Controllers
 
             return Ok();
         }
+
+        [HttpGet("{testId}/executionCounter")]
+        public async Task<ActionResult<int>> GetTestExecutionCounter([FromRoute] Guid testId)
+        {
+            var isTestExist = _testService.IsTestExist(testId);
+
+            if (!isTestExist)
+                return NotFound("Test with given id doesn't exist.");
+
+            return await _testService.GetExecutionCounterForTest(testId);
+        }
     }
 }

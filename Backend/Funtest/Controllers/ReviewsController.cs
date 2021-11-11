@@ -17,35 +17,35 @@ namespace Funtest.Controllers
     {
         private readonly IReviewService _reviewService;
         private readonly IErrorService _errorService;
+        private readonly ITestService _testService;
 
-        public ReviewsController(IReviewService reviewService, IErrorService errorService)
+        public ReviewsController(IReviewService reviewService, IErrorService errorService, ITestService testService)
         {
             _reviewService = reviewService;
+            _testService = testService;
             _errorService = errorService;
         }
 
         [HttpPost("{errorId}")]
-        [Authorize(Roles=Roles.Tester)]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddReview([FromRoute] Guid errorId, AddReviewRequest request)
         {
             var principal = HttpContext.User;
             var testerId = principal.Claims.Where(x => x.Type == "userId").Select(x => x.Value).FirstOrDefault();
 
-            var error = await _errorService.GetErrorById(errorId);
+            var error = await _errorService.GetModelErrorById(errorId);
             if (error == null)
                 return NotFound("Error with given Id doesn't exist.");
 
-            if (error.ErrorState != ErrorState.Fixed.ToString() && error.ErrorState != ErrorState.Retest.ToString())
+            if (error.ErrorState != ErrorState.Fixed && error.ErrorState != ErrorState.Retest)
                 return Conflict($"You can not review error in state {error.ErrorState}.");
 
-            if (error.ErrorState != ErrorState.Retest.ToString())
-                await _errorService.ChangeErrorStatusToRetest(errorId);
+            if (error.ErrorState != ErrorState.Retest)
+                await _errorService.ChangeErrorStatus(errorId, ErrorState.Retest);
 
-            var actualReview = _reviewService.GetActualReviewForTester(errorId, testerId);
-            if (actualReview != null)
-                await _reviewService.ChangeStatusToObsolteAsync(actualReview.Id);
+            var result = await _reviewService.AddReview(request, errorId, testerId);
+            result = result && await _reviewService.ResumeRetest(error);
 
-            var result = await  _reviewService.AddReview(request, errorId, testerId);
             if (result)
                 return Ok();
 

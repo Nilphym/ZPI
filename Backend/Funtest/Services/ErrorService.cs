@@ -289,10 +289,10 @@ namespace Funtest.Services
             return await Context.Errors.FindAsync(id);
         }
 
-        public async Task<bool> ChangeErrorStatusToRetest(Guid id)
+        public async Task<bool> ChangeErrorStatus(Guid id, ErrorState errorState)
         {
             var error = await Context.Errors.FindAsync(id);
-            error.ErrorState = ErrorState.Retest;
+            error.ErrorState = errorState;
 
             Context.Errors.Update(error);
             if (await Context.SaveChangesAsync() == 0)

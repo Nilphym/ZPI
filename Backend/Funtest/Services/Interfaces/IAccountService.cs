@@ -8,6 +8,7 @@ namespace Funtest.Services.Interfaces
     public interface IAccountService
     {
         Task<string> AddNewUser(AddNewUserRequest request, Product product);
-        Task<bool> ForgotPassword(ForgotPasswordRequest request); 
+        Task<bool> ForgotPassword(ForgotPasswordRequest request);
+        Task<bool> ResetPassword(ResetPasswordRequest request);
     }
 }

@@ -82,8 +82,8 @@ namespace Funtest.Services
             var builder = new BodyBuilder();
             builder.HtmlBody = string.Format(
                 @$"<h2>Hello in Funtest Community. </h2>
-                <p>Click in lint to reset pssword.</p>
-                <a href='{url}'>REser password link</a>
+                <p>Click link to reset pssword.</p>
+                <a href='{url}'>Reset password link</a>
                 <p>Best regards, {_configuration["EmailService:name"]}"
             );
             mailMessage.Body = builder.ToMessageBody();
