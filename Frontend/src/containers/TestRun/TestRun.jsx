@@ -12,11 +12,7 @@ import {
   TableDataDialog
 } from '../../components';
 import useTableSteps from '../../hooks/useTableSteps';
-import {
-  getExecutionTest,
-  getExecutionTestFromErrorId,
-  getIsExecutedByTester
-} from '../../redux/store';
+import { getExecutionTest, getExecutionTestFromErrorId } from '../../redux/store';
 
 const TestRunOrigin = ({ test }) => {
   const { steps } = test;
@@ -151,12 +147,10 @@ export const TestRun = () => {
     if (pendingtestId) {
       (async () => {
         await dispatch(getExecutionTest({ testId: pendingtestId }));
-        await dispatch(getIsExecutedByTester());
       })();
     } else if (pendingErrorId) {
       (async () => {
         await dispatch(getExecutionTestFromErrorId({ errorId: pendingErrorId }));
-        await dispatch(getIsExecutedByTester());
       })();
     } else {
       navigate('/dashboard');

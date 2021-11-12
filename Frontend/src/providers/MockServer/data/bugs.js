@@ -84,7 +84,7 @@ const routes = [
     }),
 
   (thisRef) =>
-    thisRef.put('Errors/evaluate/:id', (schema, request) => {
+    thisRef.post('Reviews/:id', (_, request) => {
       const { id } = request.params;
       const result = JSON.parse(request.requestBody);
       if (result) {
@@ -97,19 +97,30 @@ const routes = [
   (thisRef) =>
     thisRef.get('Errors/:id/executed', (schema, request) => {
       const { id } = request.params;
-      return schema.bugs.findBy({ id }).attrs;
+      return schema.bugs.findBy({ id }).attrs.executed;
     }),
 
   (thisRef) =>
     thisRef.put('Errors/:id', (schema, request) => {
       const { id } = request.params;
       const json = JSON.parse(request.requestBody);
-      console.log('2021-12-05T00:00:00');
       console.log(json.deadline);
 
       console.log(schema.bugs.findBy({ id }));
       schema.bugs.findBy({ id }).update(json);
       console.log(schema.bugs.findBy({ id }));
+    }),
+
+  (thisRef) =>
+    thisRef.get('Attachments/error/:id', (schema, request) => {
+      const { id } = request.params;
+      return schema.bugs.findBy({ id }).attrs.attachments;
+    }),
+
+  (thisRef) =>
+    thisRef.delete('Attachments/:id', (schema, request) => {
+      const { id } = request.params;
+      console.log(`deleted: ${id}`);
     })
 ];
 
@@ -135,10 +146,10 @@ const seeds = [
         endDate: '2021-12-20T00:00:00',
         executed: true,
         attachments: [
-          'https://i.ibb.co/StvZxmy/sample-image.jpg',
-          'https://i.ibb.co/zNXRSrg/photo-1579353977828-2a4eab540b9a.jpg',
-          'https://i.ibb.co/M5HM3sV/download.jpg',
-          'https://i.ibb.co/47VtZhY/0266554465.jpg'
+          { id: '1', image: 'https://i.ibb.co/StvZxmy/sample-image.jpg' },
+          { id: '2', image: 'https://i.ibb.co/zNXRSrg/photo-1579353977828-2a4eab540b9a.jpg' },
+          { id: '3', image: 'https://i.ibb.co/M5HM3sV/download.jpg' },
+          { id: '4', image: 'https://i.ibb.co/47VtZhY/0266554465.jpg' }
         ]
       },
       {
@@ -159,7 +170,7 @@ const seeds = [
         reportDate: '2021-12-20T00:00:00',
         endDate: '2021-12-20T00:00:00',
         executed: true,
-        attachments: ['https://i.ibb.co/StvZxmy/sample-image.jpg']
+        attachments: [{ id: '1', image: 'https://i.ibb.co/StvZxmy/sample-image.jpg' }]
       },
       {
         id: 'A7C33D4D-AC7B-4353-B192-596D70327625',

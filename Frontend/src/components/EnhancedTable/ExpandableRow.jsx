@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Controller, useForm, FormProvider, useFormContext } from 'react-hook-form';
 import { blue } from '@mui/material/colors';
 import { DatePicker } from '@mui/lab';
+import { styled } from '@mui/system';
 import { DateTime } from 'luxon';
+import { useDropzone } from 'react-dropzone';
 import {
   TableRow,
   TableCell,
@@ -14,8 +17,28 @@ import {
   Button,
   Select,
   FormControl,
-  InputLabel
+  InputLabel,
+  Dialog,
+  Typography,
+  Divider
 } from '@mui/material';
+
+import getImageName from '../../utils/getImageName';
+import { ImageCarousel } from '../ImageCarousel/ImageCarousel';
+import { postImage } from '../../redux/store';
+
+const TextButton = styled('button')(({ theme }) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  alignSelf: 'start',
+  padding: '0.3rem 0',
+  color: theme.palette.primary.main,
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  '&:hover': {
+    color: theme.palette.primary.dark
+  }
+}));
 
 const Field = ({ id, label, type, value, possibleValues }) => {
   const { control, setValue } = useFormContext();
@@ -110,17 +133,44 @@ Field.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   possibleValues: PropTypes.array
 };
 
 Field.defaultProps = {
-  possibleValues: null
+  possibleValues: []
 };
 
 const ExpandableRow = ({ colSpan, data, open }) => {
   const formMethods = useForm();
+  const dispatch = useDispatch();
   const { handleSubmit, setValue } = formMethods;
+  const [carouselOpen, setCarouselOpen] = useState(false);
+  const [carouselStartingPosition, setCarouselStartingPosition] = useState(0);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const regex = new RegExp(/(data:\w+\/\w+;base64,)(.+)/gm);
+        dispatch(
+          postImage({
+            base64image: regex.exec(reader.result)[2],
+            imageName: file.name.split('.')[0],
+            errorId: data.id
+          })
+        );
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const toggleCarousel = (state, index) => {
+    setCarouselStartingPosition(index);
+    setCarouselOpen(state);
+  };
 
   useEffect(() => {
     setValue('id', data.id);
@@ -135,32 +185,81 @@ const ExpandableRow = ({ colSpan, data, open }) => {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplate: 'repeat(5, 1fr) / repeat(4, 1fr) 6rem',
+                  gridTemplate: 'repeat(4, 1fr) / repeat(4, 1fr) 6rem',
                   gap: '1rem 2rem',
                   padding: '2rem 4rem'
                 }}
               >
-                {data.fields.map(({ id, label, type, value, possibleValues }) => (
-                  <Field
-                    key={id}
-                    id={id}
-                    label={label}
-                    type={type}
-                    value={value}
-                    possibleValues={possibleValues}
-                  />
-                ))}
+                {data.fields
+                  .filter((field) => field.type !== 'attachments')
+                  .map(({ id, label, type, value, possibleValues }) => (
+                    <Field
+                      key={id}
+                      id={id}
+                      label={label}
+                      type={type}
+                      value={value}
+                      possibleValues={possibleValues}
+                    />
+                  ))}
                 <Box sx={{ gridColumn: '5/6', gridRow: '1/5' }} />
                 <Button
                   type="submit"
                   variant="contained"
-                  sx={{ gridColumn: '5/6', gridRow: '5/6' }}
+                  sx={{ gridColumn: '5/6', gridRow: '4/5' }}
                 >
                   Save
                 </Button>
               </Box>
             </form>
           </FormProvider>
+          {data.fields
+            .filter((field) => field.type === 'attachments')
+            .map(({ value }) => (
+              <React.Fragment key={value}>
+                <Divider />
+                <Box
+                  sx={{
+                    padding: '1rem 4rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'left'
+                  }}
+                >
+                  <Typography variant="overline">Attachments</Typography>
+                  {value.map(({ id, image }, index) => (
+                    <TextButton key={id} onClick={() => toggleCarousel(true, index)}>
+                      {getImageName(image)}
+                    </TextButton>
+                  ))}
+                  <Box
+                    sx={{
+                      padding: '0 1rem',
+                      border: '1px solid rgba(0, 0, 0, 0.23)',
+                      '&:hover': { border: '1px solid rgba(0, 0, 0, 0.87)' },
+                      borderRadius: '5px',
+                      cursor: 'pointer'
+                    }}
+                    {...getRootProps()}
+                  >
+                    <input {...getInputProps()} />
+                    {isDragActive ? (
+                      <p>Drop the files here ...</p>
+                    ) : (
+                      <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
+                    )}
+                  </Box>
+                </Box>
+                <Dialog onClose={() => toggleCarousel(false)} open={carouselOpen}>
+                  <ImageCarousel
+                    closeCarousel={() => toggleCarousel(false)}
+                    bugId={data.id}
+                    images={value}
+                    startingPosition={carouselStartingPosition}
+                  />
+                </Dialog>
+              </React.Fragment>
+            ))}
         </Collapse>
       </TableCell>
     </TableRow>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import authService from './auth';
-import { API_URL } from '../config';
+import { API_URL, IMAGE_API_URL } from '../config';
 
 const instance = axios.create({
   baseURL: API_URL,
@@ -29,6 +29,25 @@ const server = (axiosInstance = instance) => ({
   async delete({ url }) {
     const { data: fetchedData } = await axiosInstance.delete(url);
     return fetchedData;
+  },
+
+  async postImage({ base64image, imageName }) {
+    const formData = new FormData();
+    formData.append('image', base64image);
+    formData.append('name', imageName);
+
+    const config = {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    };
+    const {
+      data: {
+        data: {
+          image: { url }
+        }
+      }
+    } = await axios.post(IMAGE_API_URL, formData, config);
+
+    return { url };
   }
 });
 

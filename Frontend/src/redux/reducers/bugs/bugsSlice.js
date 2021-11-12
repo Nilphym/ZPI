@@ -37,37 +37,84 @@ const prepareDataForView = (rows) => {
     retests: [row.retestsRequired, row.retestsDone, row.retestsFailed].join(' / '),
     deadline: row.deadline ? DateTime.fromISO(row.deadline).toFormat('MM/dd/yyyy') : '',
     reportDate: DateTime.fromISO(row.reportDate).toFormat('MM/dd/yyyy'),
-    endDate: DateTime.fromISO(row.endDate).toFormat('MM/dd/yyyy')
+    endDate: DateTime.fromISO(row.endDate).toFormat('MM/dd/yyyy'),
+    attachments: row.attachments.map((attachment) => ({
+      ...attachment,
+      image: attachment.imageLink
+    }))
   }));
 };
 
 export const getBugsToFix = createAsyncThunk('bugs/get/fix', async () => {
   const data = await server().get({ url: 'Errors/toFix' });
-  return prepareDataForView(data);
+  const errorsWithAttachments = await Promise.all(
+    data.map(async (error) => ({
+      ...error,
+      attachments: await (async () => {
+        const attachments = await server().get({ url: `Attachments/error/${error.id}` });
+        return attachments;
+      })()
+    }))
+  );
+  return prepareDataForView(errorsWithAttachments);
 });
 
 export const getBugsToRetest = createAsyncThunk('bugs/get/retest', async () => {
   const data = await server().get({ url: 'Errors/toRetest' });
-  return prepareDataForView(data);
+  const errorsWithAttachments = await Promise.all(
+    data.map(async (error) => ({
+      ...error,
+      attachments: await (async () => {
+        const attachments = await server().get({ url: `Attachments/error/${error.id}` });
+        return attachments;
+      })()
+    }))
+  );
+  return prepareDataForView(errorsWithAttachments);
 });
 
 export const getAllBugs = createAsyncThunk('bugs/get/all', async ({ productId }) => {
   const data = await server().get({ url: `Project/${productId}/Errors` });
-  return prepareDataForView(data);
+  const errorsWithAttachments = await Promise.all(
+    data.map(async (error) => ({
+      ...error,
+      attachments: await (async () => {
+        const attachments = await server().get({ url: `Attachments/error/${error.id}` });
+        return attachments;
+      })()
+    }))
+  );
+  return prepareDataForView(errorsWithAttachments);
 });
 
 export const getBugsDeveloper = createAsyncThunk('bugs/get/developer', async ({ developerId }) => {
   const data = await server().get({ url: `Errors/developer/${developerId}` });
-  return prepareDataForView(data);
+  const errorsWithAttachments = await Promise.all(
+    data.map(async (error) => ({
+      ...error,
+      attachments: await (async () => {
+        const attachments = await server().get({ url: `Attachments/error/${error.id}` });
+        return attachments;
+      })()
+    }))
+  );
+  return prepareDataForView(errorsWithAttachments);
 });
 
 export const getBug = createAsyncThunk('bugs/get', async ({ errorId }) => {
   const data = await server().get({ url: `Errors/${errorId}` });
-  return prepareDataForView([data])[0];
+  const errorWithAttachments = await {
+    ...data,
+    attachments: await (async () => {
+      const attachments = await server().get({ url: `Attachments/error/${data.id}` });
+      return attachments;
+    })()
+  };
+  return prepareDataForView([errorWithAttachments])[0];
 });
 
 export const evaluateBug = createAsyncThunk('bugs/evaluate', async ({ errorId, result }) => {
-  const data = await server().put({ url: `Errors/evaluate/${errorId}`, data: { result } });
+  const data = await server().post({ url: `Reviews/${errorId}`, data: { result } });
   return data;
 });
 
@@ -112,6 +159,23 @@ export const resignFromBug = createAsyncThunk('bugs/resign', async ({ id, develo
   const data = await server().put({ url: `Errors/resign/${id}`, data: developerId });
   return data;
 });
+
+export const deleteBugAttachment = createAsyncThunk(
+  'bugs/attachments/delete',
+  async ({ bugId, id }) => {
+    await server().delete({ url: `Attachments/${id}` });
+    return { bugId, id };
+  }
+);
+
+export const postImage = createAsyncThunk(
+  'bugs/attachments/post',
+  async ({ base64image, imageName, errorId }) => {
+    const imageUrl = await server().postImage({ base64image, imageName });
+    const id = await server().post({ url: 'Attachments', body: { imageLink: imageUrl, errorId } });
+    return { id, errorId, imageUrl };
+  }
+);
 
 export const bugsSlice = createSlice({
   name: 'bugs',
@@ -175,6 +239,28 @@ export const bugsSlice = createSlice({
       })
       .addCase(getBug.pending, (state) => {
         state.loading = true;
+      })
+      .addCase(deleteBugAttachment.fulfilled, (state, action) => {
+        state.rows = state.rows.map((row) =>
+          row.id === action.payload.bugId
+            ? {
+                ...row,
+                attachments: row.attachments.filter(
+                  (attachment) => attachment.id !== action.payload.id
+                )
+              }
+            : row
+        );
+      })
+      .addCase(postImage.fulfilled, (state, action) => {
+        state.rows = state.rows.map((row) =>
+          row.id === action.payload.errorId
+            ? {
+                ...row,
+                attachments: [...row.attachments, { id: action.id, image: action.imageUrl }]
+              }
+            : row
+        );
       });
   }
 });

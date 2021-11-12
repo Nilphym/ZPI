@@ -10,45 +10,6 @@ const initialState = {
   pendingErrorId: null
 };
 
-export const getExecutionTestFromErrorId = createAsyncThunk(
-  'testExecution/get/fromError',
-  async ({ errorId }) => {
-    const data = await server().get({ url: `Errors/ErrorTest/${errorId}` });
-    return data;
-  }
-);
-
-export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ testId }) => {
-  const data = await server().get({ url: `Tests/TestExecution/${testId}` });
-  return data;
-});
-
-export const getIsExecutedByTester = createAsyncThunk(
-  'testExecution/get/isExecuted',
-  async (_, { getState }) => {
-    const { steps } = getState().testExecution.test;
-
-    const stepsWithExecutionInfo = await Promise.all(
-      steps.map(async (step) => ({
-        ...step,
-        errors: await Promise.all(
-          step.errors.map(async (error) => {
-            const data = await server().get({ url: `Errors/${error.id}/executed` });
-            return { ...error, executed: data.executed };
-          })
-        )
-      }))
-    );
-
-    return stepsWithExecutionInfo;
-  }
-);
-
-export const executeTest = createAsyncThunk('testExecution/execute', async ({ testId }) => {
-  const data = await server().put({ url: `Tests/${testId}/execute` });
-  return data;
-});
-
 const prepareDataForView = (test) => ({
   ...test,
   testCaseEntryData: Array.isArray(test.testCaseEntryData)
@@ -65,12 +26,60 @@ const prepareDataForView = (test) => ({
           ...tableData,
           code: `TD-${hash(tableData).slice(0, 8).toUpperCase()}`
         }))
-      : [],
-    errors: step.errorIds.map((errorId) => ({
-      id: errorId,
-      code: `B-${errorId.slice(0, 8).toUpperCase()}`
-    }))
+      : []
   }))
+});
+
+export const getExecutionTestFromErrorId = createAsyncThunk(
+  'testExecution/get/fromError',
+  async ({ errorId }) => {
+    const data = await server().get({ url: `Errors/ErrorTest/${errorId}` });
+
+    const testWithExecutedInfo = {
+      ...data,
+      steps: await Promise.all(
+        data.steps.map(async (step) => ({
+          ...step,
+          errors: await Promise.all(
+            step.errorIds.map(async (errorId) => {
+              const data = await server().get({ url: `Errors/${errorId}/executed` });
+              return {
+                executed: data,
+                id: errorId,
+                code: `B-${errorId.slice(0, 8).toUpperCase()}`
+              };
+            })
+          )
+        }))
+      )
+    };
+
+    return prepareDataForView(testWithExecutedInfo);
+  }
+);
+
+export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ testId }) => {
+  const data = await server().get({ url: `Tests/TestExecution/${testId}` });
+  const testWithExecutedInfo = {
+    ...data,
+    steps: await Promise.all(
+      data.steps.map(async (step) => ({
+        ...step,
+        errors: await Promise.all(
+          step.errors.map(async (error) => {
+            const data = await server().get({ url: `Errors/${error.id}/executed` });
+            return { ...error, executed: data };
+          })
+        )
+      }))
+    )
+  };
+  return prepareDataForView(testWithExecutedInfo);
+});
+
+export const executeTest = createAsyncThunk('testExecution/execute', async ({ testId }) => {
+  const data = await server().put({ url: `Tests/${testId}/execute` });
+  return data;
 });
 
 export const testExecutionSlice = createSlice({
@@ -90,7 +99,7 @@ export const testExecutionSlice = createSlice({
     builder
       .addCase(getExecutionTestFromErrorId.fulfilled, (state, action) => {
         state.loading = false;
-        state.test = prepareDataForView(action.payload);
+        state.test = action.payload;
       })
       .addCase(getExecutionTestFromErrorId.rejected, (state) => {
         state.loading = false;
@@ -99,8 +108,16 @@ export const testExecutionSlice = createSlice({
       .addCase(getExecutionTestFromErrorId.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getIsExecutedByTester.fulfilled, (state, action) => {
-        state.test.steps = action.payload;
+      .addCase(getExecutionTest.fulfilled, (state, action) => {
+        state.loading = false;
+        state.test = action.payload;
+      })
+      .addCase(getExecutionTest.rejected, (state) => {
+        state.loading = false;
+        state.test = null;
+      })
+      .addCase(getExecutionTest.pending, (state) => {
+        state.loading = true;
       });
   }
 });

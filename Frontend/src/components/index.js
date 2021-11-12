@@ -16,3 +16,4 @@ export * from './TestPlanTable/TestPlanTable';
 export * from './TestProcedure/TestProcedure';
 export * from './TestRunTable/TestRunTable';
 export * from './TestStep/TestStep';
+export * from './ImageCarousel/ImageCarousel';

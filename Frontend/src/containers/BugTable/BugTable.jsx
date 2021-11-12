@@ -391,8 +391,8 @@ export const BugTable = ({ type }) => {
               value: row.reportDate
             },
             { id: 'endDate', label: 'End date', type: 'disabled', value: row.endDate },
-            { id: 'description', label: 'Description', type: 'textLarge', value: row.description }
-            // { id: 'attachments', label: 'Attachments', Component: null } // TODO handle attachments by custom component
+            { id: 'description', label: 'Description', type: 'textLarge', value: row.description },
+            { id: 'attachments', label: 'Attachments', type: 'attachments', value: row.attachments }
           ]
         }
       ]

@@ -1823,6 +1823,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@brainhubeu/react-carousel@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@brainhubeu/react-carousel@npm:2.0.4"
+  peerDependencies:
+    react: ^16.8.0
+    react-dom: ^16.8.0
+  checksum: b0ac621256ca243da8601443a5eda0fa01b698864ffae7444ddbfa52582a8847ea9058f897b153767123dc2fb1cfe255283f07773e6f255fc9520cce5f689913
+  languageName: node
+  linkType: hard
+
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
   resolution: "@cnakazawa/watch@npm:1.0.4"
@@ -2498,13 +2508,6 @@ __metadata:
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
   checksum: 322603c24354a5333b5b7a670464422a46e0244a5a96a35552a7018eb4ac2e84c3b7657336b0ea6aa114963f9b6d0da8b8f6f963cb044fea9e7bc04d464b0ab1
-  languageName: node
-  linkType: hard
-
-"@juggle/resize-observer@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "@juggle/resize-observer@npm:3.3.1"
-  checksum: ddabc4044276a2cb57d469c4917206c7e39f2463aa8e3430e33e4eda554412afe29c22afa40e6708b49dad5d56768dc83acd68a704b1dcd49a0906bb96b991b2
   languageName: node
   linkType: hard
 
@@ -5998,6 +6001,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"attr-accept@npm:^2.2.1":
+  version: 2.2.2
+  resolution: "attr-accept@npm:2.2.2"
+  checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
+  languageName: node
+  linkType: hard
+
 "autoprefixer@npm:^9.6.1, autoprefixer@npm:^9.8.6":
   version: 9.8.8
   resolution: "autoprefixer@npm:9.8.8"
@@ -6941,13 +6951,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"can-use-dom@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "can-use-dom@npm:0.1.0"
-  checksum: 488fc94c40f2fcce46ebd41abf17ef0449acf0d6b145116036cd592a8e977e5729918d4b3b7c642ce7b1f5b83d330ade39a172cf6b6ef91093785991a868b308
-  languageName: node
-  linkType: hard
-
 "caniuse-api@npm:^3.0.0":
   version: 3.0.0
   resolution: "caniuse-api@npm:3.0.0"
@@ -7619,7 +7622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.1, core-js@npm:^3.0.4, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
+"core-js@npm:^3.0.4, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
   version: 3.18.2
   resolution: "core-js@npm:3.18.2"
   checksum: 4a09d170d8135a1f1c458f6aef786ba18bfb81fa6dab106561dd5379b9d175400ed012c2a30eee921b6e5bd53842ce32fb02ffd57d2984e157de622d9439dc5c
@@ -9877,6 +9880,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-selector@npm:^0.2.2":
+  version: 0.2.4
+  resolution: "file-selector@npm:0.2.4"
+  dependencies:
+    tslib: ^2.0.3
+  checksum: 83341e7416352c7de0caf433b33c8d007d3c298c17d6ba0e70168af82bb045d905ddd6f4bc3ca764a2035c6f18eae7f52223dc6a784056f61b8391c351f88323
+  languageName: node
+  linkType: hard
+
 "file-system-cache@npm:^1.0.5":
   version: 1.0.5
   resolution: "file-system-cache@npm:1.0.5"
@@ -10287,6 +10299,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "fun-test@workspace:."
   dependencies:
+    "@brainhubeu/react-carousel": ^2.0.4
     "@date-io/luxon": ^2.11.1
     "@emotion/react": ^11.4.1
     "@emotion/styled": ^11.3.0
@@ -10315,7 +10328,7 @@ fsevents@^1.2.7:
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-react: ^7.26.1
     eslint-plugin-react-hooks: ^4.2.0
-    history: ^5.0.1
+    history: ^5.1.0
     jwt-decode: ^3.1.2
     luxon: ^2.0.2
     miragejs: ^0.1.42
@@ -10323,13 +10336,13 @@ fsevents@^1.2.7:
     prettier: ^2.4.1
     react: ^17.0.2
     react-dom: ^17.0.2
+    react-dropzone: ^11.4.2
     react-hook-form: ^7.17.1
     react-redux: ^7.2.5
-    react-router: 6.0.0-beta.8
-    react-router-dom: 6.0.0-beta.8
+    react-router: ^6.0.2
+    react-router-dom: ^6.0.2
     react-scripts: 4.0.3
     react-table: ^7.7.0
-    simplebar-react: ^2.3.6
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -10923,12 +10936,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"history@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "history@npm:5.0.1"
+"history@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "history@npm:5.1.0"
   dependencies:
     "@babel/runtime": ^7.7.6
-  checksum: ec14960f422cc53eaea47f0a07c0b666241687386c0947178579c707c4d813b35d5ff3a06e2bb3f8d40193541811f366d990ac654aaf7a43d334abf63a2b4b63
+  checksum: c978710a188ee5ad5d2acf55721c77e27469578c891a66311e71e8920d1390d14476e39a6db07e0ab0f5f8d594f1f62eb55a1059c7549cde7795a36367df5869
   languageName: node
   linkType: hard
 
@@ -13506,13 +13519,6 @@ fsevents@^1.2.7:
   dependencies:
     lodash._reinterpolate: ^3.0.0
   checksum: 863e025478b092997e11a04e9d9e735875eeff1ffcd6c61742aa8272e3c2cddc89ce795eb9726c4e74cef5991f722897ff37df7738a125895f23fc7d12a7bb59
-  languageName: node
-  linkType: hard
-
-"lodash.throttle@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "lodash.throttle@npm:4.1.1"
-  checksum: 129c0a28cee48b348aef146f638ef8a8b197944d4e9ec26c1890c19d9bf5a5690fe11b655c77a4551268819b32d27f4206343e30c78961f60b561b8608c8c805
   languageName: node
   linkType: hard
 
@@ -16837,6 +16843,19 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-dropzone@npm:^11.4.2":
+  version: 11.4.2
+  resolution: "react-dropzone@npm:11.4.2"
+  dependencies:
+    attr-accept: ^2.2.1
+    file-selector: ^0.2.2
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ">= 16.8"
+  checksum: f8dc6af69193133efe30ed11dd8c2212a180abd3833e91d03dab4bdc9546d47dcad311d7f72b4968b7d016871884555b9e16f7a490913b78dbfec8ce8f569193
+  languageName: node
+  linkType: hard
+
 "react-element-to-jsx-string@npm:^14.3.2":
   version: 14.3.2
   resolution: "react-element-to-jsx-string@npm:14.3.2"
@@ -16978,26 +16997,27 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.0.0-beta.8":
-  version: 6.0.0-beta.8
-  resolution: "react-router-dom@npm:6.0.0-beta.8"
+"react-router-dom@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "react-router-dom@npm:6.0.2"
   dependencies:
-    react-router: 6.0.0-beta.8
+    history: ^5.1.0
+    react-router: 6.0.2
   peerDependencies:
-    history: ">=5"
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: e612d547e8a8b6587b063baaeeb471556e22520404d97a65796e1548b040e5e0abe2267de9c35f1d6bcee3b5bc6055b597efd828398bacc79d29dda818a69d59
+  checksum: d3680939a4fac286f8df028c1fabe5626567ba065b2029b1cc4ad64fe9444aeba186d0e5e765563fc36ea868e7d17e02fb098f2ebc0b1c70212a8470a4b58ad6
   languageName: node
   linkType: hard
 
-"react-router@npm:6.0.0-beta.8":
-  version: 6.0.0-beta.8
-  resolution: "react-router@npm:6.0.0-beta.8"
+"react-router@npm:6.0.2, react-router@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "react-router@npm:6.0.2"
+  dependencies:
+    history: ^5.1.0
   peerDependencies:
-    history: ">=5"
     react: ">=16.8"
-  checksum: 7a06df351d27441bba5da808b1cf1524d1d1f3c17fd4d77bbf6c28cfcdbdadba38afb02b79c9fba6fcc0275cd594a05a4e5ed1410064d849a71ea23835784640
+  checksum: 9d4f3a8002a90f38be022c6740e11e9bb481e60ad04c5a0ce2d6dbe685059c09b3037c45414d6e7e40eb97308842380413cfb93c5cdcb992e7ee0c50b4f7fcaa
   languageName: node
   linkType: hard
 
@@ -18287,33 +18307,6 @@ resolve@^2.0.0-next.3:
   dependencies:
     is-arrayish: ^0.3.1
   checksum: a7f3f2ab5c76c4472d5c578df892e857323e452d9f392e1b5cf74b74db66e6294a1e1b8b390b519fa1b96b5b613f2a37db6cffef52c3f1f8f3c5ea64eb2d54c0
-  languageName: node
-  linkType: hard
-
-"simplebar-react@npm:^2.3.6":
-  version: 2.3.6
-  resolution: "simplebar-react@npm:2.3.6"
-  dependencies:
-    prop-types: ^15.6.1
-    simplebar: ^5.3.6
-  peerDependencies:
-    react: ^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0
-    react-dom: ^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0
-  checksum: 5487200fefd8f9f7aba349637b6f5f777aab4470239bc4f3fcb4e86ff4fa5d12dea68684df80e6cea644d9dffb062fbde7d9504762d9d82f7e5083cc260cf0c1
-  languageName: node
-  linkType: hard
-
-"simplebar@npm:^5.3.6":
-  version: 5.3.6
-  resolution: "simplebar@npm:5.3.6"
-  dependencies:
-    "@juggle/resize-observer": ^3.3.1
-    can-use-dom: ^0.1.0
-    core-js: ^3.0.1
-    lodash.debounce: ^4.0.8
-    lodash.memoize: ^4.1.2
-    lodash.throttle: ^4.1.1
-  checksum: 2372119965345fe68895a0a3c747eead19ce9938a64971938bd0fd3371e63f8394518fac667cfb30dd8870c80ab5a8519e2018e20c6eb95f8f340340e3bd65ce
   languageName: node
   linkType: hard
 
