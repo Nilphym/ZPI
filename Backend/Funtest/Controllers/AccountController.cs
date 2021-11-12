@@ -1,4 +1,5 @@
 ﻿using Data.Roles;
+using Funtest.Security;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Funtest.Controllers
 {
@@ -26,7 +28,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost("invitation")]
-        [Authorize(Roles = Roles.ProjectManager)]
+      //  [Authorize(Roles = Roles.ProjectManager)]
         public async Task<ActionResult> UserInvitationAsync(DataToInvitationLinkRequest request)
         {
             var result = await _emailService.SendInvitationLinkAsync(request);
@@ -36,10 +38,17 @@ namespace Funtest.Controllers
         }
 
         [HttpPost("registration")]
-        public async Task<ActionResult<string>> UserRegistration(AddNewUserRequest request)
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> UserRegistration(RegisterInvitatedUserRequest request)
         {
-            var product = await _productService.GetProduct(request.ProductId);
-            var userName = await _accountservice.AddNewUser(request, product);
+            var productIdDecoded = Guid.Parse(SecureSensitiveData.Decode(request.ProductIdEncoded));
+            var isProductExist = _productService.IsProductExist(productIdDecoded);
+
+            if (!isProductExist)
+                return NotFound("Product with given id doesn't exist.");
+
+            var product = await _productService.GetProduct(productIdDecoded);
+            var userName = await _accountservice.AddInvitedUser(request, product);
 
             if (userName != null)
                 return Ok(userName);

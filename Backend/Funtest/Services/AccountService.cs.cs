@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Data.Roles;
+using Funtest.Security;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
@@ -55,7 +57,7 @@ namespace Funtest.Services
             if (!result.Succeeded)
                 return null;
 
-            await UserManager.AddToRoleAsync(user, request.Role);
+            await UserManager.AddToRoleAsync(user, Enum.GetName(typeof(Roles), request.Role));
             return user.UserName;
         }
 
@@ -70,7 +72,8 @@ namespace Funtest.Services
             }
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
-            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, passwordResetToken, "https://localhost:44360/");
+            var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
+            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "https://localhost:44360/");
 
             return emailServiceResponse;
         }
@@ -88,6 +91,22 @@ namespace Funtest.Services
             if (result.Succeeded)
                 return true;
             return false;
+        }
+
+        public async Task<string> AddInvitedUser(RegisterInvitatedUserRequest request, Product product)
+        {
+            var user = _mapper.Map<User>(request);
+            user.Id = Guid.NewGuid().ToString();
+            user.Email = SecureSensitiveData.Decode(request.EmailEncoded);
+            user.UserName = CreateUserName(user, product);
+            user.ProductId = Guid.Parse(SecureSensitiveData.Decode(request.ProductIdEncoded));
+
+            var result = await UserManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+                return null;
+
+            await UserManager.AddToRoleAsync(user, request.Role);
+            return user.UserName;
         }
     }
 }
