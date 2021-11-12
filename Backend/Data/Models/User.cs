@@ -8,6 +8,7 @@ namespace Data.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool IsDeleted { get; set; }
 
         [ForeignKey("ProductId")]
         public Guid? ProductId { get; set; }

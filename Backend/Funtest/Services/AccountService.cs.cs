@@ -57,7 +57,7 @@ namespace Funtest.Services
             if (!result.Succeeded)
                 return null;
 
-            await UserManager.AddToRoleAsync(user, Enum.GetName(typeof(Roles), request.Role));
+            await UserManager.AddToRoleAsync(user, request.Role);
             return user.UserName;
         }
 
@@ -107,6 +107,33 @@ namespace Funtest.Services
 
             await UserManager.AddToRoleAsync(user, request.Role);
             return user.UserName;
+        }
+
+        public async Task<bool> RemoveAccount(RemoveAccountRequest request, string pmId)
+        {
+            var user = await UserManager.FindByNameAsync(request.UserName);
+
+            if (user == null)
+                return false;
+
+            var isTheSameTeam = await IsTheSameTeam(pmId, user.Id);
+            if (!isTheSameTeam)
+                return false;
+
+            user.IsDeleted = true;
+            Context.Users.Update(user);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> IsTheSameTeam(string user1Id, string user2Id)
+        {
+            var user1 = await Context.Users.FindAsync(user1Id);
+            var user2 = await Context.Users.FindAsync(user2Id);
+
+            return user1.ProductId == user2.ProductId;
         }
     }
 }

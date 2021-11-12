@@ -34,5 +34,6 @@ namespace Funtest.Services.Interfaces
         List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId);
         Task<bool> IsErrorReviewed(Guid errorId);
         Task<bool> ChangeErrorStatus(Guid errorId, ErrorState errorState);
+        Task<bool> ResignFromEverErrors(string developerId);
     }
 }

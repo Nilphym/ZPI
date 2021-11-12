@@ -71,6 +71,13 @@ namespace Funtest.Services
                 {
                     error.ErrorState = Data.Enums.ErrorState.Reopened;
                     await ObsolteReviewsForError(error.Id);
+
+                    var user = await Context.Users.FindAsync(error.DeveloperId);
+                    if (user.IsDeleted)
+                    {
+                        error.ErrorState = Data.Enums.ErrorState.New;
+                        error.DeveloperId = null;
+                    }
                 }
                 else
                     error.ErrorState = Data.Enums.ErrorState.Closed;

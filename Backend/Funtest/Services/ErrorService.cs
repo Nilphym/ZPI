@@ -50,7 +50,7 @@ namespace Funtest.Services
         public List<GetErrorResponse> GetAllErrorsToFix(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.New)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && (x.ErrorState == ErrorState.New || x.ErrorState == ErrorState.Reopened))
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
@@ -308,7 +308,25 @@ namespace Funtest.Services
 
         public async Task<bool> IsErrorReviewed(Guid errorId)
         {
-            return Context.Reviews.Where(x => x.ErrorId ==errorId && x.IsActual).Count() > 0;
+            return Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual).Count() > 0;
+        }
+
+        public async Task<bool> ResignFromEverErrors(string developerId)
+        {
+            var errorsAssignedToDeveloper = Context.Errors
+                .Where(x => x.DeveloperId == developerId && (x.ErrorState == ErrorState.Open || x.ErrorState == ErrorState.Reopened))
+                .ToList();
+
+            foreach(var error in errorsAssignedToDeveloper)
+            {
+                error.ErrorState = ErrorState.New;
+                error.DeveloperId = null;
+                Context.Errors.Update(error);
+
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+            }
+            return true;
         }
     }
 }
