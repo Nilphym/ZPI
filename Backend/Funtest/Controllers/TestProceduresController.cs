@@ -52,19 +52,20 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditTestProcedure([FromRoute] Guid id, EditTestProcedureRequest request)
+        public async Task<ActionResult> EditTestProcedure([FromRoute] Guid testProcedureId, EditTestProcedureRequest request)
         {
-            var isExist = _testProcedureService.IsTestProcedureExist(id);
+            var isExist = _testProcedureService.IsTestProcedureExist(testProcedureId);
             if (!isExist)
                 return NotFound("Object with the given id doesn't exist.");
-            var isEditPossible = _testProcedureService.IsEditPossible(id);
+            var isEditPossible = _testProcedureService.IsEditPossible(testProcedureId);
 
             bool result;
             if (isEditPossible)
-                result = await _testProcedureService.EditTestProcedure(id, request);
+                result = await _testProcedureService.EditTestProcedure(testProcedureId, request);
             else
             {
-                var newTestProcedureId = await _testProcedureService.CreateNewTestProcedureBaseOnExistTPWithModification(id, request);
+                var testCaseId = (await _testService.FindTest(request.TestId)).TestCaseId;
+                var newTestProcedureId = await _testProcedureService.CreateNewTestProcedureBaseOnExistTPWithModification(testProcedureId, (Guid)testCaseId, request);
                 if (newTestProcedureId == null)
                     result = false;
                 else             

@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.Roles;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Auth.Requests;
 using Funtest.TransferObject.Auth.Responses;
@@ -22,10 +23,14 @@ namespace Funtest.Services
            return await UserManager.FindByEmailAsync(email);
         }
 
+        public async Task<User> FindUserByUserName(string userName)
+        {
+            return await UserManager.FindByNameAsync(userName);
+        }
+
         public async Task<LoginResponse> Login(LoginRequest request)
         {
             var user = await UserManager.FindByNameAsync(request.Email);
-
             if (user == null)
                 return null;
 
@@ -36,6 +41,11 @@ namespace Funtest.Services
             var token = await _jwtService.GenerateJWToken(user);
             var response = new LoginResponse() { Token = token };
             return response;
+        }
+
+        public async Task<string> UserRole(User user)
+        {
+            return (await UserManager.GetRolesAsync(user))[0];
         }
     }
 }

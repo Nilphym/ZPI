@@ -9,7 +9,7 @@ namespace Funtest.TransferObject.TestSuite.Responses
         public Guid Id { get; set; }
 
         public string Category { get; set; }
-        
+
         public List<GetTestIdentityInformationResponse> TestsForTestSuite { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
+using Data.Roles;
 
 namespace Funtest
 {
@@ -41,7 +42,8 @@ namespace Funtest
                    opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-._@+";
                })
                .AddSignInManager<SignInManager<User>>()
-               .AddEntityFrameworkStores<DatabaseContext>();
+               .AddEntityFrameworkStores<DatabaseContext>()
+                .AddDefaultTokenProviders();
 
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -70,10 +72,10 @@ namespace Funtest
                 builder => builder
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .SetIsOriginAllowed(origin => true) 
+                   .SetIsOriginAllowed(origin => true)
                    .AllowCredentials());
             });
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Funtest", Version = "v1" });

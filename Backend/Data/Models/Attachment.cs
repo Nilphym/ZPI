@@ -11,10 +11,7 @@ namespace Data.Models
 
         [Column(TypeName = "ntext")]
         [MaxLength]
-        public string Image { get; set; }
-
-        public string FileExtension { get; set; }
-        public bool IsDeleted { get; set; }
+        public string ImageLink { get; set; }
 
         [ForeignKey("ErrorId")]
         public Guid ErrorId { get; set; }

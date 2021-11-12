@@ -22,7 +22,6 @@ namespace Funtest.Services
         public async Task<bool> AddNewAttachment(AddAttachmentRequest request)
         {
             var attachment = _mapper.Map<Attachment>(request);
-            attachment.IsDeleted = false;
             await Context.Attachments.AddAsync(attachment);
 
             if (await Context.SaveChangesAsync() == 0)
@@ -37,9 +36,7 @@ namespace Funtest.Services
             if (attachment == null)
                 return false;
 
-            attachment.IsDeleted = true;
-
-            Context.Attachments.Update(attachment);
+            Context.Attachments.Remove(attachment);
 
             if (await Context.SaveChangesAsync() == 0)
                 return false;
@@ -52,7 +49,7 @@ namespace Funtest.Services
             return _mapper.Map<GetAttachmentResponse>(await Context.Attachments.FindAsync(id));
         }
 
-        public List<GetAttachmentResponse> GetAttachmentForError(Guid errorId)
+        public List<GetAttachmentResponse> GetAttachmentsForError(Guid errorId)
         {
             var errors = Context.Attachments.Where(x => x.ErrorId == errorId).ToList();
             return errors.Select(x => _mapper.Map<GetAttachmentResponse>(x)).ToList();

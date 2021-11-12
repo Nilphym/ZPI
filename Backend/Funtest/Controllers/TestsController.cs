@@ -63,6 +63,7 @@ namespace Funtest.Controllers
                                 .FirstOrDefault());
 
             var response = await _testService.GetTestById(id);
+
             response.TestProcedures = _testProcedureService.GetAllTestProceduresForProduct(productId);
             response.TestCases = _testCaseService.GetAllTestCasesForProduct(productId);
             response.TestSuites = _testSuitService.GetAllTestSuitesForProduct(productId);
@@ -107,6 +108,17 @@ namespace Funtest.Controllers
                 return NotFound("Test plan with given id doesn't exist.");
 
             return Ok();
+        }
+
+        [HttpGet("{testId}/executionCounter")]
+        public async Task<ActionResult<int>> GetTestExecutionCounter([FromRoute] Guid testId)
+        {
+            var isTestExist = _testService.IsTestExist(testId);
+
+            if (!isTestExist)
+                return NotFound("Test with given id doesn't exist.");
+
+            return await _testService.GetExecutionCounterForTest(testId);
         }
     }
 }

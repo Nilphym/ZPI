@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
 using Funtest.TransferObject.Attachment.Requests;
 using Funtest.TransferObject.Attachment.Responses;
@@ -42,6 +43,8 @@ namespace Funtest.Infrastructure
             CreateMap<AddTestProcedureRequest, TestProcedure>();
             CreateMap<TestProcedure, GetTestProcedureResponse>();
             CreateMap<TestProcedure, GetTestProcedureIdentityValueResponse>();
+            CreateMap<TestProcedure, GetTestProcedureWithTestCaseResponse>();
+            CreateMap<TestProcedure, GetTestProcedureIdResponse>();
 
             //Mapowania dla TestProcedure
             CreateMap<AddTestRequest, Test>();
@@ -73,6 +76,7 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla Usera
             CreateMap<AddNewUserRequest, User>();
+            CreateMap<RegisterInvitatedUserRequest, User>();
 
             //Mapowania dla Produkty
             CreateMap<Product, GetProductResponse>();

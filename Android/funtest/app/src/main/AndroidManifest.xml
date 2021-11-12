@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Funtest">
         <activity
+            android:name=".BugReportActivity"
+            android:exported="true" />
+        <activity
             android:name=".PerformTestActivity"
             android:exported="true" />
         <activity

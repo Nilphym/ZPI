@@ -3,7 +3,6 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Review.Requests;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,7 +24,7 @@ namespace Funtest.Services
             review.ErrorId = errorId;
             review.TesterId = testerId;
             review.IsActual = true;
-            Context.Reviews.Add(review);
+            Context.Reviews.Update(review);
 
             if (await Context.SaveChangesAsync() == 0)
                 return false;
@@ -33,14 +32,15 @@ namespace Funtest.Services
             return true;
         }
 
-        public async Task<bool> ChangeStatusToObsolteAsync(Guid errorId)
+        public async Task<bool> ObsolteReviewsForError(Guid errorId)
         {
-            var review = await Context.Reviews.FindAsync(errorId);
-            review.IsActual = false;
-
-            if (await Context.SaveChangesAsync() == 0)
-                return false;
-
+            var reviews = Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual).ToList();
+            foreach (var review in reviews)
+            {
+                review.IsActual = false;
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+            }
             return true;
         }
 
@@ -49,14 +49,46 @@ namespace Funtest.Services
             return Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual && !x.Result).Count();
         }
 
+        //zmienić nazwę na activereviews
         public int CountReviewsForError(Guid errorId)
         {
             return Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual).Count();
         }
 
-        public Review GetActualReviewForTester(Guid errorId, string testerId)
+        public Review GetActualReviewWriteByTester(Guid errorId, string testerId)
         {
             return Context.Reviews.Where(x => x.ErrorId == errorId && x.TesterId == testerId && x.IsActual).FirstOrDefault();
+        }
+
+        public async Task<bool> ResumeRetest(Error error)
+        {
+            var allReviews = CountReviewsForError(error.Id);
+
+            if (error.RetestsRequired == allReviews)
+            {
+                var failedReviews = CountFailedReviewsForError(error.Id);
+                if (failedReviews > allReviews - failedReviews)
+                {
+                    error.ErrorState = Data.Enums.ErrorState.Reopened;
+                    await ObsolteReviewsForError(error.Id);
+
+                    var user = await Context.Users.FindAsync(error.DeveloperId);
+                    if (user.IsDeleted)
+                    {
+                        error.ErrorState = Data.Enums.ErrorState.New;
+                        error.DeveloperId = null;
+                    }
+                }
+                else
+                    error.ErrorState = Data.Enums.ErrorState.Closed;
+                    
+                Context.Errors.Update(error);
+                if (await Context.SaveChangesAsync() == 0)
+                    return false;
+                else
+                    return true;
+            }
+            return true;
         }
     }
 }

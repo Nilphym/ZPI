@@ -51,12 +51,12 @@ namespace Funtest.Services
             return true;
         }
 
-        public List<GetTestProcedureIdentityValueResponse> GetAllTestProceduresForProduct(Guid productId)
+        public List<GetTestProcedureWithTestCaseResponse> GetAllTestProceduresForProduct(Guid productId)
         {
             return Context.TestProcedures
                 .AsQueryable()
                 .Where(x => x.TestCase.ProductId == productId)
-                .Select(x => _mapper.Map<GetTestProcedureIdentityValueResponse>(x))
+                .Select(x => _mapper.Map<GetTestProcedureWithTestCaseResponse>(x))
                 .ToList();
         }
 
@@ -86,7 +86,7 @@ namespace Funtest.Services
                            .Count() == 0;
         }
 
-        public async Task<Guid?> CreateNewTestProcedureBaseOnExistTPWithModification(Guid testProcedureId, EditTestProcedureRequest editedTestProcedure)
+        public async Task<Guid?> CreateNewTestProcedureBaseOnExistTPWithModification(Guid testProcedureId, Guid testCaseId, EditTestProcedureRequest editedTestProcedure)
         {
             var testProcedure = await Context.TestProcedures.FindAsync(testProcedureId);
 
@@ -96,7 +96,7 @@ namespace Funtest.Services
                 Id = index,
                 Code = GetCode(index),
                 Result = editedTestProcedure.Result,
-               // TestCaseId = testProcedure.TestCaseId
+                TestCaseId = testCaseId
             };
 
             Context.TestProcedures.Add(copyTestProcedures);

@@ -6,7 +6,7 @@ namespace Funtest.TransferObject.Attachment.Requests
     public class AddAttachmentRequest
     {
         [MaxLength]
-        public string Image { get; set; }
+        public string ImageLink { get; set; }
         public Guid ErrorId { get; set; }
     }
 }

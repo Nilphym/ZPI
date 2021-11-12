@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Funtest.Security;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Email.Requests;
@@ -23,13 +24,18 @@ namespace Funtest.Services
             _configuration = configuration;
         }
 
-        private string CreateInvitationUrl(string baseUrl, string role, Guid productId)
+        private string CreateInvitationUrl(string baseUrl, string role, Guid productId, string email)
         {
-            return $"{baseUrl}/{role}/{productId}";
+            var productIdEncoded = SecureSensitiveData.Encode(productId.ToString());
+            var emailEncoded = SecureSensitiveData.Encode(email.ToString());
+
+            return $"{baseUrl}/{role}/{productIdEncoded}/{emailEncoded}";
         }
 
         public async Task<bool> SendInvitationLinkAsync(DataToInvitationLinkRequest request)
         {
+            var baseUrl = "https://localhost:44360/api/auth";
+
             var mailMessage = new MimeMessage();
             mailMessage.From.Add(new MailboxAddress(_configuration["EmailService:name"], _configuration["EmailService:email"]));
             mailMessage.To.Add(new MailboxAddress(request.Email, request.Email));
@@ -39,7 +45,7 @@ namespace Funtest.Services
             builder.HtmlBody = string.Format(
                 @$"<h2>Hello in Funtest Community. </h2>
                 <p>{_configuration["EmailService:invitationMessage"]}</p>
-                <a href={CreateInvitationUrl("url", request.Role, request.ProductId)}>Click here to register</a>
+                <a href={CreateInvitationUrl(baseUrl, request.Role, request.ProductId, request.Email)}>Click here to register</a>
                 <p>Best regards, {_configuration["EmailService:name"]}"
             );
             mailMessage.Body = builder.ToMessageBody();
@@ -68,9 +74,8 @@ namespace Funtest.Services
             return true;
         }
 
-        public async Task<bool> SendResetPasswordMail(User user, string passwordResetToken, string baseUrl)
+        public async Task<bool> SendResetPasswordMail(User user, string encodedToken, string baseUrl)
         {
-            var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
             baseUrl = "https://localhost:44360/api/auth";
             string url = $"{baseUrl}/{user.Id}/{encodedToken}";
 
@@ -82,8 +87,8 @@ namespace Funtest.Services
             var builder = new BodyBuilder();
             builder.HtmlBody = string.Format(
                 @$"<h2>Hello in Funtest Community. </h2>
-                <p>Click in lint to reset pssword.</p>
-                <a href='{url}'>REser password link</a>
+                <p>Click link to reset pssword.</p>
+                <a href='{url}'>Reset password link</a>
                 <p>Best regards, {_configuration["EmailService:name"]}"
             );
             mailMessage.Body = builder.ToMessageBody();

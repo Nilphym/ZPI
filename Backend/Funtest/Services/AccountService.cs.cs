@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Data.Models;
+using Data.Roles;
+using Funtest.Security;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace Funtest.Services
@@ -60,16 +63,77 @@ namespace Funtest.Services
 
         public async Task<bool> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            var user = await UserManager.FindByEmailAsync(request.Email);
+            var user = Context.Users.Where(x => x.Email == request.Email && x.UserName == request.UserName).FirstOrDefault();
+            //  var user = await UserManager.FindByEmailAsync(request.Email);
+
             if (user == null)
             {
                 return false;
             }
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
-            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, passwordResetToken, "URL");
+            var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
+            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "https://localhost:44360/");
 
             return emailServiceResponse;
+        }
+
+        public async Task<bool> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await Context.Users.FindAsync(request.UserId);
+
+            var decodedToken = HttpUtility.UrlDecode(request.PasswordResetToken);
+
+            if (request.Password != request.ConfirmedPassword)
+                return false;
+
+            var result = await UserManager.ResetPasswordAsync(user, decodedToken, request.Password);
+            if (result.Succeeded)
+                return true;
+            return false;
+        }
+
+        public async Task<string> AddInvitedUser(RegisterInvitatedUserRequest request, Product product)
+        {
+            var user = _mapper.Map<User>(request);
+            user.Id = Guid.NewGuid().ToString();
+            user.Email = SecureSensitiveData.Decode(request.EmailEncoded);
+            user.UserName = CreateUserName(user, product);
+            user.ProductId = Guid.Parse(SecureSensitiveData.Decode(request.ProductIdEncoded));
+
+            var result = await UserManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+                return null;
+
+            await UserManager.AddToRoleAsync(user, request.Role);
+            return user.UserName;
+        }
+
+        public async Task<bool> RemoveAccount(RemoveAccountRequest request, string pmId)
+        {
+            var user = await UserManager.FindByNameAsync(request.UserName);
+
+            if (user == null)
+                return false;
+
+            var isTheSameTeam = await IsTheSameTeam(pmId, user.Id);
+            if (!isTheSameTeam)
+                return false;
+
+            user.IsDeleted = true;
+            Context.Users.Update(user);
+
+            if (await Context.SaveChangesAsync() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> IsTheSameTeam(string user1Id, string user2Id)
+        {
+            var user1 = await Context.Users.FindAsync(user1Id);
+            var user2 = await Context.Users.FindAsync(user2Id);
+
+            return user1.ProductId == user2.ProductId;
         }
     }
 }

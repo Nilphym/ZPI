@@ -288,11 +288,79 @@
                 android:layout_below="@+id/td_linearLayout_preconditions"
                 android:background="?android:attr/listDivider" />
 
+            //list
+
             <LinearLayout
+                android:id="@+id/td_linearlayout_top_panel_entrydata"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@+id/divider5"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/td_textView_label_entrydata"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:ellipsize="marquee"
+                        android:gravity="center_horizontal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:text="Entry Data:"
+                        android:textColor="@color/primaryDarkColor"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/td_linearlayout_bottom_panel_entrydata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/td_linearlayout_top_panel_entrydata"
+                android:orientation="vertical">
+
+                <ListView
+                    android:id="@+id/td_listView_entrydata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/td_linearlayout_bottom_panel_entrydata"
+                android:background="?android:attr/listDivider" />
+
+            //list
+
+
+            <LinearLayout
                 android:id="@+id/td_result"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/divider6"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -362,15 +430,7 @@
                 android:gravity="center"
                 android:layout_below="@+id/divider2">
 
-                <Button
-                    android:id="@+id/td_button_entrydata"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_below="@+id/divider2"
-                    android:text="Entry Data"
-                    />
+
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/perform_test"
@@ -379,6 +439,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_centerInParent="true"
+                    app:tint="@android:color/white"
+
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/ic_arrow_right" />

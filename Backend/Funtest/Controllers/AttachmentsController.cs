@@ -29,7 +29,7 @@ namespace Funtest.Controllers
         public ActionResult<List<GetAttachmentResponse>> GetAttachmentsForError([FromRoute] Guid id)
         {
             if (_errorService.IsErrorExist(id))
-                return Ok(_attachmentService.GetAttachmentForError(id));
+                return Ok(_attachmentService.GetAttachmentsForError(id));
             return NotFound("Object with given id doesn't exist");
         }
 
@@ -40,7 +40,7 @@ namespace Funtest.Controllers
             return attachment == null ? NotFound("Attachment with the given id doesn't exist.") : Ok(attachment);
         }
 
-        [HttpPut("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttachment([FromRoute] Guid id)
         {
             var result = await _attachmentService.DeleteAttachment(id);
