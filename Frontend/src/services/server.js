@@ -47,7 +47,7 @@ const server = (axiosInstance = instance) => ({
       }
     } = await axios.post(IMAGE_API_URL, formData, config);
 
-    return { url };
+    return url;
   }
 });
 

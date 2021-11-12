@@ -31,7 +31,7 @@ const TextButton = styled('button')(({ theme }) => ({
   backgroundColor: 'transparent',
   border: 'none',
   alignSelf: 'start',
-  padding: '0.3rem 0',
+  padding: '0',
   color: theme.palette.primary.main,
   textDecoration: 'underline',
   cursor: 'pointer',
@@ -223,7 +223,8 @@ const ExpandableRow = ({ colSpan, data, open }) => {
                     padding: '1rem 4rem',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'left'
+                    justifyContent: 'left',
+                    gap: '0.5rem'
                   }}
                 >
                   <Typography variant="overline">Attachments</Typography>
