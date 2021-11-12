@@ -63,7 +63,7 @@ namespace Funtest.Services
 
         public async Task<bool> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            var user = Context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+            var user = Context.Users.Where(x => x.Email == request.Email && x.UserName == request.UserName).FirstOrDefault();
             //  var user = await UserManager.FindByEmailAsync(request.Email);
 
             if (user == null)
