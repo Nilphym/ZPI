@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { styled } from '@mui/system';
-import { IconButton } from '@mui/material';
+import { IconButton, Box } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
@@ -23,7 +23,7 @@ export const ImageCarousel = ({ closeCarousel, bugId, images, startingPosition }
   };
 
   return (
-    <>
+    <Box sx={{ minHeight: '20rem' }}>
       <Carousel
         value={position}
         onChange={setPosition}
@@ -47,7 +47,7 @@ export const ImageCarousel = ({ closeCarousel, bugId, images, startingPosition }
       >
         <Delete />
       </IconButton>
-    </>
+    </Box>
   );
 };
 

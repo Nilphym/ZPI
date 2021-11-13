@@ -56,7 +56,7 @@ const routes = [
     }),
 
   (thisRef) =>
-    thisRef.put('Errors/take/:id', (_, request) => {
+    thisRef.put('Errors/open/:id', (_, request) => {
       const { id } = request.params;
       const personId = JSON.parse(request.requestBody);
       console.log(personId, id);
@@ -76,7 +76,7 @@ const routes = [
     }),
 
   (thisRef) =>
-    thisRef.put('Errors/resolve/:id', (schema, request) => {
+    thisRef.put('Errors/fixed/:id', (schema, request) => {
       const { id } = request.params;
       const requiredRetests = JSON.parse(request.requestBody);
       console.log(requiredRetests, id);

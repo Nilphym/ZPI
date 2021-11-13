@@ -99,7 +99,7 @@ export const BugTable = ({ type }) => {
   useEffect(() => {
     fetchBugs();
     dispatch(getPossibleBugValues());
-  }, []);
+  }, [type]);
 
   const closeDialog = () => {
     setDialog((dialog) => ({ ...dialog, open: false }));
@@ -122,6 +122,7 @@ export const BugTable = ({ type }) => {
 
   const onReject = (id) => {
     setValue('id', id);
+    setValue('developerId', developerId);
     setDialog({
       open: true,
       content: <DialogContentText>This bug will be marked as rejected.</DialogContentText>,

@@ -140,23 +140,23 @@ export const putRows = createAsyncThunk('bugs/put/all', async ({ id, json }) => 
   return data;
 });
 
-export const rejectBug = createAsyncThunk('bugs/reject', async ({ id }) => {
-  const data = await server().put({ url: `Errors/reject/${id}` });
+export const rejectBug = createAsyncThunk('bugs/reject', async ({ id, developerId }) => {
+  const data = await server().put({ url: `Errors/reject/${id}`, data: { developerId } });
   return data;
 });
 
 export const resolveBug = createAsyncThunk('bugs/resolve', async ({ id, retestsRequired }) => {
-  const data = await server().put({ url: `Errors/resolve/${id}`, data: retestsRequired });
+  const data = await server().put({ url: `Errors/fixed/${id}`, data: retestsRequired });
   return data;
 });
 
 export const takeBug = createAsyncThunk('bugs/take', async ({ id, developerId }) => {
-  const data = await server().put({ url: `Errors/take/${id}`, data: developerId });
+  const data = await server().put({ url: `Errors/open/${id}`, data: { developerId } });
   return data;
 });
 
 export const resignFromBug = createAsyncThunk('bugs/resign', async ({ id, developerId }) => {
-  const data = await server().put({ url: `Errors/resign/${id}`, data: developerId });
+  const data = await server().put({ url: `Errors/resign/${id}`, data: { developerId } });
   return data;
 });
 

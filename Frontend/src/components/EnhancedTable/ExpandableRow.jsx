@@ -42,6 +42,9 @@ const TextButton = styled('button')(({ theme }) => ({
 
 const Field = ({ id, label, type, value, possibleValues }) => {
   const { control, setValue } = useFormContext();
+  if (type === 'disabled' && value === null) {
+    return null;
+  }
 
   switch (type) {
     case 'disabled': {
@@ -165,7 +168,7 @@ const ExpandableRow = ({ colSpan, data, open }) => {
     });
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const toggleCarousel = (state, index) => {
     setCarouselStartingPosition(index);
@@ -235,20 +238,22 @@ const ExpandableRow = ({ colSpan, data, open }) => {
                   ))}
                   <Box
                     sx={{
-                      padding: '0 1rem',
+                      padding: '1rem',
+                      marginTop: '0.5rem',
                       border: '1px solid rgba(0, 0, 0, 0.23)',
-                      '&:hover': { border: '1px solid rgba(0, 0, 0, 0.87)' },
+                      '&:hover': {
+                        border: '1px solid rgba(0, 0, 0, 0.87)',
+                        '> p': { color: 'rgba(0, 0, 0, 1)' }
+                      },
                       borderRadius: '5px',
                       cursor: 'pointer'
                     }}
                     {...getRootProps()}
                   >
                     <input {...getInputProps()} />
-                    {isDragActive ? (
-                      <p>Drop the files here ...</p>
-                    ) : (
-                      <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
-                    )}
+                    <Typography color="rgba(0, 0, 0, 0.6)">
+                      Drag &apos;n&apos; drop a file here or click to select a file
+                    </Typography>
                   </Box>
                 </Box>
                 <Dialog onClose={() => toggleCarousel(false)} open={carouselOpen}>

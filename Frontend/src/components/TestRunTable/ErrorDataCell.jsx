@@ -31,7 +31,7 @@ const BugDetailsModal = ({ handleClose, open }) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog fullWidth open={open} onClose={handleClose}>
       <DialogTitle>Error details</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
