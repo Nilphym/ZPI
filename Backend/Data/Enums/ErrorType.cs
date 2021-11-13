@@ -5,9 +5,19 @@ namespace Data.Enums
     public enum ErrorType
     {
         Functional,
-        Logical,
+        Logic,
+        Performance,
+        Usability,
+        Compatibility,
+        Security,
+        Syntax,
+        [Display(Name = "System-level integration")]
+        System_Level_Integration,
 
-        [Display(Name = "Wrong Datatype")]
+        [Display(Name = "Unit-level bugs")]
+        Unit_Level_Bugs,
+
+        [Display(Name = "Wrong data type")]
         Wrong_Datatype
     }
 }

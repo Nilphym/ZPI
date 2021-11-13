@@ -134,7 +134,7 @@ namespace Funtest.Controllers
             return Problem("Problem with saving changes in database.");
         }
 
-        [HttpPut("closed/{id}")]
+        [HttpPut("fixed/{id}")]
         public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(id);

@@ -56,9 +56,9 @@ namespace Funtest.Controllers
             if (!isErrorExist)
                 return NotFound("Error with given id doesn't exist.");
 
-            var result = await _attachmentService.AddNewAttachment(request);
-            if (result)
-                return Ok();
+            var attachmentId = await _attachmentService.AddNewAttachment(request);
+            if (attachmentId != null)
+                return Ok(attachmentId);
 
             return NotFound("Problem with saving object in database!");
         }

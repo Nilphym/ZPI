@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.Enums;
 using Data.Models;
 using Funtest.Interfaces;
 using Funtest.TransferObject.Steps.Requests;
@@ -72,8 +73,7 @@ namespace Funtest.Services
 
             foreach (var step in steps)
             {
-                var errorsInStep = Context.Errors.Where(x => x.StepId == step.Id).ToList();
-                var errorIds = Context.Errors.Where(x => x.StepId == step.Id).Select(x => x.Id).ToList();
+                var errorIds = Context.Errors.Where(x => x.StepId == step.Id && (x.ErrorState == ErrorState.Retest || x.ErrorState == ErrorState.Fixed)).Select(x => x.Id).ToList();
 
                 var newStep = new GetStepWithErrorIdsResponse()
                 {

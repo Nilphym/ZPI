@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.Enums;
 using Data.Models;
 using Funtest.TransferObject.Account.Requests;
 using Funtest.TransferObject.Admin.Requests;
@@ -21,6 +22,9 @@ using Funtest.TransferObject.TestProcedure.Requests;
 using Funtest.TransferObject.TestProcedure.Responses;
 using Funtest.TransferObject.TestSuite.Requests;
 using Funtest.TransferObject.TestSuite.Responses;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Funtest.Infrastructure
 {
@@ -61,7 +65,13 @@ namespace Funtest.Infrastructure
             CreateMap<TestPlan, GetTestPlanIdentityValueResponse>();
 
             //Mapowanie dla Błędów
-            CreateMap<Error, GetErrorResponse>();
+            CreateMap<Error, GetErrorResponse>()
+                            .ForMember(x => x.ErrorType, options => options.MapFrom(o => GetExpression(o.ErrorType)));
+
+            //    .ForMember(x => x.ErrorType, opt => opt.
+            //     MapFrom(ConvertEnumToDisplayName.GetDisplayNames(typeof(ErrorType)).ElementAt((int)opt.Condition)));
+
+
             CreateMap<AddErrorRequest, Error>();
             CreateMap<Error, GetIdentityErrorInformationRespons>();
 
@@ -83,6 +93,14 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla Review
             CreateMap<AddReviewRequest, Review>();
+
+
         }
+
+        private string GetExpression(ErrorType errorType)
+        {
+            return ConvertEnumToDisplayName.GetDisplayNames(typeof(ErrorType)).ElementAt((int)errorType);
+        }
+
     }
 }

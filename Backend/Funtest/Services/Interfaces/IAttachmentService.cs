@@ -8,7 +8,7 @@ namespace Funtest.Services.Interfaces
 {
     public interface IAttachmentService
     {
-        Task<bool> AddNewAttachment(AddAttachmentRequest request);
+        Task<Guid?> AddNewAttachment(AddAttachmentRequest request);
         Task<bool> DeleteAttachment(Guid id);
         Task<GetAttachmentResponse> GetAttachment(Guid id);
         List<GetAttachmentResponse> GetAttachmentsForError(Guid errorId);

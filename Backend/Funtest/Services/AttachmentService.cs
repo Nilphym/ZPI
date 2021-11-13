@@ -19,15 +19,16 @@ namespace Funtest.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> AddNewAttachment(AddAttachmentRequest request)
+        public async Task<Guid?> AddNewAttachment(AddAttachmentRequest request)
         {
             var attachment = _mapper.Map<Attachment>(request);
+            attachment.Id = Guid.NewGuid();
             await Context.Attachments.AddAsync(attachment);
 
             if (await Context.SaveChangesAsync() == 0)
-                return false;
+                return null;
 
-            return true;
+            return attachment.Id;
         }
 
         public async Task<bool> DeleteAttachment(Guid id)

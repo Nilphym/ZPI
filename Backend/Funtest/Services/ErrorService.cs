@@ -42,7 +42,7 @@ namespace Funtest.Services
         public List<GetErrorResponse> GetAllErrorsToRetest(Guid productId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && x.ErrorState == ErrorState.Retest)
+                .Where(x => x.Step.TestProcedure.TestCase.ProductId == productId && (x.ErrorState == ErrorState.Retest || x.ErrorState == ErrorState.Fixed))
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }
@@ -58,7 +58,7 @@ namespace Funtest.Services
         public List<GetErrorResponse> GetAllErrorsAssignedToDeveloper(string developerId)
         {
             return Context.Errors.AsQueryable()
-                .Where(x => x.DeveloperId == developerId)
+                .Where(x => x.DeveloperId == developerId && (x.ErrorState == ErrorState.Open || x.ErrorState == ErrorState.Reopened))
                 .Select(x => _mapper.Map<GetErrorResponse>(x))
                 .ToList();
         }

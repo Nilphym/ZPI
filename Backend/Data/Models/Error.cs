@@ -21,12 +21,12 @@ namespace Data.Models
         public string Description { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime Deadline { get; set; }
+        public DateTime? Deadline { get; set; }
 
         public int RetestsRequired { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required]
         public string Code { get; set; }
