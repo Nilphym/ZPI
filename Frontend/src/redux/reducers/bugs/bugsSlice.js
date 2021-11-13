@@ -35,9 +35,9 @@ const prepareDataForView = (rows) => {
     impact: row.errorImpact,
     priority: row.errorPriority,
     retests: [row.retestsRequired, row.retestsDone, row.retestsFailed].join(' / '),
-    deadline: row.deadline ? DateTime.fromISO(row.deadline).toFormat('MM/dd/yyyy') : '',
+    deadline: row.deadline ? DateTime.fromISO(row.deadline).toFormat('MM/dd/yyyy') : null,
     reportDate: DateTime.fromISO(row.reportDate).toFormat('MM/dd/yyyy'),
-    endDate: DateTime.fromISO(row.endDate).toFormat('MM/dd/yyyy'),
+    endDate: row.endDate ? DateTime.fromISO(row.endDate).toFormat('MM/dd/yyyy') : null,
     attachments: row.attachments.map((attachment) => ({
       ...attachment,
       image: attachment.imageLink
@@ -111,11 +111,6 @@ export const getBug = createAsyncThunk('bugs/get', async ({ errorId }) => {
     })()
   };
   return prepareDataForView([errorWithAttachments])[0];
-});
-
-export const evaluateBug = createAsyncThunk('bugs/evaluate', async ({ errorId, result }) => {
-  const data = await server().post({ url: `Reviews/${errorId}`, data: { result } });
-  return data;
 });
 
 export const postBug = createAsyncThunk('bugs/post', async ({ json }) => {

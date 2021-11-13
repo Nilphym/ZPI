@@ -82,6 +82,11 @@ export const executeTest = createAsyncThunk('testExecution/execute', async ({ te
   return data;
 });
 
+export const evaluateBug = createAsyncThunk('bugs/evaluate', async ({ errorId, result }) => {
+  await server().post({ url: `Reviews/${errorId}`, data: { result } });
+  return errorId;
+});
+
 export const testExecutionSlice = createSlice({
   name: 'testExecution',
   initialState,
@@ -118,6 +123,14 @@ export const testExecutionSlice = createSlice({
       })
       .addCase(getExecutionTest.pending, (state) => {
         state.loading = true;
+      })
+      .addCase(evaluateBug.fulfilled, (state, action) => {
+        state.test.steps = state.test.steps.map((step) => ({
+          ...step,
+          errors: step.errors.map((error) =>
+            error.id === action.payload ? { ...error, executed: true } : error
+          )
+        }));
       });
   }
 });
