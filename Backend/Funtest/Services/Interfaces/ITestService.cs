@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using System;
@@ -21,6 +22,6 @@ namespace Funtest.Services.Interfaces
         List<GetTestBasicInformationResponse> GetAllTestsForTestPlan(Guid testPlanId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestSuite(Guid testSuiteId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId);
-
+        Task<ErrorTestResponse> GetTestExecutionWithError(Guid testId);
     }
 }

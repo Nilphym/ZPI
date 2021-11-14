@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Test.Requests;
 using System;
@@ -9,6 +8,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
 using System.Linq;
+using Funtest.Interfaces;
+using Funtest.TransferObject.Error.Response;
 
 namespace Funtest.Controllers
 {
@@ -18,14 +19,16 @@ namespace Funtest.Controllers
     public class TestsController : ControllerBase
     {
         private readonly ITestService _testService;
+        private readonly IStepService _stepService;
         private readonly ITestCaseService _testCaseService;
         private readonly ITestSuiteService _testSuitService;
         private readonly ITestPlanService _testPlanService;
         private readonly ITestProcedureService _testProcedureService;
 
-        public TestsController(ITestPlanService testPlanService, ITestService testService, ITestProcedureService testProcedureService, ITestCaseService testCaseService, ITestSuiteService testSuiteService)
+        public TestsController(ITestPlanService testPlanService, IStepService stepService, ITestService testService, ITestProcedureService testProcedureService, ITestCaseService testCaseService, ITestSuiteService testSuiteService)
         {
             _testService = testService;
+            _stepService = stepService;
             _testPlanService = testPlanService;
             _testCaseService = testCaseService;
             _testSuitService = testSuiteService;
@@ -119,6 +122,18 @@ namespace Funtest.Controllers
                 return NotFound("Test with given id doesn't exist.");
 
             return await _testService.GetExecutionCounterForTest(testId);
+        }
+
+        [HttpGet("testExecution/{testId}")]
+        public async Task<ActionResult<ErrorTestResponse>> TestExecutionWithStepsAndErrors(Guid testId)
+        {
+            if (!_testService.IsTestExist(testId))
+                return NotFound("Test with given id doesn't exist");
+
+            var test = await _testService.GetTestExecutionWithError(testId);
+            test.Steps = await _stepService.GetStepsWithErrorsForTest(testId);
+
+            return test;
         }
     }
 }

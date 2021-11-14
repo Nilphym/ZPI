@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Models;
 using Funtest.Services.Interfaces;
+using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
 using Microsoft.EntityFrameworkCore;
@@ -130,6 +131,29 @@ namespace Funtest.Services
                 .FirstOrDefaultAsync();
 
             return _mapper.Map<GetTestResponse>(test);
+        }
+
+        public async Task<ErrorTestResponse> GetTestExecutionWithError(Guid testId)
+        {
+            var test = Context.Tests.Include(x => x.TestProcedure).Include(x => x.TestCase).Where(x => x.Id == testId).FirstOrDefault();
+
+            ErrorTestResponse errorTest = new ErrorTestResponse()
+            {
+                TestId = test.Id,
+                TestName = test.Name,
+                TestCaseEntryData = test.TestCase.EntryDataObject != null ? test.TestCase.EntryDataObject.GetValue("data") : "",
+                TestCaseProconditions = test.TestCase.Preconditions,
+                Result = test.TestProcedure.Result
+            };
+
+            var error = await Context.Errors.Include(x => x.Test)
+                .Include(x => x.Step)
+                .Include(x => x.Step.TestProcedure)
+                .Include(x => x.Step.TestProcedure.TestCase)
+                .Where(x => x.TestId == testId)
+                .FirstAsync();
+
+            return errorTest;
         }
 
         public List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId)
