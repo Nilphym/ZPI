@@ -38,7 +38,6 @@ export const TestPlan = ({ isEditable }) => {
   const [isAddingTestSuite, setIsAddingTestSuite] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestPlanId({ id: 'tplan1' }));
     dispatch(setLoading({ isLoading: true }));
     async function getTestPlanData() {
       await dispatch(getTestPlanById());
@@ -65,7 +64,8 @@ export const TestPlan = ({ isEditable }) => {
     <Box
       sx={{
         position: 'relative',
-        margin: '1.5rem'
+        margin: '1.5rem',
+        minWidth: '70rem'
       }}
     >
       {isLoading ? (
@@ -87,7 +87,7 @@ export const TestPlan = ({ isEditable }) => {
             </Button>
           )}
           <Box>
-            <Typography variant="h2" sx={{ userSelect: 'none' }}>
+            <Typography variant="h2" sx={{ userSelect: 'none', color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
               Test Plan:
             </Typography>
             <Controller
@@ -114,7 +114,7 @@ export const TestPlan = ({ isEditable }) => {
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
             {testSuites.map(({ id, category }) => (
-              <TestSuiteItem isEditable={isEditing} testSuite={category} testSuiteId={id} />
+              <TestSuiteItem isEditable={isEditing} editTest={isEditable} testSuite={category} testSuiteId={id} />
             ))}
             {!isAddingTestSuite && isEditing && (
               <Button

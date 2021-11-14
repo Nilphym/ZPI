@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { useNavigate } from 'react-router-dom';
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
 import {
@@ -26,16 +26,15 @@ import {
   putTestById,
   setTestLoading,
   postTestProcedure,
-  postTestCase,
-  setTestId
+  postTestCase
 } from '../../redux/store';
 
 export const Test = ({ isEditable }) => {
   const { control: mainControl, getValues } = useForm();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
-    testData: { testName, creationDate, version, executionCounter },
+    testData: { testName, creationDate, executionCounter },
     testSuites,
     testCasesCodes,
     testProceduresCodes,
@@ -52,8 +51,6 @@ export const Test = ({ isEditable }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    dispatch(setTestId('t1'));
-
     async function getTestData() {
       await dispatch(getTestById());
     }
@@ -66,8 +63,9 @@ export const Test = ({ isEditable }) => {
     dispatch(setTestName({ newName: getValues('testName') }));
     dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
     await dispatch(putTestById());
-    dispatch(setTestLoading({ isLoading: true }));
-    await dispatch(getTestById());
+    // dispatch(setTestLoading({ isLoading: true }));
+    // await dispatch(getTestById());
+    navigate(-1);
   }
 
   async function handleTestCaseChange({ target: { value } }) {
@@ -102,14 +100,15 @@ export const Test = ({ isEditable }) => {
     <Box
       sx={{
         position: 'relative',
-        margin: '1.5rem'
+        margin: '1.5rem',
+        minWidth: '70rem'
       }}
     >
       {isLoading ? (
         <CircularProgress />
       ) : (
         <Box>
-          <Typography variant="h2" sx={{ color: 'rgb(46, 115, 171)' }}>
+          <Typography variant="h2" sx={{ userSelect: 'none', color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
             Test
           </Typography>
           <Box
@@ -128,7 +127,6 @@ export const Test = ({ isEditable }) => {
               Additional Info:
             </Typography>
             <Typography>{`Creation Date: ${creationDate}`}</Typography>
-            <Typography>{`Version: ${version}`}</Typography>
             <Typography
               sx={{
                 fontSize: '1rem',
@@ -173,9 +171,9 @@ export const Test = ({ isEditable }) => {
                     disabled={!isEditing}
                     {...field}
                   >
-                    {testSuites.map(({ testSuiteId, testSuite }) => (
-                      <MenuItem key={`TestSuite-${testSuiteId}`} value={testSuiteId}>
-                        {testSuite}
+                    {testSuites.map(({ id, category }) => (
+                      <MenuItem key={`TestSuite-${id}`} value={id}>
+                        {category}
                       </MenuItem>
                     ))}
                   </Select>
@@ -193,9 +191,9 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestCaseId}
               >
                 {testCasesCodes.length > 0 &&
-                  testCasesCodes.map(({ testCaseId, testCaseCode }) => (
-                    <MenuItem key={`TestCase-${testCaseId}`} value={testCaseId}>
-                      {testCaseCode}
+                  testCasesCodes.map(({ id, code }) => (
+                    <MenuItem key={`TestCase-${id}`} value={id}>
+                      {code}
                     </MenuItem>
                   ))}
                 <MenuItem value="">
@@ -214,12 +212,12 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                  testProceduresCodes.filter(true).map(
+                    testProceduresCodes.filter(({ testCaseId }) => testCaseId === selectedTestCaseId).map(
                     (
-                      { testProcedureId, testProcedureCode } // TODO: Poprawić ....
+                      { id, code }
                     ) => (
-                      <MenuItem key={`TestProcedure-${testProcedureId}`} value={testProcedureId}>
-                        {testProcedureCode}
+                      <MenuItem key={`TestProcedure-${id}`} value={id}>
+                        {code}
                       </MenuItem>
                     )
                   )}

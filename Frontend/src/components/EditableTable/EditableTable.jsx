@@ -51,8 +51,8 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
   const { control: tableControl, getValues } = useForm();
 
   const defaultData = processData(data);
-  const [rowsNumber, setRowsNumber] = useState(defaultData.length);
-  const [columnsNumber, setColumnsNumber] = useState(defaultData[0].length);
+  const [rowsNumber, setRowsNumber] = defaultData && defaultData.length > 0 ? useState(defaultData.length) : useState(0);
+  const [columnsNumber, setColumnsNumber] = defaultData && defaultData.length > 0 && defaultData[0].length ? useState(defaultData[0].length) : useState(0);
   const [currentData, setCurrentData] = useState(defaultData);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -104,9 +104,9 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
 
   return (
     <Box
-      sx={{
-        marginTop: '1.25rem'
-      }}
+      // sx={{
+      //   marginTop: '0.06rem'
+      // }}
     >
       <Box
         sx={{
@@ -206,7 +206,7 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
               width: '100%'
             }}
           >
-            {currentData.map((row, rowIndex) => (
+            {currentData && currentData.map((row, rowIndex) => (
               <Box
                 key={`${data.tableName}-row-${row[0]}`}
                 sx={{

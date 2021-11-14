@@ -36,13 +36,15 @@ export const TestPlansView = () => {
   }
 
   return (
-    <Box>
-      <Typography variant="h2" sx={{ color: 'rgb(46, 115, 171)' }}>
+    <Box sx={{
+      margin: '1.5rem',
+      minWidth: '70rem'}}>
+      <Typography variant="h2" sx={{ color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
         Test Plans
       </Typography>
       <Box
         sx={{
-          marginTop: '0.625rem',
+          marginTop: '2.5rem',
           position: 'relative',
           height: '4rem'
         }}

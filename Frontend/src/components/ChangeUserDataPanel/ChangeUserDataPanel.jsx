@@ -78,7 +78,9 @@ export const ChangeUserDataPanel = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        minHeight: '45.0625rem',
+        minWidth: '30rem'
       }}
     >
       <Typography
@@ -98,7 +100,7 @@ export const ChangeUserDataPanel = () => {
       <Box
         sx={{
           position: 'absolute',
-          top: '18%',
+          top: '20%',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
@@ -146,7 +148,7 @@ export const ChangeUserDataPanel = () => {
       <Box
         sx={{
           position: 'absolute',
-          top: '40%',
+          top: '42%',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
@@ -190,7 +192,7 @@ export const ChangeUserDataPanel = () => {
         onSubmit={handleSubmitPassword(onSubmitPassword)}
         sx={{
           position: 'absolute',
-          top: '63%',
+          top: '65%',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',

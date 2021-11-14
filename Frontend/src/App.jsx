@@ -10,7 +10,8 @@ import {
   Test,
   RegisterPanel,
   ResetPasswordPanel,
-  ChangeUserDataPanel
+  ChangeUserDataPanel,
+  TestPlansView
 } from './components';
 import {
   NoMatch,
@@ -43,7 +44,9 @@ const App = () => {
             </RequireAuth>
           }
         />
-        <Route path="testPlan-:testPlanId" element={<TestPlan />} />
+        <Route path="testPlans" element={<TestPlansView />} />
+        <Route path="testPlan-e-:testPlanId" element={<TestPlan isEditable />} />
+        <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false}/>} />
         <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
         <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
         <Route path="logout" element={<Logout />} />

@@ -60,20 +60,26 @@ export const getExecutionTestFromErrorId = createAsyncThunk(
 
 export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ testId }) => {
   const data = await server().get({ url: `Tests/TestExecution/${testId}` });
+
   const testWithExecutedInfo = {
     ...data,
     steps: await Promise.all(
       data.steps.map(async (step) => ({
         ...step,
         errors: await Promise.all(
-          step.errors.map(async (error) => {
-            const data = await server().get({ url: `Errors/${error.id}/executed` });
-            return { ...error, executed: data };
+          step.errorIds.map(async (errorId) => {
+            const data = await server().get({ url: `Errors/${errorId}/executed` });
+            return {
+              executed: data,
+              id: errorId,
+              code: `B-${errorId.slice(0, 8).toUpperCase()}`
+            };
           })
         )
       }))
     )
   };
+
   return prepareDataForView(testWithExecutedInfo);
 });
 

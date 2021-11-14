@@ -139,14 +139,14 @@ ExpectedResult.propTypes = {
 export const TestRun = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { test, loading, pendingtestId, pendingErrorId } = useSelector(
+  const { test, loading, pendingTestId, pendingErrorId } = useSelector(
     (state) => state.testExecution
   );
 
   useEffect(() => {
-    if (pendingtestId) {
+    if (pendingTestId) {
       (async () => {
-        await dispatch(getExecutionTest({ testId: pendingtestId }));
+        await dispatch(getExecutionTest({ testId: pendingTestId }));
       })();
     } else if (pendingErrorId) {
       (async () => {

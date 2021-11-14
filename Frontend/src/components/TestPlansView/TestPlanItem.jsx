@@ -1,18 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
+import {
+  setTestPlanId
+} from '../../redux/store';
 
 const TestPlanItem = ({ id, name }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const editTestPlanNavigate = () => {
-    navigate(`${pathname}/testPlan-e-${id}`);
+    dispatch(setTestPlanId({ id }));
+    localStorage.setItem('testPlanId', id);
+    navigate(`/testPlan-e-${id}`);
   };
 
   const viewTestPlanNavigate = () => {
-    navigate(`${pathname}/testPlan-${id}`);
+    dispatch(setTestPlanId({ id }));
+    localStorage.setItem('testPlanId', id);
+    navigate(`/testPlan-${id}`);
   };
 
   return (
