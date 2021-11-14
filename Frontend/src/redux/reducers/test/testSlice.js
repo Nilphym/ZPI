@@ -73,8 +73,9 @@ const initialState = {
 export const getTestById = createAsyncThunk('test/get/byId', async (_, {
   getState
 }) => {
+  const id = getState().test.testId ? getState().test.testId : localStorage.getItem('testId');
   const response = await server().get({
-    url: `Tests/${getState().test.testId}`
+    url: `Tests/${id}`
   });
   return response;
 });
@@ -231,6 +232,10 @@ export const postTestStep = createAsyncThunk(
     const dataToSend = {};
     dataToSend.testProcedureId = currentTestProcedureId;
     dataToSend.name = newStepName;
+    const selectedTestStep = getState().test.stepNumber;
+    const stepsKeys = Object.keys(selectedTestStep);
+    const newStepNumber = selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1;
+    dataToSend.stepNumber = newStepNumber;
     const response = await server().post({
       url: 'Steps',
       data: dataToSend
@@ -381,11 +386,10 @@ export const testSlice = createSlice({
           id,
           name,
           creationDate,
-          version,
           executionCounter,
           testSuites,
-          testCasesCodes,
-          testProceduresCodes,
+          testCases,
+          testProcedures,
           testSuite,
           testCase,
           testProcedure
@@ -393,14 +397,13 @@ export const testSlice = createSlice({
         state.testId = id;
         state.testData.testName = name;
         state.testData.creationDate = creationDate;
-        state.testData.version = version;
         state.testData.executionCounter = executionCounter;
         state.testSuites = testSuites;
-        state.testCasesCodes = testCasesCodes;
-        state.testProceduresCodes = testProceduresCodes;
-        state.selectedTestSuiteId = testSuite.id;
-        state.selectedTestCaseId = testCase.id;
-        state.selectedTestProcedureId = testProcedure.id;
+        state.testCasesCodes = testCases;
+        state.testProceduresCodes = testProcedures;
+        state.selectedTestSuiteId = testSuite ? testSuite.id : '';
+        state.selectedTestCaseId = testCase ? testCase.id : '';
+        state.selectedTestProcedureId = testProcedure ? testProcedure.id : '';
         state.isLoadingTest = false;
       })
       .addCase(getTestById.rejected, (_, action) => {
@@ -423,7 +426,7 @@ export const testSlice = createSlice({
           id,
           result,
           testCaseId,
-          stepsIds: testStepsIds
+          stepIds: testStepsIds
         } = action.payload;
         state.selectedTestProcedure.id = id;
         state.selectedTestProcedure.testStepsIds = testStepsIds;
@@ -453,7 +456,7 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
-        state.selectedTestCase.entryData = transformEntryData(action.payload.entryDataObject);
+        state.selectedTestCase.entryData = action.payload.entryDataObject === {} ? transformEntryData(action.payload.entryDataObject) : [];
         state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })

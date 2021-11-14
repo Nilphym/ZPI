@@ -2,34 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { Box, Typography, Button, TextField, CircularProgress } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import TestItem from './TestItem';
 import {
-  deleteTestSuite,
   putTestSuite,
   postTest,
-  setTestId,
+  setLoading,
   getTestSuiteTests
 } from '../../redux/store';
 
-const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
+const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
   const dispatch = useDispatch();
   const [isOpened, setIsOpened] = useState(false);
   const [isChangingTestSuiteName, setIsChangingTestSuiteName] = useState(false);
   const [isAddingTest, setIsAddingTest] = useState(false);
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const [helper, setHelper] = useState(false);
+
   const {
     selectedTestPlanId,
     selectedTestPlan: { tests },
-    isLoadingTestSuites,
-    setLoading
+    isLoadingTestSuites
   } = useSelector((state) => state.testPlan);
 
   const {
@@ -45,7 +41,7 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
 
   useEffect(() => {
     dispatch(getTestSuiteTests(testSuiteId));
-  }, [testSuiteId]);
+  }, [testSuiteId, helper]);
 
   const changeSuiteName = ({ testSuiteName }) => {
     dispatch(putTestSuite({ newTestSuiteName: testSuiteName, testSuiteId }));
@@ -54,20 +50,16 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
   };
 
   async function addTest({ testName }) {
-    const newTestId = await dispatch(
+    await dispatch(
       postTest({
         testPlanId: selectedTestPlanId,
         testSuiteId,
         testName
       })
     );
-    dispatch(setTestId(newTestId.payload));
-    navigate(`${pathname}/test-${newTestId.payload}`);
+    setIsAddingTest(false);
+    setHelper(state => !state);
   }
-
-  const removeTestSuite = () => {
-    dispatch(deleteTestSuite({ testSuiteId }));
-  };
 
   return (
     <Box>
@@ -77,30 +69,30 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
         <Box>
           <Box>
             <Box
-              onClick={!isChangingTestSuiteName ? () => setIsOpened((state) => !state) : () => {}}
+              onClick={!isChangingTestSuiteName ? () => setIsOpened((state) => !state) : () => { }}
               sx={
                 !isChangingTestSuiteName && (isEditable || tests[testSuiteId].length) > 0
                   ? {
-                      position: 'relative',
-                      height: '5rem',
-                      width: '100%',
-                      backgroundColor: '#00000',
-                      borderTop: '0.0625rem solid #b0bec5',
-                      borderBottom: '0.0625rem solid #b0bec5',
-                      padding: '0.625rem',
-                      '&:hover': {
-                        cursor: 'pointer'
-                      }
+                    position: 'relative',
+                    height: '5rem',
+                    width: '100%',
+                    backgroundColor: '#00000',
+                    borderTop: '0.0625rem solid #b0bec5',
+                    borderBottom: '0.0625rem solid #b0bec5',
+                    padding: '0.625rem',
+                    '&:hover': {
+                      cursor: 'pointer'
                     }
+                  }
                   : {
-                      position: 'relative',
-                      height: '5rem',
-                      width: '100%',
-                      backgroundColor: '#00000',
-                      borderTop: '0.0625rem solid #b0bec5',
-                      borderBottom: '0.0625rem solid #b0bec5',
-                      padding: '0.625rem'
-                    }
+                    position: 'relative',
+                    height: '5rem',
+                    width: '100%',
+                    backgroundColor: '#00000',
+                    borderTop: '0.0625rem solid #b0bec5',
+                    borderBottom: '0.0625rem solid #b0bec5',
+                    padding: '0.625rem'
+                  }
               }
             >
               {!isChangingTestSuiteName && (
@@ -108,19 +100,19 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                   sx={
                     isOpened
                       ? {
-                          position: 'absolute',
-                          top: '50%',
-                          transform: 'translateY(-50%) rotate(180deg)',
-                          left: '2.5%',
-                          zIndex: '1'
-                        }
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%) rotate(180deg)',
+                        left: '2.5%',
+                        zIndex: '1'
+                      }
                       : {
-                          position: 'absolute',
-                          top: '50%',
-                          transform: 'translateY(-50%)',
-                          left: '2.5%',
-                          zIndex: '1'
-                        }
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        left: '2.5%',
+                        zIndex: '1'
+                      }
                   }
                 />
               )}
@@ -231,31 +223,12 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                     </Button>
                   </Box>
                 ))}
-              {isEditable && tests[testSuiteId].length === 0 && (
-                <DeleteIcon
-                  sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: '1vw',
-                    transform: 'translateY(-50%)',
-                    border: '1px solid black',
-                    borderRadius: '50%',
-                    padding: '2px',
-                    zIndex: 3,
-                    '&:hover': {
-                      cursor: 'pointer'
-                    }
-                  }}
-                  onClick={() => removeTestSuite()}
-                />
-              )}
             </Box>
-
             <Box>
               {!isChangingTestSuiteName &&
                 isOpened &&
                 tests[testSuiteId].map(({ id, name }) => (
-                  <TestItem isEditable={isEditable} testName={name} testId={id} />
+                  <TestItem isEditable={editTest} testName={name} testId={id} />
                 ))}
             </Box>
           </Box>
@@ -302,6 +275,7 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
                     )}
                   />
                   <Button
+                    type="submit"
                     sx={{
                       position: 'absolute',
                       top: '50%',
@@ -338,6 +312,7 @@ const TestSuiteItem = ({ isEditable, testSuite, testSuiteId }) => {
 
 TestSuiteItem.propTypes = {
   isEditable: PropTypes.bool.isRequired,
+  editTest: PropTypes.bool.isRequired,
   testSuite: PropTypes.string.isRequired,
   testSuiteId: PropTypes.string.isRequired
 };

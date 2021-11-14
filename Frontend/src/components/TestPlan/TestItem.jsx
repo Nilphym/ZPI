@@ -2,18 +2,31 @@ import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  setTestId, setExecutionTestId
+} from '../../redux/store';
 
 const TestItem = ({ isEditable, testName, testId }) => {
-
-    const navigate = useNavigate();
-    const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const editTestNavigate = () => {
-     navigate(`${pathname}/test-e-${testId}`);
+    dispatch(setTestId(testId));
+    localStorage.setItem('testId', testId);
+    navigate(`${pathname}/test-e-${testId}`);
   };
 
   const viewTestNavigate = () => {
+    dispatch(setTestId(testId));
+    localStorage.setItem('testId', testId);
     navigate(`${pathname}/test-${testId}`);
+  };
+
+  const executeTestNavigate = () => {
+    dispatch(setExecutionTestId(testId));
+    navigate('/test/execution');
   };
 
   return (
@@ -46,25 +59,37 @@ const TestItem = ({ isEditable, testName, testId }) => {
           right: '1.5%',
           transform: 'translateY(-50%)'
         }}
-        s
+
         variant="contained"
       >
         View
       </Button>
-      {isEditable && (
-        <Button
-          onClick={() => editTestNavigate()}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: '9.5%',
-            transform: 'translateY(-50%)'
-          }}
-          variant="contained"
-        >
-          Edit
-        </Button>
-      )}
+      <Button
+        onClick={() => executeTestNavigate()}
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          right: '8.5%',
+          transform: 'translateY(-50%)'
+        }}
+
+        variant="contained"
+      >
+        Execute
+      </Button>
+      {isEditable && (<Button
+        onClick={() => editTestNavigate()}
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          right: '17.5%',
+          transform: 'translateY(-50%)'
+        }}
+        variant="contained"
+      >
+        Edit
+      </Button>)}
+
     </Box>
   );
 };
