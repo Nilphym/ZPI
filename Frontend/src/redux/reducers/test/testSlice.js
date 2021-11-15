@@ -232,9 +232,9 @@ export const postTestStep = createAsyncThunk(
     const dataToSend = {};
     dataToSend.testProcedureId = currentTestProcedureId;
     dataToSend.name = newStepName;
-    const selectedTestStep = getState().test.stepNumber;
+    const { selectedTestStep } = getState().test;
     const stepsKeys = Object.keys(selectedTestStep);
-    const newStepNumber = selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1;
+    const newStepNumber = Object.keys(selectedTestStep).length > 0 ? selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1 : 1;
     dataToSend.stepNumber = newStepNumber;
     const response = await server().post({
       url: 'Steps',
@@ -257,7 +257,7 @@ export const testSlice = createSlice({
         id,
         newTable
       } = action.payload;
-      state.selectedTestStep[id].testData = [...state.selectedTestStep[id].testData, newTable];
+      state.selectedTestStep[id].testData = state.selectedTestStep[id].testData ? [...state.selectedTestStep[id].testData, newTable] : [newTable];
     },
     editTestStepTestData: (state, action) => {
       const {
@@ -266,7 +266,7 @@ export const testSlice = createSlice({
       } = action.payload;
       state.selectedTestStep[id].testData[
         state.selectedTestStep[id].testData.findIndex(
-          (table) => table.tableName === editedTable.tableName
+          (table) => table.name === editedTable.name
         )
       ] = editedTable;
     },
@@ -280,10 +280,10 @@ export const testSlice = createSlice({
     deleteTestStepTestData: (state, action) => {
       const {
         id,
-        tableName
+        name
       } = action.payload;
       state.selectedTestStep[id].testData = [
-        ...state.selectedTestStep[id].testData.filter((table) => table.tableName !== tableName)
+        ...state.selectedTestStep[id].testData.filter((table) => table.name !== name)
       ];
     },
     setTestStepName: (state, action) => {
@@ -329,7 +329,7 @@ export const testSlice = createSlice({
       } = action.payload;
       state.selectedTestCase.entryData[
         state.selectedTestCase.entryData.findIndex(
-          (table) => table.tableName === editedTable.tableName
+          (table) => table.name === editedTable.name
         )
       ] = editedTable;
     },
@@ -349,10 +349,10 @@ export const testSlice = createSlice({
     },
     deleteTestCaseTable: (state, action) => {
       const {
-        tableName
+        name
       } = action.payload;
       state.selectedTestCase.entryData = [
-        ...state.selectedTestCase.entryData.filter((item) => item.tableName !== tableName)
+        ...state.selectedTestCase.entryData.filter((item) => item.name !== name)
       ];
     },
     setTestCaseLoading: (state, action) => {
@@ -456,7 +456,7 @@ export const testSlice = createSlice({
         alert(action.error.message);
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
-        state.selectedTestCase.entryData = action.payload.entryDataObject === {} ? transformEntryData(action.payload.entryDataObject) : [];
+        state.selectedTestCase.entryData = typeof (action.payload.entryDataObject) === 'object' && Object.keys(action.payload.entryDataObject).length > 0 ? transformEntryData(action.payload.entryDataObject) : [];
         state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })

@@ -85,7 +85,7 @@ export const putTestSuite = createAsyncThunk(
       category: newTestSuiteName
     };
 
-    const response = await server().post({
+    const response = await server().put({
       url: `TestSuites/${testSuiteId}`,
       data: body
     });
@@ -124,6 +124,7 @@ export const testPlanSlice = createSlice({
         state.selectedTestPlan.name = name;
         state.selectedTestPlan.testSuites = testSuites;
         state.selectedTestPlan.tests = {};
+        state.selectedTestPlan.categories = {};
         state.isLoadingTestSuites = {};
         testSuites.forEach(({
           id
@@ -141,9 +142,11 @@ export const testPlanSlice = createSlice({
       .addCase(getTestSuiteTests.fulfilled, (state, action) => {
         const {
           id: testSuiteId,
+          category,
           testsForTestSuite
         } = action.payload;
         state.selectedTestPlan.tests[testSuiteId] = testsForTestSuite;
+        state.selectedTestPlan.categories[testSuiteId] = category;
         state.isLoadingTestSuites[testSuiteId] = false;
       })
       .addCase(getTestSuiteTests.rejected, (_, action) => {

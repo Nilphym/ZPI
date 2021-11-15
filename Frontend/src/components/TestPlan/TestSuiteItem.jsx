@@ -8,14 +8,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import TestItem from './TestItem';
-import {
-  putTestSuite,
-  postTest,
-  setLoading,
-  getTestSuiteTests
-} from '../../redux/store';
+import { putTestSuite, postTest, getTestSuiteTests } from '../../redux/store';
 
-const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
+const TestSuiteItem = ({ isEditable, editTest, testSuiteId }) => {
   const dispatch = useDispatch();
   const [isOpened, setIsOpened] = useState(false);
   const [isChangingTestSuiteName, setIsChangingTestSuiteName] = useState(false);
@@ -24,7 +19,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
 
   const {
     selectedTestPlanId,
-    selectedTestPlan: { tests },
+    selectedTestPlan: { tests, categories },
     isLoadingTestSuites
   } = useSelector((state) => state.testPlan);
 
@@ -43,11 +38,12 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
     dispatch(getTestSuiteTests(testSuiteId));
   }, [testSuiteId, helper]);
 
-  const changeSuiteName = ({ testSuiteName }) => {
-    dispatch(putTestSuite({ newTestSuiteName: testSuiteName, testSuiteId }));
+  async function changeSuiteName({ testSuiteName }) {
+    await dispatch(putTestSuite({ newTestSuiteName: testSuiteName, testSuiteId }));
     setIsChangingTestSuiteName(false);
-    dispatch(setLoading(true));
-  };
+    setHelper((state) => !state);
+    setIsOpened(false);
+  }
 
   async function addTest({ testName }) {
     await dispatch(
@@ -58,7 +54,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
       })
     );
     setIsAddingTest(false);
-    setHelper(state => !state);
+    setHelper((state) => !state);
   }
 
   return (
@@ -69,30 +65,30 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
         <Box>
           <Box>
             <Box
-              onClick={!isChangingTestSuiteName ? () => setIsOpened((state) => !state) : () => { }}
+              onClick={!isChangingTestSuiteName ? () => setIsOpened((state) => !state) : () => {}}
               sx={
                 !isChangingTestSuiteName && (isEditable || tests[testSuiteId].length) > 0
                   ? {
-                    position: 'relative',
-                    height: '5rem',
-                    width: '100%',
-                    backgroundColor: '#00000',
-                    borderTop: '0.0625rem solid #b0bec5',
-                    borderBottom: '0.0625rem solid #b0bec5',
-                    padding: '0.625rem',
-                    '&:hover': {
-                      cursor: 'pointer'
+                      position: 'relative',
+                      height: '5rem',
+                      width: '100%',
+                      backgroundColor: '#00000',
+                      borderTop: '0.0625rem solid #b0bec5',
+                      borderBottom: '0.0625rem solid #b0bec5',
+                      padding: '0.625rem',
+                      '&:hover': {
+                        cursor: 'pointer'
+                      }
                     }
-                  }
                   : {
-                    position: 'relative',
-                    height: '5rem',
-                    width: '100%',
-                    backgroundColor: '#00000',
-                    borderTop: '0.0625rem solid #b0bec5',
-                    borderBottom: '0.0625rem solid #b0bec5',
-                    padding: '0.625rem'
-                  }
+                      position: 'relative',
+                      height: '5rem',
+                      width: '100%',
+                      backgroundColor: '#00000',
+                      borderTop: '0.0625rem solid #b0bec5',
+                      borderBottom: '0.0625rem solid #b0bec5',
+                      padding: '0.625rem'
+                    }
               }
             >
               {!isChangingTestSuiteName && (
@@ -100,19 +96,19 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                   sx={
                     isOpened
                       ? {
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%) rotate(180deg)',
-                        left: '2.5%',
-                        zIndex: '1'
-                      }
+                          position: 'absolute',
+                          top: '50%',
+                          transform: 'translateY(-50%) rotate(180deg)',
+                          left: '2.5%',
+                          zIndex: '1'
+                        }
                       : {
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        left: '2.5%',
-                        zIndex: '1'
-                      }
+                          position: 'absolute',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          left: '2.5%',
+                          zIndex: '1'
+                        }
                   }
                 />
               )}
@@ -128,7 +124,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                     fontWeight: '700'
                   }}
                 >
-                  {testSuite}
+                  {categories[testSuiteId]}
                 </Typography>
               )}
 
@@ -196,7 +192,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                         zIndex: 1,
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        left: '23%'
+                        left: '18%'
                       }}
                       variant="contained"
                       type="submit"
@@ -210,7 +206,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                         zIndex: 1,
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        left: '35%'
+                        left: '27%'
                       }}
                       onClick={() => {
                         setIsChangingTestSuiteName(false);
@@ -279,7 +275,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                     sx={{
                       position: 'absolute',
                       top: '50%',
-                      left: '23%',
+                      left: '18%',
                       transform: 'translateY(-50%)'
                     }}
                     variant="contained"
@@ -291,7 +287,7 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
                     sx={{
                       position: 'absolute',
                       top: '50%',
-                      left: '32%',
+                      left: '25%',
                       transform: 'translateY(-50%)'
                     }}
                     variant="contained"
@@ -313,7 +309,6 @@ const TestSuiteItem = ({ isEditable, editTest, testSuite, testSuiteId }) => {
 TestSuiteItem.propTypes = {
   isEditable: PropTypes.bool.isRequired,
   editTest: PropTypes.bool.isRequired,
-  testSuite: PropTypes.string.isRequired,
   testSuiteId: PropTypes.string.isRequired
 };
 

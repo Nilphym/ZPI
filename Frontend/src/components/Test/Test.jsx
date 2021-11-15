@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import TestCase from '../TestCase/TestCase';
 import TestProcedure from '../TestProcedure/TestProcedure';
 import {
@@ -31,7 +31,7 @@ import {
 
 export const Test = ({ isEditable }) => {
   const { control: mainControl, getValues } = useForm();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     testData: { testName, creationDate, executionCounter },
@@ -63,35 +63,37 @@ export const Test = ({ isEditable }) => {
     dispatch(setTestName({ newName: getValues('testName') }));
     dispatch(setTestSuite({ newTestSuiteId: getValues('suiteSelect') }));
     await dispatch(putTestById());
-    // dispatch(setTestLoading({ isLoading: true }));
-    // await dispatch(getTestById());
-    navigate(-1);
+    dispatch(setTestLoading({ isLoading: true }));
+    await dispatch(getTestById());
+  }
+
+  async function handleTestProcedureChange({ target: { value } }) {
+    if (value !== '') {
+      dispatch(setTestTestProcedure({ id: value }));
+      await dispatch(getTestProcedureById());
+    } else {
+      dispatch(setTestTestProcedure({ id: value }));
+    }
   }
 
   async function handleTestCaseChange({ target: { value } }) {
     if (value) {
       dispatch(setTestTestCase({ id: value }));
       await dispatch(getTestCaseById());
-    }
-  }
-
-  async function handleTestProcedureChange({ target: { value } }) {
-    if (value) {
-      dispatch(setTestTestProcedure({ id: value }));
-      await dispatch(getTestProcedureById());
+      handleTestProcedureChange({ target: { value: '' } });
     }
   }
 
   async function addTestCase() {
     await dispatch(putTestById());
-    dispatch(postTestCase(productId));
+    await dispatch(postTestCase(productId));
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
   }
 
   async function addTestProcedure() {
     await dispatch(putTestById());
-    dispatch(postTestProcedure());
+    await dispatch(postTestProcedure());
     dispatch(setTestLoading(true));
     await dispatch(getTestById());
   }
@@ -101,14 +103,24 @@ export const Test = ({ isEditable }) => {
       sx={{
         position: 'relative',
         margin: '1.5rem',
-        minWidth: '70rem'
+        minWidth: '81rem'
       }}
     >
       {isLoading ? (
         <CircularProgress />
       ) : (
         <Box>
-          <Typography variant="h2" sx={{ userSelect: 'none', color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
+          <Typography
+            variant="h2"
+            sx={{
+              userSelect: 'none',
+              color: 'rgb(46, 115, 171)',
+              fontFamily: 'Roboto',
+              fontWeight: '400',
+              marginTop: '0.625rem',
+              fontSize: '3rem'
+            }}
+          >
             Test
           </Typography>
           <Box
@@ -212,15 +224,13 @@ export const Test = ({ isEditable }) => {
                 value={selectedTestProcedureId}
               >
                 {testProceduresCodes.length > 0 &&
-                    testProceduresCodes.filter(({ testCaseId }) => testCaseId === selectedTestCaseId).map(
-                    (
-                      { id, code }
-                    ) => (
+                  testProceduresCodes
+                    .filter(({ testCaseId }) => testCaseId === selectedTestCaseId)
+                    .map(({ id, code }) => (
                       <MenuItem key={`TestProcedure-${id}`} value={id}>
                         {code}
                       </MenuItem>
-                    )
-                  )}
+                    ))}
                 <MenuItem value="">
                   {selectedTestCaseId ? (
                     <Button onClick={() => addTestProcedure()}>+ Add Procedure</Button>
