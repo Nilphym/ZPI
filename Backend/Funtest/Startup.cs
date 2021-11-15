@@ -33,7 +33,7 @@ namespace Funtest
         {
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection1")));
 
             services
                .AddIdentity<User, IdentityRole>(opt =>

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Funtest", "Funtest\Funtest.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{3AF4A7CF-C641-4F15-8290-46556AF60FBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Funtest.Test", "Funtest.Test\Funtest.Test.csproj", "{38F1C637-2554-4B38-8FEA-6AC32AC74A11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3AF4A7CF-C641-4F15-8290-46556AF60FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AF4A7CF-C641-4F15-8290-46556AF60FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AF4A7CF-C641-4F15-8290-46556AF60FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F1C637-2554-4B38-8FEA-6AC32AC74A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F1C637-2554-4B38-8FEA-6AC32AC74A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F1C637-2554-4B38-8FEA-6AC32AC74A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F1C637-2554-4B38-8FEA-6AC32AC74A11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
