@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -87,6 +88,15 @@ public class PerformTestActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugReportActivity.class);
                 intent.putExtra("id",testId);
+                startActivity(intent);
+            }
+        });
+
+        listView_testData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), DataDisplayActivity.class);
+                intent.putExtra("data",currentTestStep.getTestData().get(i));
                 startActivity(intent);
             }
         });

@@ -32,7 +32,7 @@ public class BugReportActivity extends AppCompatActivity {
     EditText editText_name, editText_description, editText_deadline;
     Spinner spinner_type, spinner_impact, spinner_priority;
     ListView listView_attachments;
-    Button button_selectAttachments;
+    Button button_selectAttachments, button_deleteAttachment;
     FloatingActionButton fab_report, fab_cancel;
 
     ArrayList<Bitmap> attachmentsBitMap;
@@ -111,7 +111,7 @@ public class BugReportActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter_priority = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, labels_priority);
         spinner_priority.setAdapter(adapter_priority);
 
-        //initialize attachments button
+        //initialize attachments buttons
         button_selectAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +119,15 @@ public class BugReportActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+            }
+        });
+        button_deleteAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(attachmentsBitMap.size()>0){
+                    attachmentsBitMap.remove((attachmentsBitMap.size()-1));
+                    refreshAttachmentsList();
+                }
             }
         });
 
@@ -140,6 +149,7 @@ public class BugReportActivity extends AppCompatActivity {
         listView_attachments = findViewById(R.id.br_listView_attachments);
 
         button_selectAttachments = findViewById(R.id.br_button_selectattachments);
+        button_deleteAttachment = findViewById(R.id.br_button_deselectattachments);
         fab_report = findViewById(R.id.br_fab_report);
         fab_cancel = findViewById(R.id.br_fab_cancel);
     }

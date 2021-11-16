@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -55,6 +56,15 @@ public class TestDetailsActivity extends AppCompatActivity {
         ArrayAdapter<String> entryDataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, entryDataLabels);
         listView_entryData.setAdapter(entryDataAdapter);
         ListViewUtils.setListViewHeightBasedOnChildren(listView_entryData);
+
+        listView_entryData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), DataDisplayActivity.class);
+                intent.putExtra("data",currentTest.getTestCase().getEntryData().get(i));
+                startActivity(intent);
+            }
+        });
 
         //initialize fab
         fab_performTest.setOnClickListener(new View.OnClickListener() {
