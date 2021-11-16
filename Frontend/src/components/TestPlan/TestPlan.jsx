@@ -65,7 +65,7 @@ export const TestPlan = ({ isEditable }) => {
       sx={{
         position: 'relative',
         margin: '1.5rem',
-        minWidth: '70rem'
+        minWidth: '95rem'
       }}
     >
       {isLoading ? (
@@ -114,7 +114,7 @@ export const TestPlan = ({ isEditable }) => {
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
             {testSuites.map(({ id, category }) => (
-              <TestSuiteItem isEditable={isEditing} editTest={isEditable} testSuite={category} testSuiteId={id} />
+              <TestSuiteItem isEditable={isEditing} editTest={isEditable} testSuiteId={id} />
             ))}
             {!isAddingTestSuite && isEditing && (
               <Button
@@ -165,7 +165,7 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '17%'
+                  left: '13%'
                 }}
                 startIcon={<AddIcon />}
               >
@@ -177,7 +177,7 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '26%'
+                  left: '20%'
                 }}
                 startIcon={<CloseIcon />}
                 onClick={() => setIsAddingTestSuite(false)}

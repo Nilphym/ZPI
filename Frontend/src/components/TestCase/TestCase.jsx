@@ -39,13 +39,13 @@ const schema = yup.object().shape({
 
 const createTable = (tablesCount, rowsCount, columnsCount) => {
   const tableObject = {};
-  const array = [...Array.from(Array(columnsCount).keys())].fill('');
+  const table = [];
+  const array = [...Array.from(Array(columnsCount + 1).keys())].fill('');
   for (let i = 1; i <= rowsCount + 1; i += 1) {
-    tableObject[`RowName${i}`] = '';
-    tableObject[`Data${i}`] = array;
+    table.push(array);
   }
-  tableObject.tableName = `Table ${tablesCount}`;
-
+  tableObject.name = `Table ${tablesCount}`;
+  tableObject.table = table;
   return tableObject;
 };
 
@@ -74,7 +74,7 @@ export const TestCase = ({ isEditable }) => {
     const filteredArray = entryData.filter((item) => item.entryType !== 'textField');
     const id =
       filteredArray.length > 0
-        ? filteredArray[filteredArray.length - 1].tableName.toString().substring(6) * 1 + 1
+        ? filteredArray[filteredArray.length - 1].name.toString().substring(6) * 1 + 1
         : 0;
     const newTable = createTable(id, rowsNumber, columnsNumber);
     dispatch(addTestCaseEntryDataItem({ newItem: newTable }));
@@ -102,7 +102,7 @@ export const TestCase = ({ isEditable }) => {
   };
 
   const deleteTable = (tableName) => {
-    dispatch(deleteTestCaseTable({ tableName }));
+    dispatch(deleteTestCaseTable({ name : tableName }));
   };
 
   async function saveTestCase() {
@@ -126,7 +126,7 @@ export const TestCase = ({ isEditable }) => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <Box sx={{ position: 'relative', marginTop: '1.5rem' }}>
+        <Box sx={{ position: 'relative', marginTop: '1.5rem', marginRight: '1.5rem' }}>
           {isEditable && !isEditing && (
             <Button
               variant="contained"
@@ -209,10 +209,10 @@ export const TestCase = ({ isEditable }) => {
                     ) : (
                       <EditableTable
                         parentComp="testCase"
-                        key={`${entryData.tableName}`}
+                        key={`${entryData.name}`}
                         disabled={!isEditing}
                         data={entryData}
-                        deleteTable={() => deleteTable(entryData.tableName)}
+                        deleteTable={() => deleteTable(entryData.name)}
                       />
                     )}
                   </Box>
@@ -379,7 +379,7 @@ export const TestCase = ({ isEditable }) => {
           {isEditing && (
             <Button
               variant="contained"
-              sx={{ marginTop: '1.5rem', bgcolor: '#0077c2', fontWeight:'700', color: 'white' }}
+              sx={{ marginTop: '1.5rem', bgcolor: '#0077c2', fontWeight: '700', color: 'white' }}
               onClick={() => saveTestCase()}
             >
               Save Test Case

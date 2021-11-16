@@ -84,7 +84,7 @@ export const TestProcedure = ({ isEditable }) => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <Box sx={{ position: 'relative', marginTop: '1.5rem' }}>
+          <Box sx={{ position: 'relative', marginTop: '1.5rem', marginRight: '1.5rem' }}>
           {isEditable && !isEditing && (
             <Button
               variant="contained"
