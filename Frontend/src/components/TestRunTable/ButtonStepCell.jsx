@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { DatePicker } from '@mui/lab';
 import { Done, Error } from '@mui/icons-material';
 import { DateTime } from 'luxon';
+import { useDropzone } from 'react-dropzone';
 import {
   IconButton,
   Dialog,
@@ -17,10 +18,11 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Typography
 } from '@mui/material';
 
-import { executeTest, postBug, getPossibleBugValues } from '../../redux/store';
+import { executeTest, postBug, getPossibleBugValues, postImage } from '../../redux/store';
 
 export const ButtonStepCell = ({ index, stepId, testId, useTableStepsRef }) => {
   const dispatch = useDispatch();
@@ -31,6 +33,7 @@ export const ButtonStepCell = ({ index, stepId, testId, useTableStepsRef }) => {
   const [openExecutionDialog, setOpenExecutionDialog] = useState(false);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const lastStepNumber = Object.keys(currentState).length - 1;
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
 
   useEffect(() => {
     dispatch(getPossibleBugValues());
@@ -57,7 +60,25 @@ export const ButtonStepCell = ({ index, stepId, testId, useTableStepsRef }) => {
       errorType: type,
       reportDate: DateTime.now().toISO().substring(0, 19)
     };
-    dispatch(postBug({ json: newErrorData }));
+
+    dispatch(postBug({ json: newErrorData }))
+      .unwrap()
+      .then((newBugId) => {
+        acceptedFiles.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = async () => {
+            const regex = new RegExp(/(data:\w+\/\w+;base64,)(.+)/gm);
+            dispatch(
+              postImage({
+                base64image: regex.exec(reader.result)[2],
+                imageName: file.name.split('.')[0],
+                errorId: newBugId
+              })
+            );
+          };
+          reader.readAsDataURL(file);
+        });
+      });
     errorAction(index);
   };
 
@@ -207,6 +228,30 @@ export const ButtonStepCell = ({ index, stepId, testId, useTableStepsRef }) => {
                     )}
                   />
                 </FormControl>
+                <Box>
+                  <Typography>Attachments:</Typography>
+                  <Box
+                    sx={{
+                      padding: '1rem',
+                      border: '1px solid rgba(0, 0, 0, 0.23)',
+                      '&:hover': {
+                        border: '1px solid rgba(0, 0, 0, 0.87)',
+                        '> p': { color: 'rgba(0, 0, 0, 1)' }
+                      },
+                      borderRadius: '5px',
+                      cursor: 'pointer'
+                    }}
+                    {...getRootProps()}
+                  >
+                    <input {...getInputProps()} />
+                    <Typography color="rgba(0, 0, 0, 0.6)">
+                      Drag &apos;n&apos; drop files here or click to select files
+                    </Typography>
+                  </Box>
+                  {acceptedFiles.map((file) => (
+                    <Typography key={file.path}>{file.path}</Typography>
+                  ))}
+                </Box>
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => setOpenErrorDialog(false)}>Close</Button>

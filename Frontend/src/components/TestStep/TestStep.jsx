@@ -49,13 +49,13 @@ const schemaStepName = yup.object().shape({
 
 const createTable = (tablesCount, rowsCount, columnsCount) => {
   const tableObject = {};
-  const array = [...Array.from(Array(columnsCount).keys())].fill('');
+  const table = [];
+  const array = [...Array.from(Array(columnsCount + 1).keys())].fill('');
   for (let i = 1; i <= rowsCount + 1; i += 1) {
-    tableObject[`RowName${i}`] = '';
-    tableObject[`Data${i}`] = array;
+    table.push(array);
   }
-  tableObject.tableName = `Table ${tablesCount}`;
-
+  tableObject.name = `Table ${tablesCount}`;
+  tableObject.table = table;
   return tableObject;
 };
 
@@ -95,10 +95,10 @@ export const TestStep = ({ testStepId, isEditable }) => {
 
   const addTable = ({ rowsNumber, columnsNumber }) => {
     const id =
-      selectedTestStep[testStepId].testData.length > 0
+      selectedTestStep[testStepId].testData && selectedTestStep[testStepId].testData.length > 0
         ? selectedTestStep[testStepId].testData[
             selectedTestStep[testStepId].testData.length - 1
-          ].tableName
+          ].name
             .toString()
             .substring(6) *
             1 +
@@ -118,7 +118,7 @@ export const TestStep = ({ testStepId, isEditable }) => {
   };
 
   const deleteTable = (tableName) => {
-    dispatch(deleteTestStepTestData({ id: testStepId, tableName }));
+    dispatch(deleteTestStepTestData({ id: testStepId, name: tableName }));
   };
 
   async function saveTestStep() {
@@ -206,7 +206,7 @@ export const TestStep = ({ testStepId, isEditable }) => {
                         marginTop: '0.625rem'
                       }}
                       onClick={() => setIsEditingStepName(true)}
-                      variant="outlined"
+                      variant="contained"
                     >
                       Edit Step Name
                     </Button>
@@ -234,17 +234,18 @@ export const TestStep = ({ testStepId, isEditable }) => {
                       />
                       <Button
                         type="submit"
-                        variant="outlined"
+                        variant="contained"
                         sx={{
                           height: '3.125rem',
-                          width: '12rem',
+                          minWidth: '13rem',
                           margin: '0.625rem 0.625rem 1.25rem 0.625rem'
                         }}
+                        startIcon={<CreateIcon />}
                       >
                         Change Step Name
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         sx={{
                           height: '3.125rem',
                           width: '7rem',
@@ -272,7 +273,8 @@ export const TestStep = ({ testStepId, isEditable }) => {
                 >
                   Test Data
                 </Typography>
-                {selectedTestStep[testStepId].testData.length > 0 ? (
+                {selectedTestStep[testStepId].testData &&
+                selectedTestStep[testStepId].testData.length > 0 ? (
                   <Box>
                     {selectedTestStep[testStepId].testData.map((data) => (
                       <EditableTable

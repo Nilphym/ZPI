@@ -13,14 +13,31 @@ import {
   DialogActions
 } from '@mui/material';
 
+import getImageName from '../../utils/getImageName';
 import { getBug, evaluateBug } from '../../redux/store';
+import { ImageCarousel } from '../ImageCarousel/ImageCarousel';
 
 const Bold = styled('span')({
   fontWeight: 'bold'
 });
 
+const TextButton = styled('button')(({ theme }) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  alignSelf: 'start',
+  padding: '0',
+  color: theme.palette.primary.main,
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  '&:hover': {
+    color: theme.palette.primary.dark
+  }
+}));
+
 const BugDetailsModal = ({ handleClose, open }) => {
-  const { id, name, description, functionality, type } = useSelector(
+  const [carouselOpen, setCarouselOpen] = useState(false);
+  const [carouselStartingPosition, setCarouselStartingPosition] = useState(0);
+  const { id, name, description, functionality, type, attachments } = useSelector(
     (state) => state.bugs.bugDetails
   );
   const dispatch = useDispatch();
@@ -28,6 +45,11 @@ const BugDetailsModal = ({ handleClose, open }) => {
   const handleEvaluate = (result) => {
     dispatch(evaluateBug({ errorId: id, result }));
     handleClose();
+  };
+
+  const toggleCarousel = (state, index) => {
+    setCarouselStartingPosition(index);
+    setCarouselOpen(state);
   };
 
   return (
@@ -51,6 +73,27 @@ const BugDetailsModal = ({ handleClose, open }) => {
             <Bold>Type: </Bold>
             {type}
           </Typography>
+          <Typography>
+            <Bold>Attachments:</Bold>
+          </Typography>
+          <Box
+            sx={{ display: 'flex', flexDirection: 'column', paddingLeft: '2rem', gap: '0.5rem' }}
+          >
+            {attachments &&
+              attachments.map(({ id, image }, index) => (
+                <TextButton key={id} onClick={() => toggleCarousel(true, index)}>
+                  {getImageName(image)}
+                </TextButton>
+              ))}
+          </Box>
+          <Dialog onClose={() => toggleCarousel(false)} open={carouselOpen}>
+            <ImageCarousel
+              closeCarousel={() => toggleCarousel(false)}
+              bugId={id}
+              images={attachments}
+              startingPosition={carouselStartingPosition}
+            />
+          </Dialog>
         </Box>
       </DialogContent>
       <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>

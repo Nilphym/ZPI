@@ -31,15 +31,34 @@ export const TestPlansView = () => {
 
   async function addTestPlan() {
     const testPlanName = getValues('testPlanName');
-    dispatch(postTestPlan(testPlanName));
+    await dispatch(postTestPlan(testPlanName));
     await dispatch(getProductTestPlansById());
+    setIsAddingTestPlan(false);
+    reset(
+      { testPlanName: '' },
+      {
+        keepIsValid: true
+      }
+    );
   }
 
   return (
-    <Box sx={{
-      margin: '1.5rem',
-      minWidth: '70rem'}}>
-      <Typography variant="h2" sx={{ color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
+    <Box
+      sx={{
+        margin: '1.5rem',
+        minWidth: '70rem'
+      }}
+    >
+      <Typography
+        variant="h2"
+        sx={{
+          color: 'rgb(46, 115, 171)',
+          fontFamily: 'Roboto',
+          fontWeight: '400',
+          marginTop: '0.625rem',
+          fontSize: '3rem'
+        }}
+      >
         Test Plans
       </Typography>
       <Box
@@ -124,7 +143,7 @@ export const TestPlansView = () => {
                 sx={{
                   position: 'absolute',
                   top: '50%',
-                  left: '22%',
+                  left: '15%',
                   transform: 'translateY(-50%)'
                 }}
                 variant="contained"
@@ -137,7 +156,7 @@ export const TestPlansView = () => {
                 sx={{
                   position: 'absolute',
                   top: '50%',
-                  left: '31%',
+                  left: '22%',
                   transform: 'translateY(-50%)'
                 }}
                 onClick={() => {
