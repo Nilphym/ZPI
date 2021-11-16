@@ -14,7 +14,7 @@ import {
   TestPlansView
 } from './components';
 import {
-  NoMatch,
+  NotFound,
   AssignedBugsPage,
   ActiveBugsPage,
   AllBugsPage,
@@ -46,12 +46,12 @@ const App = () => {
         />
         <Route path="testPlans" element={<TestPlansView />} />
         <Route path="testPlan-e-:testPlanId" element={<TestPlan isEditable />} />
-        <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false}/>} />
+        <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
         <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
         <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
         <Route path="logout" element={<Logout />} />
       </Route>
-      <Route path="*" element={<NoMatch />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
