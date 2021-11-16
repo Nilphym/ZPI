@@ -3,11 +3,15 @@ package com.example.funtest;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,15 +19,29 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.funtest.objects.Bug;
 import com.example.funtest.objects.Test;
 import com.example.funtest.objects.TestCase;
+import com.example.funtest.objects.TestPlan;
 import com.example.funtest.objects.TestProcedure;
 import com.example.funtest.objects.TestStep;
 import com.example.funtest.utils.ListViewUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PerformTestActivity extends AppCompatActivity {
 
@@ -37,10 +55,14 @@ public class PerformTestActivity extends AppCompatActivity {
     static TestStep currentTestStep;
 
     private String testId;
+    private String testProcedureId;
     private String testName;
 
     private Handler uiThreadHandler = new Handler();
     private Thread nextThread,prevThread;
+
+    private ProgressDialog pDialog;
+
 
 
     @Override
@@ -55,11 +77,56 @@ public class PerformTestActivity extends AppCompatActivity {
         get_testId();
         getTestSteps();
 
+        //set listeners for fab and listviews
+        fab_reportError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), BugReportActivity.class);
+                intent.putExtra("testId",testId);
+                intent.putExtra("stepId",currentTestStep.getId());
+                startActivity(intent);
+            }
+        });
+
+        listView_testData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), DataDisplayActivity.class);
+                intent.putExtra("data",currentTestStep.getTestData().get(i));
+                startActivity(intent);
+            }
+        });
+
+        listView_associatedBugs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), BugDetailsActivityPerformTest.class);
+                intent.putExtra("bugId",currentTestStep.getStepErrors().get(position).getId());
+                startActivity(intent);
+
+            }
+        });
+
+    }
+
+    private void continueInit() throws JSONException {
         //initialize data
         currentTestStep = currentTestSteps.get(test_step_position);
         ArrayList<String> testDataLabels = new ArrayList<>();
+
         for(int i=0;i< currentTestStep.getTestData().size();i++){
-            testDataLabels.add("Test Data "+ (i+1));
+            if (isJSONValid(currentTestStep.getTestData().get(i))){
+                String currentData = currentTestStep.getTestData().get(i);
+                JSONObject jsonObject = new JSONObject(currentData);
+                String currentDataName = jsonObject.getString("name");
+                testDataLabels.add(currentDataName);
+            }
+            else {
+                String currentTestData = currentTestStep.getTestData().get(i);
+                testDataLabels.add(currentTestData);
+            }
+
+            //testDataLabels.add("Test Data "+ (i+1));
         }
         ArrayList<String> associatedBugsLabels = new ArrayList<>();
         for(int i=0;i< currentTestStep.getStepErrors().size();i++){
@@ -82,24 +149,7 @@ public class PerformTestActivity extends AppCompatActivity {
         ListViewUtils.setListViewHeightBasedOnChildren(listView_testData);
         ListViewUtils.setListViewHeightBasedOnChildren(listView_associatedBugs);
 
-        //set listeners for fab and listviews
-        fab_reportError.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), BugReportActivity.class);
-                intent.putExtra("id",testId);
-                startActivity(intent);
-            }
-        });
 
-        listView_testData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), DataDisplayActivity.class);
-                intent.putExtra("data",currentTestStep.getTestData().get(i));
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -116,6 +166,110 @@ public class PerformTestActivity extends AppCompatActivity {
         else{
             currentTestSteps = new ArrayList<TestStep>();
         }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase("")) {
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Steps/testprocedure/" + testProcedureId;
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                    for(int i=0;i<response.length();i++){
+                        try {
+                            JSONObject jsonTestStep = response.getJSONObject(i);
+
+                            TestStep currentTestStep = new TestStep();
+                            currentTestStep.setId(jsonTestStep.getString("id"));
+                            currentTestStep.setName(jsonTestStep.getString("name"));
+                            currentTestStep.setControlPoint(jsonTestStep.getString("controlPoint"));
+                            currentTestStep.setStepNumber(jsonTestStep.getInt("stepNumber"));
+
+                            ///
+                            JSONObject jsonTestData = jsonTestStep.getJSONObject("testDataObject");
+                            JSONArray jsonArrayTestData = jsonTestData.getJSONArray("data");
+
+                            ArrayList<String> currentTestStepTestData = new ArrayList<>();
+                            for(int j=0;j<jsonArrayTestData.length();j++){
+                                if (jsonArrayTestData.get(j) instanceof JSONObject){
+                                    String currentTestData = jsonArrayTestData.getJSONObject(j).toString();
+                                    currentTestStepTestData.add(currentTestData);
+                                }
+                                else if (jsonArrayTestData.get(j) instanceof String){
+                                    String currentTestData = jsonArrayTestData.getString(j);
+                                    currentTestStepTestData.add(currentTestData);
+                                }
+
+                            }
+                            currentTestStep.setTestData(currentTestStepTestData);
+
+                            ///
+                            JSONArray jsonArrayErrors = jsonTestStep.getJSONArray("errors");
+
+                            ArrayList<Bug> currentTestStepBugs = new ArrayList<>();
+                            for(int k=0;k<jsonArrayTestData.length();k++){
+                                JSONObject jsonError = jsonArrayErrors.getJSONObject(k);
+
+                                Bug currentBug = new Bug();
+                                currentBug.setCode(jsonError.getString("code"));
+                                currentBug.setId(jsonError.getString("id"));
+
+                                currentTestStepBugs.add(currentBug);
+                            }
+                            currentTestStep.setStepErrors(currentTestStepBugs);
+
+                            currentTestSteps.add(currentTestStep);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    try {
+                        continueInit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+
+            requestQueue.add(jsonArrayRequest);
+        }
+
+        /*
         for(int i=0;i<3;i++){
             TestStep currentTestStep = new TestStep();
             currentTestStep.setName("Perfrorm certain action number " +(i+1));
@@ -135,12 +289,15 @@ public class PerformTestActivity extends AppCompatActivity {
             currentTestSteps.add(currentTestStep);
         }
 
+         */
+
     }
 
     private void get_testId() {
 
         testId = getIntent().getStringExtra("id");
-        testName = "Test X";
+        testName = getIntent().getStringExtra("testName");
+        testProcedureId = getIntent().getStringExtra("testProcedureId");
 
     }
 
@@ -183,6 +340,12 @@ public class PerformTestActivity extends AppCompatActivity {
 
     private void nextButtonClicked() {
         test_step_position = ((test_step_position + 1 ) > (currentTestSteps.size() - 1) ? (currentTestSteps.size() - 1) : (test_step_position  + 1 ));
+        try {
+            continueInit();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        /*
         currentTestStep = currentTestSteps.get(test_step_position);
 
         //initialize data
@@ -212,6 +375,8 @@ public class PerformTestActivity extends AppCompatActivity {
 
         ListViewUtils.setListViewHeightBasedOnChildren(listView_testData);
         ListViewUtils.setListViewHeightBasedOnChildren(listView_associatedBugs);
+
+         */
 
     }
 
@@ -234,6 +399,12 @@ public class PerformTestActivity extends AppCompatActivity {
 
     private void prevButtonClicked() {
         test_step_position = ((test_step_position - 1 ) < 0 ? (0) : (test_step_position -1 ));
+        try {
+            continueInit();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        /*
         currentTestStep = currentTestSteps.get(test_step_position);
 
 
@@ -263,5 +434,16 @@ public class PerformTestActivity extends AppCompatActivity {
 
         ListViewUtils.setListViewHeightBasedOnChildren(listView_testData);
         ListViewUtils.setListViewHeightBasedOnChildren(listView_associatedBugs);
+
+         */
+    }
+
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            return false;
+        }
+        return true;
     }
 }

@@ -3,17 +3,36 @@ package com.example.funtest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.funtest.objects.Bug;
+import com.example.funtest.objects.TestCase;
+import com.example.funtest.objects.TestProcedure;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BugDetailsActivityPerformTest extends AppCompatActivity {
 
@@ -21,8 +40,11 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
 
     Button button_bugAttachments, button_setAsFixed, getButton_setAsUnfixed;
 
-    public static ArrayList<Bug> currentBugList = MainActivity.bugList;
-    int bug_list_position = -1;
+    Bug currentBug;
+    String bugId;
+
+    private ProgressDialog pDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,31 +54,14 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
         initializeViews();
         get_position();
 
-        //setting textviews in layout with current bug details
-        textView_name.setText(currentBugList.get(bug_list_position).getName());
-        textView_state.setText(currentBugList.get(bug_list_position).getState());
-        textView_functionality.setText(currentBugList.get(bug_list_position).getFunctionality());
-        textView_type.setText(currentBugList.get(bug_list_position).getType());
-        textView_impact.setText(currentBugList.get(bug_list_position).getImpact());
-        textView_priority.setText(currentBugList.get(bug_list_position).getPriority());
+        get_bugData();
 
-        String retestsRequired = String.valueOf(currentBugList.get(bug_list_position).getRetestsRequired());
-        String retestsDone = String.valueOf(currentBugList.get(bug_list_position).getRetestsDone());
-        String retestsFailed = String.valueOf(currentBugList.get(bug_list_position).getRetestsFailed());
-        textView_retestsRequired.setText(retestsRequired);
-        textView_retestsDone.setText(retestsDone);
-        textView_retestsFailed.setText(retestsFailed);
-
-        textView_deadline.setText(currentBugList.get(bug_list_position).getDeadline());
-        textView_reportDate.setText(currentBugList.get(bug_list_position).getReportDate());
-        textView_endDate.setText(currentBugList.get(bug_list_position).getEndDate());
-        textView_description.setText(currentBugList.get(bug_list_position).getDescription());
 
         button_bugAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
-                intent.putExtra("position",bug_list_position);
+                intent.putExtra("id",currentBug.getId());
                 intent.putExtra("sourceActivityName","BugDetailsActivityPerformTest");
                 startActivity(intent);
             }
@@ -107,9 +112,103 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
         });
     }
 
+    private void get_bugData() {
+        currentBug = new Bug();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Errors/" + bugId;
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                    try {
+                        currentBug.setId(response.getString("id"));
+                        currentBug.setDeadline(response.getString("deadline"));
+                        currentBug.setDescription(response.getString("description"));
+                        currentBug.setEndDate(response.getString("endDate"));
+                        currentBug.setImpact(response.getString("errorImpact"));
+                        currentBug.setName(response.getString("name"));
+                        currentBug.setCode(response.getString("code"));
+                        currentBug.setPriority(response.getString("errorPriority"));
+                        currentBug.setReportDate(response.getString("reportDate"));
+                        currentBug.setState(response.getString("errorState"));
+                        currentBug.setType(response.getString("errorType"));
+                        currentBug.setFunctionality(response.getString("functionality"));
+                        currentBug.setRetestsRequired(response.getInt("retestsRequired"));
+                        currentBug.setRetestsDone(response.getInt("retestsDone"));
+                        currentBug.setRetestsFailed(response.getInt("retestsFailed"));
+
+                        continueInit();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    private void continueInit() {
+        //setting textviews in layout with current bug details
+        textView_name.setText(currentBug.getName());
+        textView_state.setText(currentBug.getState());
+        textView_functionality.setText(currentBug.getFunctionality());
+        textView_type.setText(currentBug.getType());
+        textView_impact.setText(currentBug.getImpact());
+        textView_priority.setText(currentBug.getPriority());
+
+        String retestsRequired = String.valueOf(currentBug.getRetestsRequired());
+        String retestsDone = String.valueOf(currentBug.getRetestsDone());
+        String retestsFailed = String.valueOf(currentBug.getRetestsFailed());
+        textView_retestsRequired.setText(retestsRequired);
+        textView_retestsDone.setText(retestsDone);
+        textView_retestsFailed.setText(retestsFailed);
+
+        textView_deadline.setText(currentBug.getDeadline());
+        textView_reportDate.setText(currentBug.getReportDate());
+        textView_endDate.setText(currentBug.getEndDate());
+        textView_description.setText(currentBug.getDescription());
+
+    }
+
     private void get_position() {
 
-        bug_list_position = getIntent().getIntExtra("position",-1);
+        bugId = getIntent().getStringExtra("bugId");
 
     }
 
