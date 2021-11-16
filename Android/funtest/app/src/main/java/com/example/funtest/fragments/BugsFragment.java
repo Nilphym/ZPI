@@ -3,6 +3,7 @@ package com.example.funtest.fragments;
 import static com.example.funtest.MainActivity.bugList;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +62,22 @@ public class BugsFragment extends Fragment {
         Button toReviewButton = view.findViewById(R.id.to_review_button);
         Button myBugsButton = view.findViewById(R.id.my_bugs_button);
         Button toFixButton = view.findViewById(R.id.to_fix_button);
+
+        //check permissions
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String role = preferences.getString("role", "");
+        if(!role.equalsIgnoreCase(""))
+        {
+            if(role.equals("Tester")){
+                myBugsButton.setVisibility(View.GONE);
+                toFixButton.setVisibility(View.GONE);
+            }
+            else if(role.equals("Developer")){
+                toReviewButton.setVisibility(View.GONE);
+            }
+        }
+
+
         toReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -6,27 +6,29 @@ import { ThemeProvider } from '@mui/system';
 import { CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/lab';
 import DateAdapter from '@mui/lab/AdapterLuxon';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import store from './redux/store';
 import App from './App';
 import theme from './utils/theme';
 import { AuthManager } from './providers';
+import { ErrorFallback } from './pages';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      {/* <MockServer> */}
       <BrowserRouter>
         <AuthManager>
           <LocalizationProvider dateAdapter={DateAdapter}>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <App />
+              <ErrorBoundary FallbackComponent={ErrorFallback}>
+                <App />
+              </ErrorBoundary>
             </ThemeProvider>
           </LocalizationProvider>
         </AuthManager>
       </BrowserRouter>
-      {/* </MockServer> */}
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
