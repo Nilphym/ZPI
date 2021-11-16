@@ -1,12 +1,11 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import React from 'react';
+import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { changeUserPassword } from '../../redux/store';
+import { forgotPassword } from '../../redux/store';
 
 import logo from '../../assets/logo/logo2.png';
 
@@ -20,31 +19,24 @@ const Logo = styled('img')({
 });
 
 const formFields = {
-  password: 'password',
-  repeatPassword: 'repeatPassword'
+  email: 'email',
+  username: 'username'
 };
 
 const defaultValues = {
-  [formFields.password]: '',
-  [formFields.repeatPassword]: ''
+  [formFields.email]: '',
+  [formFields.username]: ''
 };
 
 const schema = yup.object().shape({
-  [formFields.password]: yup
-    .string()
-    .required()
-    .min(8)
-    .matches(RegExp('(.*[a-z].*)'), 'Lowercase')
-    .matches(RegExp('(.*[A-Z].*)'), 'Uppercase')
-    .matches(RegExp('(.*\\d.*)'), 'Number')
-    .matches(RegExp('[!@#$%^&*(),.?":{}|<>]'), 'Special'),
-  [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
+  [formFields.email]: yup.string().email().required(),
+  [formFields.username]: yup.string().required()
 });
 
-export const ResetPasswordPanel = () => {
+export const ForgotPasswordPanel = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { userId, token } = useParams();
+
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const {
     control,
@@ -56,12 +48,12 @@ export const ResetPasswordPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  function onSubmit({ password, repeatPassword }) {
-    dispatch(changeUserPassword({ password, repeatPassword, userId, token }));
+  function onSubmit({ email, username }) {
+    dispatch(forgotPassword({ email, username }));
     reset(defaultValues, {
       keepIsValid: true
     });
-    navigate('/login');
+    setIsDisabled(true);
   };
 
   return (
@@ -89,7 +81,7 @@ export const ResetPasswordPanel = () => {
         }}
       >
         <Typography align="center" variant="h2" gutterBottom component="div">
-          Reset Password
+          Forgot Password
         </Typography>
         <Box
           component="form"
@@ -100,18 +92,18 @@ export const ResetPasswordPanel = () => {
           }}
         >
           <Controller
-            name="password"
+            name="username"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                id="password"
-                label="New Password"
-                type="password"
-                error={!!errors.password}
+                id="username"
+                label="Username"
+                type="text"
+                error={!!errors.username}
                 helperText={
-                  !!errors.password &&
-                  'Password field cannot be empty and must contain min. 6 letters!'
+                  !!errors.username &&
+                  'Username cannot be empty!'
                 }
                 {...field}
                 sx={{
@@ -121,21 +113,19 @@ export const ResetPasswordPanel = () => {
             )}
           />
           <Controller
-            name="repeatPassword"
+            name="email"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                id="repeatPassword"
-                label="Repeat New Password"
-                type="password"
-                error={!!errors.repeatPassword || !!errors.password}
-                helperText={
-                  !!errors.repeatPassword || (!!errors.password && 'Passwords must be the same!')
-                }
+                id="email"
+                label="Email"
+                type="email"
+                error={!!errors.email}
+                helperText={!!errors.email && 'Email field cannot be empty and must be in pattern!'}
                 {...field}
                 sx={{
-                  margin: '0.625rem 0 0.625rem 0'
+                  marginTop: '0.625rem'
                 }}
               />
             )}
@@ -147,13 +137,17 @@ export const ResetPasswordPanel = () => {
               height: '3.125rem',
               marginTop: '0.625rem'
             }}
+            disabled={isDisabled}
           >
-            Reset
+            Send
           </Button>
+        </Box>
+        <Box>
+          {isDisabled && <Typography>On your email was sent a reset password link. Please, check it.</Typography>}
         </Box>
       </Box>
     </Box>
   );
 };
 
-export default ResetPasswordPanel;
+export default ForgotPasswordPanel;

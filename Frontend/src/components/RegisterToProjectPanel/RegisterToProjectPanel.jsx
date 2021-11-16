@@ -2,13 +2,12 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
-import PropTypes from 'prop-types';
+import { useParams, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
-// import PropTypes from 'prop-types';
-import axios from 'axios';
 import React from 'react';
-
+import { registerUserToProject } from '../../redux/store';
 import logo from '../../assets/logo/logo2.png';
 
 const Logo = styled('img')({
@@ -48,7 +47,15 @@ const schema = yup.object().shape({
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
-export const RegisterToProjectPanel = ({ projectName }) => {
+export const RegisterToProjectPanel = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { role, productIdEncoded, emailEncoded } = useParams();
+
+  const {
+    token: { productName }
+  } = useSelector((state) => state.auth);
+
   const {
     control,
     handleSubmit,
@@ -59,20 +66,12 @@ export const RegisterToProjectPanel = ({ projectName }) => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = (data) => {
-    try {
-      axios({
-        method: 'POST',
-        url: '/api/auth/register-user',
-        data
-      });
-    } catch (err) {
-      console.error(err.status);
-    }
-    console.log(data);
+  const onSubmit = ({ name, surname, password }) => {
+    dispatch(registerUserToProject({ name, surname, password, role, productIdEncoded, emailEncoded}));
     reset(defaultValues, {
       keepIsValid: true
     });
+    navigate('/login');
   };
 
   return (
@@ -102,7 +101,7 @@ export const RegisterToProjectPanel = ({ projectName }) => {
         }}
       >
         <Typography align="center" variant="h3" gutterBottom component="div">
-          {`Register User to ${projectName} Panel`}
+          {`Register User to ${productName} Panel`}
         </Typography>
         <Box
           component="form"
@@ -204,10 +203,6 @@ export const RegisterToProjectPanel = ({ projectName }) => {
       </Box>
     </Box>
   );
-};
-
-RegisterToProjectPanel.propTypes = {
-  projectName: PropTypes.string.isRequired
 };
 
 export default RegisterToProjectPanel;

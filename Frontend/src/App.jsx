@@ -10,8 +10,11 @@ import {
   Test,
   RegisterPanel,
   ResetPasswordPanel,
+  ForgotPasswordPanel,
   ChangeUserDataPanel,
-  TestPlansView
+  RegisterToProjectPanel,
+  TestPlansView,
+  InviteUserToProjectPanel
 } from './components';
 import {
   NoMatch,
@@ -29,7 +32,10 @@ const App = () => {
         <Route path="login" element={<LoginPanel />} />
         <Route path="logout" element={<Logout />} />
         <Route path="register" element={<RegisterPanel />} />
-        <Route path="resetPassword" element={<ResetPasswordPanel />} />
+        <Route path="resetPassword" element={<ForgotPasswordPanel />} />
+        <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
+        <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
+        <Route path="api/account/:role/:productIdEncoded/:emailEncoded" element={<RegisterToProjectPanel />} />
         <Route path="changeUserData" element={<ChangeUserDataPanel />} />
         <Route path="bugs" element={<AllBugsPage />} />
         <Route path="bugs/assigned" element={<AssignedBugsPage />} />

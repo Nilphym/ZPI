@@ -4,8 +4,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { changeUserName, changeUserSurname, changeUserPasswordById } from '../../redux/store';
+// import { useDispatch } from 'react-redux';
+// import { changeUserName, changeUserSurname } from '../../redux/store';
 
 const schemaName = yup.object().shape({
   name: yup.string().required()
@@ -21,7 +21,7 @@ const schemaPassword = yup.object().shape({
 });
 
 export const ChangeUserDataPanel = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const {
     control: controlName,
@@ -50,24 +50,24 @@ export const ChangeUserDataPanel = () => {
     resolver: yupResolver(schemaPassword)
   });
 
-  function onSubmitName({ name }) {
-    dispatch(changeUserName({ name }));
+  function onSubmitName() {
+    // dispatch(changeUserName({ name }));
     resetName({ name: '' }, {
       keepIsValid: true
     });
     // navigate TODO: Ew
   };
 
-  function onSubmitSurname({ surname }) {
-    dispatch(changeUserSurname({ surname }));
+  function onSubmitSurname() {
+    // dispatch(changeUserSurname({ surname }));
     resetSurname({ surname: '' }, {
       keepIsValid: true
     });
     // navigate TODO: Ew
   };
 
-  function onSubmitPassword({ password }) {
-    dispatch(changeUserPasswordById({ password }));
+  function onSubmitPassword() {
+    // dispatch(changeUserPasswordById({ password }));
     resetPassword({ password: '', repeatPassword: '' }, {
       keepIsValid: true
     });
