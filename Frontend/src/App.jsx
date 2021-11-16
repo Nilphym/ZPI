@@ -31,25 +31,19 @@ const App = () => {
         <Route path="register" element={<RegisterPanel />} />
         <Route path="resetPassword" element={<ResetPasswordPanel />} />
         <Route path="changeUserData" element={<ChangeUserDataPanel />} />
-        <Route path="bugs" element={<AllBugsPage />} />
-        <Route path="bugs/assigned" element={<AssignedBugsPage />} />
-        <Route path="bugs/active" element={<ActiveBugsPage />} />
-        <Route path="bugs/retest" element={<RetestBugsPage />} />
-        <Route path="test/execution" element={<TestRunPage />} />
-        <Route
-          path="dashboard"
-          element={
-            <RequireAuth>
-              <p>dashboard</p>
-            </RequireAuth>
-          }
-        />
-        <Route path="testPlans" element={<TestPlansView />} />
-        <Route path="testPlan-e-:testPlanId" element={<TestPlan isEditable />} />
-        <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
-        <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
-        <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
-        <Route path="logout" element={<Logout />} />
+        <RequireAuth>
+          <Route path="bugs" element={<AllBugsPage />} />
+          <Route path="bugs/assigned" element={<AssignedBugsPage />} />
+          <Route path="bugs/active" element={<ActiveBugsPage />} />
+          <Route path="bugs/retest" element={<RetestBugsPage />} />
+          <Route path="test/execution" element={<TestRunPage />} />
+          <Route path="dashboard" element={<p>dashboard</p>} />
+          <Route path="testPlans" element={<TestPlansView />} />
+          <Route path="testPlan-e-:testPlanId" element={<TestPlan isEditable />} />
+          <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
+          <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
+          <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
+        </RequireAuth>
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
