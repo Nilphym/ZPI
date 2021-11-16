@@ -11,7 +11,7 @@ import {
   RegisterPanel,
   ResetPasswordPanel,
   ForgotPasswordPanel,
-  ChangeUserDataPanel,
+  // ChangeUserDataPanel,
   RegisterToProjectPanel,
   TestPlansView,
   InviteUserToProjectPanel
@@ -36,7 +36,7 @@ const App = () => {
         <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
         <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
         <Route path="api/account/:role/:productIdEncoded/:emailEncoded" element={<RegisterToProjectPanel />} />
-        <Route path="changeUserData" element={<ChangeUserDataPanel />} />
+        {/* <Route path="changeUserData" element={<ChangeUserDataPanel />} /> */}
         <Route path="bugs" element={<AllBugsPage />} />
         <Route path="bugs/assigned" element={<AssignedBugsPage />} />
         <Route path="bugs/active" element={<ActiveBugsPage />} />

@@ -114,8 +114,8 @@ export const changeUserPassword = createAsyncThunk(
     token
   }) => {
     const response = await server().put({
-      url: 'api/Account/resetPassword',
-      body: {
+      url: 'Account/resetPassword',
+      data: {
         password,
         confirmedPassword: repeatPassword,
         userId,
@@ -133,8 +133,8 @@ export const forgotPassword = createAsyncThunk(
     username
   }) => {
     const response = await server().post({
-      url: 'api/Account/forgotPassword',
-      body: {
+      url: 'Account/forgotPassword',
+      data: {
         email,
         userName: username
       }
@@ -152,8 +152,8 @@ export const inviteUser = createAsyncThunk(
     getState
   }) => {
     const response = await server().post({
-      url: 'api/Account/invitation',
-      body: {
+      url: 'Account/invitation',
+      data: {
         projectId: getState().auth.token.projectId,
         email,
         role
@@ -174,8 +174,8 @@ export const registerUserToProject = createAsyncThunk(
     emailEncoded
   }) => {
     const response = await server().post({
-      url: 'api/Account/registration',
-      body: {
+      url: 'Account/registration',
+      data: {
         firstName: name,
         lastName: surname,
         password,
