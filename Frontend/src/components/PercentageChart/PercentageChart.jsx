@@ -61,7 +61,7 @@ Legend.propTypes = {
   completedLabel: PropTypes.string.isRequired
 };
 
-export const PercentageChart = ({ name, all, completed, completedLabel }) => {
+export const PercentageChart = ({ sx, name, all, completed, completedLabel }) => {
   const {
     palette: { secondary }
   } = useTheme();
@@ -70,12 +70,14 @@ export const PercentageChart = ({ name, all, completed, completedLabel }) => {
     <Box
       component={Paper}
       sx={{
+        ...sx,
         padding: '0.5rem 1.5rem 0',
         height: '20rem',
-        width: '20rem',
+        width: '19rem',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflowY: 'hidden'
       }}
     >
       <Box sx={{ height: '100%', width: '50%', display: 'flex', flexDirection: 'column' }}>
@@ -112,8 +114,13 @@ export const PercentageChart = ({ name, all, completed, completedLabel }) => {
 export default PercentageChart;
 
 PercentageChart.propTypes = {
+  sx: PropTypes.object,
   name: PropTypes.string.isRequired,
   all: PropTypes.number.isRequired,
   completed: PropTypes.number.isRequired,
   completedLabel: PropTypes.string.isRequired
+};
+
+PercentageChart.defaultProps = {
+  sx: {}
 };

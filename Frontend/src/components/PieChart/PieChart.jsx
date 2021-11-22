@@ -34,20 +34,22 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export const PieChart = ({ name, label, data }) => {
+export const PieChart = ({ sx, name, label, data }) => {
   const count = data.reduce((previous, current) => previous + current.value, 0);
 
   return (
     <Box
       component={Paper}
       sx={{
+        ...sx,
         padding: '0.5rem 1.5rem 0.7rem',
         height: '20rem',
-        width: '20rem',
+        width: '19rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflowY: 'hidden'
       }}
     >
       <Typography sx={{ alignSelf: 'flex-start' }} variant="overline">
@@ -79,7 +81,12 @@ export const PieChart = ({ name, label, data }) => {
 export default PieChart;
 
 PieChart.propTypes = {
+  sx: PropTypes.object,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired
+};
+
+PieChart.defaultProps = {
+  sx: {}
 };

@@ -63,7 +63,7 @@ const renderActiveShape = ({
   );
 };
 
-export const DoughnutChart = ({ name, label, data }) => {
+export const DoughnutChart = ({ sx, name, label, data }) => {
   const count = data.reduce((previous, current) => previous + current.value, 0);
 
   return (
@@ -74,7 +74,9 @@ export const DoughnutChart = ({ name, label, data }) => {
         height: '20rem',
         width: '40rem',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        overflowY: 'hidden',
+        ...sx
       }}
     >
       <Box
@@ -112,7 +114,12 @@ export const DoughnutChart = ({ name, label, data }) => {
 export default DoughnutChart;
 
 DoughnutChart.propTypes = {
+  sx: PropTypes.object,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired
+};
+
+DoughnutChart.defaultProps = {
+  sx: {}
 };

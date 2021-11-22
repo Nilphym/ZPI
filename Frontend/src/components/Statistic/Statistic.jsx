@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, Paper } from '@mui/material';
-import { BugReport } from '@mui/icons-material';
+import { BugReport, FormatListBulleted, Person, AccessTime } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 
 const statisticIcons = {
-  bug: BugReport
+  bug: BugReport,
+  time: AccessTime,
+  test: FormatListBulleted,
+  person: Person
 };
 
 export const Statistic = ({ name, number, icon }) => {
@@ -15,8 +18,8 @@ export const Statistic = ({ name, number, icon }) => {
     <Box
       component={Paper}
       sx={{
-        height: '6rem',
-        width: '20rem',
+        height: '9rem',
+        width: '19rem',
         padding: '0 1.5rem',
         display: 'grid',
         gridTemplateColumns: '30% 70%',

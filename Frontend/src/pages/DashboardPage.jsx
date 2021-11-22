@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
-import { TestRun } from '../containers';
+import { Dashboard } from '../containers';
 
-export const TestRunPage = () => {
+export const DashboardPage = () => {
   return (
     <Box
       sx={{
@@ -16,11 +16,11 @@ export const TestRunPage = () => {
       }}
     >
       <Typography color="primary.dark" component="h1" variant="h3">
-        Test run
+        Dashboard
       </Typography>
-      <TestRun />
+      <Dashboard />
     </Box>
   );
 };
 
-export default TestRunPage;
+export default DashboardPage;
