@@ -65,14 +65,8 @@ const Layout = () => {
         <Box sx={{ display: 'grid', gridTemplateColumns: 'min-content 1fr' }}>
           <Navbar
             links={[
-              {
-                icon: 'dashboard',
-                name: 'Dashboard',
-                links: [
-                  { text: 'Dashboard', destination: '/dashboard' },
-                  { text: 'Raports', destination: '/raports' }
-                ]
-              },
+              { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
+              { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               { icon: 'bugs', text: 'Bugs', destination: '/bugs' },
               { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
