@@ -30,7 +30,6 @@ const Layout = () => {
                   { text: 'Bugs to review', destination: '/bugs/retest' }
                 ]
               },
-              { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
           />
@@ -53,7 +52,6 @@ const Layout = () => {
                   { text: 'My bugs', destination: '/bugs/assigned' }
                 ]
               },
-              { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
           />
@@ -68,7 +66,6 @@ const Layout = () => {
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
               { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               { icon: 'bugs', text: 'Bugs', destination: '/bugs' },
-              { icon: 'profile', text: 'Profile', destination: '/profile' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
           />
