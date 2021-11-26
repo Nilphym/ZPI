@@ -1,3 +1,5 @@
 export * from './BugPage';
-export * from './NoMatch';
+export * from './NotFound';
 export * from './TestRunPage';
+export * from './ErrorFallback';
+export * from './DashboardPage';

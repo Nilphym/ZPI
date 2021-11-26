@@ -1,12 +1,12 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { changeUserPasswordByEmail } from '../../redux/store';
+import { changeUserPassword } from '../../redux/store';
 
 import logo from '../../assets/logo/logo2.png';
 
@@ -20,26 +20,31 @@ const Logo = styled('img')({
 });
 
 const formFields = {
-  email: 'email',
   password: 'password',
   repeatPassword: 'repeatPassword'
 };
 
 const defaultValues = {
-  [formFields.email]: '',
   [formFields.password]: '',
   [formFields.repeatPassword]: ''
 };
 
 const schema = yup.object().shape({
-  [formFields.email]: yup.string().email().required(),
-  [formFields.password]: yup.string().required().min(6),
+  [formFields.password]: yup
+    .string()
+    .required()
+    .min(8)
+    .matches(RegExp('(.*[a-z].*)'), 'Lowercase')
+    .matches(RegExp('(.*[A-Z].*)'), 'Uppercase')
+    .matches(RegExp('(.*\\d.*)'), 'Number')
+    .matches(RegExp('[!@#$%^&*(),.?":{}|<>]'), 'Special'),
   [formFields.repeatPassword]: yup.string().oneOf([yup.ref('password'), null])
 });
 
 export const ResetPasswordPanel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userId, token } = useParams();
 
   const {
     control,
@@ -51,8 +56,8 @@ export const ResetPasswordPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  function onSubmit({ email, password }) {
-    dispatch(changeUserPasswordByEmail({ email, password }));
+  function onSubmit({ password, repeatPassword }) {
+    dispatch(changeUserPassword({ password, repeatPassword, userId, token }));
     reset(defaultValues, {
       keepIsValid: true
     });
@@ -94,25 +99,6 @@ export const ResetPasswordPanel = () => {
             flexDirection: 'column'
           }}
         >
-
-          <Controller
-            name="email"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                id="email"
-                label="Email"
-                type="email"
-                error={!!errors.email}
-                helperText={!!errors.email && 'Email field cannot be empty and must be in pattern!'}
-                {...field}
-                sx={{
-                  marginTop: '0.625rem'
-                }}
-              />
-            )}
-          />
           <Controller
             name="password"
             control={control}

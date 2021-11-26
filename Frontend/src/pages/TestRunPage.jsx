@@ -7,7 +7,7 @@ export const TestRunPage = () => {
   return (
     <Box
       sx={{
-        margin: '0 1rem',
+        margin: '0 2rem',
         padding: '2rem 0',
         minHeight: '100vh',
         display: 'grid',

@@ -26,6 +26,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.funtest.fragments.BugsFragment;
 import com.example.funtest.fragments.DashboardFragment;
 import com.example.funtest.fragments.TestsFragment;
@@ -33,6 +41,7 @@ import com.example.funtest.objects.Bug;
 import com.example.funtest.objects.TestPlan;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,6 +52,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DashboardFragment.onDashboardFragmentButtonSelected, BugsFragment.onBugsFragmentButtonSelected {
 
@@ -106,6 +117,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String name = json_body.getString("name");
                 String surname = json_body.getString("surname");
                 textView_username.setText(name + " " + surname);
+
+                //set shared preferences
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("userId",json_body.getString("userId"));
+                editor.putString("productId",json_body.getString("productId"));
+                editor.putString("role",json_body.getString("role"));
+                editor.apply();
+
             } catch (UnsupportedEncodingException | JSONException e) {
                 e.printStackTrace();
             }
@@ -127,11 +146,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getTestPlanList() {
         MainActivity.testPlanList = new ArrayList<>();
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        String productId = preferences.getString("productId", "");
+        if(!token.equalsIgnoreCase("") && !productId.equalsIgnoreCase("")) {
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Product/"+productId+"/TestPlans";
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+
+                    for(int i=0;i<response.length();i++){
+                        try {
+                            JSONObject currentObject = response.getJSONObject(i);
+                            TestPlan currentTestPlan = new TestPlan();
+                            currentTestPlan.setId(currentObject.getString("id"));
+                            currentTestPlan.setName(currentObject.getString("name"));
+                            MainActivity.testPlanList.add(currentTestPlan);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }
+            }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+
+            requestQueue.add(jsonArrayRequest);
+        }
+        /*
         MainActivity.testPlanList.add(new TestPlan("1","Test Plan 1", new ArrayList<>()));
         MainActivity.testPlanList.add(new TestPlan("2","Test Plan 2", new ArrayList<>()));
         MainActivity.testPlanList.add(new TestPlan("3","Test Plan 3", new ArrayList<>()));
         MainActivity.testPlanList.add(new TestPlan("4","Test Plan 4", new ArrayList<>()));
         MainActivity.testPlanList.add(new TestPlan("5","Test Plan 5", new ArrayList<>()));
+
+         */
 
     }
 

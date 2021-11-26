@@ -252,7 +252,7 @@ const ExpandableRow = ({ colSpan, data, open }) => {
                   >
                     <input {...getInputProps()} />
                     <Typography color="rgba(0, 0, 0, 0.6)">
-                      Drag &apos;n&apos; drop a file here or click to select a file
+                      Drag &apos;n&apos; drop files here or click to select files
                     </Typography>
                   </Box>
                 </Box>

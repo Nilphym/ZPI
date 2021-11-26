@@ -3,6 +3,7 @@ package com.example.funtest;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private RequestQueue queue;
 
+    private ProgressDialog pDialog;
+
     private boolean isEmpty(EditText etText) {
         if (etText.getText().toString().trim().length() > 0)
             return false;
@@ -48,6 +51,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void tryToLogIn(){
+
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading...");
+        pDialog.show();
 
         String url = "https://fun-test-zpi.herokuapp.com/api/Auth/login";
 
@@ -61,6 +69,10 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
 
                     try {
                         String token = response.getString("token");
@@ -86,6 +98,10 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
                 }
             });
 

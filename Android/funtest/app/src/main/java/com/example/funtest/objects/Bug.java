@@ -3,6 +3,7 @@ package com.example.funtest.objects;
 import java.util.ArrayList;
 
 public class Bug {
+    private String id;
     private String code;
     private String name;
     private String state; //not added while creating
@@ -21,6 +22,25 @@ public class Bug {
 
     public Bug(){
 
+    }
+
+    public Bug(String id, String code, String name, String state, String functionality, String type, String impact, String priority, int retestsRequired, int retestsDone, int retestsFailed, String deadline, String reportDate, String endDate, String description, ArrayList<String> attachments) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.state = state;
+        this.functionality = functionality;
+        this.type = type;
+        this.impact = impact;
+        this.priority = priority;
+        this.retestsRequired = retestsRequired;
+        this.retestsDone = retestsDone;
+        this.retestsFailed = retestsFailed;
+        this.deadline = deadline;
+        this.reportDate = reportDate;
+        this.endDate = endDate;
+        this.description = description;
+        this.attachments = attachments;
     }
 
     public Bug(String code, String name, String state, String functionality, String type, String impact, String priority, int retestsRequired, int retestsDone, int retestsFailed, String deadline, String reportDate, String endDate, String description, ArrayList<String> attachments) {
@@ -159,5 +179,13 @@ public class Bug {
 
     public void setAttachments(ArrayList<String> attachments) {
         this.attachments = attachments;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
