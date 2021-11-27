@@ -11,7 +11,6 @@ import {
   RegisterPanel,
   ResetPasswordPanel,
   ForgotPasswordPanel,
-  // ChangeUserDataPanel,
   RegisterToProjectPanel,
   TestPlansView,
   InviteUserToProjectPanel
@@ -22,7 +21,8 @@ import {
   ActiveBugsPage,
   AllBugsPage,
   TestRunPage,
-  RetestBugsPage
+  RetestBugsPage,
+  DashboardPage
 } from './pages';
 
 const App = () => {
@@ -35,21 +35,24 @@ const App = () => {
         <Route path="resetPassword" element={<ForgotPasswordPanel />} />
         <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
         <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
-        <Route path="api/account/:role/:productIdEncoded/:emailEncoded" element={<RegisterToProjectPanel />} />
+        <Route
+          path="api/account/:role/:productIdEncoded/:emailEncoded"
+          element={<RegisterToProjectPanel />}
+        />
         {/* <Route path="changeUserData" element={<ChangeUserDataPanel />} /> */}
-        <RequireAuth>
+        <Route element={<RequireAuth />}>
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="bugs" element={<AllBugsPage />} />
           <Route path="bugs/assigned" element={<AssignedBugsPage />} />
           <Route path="bugs/active" element={<ActiveBugsPage />} />
           <Route path="bugs/retest" element={<RetestBugsPage />} />
           <Route path="test/execution" element={<TestRunPage />} />
-          <Route path="dashboard" element={<p>dashboard</p>} />
           <Route path="testPlans" element={<TestPlansView />} />
           <Route path="testPlan-e-:testPlanId" element={<TestPlan isEditable />} />
           <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
           <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
           <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
-        </RequireAuth>
+        </Route>
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

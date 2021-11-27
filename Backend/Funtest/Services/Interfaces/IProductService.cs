@@ -2,6 +2,7 @@
 using Funtest.TransferObject.Product.Requests;
 using Funtest.TransferObject.Product.Responses;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Funtest.Services.Interfaces
@@ -14,5 +15,6 @@ namespace Funtest.Services.Interfaces
         Task<bool> CreateNewProduct(CreateNewProductRequest request);
         bool IsProductExist(Guid id);
         Product FindByName(string productName);
+        List<GetAllUsersInProduct> GetAllUsersInProduct(Guid productId);
     }
 }

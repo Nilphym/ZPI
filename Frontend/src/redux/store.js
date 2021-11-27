@@ -6,6 +6,7 @@ import testReducer from './reducers/test/testSlice';
 import bugsReducer from './reducers/bugs/bugsSlice';
 import testPlanReducer from './reducers/testPlan/testPlanSlice';
 import testExecutionReducer from './reducers/testExecution/testExecutionSlice';
+import raportsReducer from './reducers/raports/raportsSlice';
 
 const reducer = {
   counter: counterReducer,
@@ -13,7 +14,8 @@ const reducer = {
   test: testReducer,
   bugs: bugsReducer,
   testPlan: testPlanReducer,
-  testExecution: testExecutionReducer
+  testExecution: testExecutionReducer,
+  raports: raportsReducer
 };
 
 const store = configureStore({
@@ -28,3 +30,4 @@ export * from './reducers/test/testSlice';
 export * from './reducers/bugs/bugsSlice';
 export * from './reducers/testPlan/testPlanSlice';
 export * from './reducers/testExecution/testExecutionSlice';
+export * from './reducers/raports/raportsSlice';

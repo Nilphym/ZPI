@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
+import { toast } from 'react-toastify';
 
 import server from '../../../services/server';
 
@@ -180,64 +181,113 @@ export const bugsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+      .addCase(getPossibleBugValues.fulfilled, (state, action) => {
+        state.possibleValues = action.payload;
+      })
+      .addCase(getPossibleBugValues.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
+      .addCase(getBugsToFix.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getBugsToFix.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getBugsToFix.rejected, (state) => {
+      .addCase(getBugsToFix.rejected, (state, action) => {
         state.loading = false;
         state.rows = [];
+        toast.error(action.error.message);
       })
-      .addCase(getBugsToFix.pending, (state) => {
+
+      .addCase(getBugsToRetest.pending, (state) => {
         state.loading = true;
       })
       .addCase(getBugsToRetest.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getBugsToRetest.rejected, (state) => {
+      .addCase(getBugsToRetest.rejected, (state, action) => {
         state.loading = false;
         state.rows = [];
+        toast.error(action.error.message);
       })
-      .addCase(getBugsToRetest.pending, (state) => {
+
+      .addCase(getAllBugs.pending, (state) => {
         state.loading = true;
       })
       .addCase(getAllBugs.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getAllBugs.rejected, (state) => {
+      .addCase(getAllBugs.rejected, (state, action) => {
         state.loading = false;
         state.rows = [];
+        toast.error(action.error.message);
       })
-      .addCase(getAllBugs.pending, (state) => {
+
+      .addCase(getBugsDeveloper.pending, (state) => {
         state.loading = true;
       })
       .addCase(getBugsDeveloper.fulfilled, (state, action) => {
         state.loading = false;
         state.rows = action.payload;
       })
-      .addCase(getBugsDeveloper.rejected, (state) => {
+      .addCase(getBugsDeveloper.rejected, (state, action) => {
         state.loading = false;
         state.rows = [];
+        toast.error(action.error.message);
       })
-      .addCase(getBugsDeveloper.pending, (state) => {
+
+      .addCase(getBug.pending, (state) => {
         state.loading = true;
-      })
-      .addCase(getPossibleBugValues.fulfilled, (state, action) => {
-        state.possibleValues = action.payload;
       })
       .addCase(getBug.fulfilled, (state, action) => {
         state.loading = false;
         state.bugDetails = action.payload;
       })
-      .addCase(getBug.rejected, (state) => {
+      .addCase(getBug.rejected, (state, action) => {
         state.loading = false;
         state.bugDetails = {};
+        toast.error(action.error.message);
       })
-      .addCase(getBug.pending, (state) => {
-        state.loading = true;
+
+      .addCase(putRows.fulfilled, () => {
+        toast.success('Bug updated successfully');
       })
+      .addCase(putRows.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
+      .addCase(rejectBug.fulfilled, () => {
+        toast.success('Bug rejected successfully');
+      })
+      .addCase(rejectBug.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
+      .addCase(resolveBug.fulfilled, () => {
+        toast.success('Bug resolved successfully');
+      })
+      .addCase(resolveBug.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
+      .addCase(takeBug.fulfilled, () => {
+        toast.success('Bug taken successfully');
+      })
+      .addCase(takeBug.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
+      .addCase(resignFromBug.fulfilled, () => {
+        toast.success('You resigned from bug successfully');
+      })
+      .addCase(resignFromBug.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
       .addCase(deleteBugAttachment.fulfilled, (state, action) => {
         state.rows = state.rows.map((row) =>
           row.id === action.payload.bugId
@@ -249,7 +299,12 @@ export const bugsSlice = createSlice({
               }
             : row
         );
+        toast.success('Attachment deleted successfully');
       })
+      .addCase(deleteBugAttachment.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
       .addCase(postImage.fulfilled, (state, action) => {
         state.rows = state.rows.map((row) =>
           row.id === action.payload.errorId
@@ -262,6 +317,10 @@ export const bugsSlice = createSlice({
               }
             : row
         );
+        toast.success('Attachment added successfully');
+      })
+      .addCase(postImage.rejected, (_, action) => {
+        toast.error(action.error.message);
       });
   }
 });

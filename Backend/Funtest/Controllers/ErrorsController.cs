@@ -18,7 +18,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer + ", " + Roles.ProjectManager)]
     public class ErrorsController : ControllerBase
     {
         private readonly IErrorService _errorService;
@@ -73,7 +73,7 @@ namespace Funtest.Controllers
         public ActionResult<GetErrorResponse> GetAllErrors([FromRoute] Guid productId)
         {
             var errors = _errorService.GetAllErrors(productId);
-            foreach(var error in errors)
+            foreach (var error in errors)
             {
                 error.RetestsFailed = _reviewService.CountFailedReviewsForError(error.Id);
                 error.RetestsDone = _reviewService.CountReviewsForError(error.Id);
@@ -82,7 +82,7 @@ namespace Funtest.Controllers
             return Ok(errors);
         }
 
-        [Authorize(Roles = Roles.Developer)]
+        [Authorize(Roles = Roles.Developer + ", " + Roles.ProjectManager)]
         [HttpGet("developer/{developerId}")]
         public async Task<ActionResult<GetErrorResponse>> GetAllErrorsAssignedToDeveloper([FromRoute] string developerId)
         {

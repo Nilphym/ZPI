@@ -87,6 +87,7 @@ namespace Funtest.Infrastructure
             //Mapowania dla Usera
             CreateMap<AddNewUserRequest, User>();
             CreateMap<RegisterInvitatedUserRequest, User>();
+            CreateMap<User, GetAllUsersInProduct>();
 
             //Mapowania dla Produkty
             CreateMap<Product, GetProductResponse>();
