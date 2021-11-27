@@ -13,7 +13,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer+ ", " + Roles.ProjectManager)]
     public class AttachmentsController : ControllerBase
     {
         private readonly IAttachmentService _attachmentService;

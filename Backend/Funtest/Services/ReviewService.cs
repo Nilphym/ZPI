@@ -19,11 +19,14 @@ namespace Funtest.Services
 
         public async Task<bool> AddReview(AddReviewRequest request, Guid errorId, string testerId)
         {
-            var review = _mapper.Map<Review>(request);
+            var review = Context.Reviews.Where(x => x.ErrorId == errorId && x.TesterId == testerId && x.IsActual).FirstOrDefault();
+            if (review == null)
+                review = new Review();
             review.PublishDate = DateTime.Now;
             review.ErrorId = errorId;
             review.TesterId = testerId;
             review.IsActual = true;
+            review.Result = request.Result;
             Context.Reviews.Update(review);
 
             if (await Context.SaveChangesAsync() == 0)
