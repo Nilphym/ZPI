@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import server from '../../../services/server';
 
@@ -69,6 +70,9 @@ export const raportsSlice = createSlice({
       .addCase(getRaport.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+      })
+      .addCase(getRaport.rejected, (_, action) => {
+        toast.error(action.error.message);
       });
   }
 });

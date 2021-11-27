@@ -3,6 +3,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Navbar } from './containers';
 
@@ -34,6 +36,7 @@ const Layout = () => {
             ]}
           />
           <Outlet />
+          <ToastContainer position="bottom-right" />
         </Box>
       );
     case 'Developer':
@@ -56,6 +59,7 @@ const Layout = () => {
             ]}
           />
           <Outlet />
+          <ToastContainer position="bottom-right" />
         </Box>
       );
     case 'ProjectManager':
@@ -70,12 +74,14 @@ const Layout = () => {
             ]}
           />
           <Outlet />
+          <ToastContainer position="bottom-right" />
         </Box>
       );
     default:
       return (
         <Box sx={{ width: '100%', height: '100vh' }}>
           <Outlet />
+          <ToastContainer position="bottom-right" />
         </Box>
       );
   }

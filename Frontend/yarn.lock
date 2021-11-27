@@ -10524,6 +10524,7 @@ fsevents@^1.2.7:
     react-router-dom: ^6.0.2
     react-scripts: 4.0.3
     react-table: ^7.7.0
+    react-toastify: ^8.1.0
     recharts: ^2.1.6
     yup: ^0.32.9
   languageName: unknown
@@ -17382,6 +17383,18 @@ fsevents@^1.2.7:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: da3d0192825df3d9f27eef33e7eddf928359a7e3e2b01ae7f7f672ecf4e5c1f7a34f27bdde9ccc24e2e9fbe1d1b9dd2a39c7d47323c9bdf63e7b9bd05c325a71
+  languageName: node
+  linkType: hard
+
+"react-toastify@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "react-toastify@npm:8.1.0"
+  dependencies:
+    clsx: ^1.1.1
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 9d7b18c747e1b6736771dbb877dfaab61c49e99a64b9dbdaa3d57d62c899d8a46e193fd69aa4bd045a1e0023859353f94ce4617d600154657a2bdd213407e607
   languageName: node
   linkType: hard
 
