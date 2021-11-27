@@ -302,7 +302,9 @@ namespace Funtest.Services
 
         public List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId)
         {
-            var errors = Context.Errors.Where(x => x.StepId == stepId).ToList();
+            var errors = Context.Errors
+                .Where(x => x.StepId == stepId && (x.ErrorState == ErrorState.Fixed || x.ErrorState == ErrorState.Retest))
+                .ToList();
             return errors.Select(x => _mapper.Map<GetIdentityErrorInformationRespons>(x)).ToList();
         }
 

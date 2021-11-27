@@ -4,6 +4,7 @@ using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Product.Requests;
 using Funtest.TransferObject.Product.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,6 +40,12 @@ namespace Funtest.Services
         public Product FindByName(string productName)
         {
             return Context.Products.Where(x => x.Name == productName).FirstOrDefault();
+        }
+
+        public List<GetAllUsersInProduct> GetAllUsersInProduct(Guid productId)
+        {
+            var users = Context.Users.Where(x => x.ProductId == productId && !x.IsDeleted).ToList();
+            return users.Select(x => _mapper.Map<GetAllUsersInProduct>(x)).ToList();
         }
 
         public async Task<Product> GetProduct(Guid id)
