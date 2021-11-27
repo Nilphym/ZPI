@@ -6,6 +6,8 @@ using Funtest.TransferObject.Product.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Funtest.Controllers
@@ -59,5 +61,20 @@ namespace Funtest.Controllers
 
             return product != null ? Ok(product) : NotFound();
         }
+
+        [HttpGet("users")]
+        [Authorize(Roles = Roles.ProjectManager)]
+        public async Task<ActionResult<List<GetAllUsersInProduct>>> GetUsersInProduct()
+        {
+            var principal = HttpContext.User;
+            var productId = Guid.Parse(principal.Claims.Where(x => x.Type == "productId").Select(x => x.Value).FirstOrDefault());
+
+            var isProductExist = _productService.IsProductExist(productId);
+            if (!isProductExist)
+                return NotFound("Product with given id doesn't exist.");
+
+            var users = _productService.GetAllUsersInProduct(productId);
+            return Ok(users);
+         }
     }
 }
