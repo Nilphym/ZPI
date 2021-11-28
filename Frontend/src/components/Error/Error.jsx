@@ -13,8 +13,15 @@ const Error = ({ message }) => {
         transform: 'translate(-50%, -50%)'
       }}
     >
-      <WarningIcon />
-      <Typography>{message}</Typography>
+      <WarningIcon
+        sx={{
+          position: 'absolute',
+          top: '-100%',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
+      />
+      <Typography sx={{color: 'red'}}>{message}</Typography>
     </Box>
   );
 };
