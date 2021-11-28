@@ -57,8 +57,8 @@ export const Dashboard = () => {
       />
       <PercentageChart
         sx={{ gridRow: 'span 2' }}
-        name="Bugs fixed"
-        completedLabel="Fixed"
+        name="Bugs closed"
+        completedLabel="Closed"
         all={raportData.bugsAll}
         completed={raportData.bugsFixed}
       />

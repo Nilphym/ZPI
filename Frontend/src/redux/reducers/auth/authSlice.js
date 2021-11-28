@@ -1,20 +1,22 @@
-/* eslint-disable no-alert */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import authService from '../../../services/auth';
 import server from '../../../services/server';
 
 // ----------------------------------------- Users API
-export const getUsers = createAsyncThunk('users/get', async (_, { getState }) => {
+export const getUsers = createAsyncThunk('users/get', async () => {
   const response = await server().get({
-    url: `Product/${getState().auth.token.productId}`
+    url: 'Products/users'
   });
   return response;
 });
 
-export const deleteUser = createAsyncThunk('user/delete', async ({ userId }) => {
-  const response = await server().delete({
-    url: `Users/${userId}`
+export const deleteUser = createAsyncThunk('user/delete', async ({ userName }) => {
+  const response = await server().put({
+    url: 'Account/deleteUser',
+    data: {
+      userName
+    }
   });
   return response;
 });
@@ -128,7 +130,7 @@ export const inviteUser = createAsyncThunk(
     const response = await server().post({
       url: 'Account/invitation',
       data: {
-        projectId: getState().auth.token.projectId,
+        productId: getState().auth.token.productId,
         email,
         role
       }
@@ -165,7 +167,8 @@ const initialState = token
       testPlans: [],
       users: [],
       isLoading: true,
-      isLoadingUsers: true
+      isLoadingUsers: true,
+      error: ''
     }
   : {
       isLoggedIn: false,
@@ -175,7 +178,8 @@ const initialState = token
       testPlans: [],
       users: [],
       isLoading: true,
-      isLoadingUsers: true
+      isLoadingUsers: true,
+      error: ''
     };
 
 export const register = createAsyncThunk(
@@ -240,46 +244,48 @@ export const authSlice = createSlice({
         state.productName = name;
         state.creationDate = creationDate;
         state.version = version;
+        state.error = '';
       })
-      .addCase(getProductById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getProductById.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
       .addCase(getProductTestPlansById.fulfilled, (state, action) => {
         state.testPlans = action.payload;
         state.isLoading = false;
       })
-      .addCase(getProductTestPlansById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getProductTestPlansById.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
-      .addCase(postTestPlan.fulfilled, () => {
-        alert('Test Plan added');
-      })
-      .addCase(postTestPlan.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(postTestPlan.fulfilled, () => {
+      //   alert('Test Plan added');
+      // })
+      .addCase(postTestPlan.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
-        state.users = action.payload.users;
+        state.users = action.payload;
+        state.isLoadingUsers = false;
       })
-      .addCase(getUsers.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getUsers.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
-      .addCase(deleteUser.fulfilled, () => {
-        alert('User deleted');
+      // .addCase(deleteUser.fulfilled, () => {
+      //   alert('User deleted');
+      // })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
-      .addCase(deleteUser.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(inviteUser.fulfilled, () => {
+      //   alert('User invited');
+      // })
+      .addCase(inviteUser.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
-      .addCase(inviteUser.fulfilled, () => {
-        alert('User invited');
+      .addCase(changeUserPassword.rejected, (state, action) => {
+        state.alert = action.error.message;
       })
-      .addCase(inviteUser.rejected, (_, action) => {
-        alert(action.error.message);
-      })
-      .addCase(changeUserPassword.rejected, (_, action) => {
-        alert(action.error.message);
-      })
-      .addCase(forgotPassword.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.alert = action.error.message;
       });
   }
 });

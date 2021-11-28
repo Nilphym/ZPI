@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { styled } from '@mui/system';
 import { useParams, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import React from 'react';
 import { registerUserToProject } from '../../redux/store';
@@ -53,10 +52,6 @@ export const RegisterToProjectPanel = () => {
   const { role, productIdEncoded, emailEncoded } = useParams();
 
   const {
-    token: { productName }
-  } = useSelector((state) => state.auth);
-
-  const {
     control,
     handleSubmit,
     reset,
@@ -67,7 +62,9 @@ export const RegisterToProjectPanel = () => {
   });
 
   const onSubmit = ({ name, surname, password }) => {
-    dispatch(registerUserToProject({ name, surname, password, role, productIdEncoded, emailEncoded}));
+    dispatch(
+      registerUserToProject({ name, surname, password, role, productIdEncoded, emailEncoded })
+    );
     reset(defaultValues, {
       keepIsValid: true
     });
@@ -101,7 +98,7 @@ export const RegisterToProjectPanel = () => {
         }}
       >
         <Typography align="center" variant="h3" gutterBottom component="div">
-          {`Register User to ${productName} Panel`}
+          Register User from Invitation
         </Typography>
         <Box
           component="form"

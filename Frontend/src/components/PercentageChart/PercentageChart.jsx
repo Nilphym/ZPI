@@ -86,7 +86,9 @@ export const PercentageChart = ({ sx, name, all, completed, completedLabel }) =>
           <RadialBarChart
             innerRadius="40%"
             outerRadius="60%"
-            data={[{ value: Math.round((completed / all) * 100), fill: '#8884d8' }]}
+            data={[
+              { value: completed && all ? Math.round((completed / all) * 100) : 0, fill: '#8884d8' }
+            ]}
             startAngle={180}
             endAngle={0}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}

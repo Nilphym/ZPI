@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, CircularProgress } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,27 +10,25 @@ import {
   getTestPlanById,
   putTestPlanById,
   editTestPlanName,
-  setTestPlanId,
   postTestSuite,
   setLoading
 } from '../../redux/store';
 import TestSuiteItem from './TestSuiteItem';
+import Error from '../Error/Error';
 
 export const TestPlan = ({ isEditable }) => {
   const {
     selectedTestPlan: { name: testPlanName, testSuites },
-    isLoading
+    isLoading,
+    error
   } = useSelector((state) => state.testPlan);
 
-  const { control, getValues } = useForm();
+  const { control } = useForm();
   const {
     control: testSuiteControl,
-    handleSubmit: handleTestSuite,
-    getValues: getTestSuiteFormValues
+    handleSubmit: handleTestSuite
   } = useForm();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTestSuite, setIsAddingTestSuite] = useState(false);
@@ -58,6 +54,10 @@ export const TestPlan = ({ isEditable }) => {
     dispatch(postTestSuite(newTestSuite));
     dispatch(setLoading({ isLoading: true }));
     await dispatch(getTestPlanById());
+  }
+
+  if (error) {
+    return <Error message={error} />;
   }
 
   return (
@@ -87,7 +87,17 @@ export const TestPlan = ({ isEditable }) => {
             </Button>
           )}
           <Box>
-            <Typography variant="h2" sx={{ userSelect: 'none', color: 'rgb(46, 115, 171)', fontFamily: 'Roboto', fontWeight: '400', marginTop: '0.625rem', fontSize: '3rem' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                userSelect: 'none',
+                color: 'rgb(46, 115, 171)',
+                fontFamily: 'Roboto',
+                fontWeight: '400',
+                marginTop: '0.625rem',
+                fontSize: '3rem'
+              }}
+            >
               Test Plan:
             </Typography>
             <Controller
@@ -113,7 +123,7 @@ export const TestPlan = ({ isEditable }) => {
             />
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
-            {testSuites.map(({ id, category }) => (
+            {testSuites.map(({ id }) => (
               <TestSuiteItem isEditable={isEditing} editTest={isEditable} testSuiteId={id} />
             ))}
             {!isAddingTestSuite && isEditing && (
@@ -188,7 +198,8 @@ export const TestPlan = ({ isEditable }) => {
             </Box>
           )}
           {isEditing && (
-            <Button variant="contained"
+            <Button
+              variant="contained"
               onClick={() => saveTestPlan()}
               sx={{
                 marginTop: '1.5rem',
@@ -196,7 +207,8 @@ export const TestPlan = ({ isEditable }) => {
                 bgcolor: '#0077c2',
                 fontWeight: '700',
                 color: 'white'
-              }}>
+              }}
+            >
               Save Test Plan
             </Button>
           )}
