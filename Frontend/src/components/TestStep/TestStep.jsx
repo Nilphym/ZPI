@@ -156,11 +156,7 @@ export const TestStep = ({ testStepId, isEditable }) => {
               }
             />
             <Button
-              onClick={
-                !isEditing
-                  ? () => setIsOpened((state) => !state)
-                  : () => alert('Cannot close the view in an editing mode!')
-              }
+              onClick={!isEditing ? () => setIsOpened((state) => !state) : () => {}}
               variant="contained"
               sx={{
                 height: '3.5rem',

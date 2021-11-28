@@ -20,17 +20,9 @@ const processData = (data) => {
 
 const prepareOutputData = (values) => {
   const dataKeys = Object.keys(values).sort();
-  console.log(dataKeys);
   const processedData = [];
-  const newArray = [];
   let array = [];
-  console.log('Processed Data:', processedData);
-  console.log('New Array:', newArray);
-  console.log('Processed Data Length:', newArray.length);
-  newArray.length = 0;
   dataKeys.forEach((key) => {
-    console.log('KEY CHECK', key);
-    console.log('VALUE CHECK', values[key]);
     if (key.toString().includes('-0-0')) {
       array.push(values[key]);
     } else if (
@@ -39,20 +31,17 @@ const prepareOutputData = (values) => {
         .substring(key.length - 2)
         .includes('-0')
     ) {
-      newArray.push(array);
+      processedData.push(array);
       array = [];
       array.push(values[key]);
     } else if (key === dataKeys[dataKeys.length - 1]) {
       array.push(values[key]);
-      newArray.push(array);
+      processedData.push(array);
     } else {
       array.push(values[key]);
     }
-    console.log('ProcData state', newArray);
-    console.log('ArrayData state', array);
   });
-  console.log('ProcData:', newArray);
-  return newArray;
+  return processedData;
 };
 
 export const EditableTable = ({ parentComp, disabled, deleteTable, data, testStepId }) => {

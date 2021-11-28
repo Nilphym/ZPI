@@ -127,7 +127,6 @@ export const forgotPassword = createAsyncThunk(
 export const inviteUser = createAsyncThunk(
   'user/invite/byPM',
   async ({ email, role }, { getState }) => {
-    console.log(getState().auth.token);
     const response = await server().post({
       url: 'Account/invitation',
       data: {

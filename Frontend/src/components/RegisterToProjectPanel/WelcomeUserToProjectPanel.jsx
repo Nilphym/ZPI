@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -17,10 +17,6 @@ const StyledLink = styled(Link)({
 });
 
 export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
-  useEffect(() => {
-    console.log("Loading user's data");
-    // TODO: Linking with Reducer
-  }, []);
 
   return (
     <Box
