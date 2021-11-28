@@ -28,6 +28,7 @@ import {
   postTestProcedure,
   postTestCase
 } from '../../redux/store';
+import Error from '../Error/Error';
 
 const changeDateFormat = (date) => {
   const stringDate = date.toString();
@@ -49,7 +50,8 @@ export const Test = ({ isEditable }) => {
     selectedTestSuiteId,
     selectedTestCaseId,
     selectedTestProcedureId,
-    isLoadingTest: isLoading
+    isLoadingTest: isLoading,
+    error
   } = useSelector((state) => state.test);
 
   const {
@@ -106,6 +108,10 @@ export const Test = ({ isEditable }) => {
     await dispatch(getTestById());
   }
 
+  if (error) {
+    return <Error message={error} />;
+  }
+
   return (
     <Box
       sx={{
@@ -131,17 +137,19 @@ export const Test = ({ isEditable }) => {
           >
             Test
           </Typography>
-          <Box sx={{
-            marginTop: '1rem',
-            marginRight: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2rem',
-            paddingTop: '2rem',
-            paddingBottom: '2rem',
-            borderTop: '0.0625rem solid #edf0f9',
+          <Box
+            sx={{
+              marginTop: '1rem',
+              marginRight: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2rem',
+              paddingTop: '2rem',
+              paddingBottom: '2rem',
+              borderTop: '0.0625rem solid #edf0f9',
               borderBottom: '0.0625rem solid #edf0f9'
-          }}>
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
@@ -169,10 +177,12 @@ export const Test = ({ isEditable }) => {
                   />
                 )}
               />
-              <Box sx={{
-                width: '20rem',
-                position: 'relative'
-              }}>
+              <Box
+                sx={{
+                  width: '20rem',
+                  position: 'relative'
+                }}
+              >
                 <Typography
                   sx={{
                     position: 'absolute',
@@ -184,26 +194,32 @@ export const Test = ({ isEditable }) => {
                   {`Execution Counter: ${executionCounter}`}
                 </Typography>
               </Box>
-              <Box sx={{
-                width: '20rem',
-                position: 'relative'
-              }}>
-                <Typography sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  fontSize: '1.5rem'
-                }}>
+              <Box
+                sx={{
+                  width: '20rem',
+                  position: 'relative'
+                }}
+              >
+                <Typography
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: '1.5rem'
+                  }}
+                >
                   {`Creation Date: ${changeDateFormat(creationDate)}`}
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              margin: '0 auto',
-              gap: '5rem'
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                margin: '0 auto',
+                gap: '5rem'
+              }}
+            >
               <Controller
                 name="suiteSelect"
                 control={mainControl}
@@ -277,20 +293,34 @@ export const Test = ({ isEditable }) => {
               </Box>
             </Box>
           </Box>
-          {isEditable && !isEditing && (
-            <Button
+          {executionCounter === 0 ? (
+            <Box>
+              {isEditable && !isEditing && (
+                <Button
+                  sx={{
+                    position: 'absolute',
+                    top: '3rem',
+                    right: '3rem'
+                  }}
+                  variant="contained"
+                  onClick={() => setIsEditing(true)}
+                >
+                  Edit Test
+                </Button>
+              )}
+            </Box>
+          ) : (
+            <Typography
               sx={{
                 position: 'absolute',
                 top: '3rem',
-                right: '3rem'
+                right: '3rem',
+                fontWeight: '700'
               }}
-              variant="contained"
-              onClick={() => setIsEditing(true)}
             >
-              Edit Test
-            </Button>
+              Cannot edit executed test
+            </Typography>
           )}
-
           {selectedTestCaseId && <TestCase isEditable={isEditing} />}
           {selectedTestProcedureId && <TestProcedure isEditable={isEditing} />}
           {isEditing && (
@@ -309,9 +339,8 @@ export const Test = ({ isEditable }) => {
             </Button>
           )}
         </Box>
-      )
-      }
-    </Box >
+      )}
+    </Box>
   );
 };
 

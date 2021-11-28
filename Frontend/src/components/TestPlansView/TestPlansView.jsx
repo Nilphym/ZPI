@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { postTestPlan, getProductTestPlansById } from '../../redux/store';
 import TestPlanItem from './TestPlanItem';
+import Error from '../Error/Error';
 
 export const TestPlansView = () => {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export const TestPlansView = () => {
   const [isAddingTestPlan, setIsAddingTestPlan] = useState(false);
   const [searchBarData, setSearchBarData] = useState('');
 
-  const { testPlans, isLoading } = useSelector((state) => state.auth);
+  const { testPlans, isLoading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     async function getProductTestPlanData() {
@@ -40,6 +41,10 @@ export const TestPlansView = () => {
         keepIsValid: true
       }
     );
+  }
+
+  if (error) {
+    return <Error message={error} />;
   }
 
   return (

@@ -55,11 +55,13 @@ export default ImageCarousel;
 
 ImageCarousel.propTypes = {
   closeCarousel: PropTypes.func.isRequired,
-  bugId: PropTypes.string.isRequired,
+  bugId: PropTypes.string,
   startingPosition: PropTypes.number,
-  images: PropTypes.array.isRequired
+  images: PropTypes.array
 };
 
 ImageCarousel.defaultProps = {
-  startingPosition: 0
+  startingPosition: 0,
+  images: [],
+  bugId: null
 };
