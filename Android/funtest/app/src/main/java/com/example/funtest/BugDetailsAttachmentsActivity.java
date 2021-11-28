@@ -44,7 +44,7 @@ public class BugDetailsAttachmentsActivity extends AppCompatActivity {
     //private ArrayList<Bug> currentBugList;
     //int bug_list_position = -1;
     //private ArrayList<String> attachments= new ArrayList<>();
-    private ArrayList<Bitmap> attachmentsBitMap = new ArrayList<>();
+    private ArrayList<Bitmap> attachmentsBitMap;
 
     String bugId;
 
@@ -58,6 +58,8 @@ public class BugDetailsAttachmentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bug_details_attachments);
 
+        attachmentsBitMap = new ArrayList<>();
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         initializeViews();
@@ -67,38 +69,10 @@ public class BugDetailsAttachmentsActivity extends AppCompatActivity {
 
         StrictMode.setThreadPolicy(policy);
 
-        //checking which activity started this activity and setting proper list of bugs
-        /*
-        String sourceActivityName = getIntent().getStringExtra("sourceActivityName");
-        if(sourceActivityName.equals("BugDetailsActivity")){
-            currentBugList = MainActivity.bugList;
-        }
-        else if(sourceActivityName.equals("BugDetailsActivityToFix")){
-            currentBugList = MainActivity.bugList;
-        }
-        else if(sourceActivityName.equals("BugDetailsActivityToReview")){
-            currentBugList = MainActivity.bugList;
-        }
-        else if(sourceActivityName.equals("BugDetailsActivityMyBugs")){
-            currentBugList = MainActivity.bugList;
-        }
-
-         */
 
 
         //getting attachments list of selected bug
         getAttachments();
-
-        //getImages();
-        /*
-        //getting list of attachments as bitmap
-        for(int i = 0; i < attachments.size();i++){
-            byte[] currentDecodedString = Base64.decode(attachments.get(i), Base64.DEFAULT);
-            Bitmap currentDecodedImage = BitmapFactory.decodeByteArray(currentDecodedString, 0, currentDecodedString.length);
-            attachmentsBitMap.add(currentDecodedImage);
-        }
-
-         */
 
     }
 

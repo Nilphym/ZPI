@@ -21,4 +21,8 @@
 
     <color name="red">#d32f2f</color>
 
+    <color name="chart1">#ccebcb</color>
+    <color name="chart2">#99c699</color>
+    <color name="chart3">#4d9052</color>
+
 </resources>

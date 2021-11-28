@@ -11,13 +11,14 @@ const statisticIcons = {
   person: Person
 };
 
-export const Statistic = ({ name, number, icon }) => {
+export const Statistic = ({ sx, name, number, icon }) => {
   const Icon = statisticIcons[icon];
 
   return (
     <Box
       component={Paper}
       sx={{
+        ...sx,
         height: '9rem',
         width: '19rem',
         padding: '0 1.5rem',
@@ -51,7 +52,12 @@ export const Statistic = ({ name, number, icon }) => {
 export default Statistic;
 
 Statistic.propTypes = {
+  sx: PropTypes.object,
   name: PropTypes.string.isRequired,
   number: PropTypes.number.isRequired,
   icon: PropTypes.oneOf(Object.keys(statisticIcons)).isRequired
+};
+
+Statistic.defaultProps = {
+  sx: {}
 };

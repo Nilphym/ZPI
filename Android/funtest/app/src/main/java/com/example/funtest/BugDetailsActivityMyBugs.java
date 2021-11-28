@@ -3,20 +3,40 @@ package com.example.funtest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.funtest.objects.Bug;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BugDetailsActivityMyBugs extends AppCompatActivity {
 
@@ -24,14 +44,24 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
 
     Button button_bugAttachments, button_resign, button_changeState;
 
-    public static ArrayList<Bug> currentBugList = MainActivity.bugList;
+    public static ArrayList<Bug> currentBugList;
     int bug_list_position = -1;
+
+    private ProgressDialog pDialog;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentBugList = BugActivityMyBugs.bugListMyBugs;
+        get_position();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bug_details_my_bugs);
 
+        currentBugList = BugActivityMyBugs.bugListMyBugs;
         initializeViews();
         get_position();
 
@@ -60,6 +90,7 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
                 intent.putExtra("position",bug_list_position);
+                intent.putExtra("id",currentBugList.get(bug_list_position).getId());
                 intent.putExtra("sourceActivityName","BugDetailsActivityMyBugs");
                 startActivity(intent);
             }
@@ -74,8 +105,8 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // do something
-                                Toast.makeText(getApplicationContext(), "Resigned From Bug", Toast.LENGTH_SHORT).show();
-                                finish();
+                                resignFromBug();
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -105,8 +136,13 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 if( TextUtils.isEmpty(input.getText().toString())==false){
                                     String m_Text = input.getText().toString();
-                                    Toast.makeText(getApplicationContext(), "Bug Set As Fixed, no of Devs: "+m_Text, Toast.LENGTH_SHORT).show();
-                                    finish();
+                                    try {
+                                        int selectedNumber = Integer.parseInt(m_Text);
+                                        setFixed(selectedNumber);
+                                    } catch (NumberFormatException nfe) {
+                                        Toast.makeText(getApplicationContext(), "You Need To Insert A Number!", Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }else{
                                     Toast.makeText(getApplicationContext(), "You Need To Set Number Of Required Retests!", Toast.LENGTH_SHORT).show();
                                     //dialog.dismiss();
@@ -117,8 +153,8 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
                         .setNeutralButton("Reject", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // do something
-                                Toast.makeText(getApplicationContext(), "Bug Rejected", Toast.LENGTH_SHORT).show();
-                                finish();
+                                setRejected();
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -132,6 +168,245 @@ public class BugDetailsActivityMyBugs extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setFixed(int numberOfretests){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Errors/fixed/"+currentBugList.get(bug_list_position).getId();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("retestsRequired", numberOfretests);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,url,jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Bug Set As Fixed\nNumber of Required Retests: "+numberOfretests, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+
+                    try {
+                        String json = new String(
+                                response.data,
+                                "UTF-8"
+                        );
+
+                        if (json.length() == 0) {
+                            return Response.success(
+                                    null,
+                                    HttpHeaderParser.parseCacheHeaders(response)
+                            );
+                        }
+                        else {
+                            return super.parseNetworkResponse(response);
+                        }
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        return Response.error(new ParseError(e));
+                    }
+
+
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+    private void setRejected(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        String userId = preferences.getString("userId","");
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Errors/reject/"+currentBugList.get(bug_list_position).getId();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("developerId", userId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,url,jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                    Toast.makeText(getApplicationContext(), "Bug Rejected", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+
+                    try {
+                        String json = new String(
+                                response.data,
+                                "UTF-8"
+                        );
+
+                        if (json.length() == 0) {
+                            return Response.success(
+                                    null,
+                                    HttpHeaderParser.parseCacheHeaders(response)
+                            );
+                        }
+                        else {
+                            return super.parseNetworkResponse(response);
+                        }
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        return Response.error(new ParseError(e));
+                    }
+
+
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    private void resignFromBug() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        String userId = preferences.getString("userId","");
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Errors/resign/"+currentBugList.get(bug_list_position).getId();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("developerId", userId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,url,jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                    Toast.makeText(getApplicationContext(), "Resigned From Bug", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+
+                    try {
+                        String json = new String(
+                                response.data,
+                                "UTF-8"
+                        );
+
+                        if (json.length() == 0) {
+                            return Response.success(
+                                    null,
+                                    HttpHeaderParser.parseCacheHeaders(response)
+                            );
+                        }
+                        else {
+                            return super.parseNetworkResponse(response);
+                        }
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        return Response.error(new ParseError(e));
+                    }
+
+
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 
     private void get_position() {

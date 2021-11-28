@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import hash from 'object-hash';
+import { toast } from 'react-toastify';
 
 import server from '../../../services/server';
 
@@ -108,28 +109,39 @@ export const testExecutionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getExecutionTestFromErrorId.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getExecutionTestFromErrorId.fulfilled, (state, action) => {
         state.loading = false;
         state.test = action.payload;
       })
-      .addCase(getExecutionTestFromErrorId.rejected, (state) => {
+      .addCase(getExecutionTestFromErrorId.rejected, (state, action) => {
         state.loading = false;
         state.test = null;
+        toast.error(action.error.message);
       })
-      .addCase(getExecutionTestFromErrorId.pending, (state) => {
+
+      .addCase(getExecutionTest.pending, (state) => {
         state.loading = true;
       })
       .addCase(getExecutionTest.fulfilled, (state, action) => {
         state.loading = false;
         state.test = action.payload;
       })
-      .addCase(getExecutionTest.rejected, (state) => {
+      .addCase(getExecutionTest.rejected, (state, action) => {
         state.loading = false;
         state.test = null;
+        toast.error(action.error.message);
       })
-      .addCase(getExecutionTest.pending, (state) => {
-        state.loading = true;
+
+      .addCase(executeTest.fulfilled, () => {
+        toast.success('Test executed successfully');
       })
+      .addCase(executeTest.rejected, (_, action) => {
+        toast.error(action.error.message);
+      })
+
       .addCase(evaluateBug.fulfilled, (state, action) => {
         state.test.steps = state.test.steps.map((step) => ({
           ...step,
@@ -137,6 +149,10 @@ export const testExecutionSlice = createSlice({
             error.id === action.payload ? { ...error, executed: true } : error
           )
         }));
+        toast.success('Test evaluated successfully');
+      })
+      .addCase(evaluateBug.rejected, (_, action) => {
+        toast.error(action.error.message);
       });
   }
 });
