@@ -63,6 +63,7 @@ namespace Funtest
             services.AddTransient<ITestPlanService, TestPlanService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IReviewService, ReviewService>();
+            services.AddTransient<IChartService, ChartService>();
 
             services.AddMvc().AddNewtonsoftJson();
 
