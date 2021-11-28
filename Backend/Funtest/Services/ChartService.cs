@@ -14,19 +14,19 @@ namespace Funtest.Services
         {
 
         }
-        private int CountNumberOfPersonInRole(string role)
+        private int CountNumberOfPersonInRole(string role, Guid productId)
         {
             var roleId = Context.Roles.Where(x => x.Name == role).FirstOrDefault().Id;
 
             return Context.UserRoles
-                .Join(Context.Users, role => role.UserId, user => user.Id, (roleId, userId) => new { roleId = roleId.RoleId, userId = userId.Id })
-                .Where(x => x.roleId == roleId).Count();
+                .Join(Context.Users, role => role.UserId, user => user.Id, (roleId, user) => new { roleId = roleId.RoleId, user = user })
+                .Where(x => x.roleId == roleId && x.user.ProductId == productId).Count();
         }
 
         public ChartResponse GetDataToChart(Product product)
         {
-            var testerNumber = CountNumberOfPersonInRole(Roles.Tester);
-            var developerNumber = CountNumberOfPersonInRole(Roles.Developer);
+            var testerNumber = CountNumberOfPersonInRole(Roles.Tester, product.Id);
+            var developerNumber = CountNumberOfPersonInRole(Roles.Developer, product.Id);
 
             ChartResponse chartResponse = new ChartResponse()
             {
