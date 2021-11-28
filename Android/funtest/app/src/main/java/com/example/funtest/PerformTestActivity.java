@@ -3,7 +3,9 @@ package com.example.funtest;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -18,13 +20,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.funtest.objects.Bug;
 import com.example.funtest.objects.Test;
@@ -39,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -221,7 +229,7 @@ public class PerformTestActivity extends AppCompatActivity {
                             JSONArray jsonArrayErrors = jsonTestStep.getJSONArray("errors");
 
                             ArrayList<Bug> currentTestStepBugs = new ArrayList<>();
-                            for(int k=0;k<jsonArrayTestData.length();k++){
+                            for(int k=0;k<jsonArrayErrors.length();k++){
                                 JSONObject jsonError = jsonArrayErrors.getJSONObject(k);
 
                                 Bug currentBug = new Bug();
@@ -339,7 +347,26 @@ public class PerformTestActivity extends AppCompatActivity {
     }
 
     private void nextButtonClicked() {
+        if((test_step_position + 1 ) > (currentTestSteps.size() - 1)){
+            //show modal
+            AlertDialog.Builder builder = new AlertDialog.Builder(PerformTestActivity.this);
+            builder.setMessage("Do You Want To Finish The Execution Of This Test?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // do something
+                            postTestExecuted();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            builder.show();
+        }
         test_step_position = ((test_step_position + 1 ) > (currentTestSteps.size() - 1) ? (currentTestSteps.size() - 1) : (test_step_position  + 1 ));
+
         try {
             continueInit();
         } catch (JSONException e) {
@@ -378,6 +405,80 @@ public class PerformTestActivity extends AppCompatActivity {
 
          */
 
+    }
+
+    private void postTestExecuted() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Tests/"+testId+"/execute";
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,url,null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+
+                    try {
+                        String json = new String(
+                                response.data,
+                                "UTF-8"
+                        );
+
+                        if (json.length() == 0) {
+                            return Response.success(
+                                    null,
+                                    HttpHeaderParser.parseCacheHeaders(response)
+                            );
+                        }
+                        else {
+                            return super.parseNetworkResponse(response);
+                        }
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        return Response.error(new ParseError(e));
+                    }
+
+
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 
     private void prev_press_button_thread() {
@@ -445,5 +546,122 @@ public class PerformTestActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void getTestSteps2() {
+        if(currentTestSteps != null){
+            currentTestSteps.clear();
+        }
+        else{
+            currentTestSteps = new ArrayList<TestStep>();
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        if(!token.equalsIgnoreCase("")) {
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Tests/testExecution/"+ testId;
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                    JSONArray steps = null;
+                    try {
+                        steps = response.getJSONArray("steps");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (int i = 0; i < steps.length(); i++) {
+                        try {
+                            JSONObject jsonTestStep = steps.getJSONObject(i);
+
+                            TestStep currentTestStep = new TestStep();
+                            currentTestStep.setId(jsonTestStep.getString("id"));
+                            currentTestStep.setName(jsonTestStep.getString("name"));
+                            currentTestStep.setControlPoint(jsonTestStep.getString("controlPoint"));
+                            currentTestStep.setStepNumber(jsonTestStep.getInt("stepNumber"));
+
+                            ///
+                            JSONArray jsonArrayTestData = jsonTestStep.getJSONArray("testData");
+
+                            ArrayList<String> currentTestStepTestData = new ArrayList<>();
+                            for (int j = 0; j < jsonArrayTestData.length(); j++) {
+                                if (jsonArrayTestData.get(j) instanceof JSONObject) {
+                                    String currentTestData = jsonArrayTestData.getJSONObject(j).toString();
+                                    currentTestStepTestData.add(currentTestData);
+                                } else if (jsonArrayTestData.get(j) instanceof String) {
+                                    String currentTestData = jsonArrayTestData.getString(j);
+                                    currentTestStepTestData.add(currentTestData);
+                                }
+
+                            }
+                            currentTestStep.setTestData(currentTestStepTestData);
+
+                            ///
+                            JSONArray jsonArrayErrors = jsonTestStep.getJSONArray("errorIds");
+
+                            ArrayList<Bug> currentTestStepBugs = new ArrayList<>();
+                            for (int k = 0; k < jsonArrayTestData.length(); k++) {
+                                JSONObject jsonError = jsonArrayErrors.getJSONObject(k);
+
+                                Bug currentBug = new Bug();
+                                currentBug.setCode(jsonError.getString("code"));
+                                currentBug.setId(jsonError.getString("id"));
+
+                                currentTestStepBugs.add(currentBug);
+                            }
+                            currentTestStep.setStepErrors(currentTestStepBugs);
+
+                            currentTestSteps.add(currentTestStep);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    try {
+                        continueInit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+
+            requestQueue.add(jsonObjectRequest);
+        }
+
+
     }
 }
