@@ -70,8 +70,8 @@ const Layout = () => {
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
               { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               { icon: 'bugs', text: 'Bugs', destination: '/bugs' },
-              { icon: 'bugs', text: 'Invite User', destination: '/inviteUser' },
-              { icon: 'bugs', text: 'Delete User', destination: '/deleteUser' },
+              { icon: 'addUser', text: 'Invite User', destination: '/inviteUser' },
+              { icon: 'deleteUser', text: 'Delete User', destination: '/deleteUser' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
           />
