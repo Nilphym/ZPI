@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, CircularProgress } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,15 +24,12 @@ export const TestPlan = ({ isEditable }) => {
     error
   } = useSelector((state) => state.testPlan);
 
-  const { control, getValues } = useForm();
+  const { control } = useForm();
   const {
     control: testSuiteControl,
-    handleSubmit: handleTestSuite,
-    getValues: getTestSuiteFormValues
+    handleSubmit: handleTestSuite
   } = useForm();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingTestSuite, setIsAddingTestSuite] = useState(false);
@@ -127,7 +124,7 @@ export const TestPlan = ({ isEditable }) => {
             />
           </Box>
           <Box sx={{ marginTop: '3rem' }}>
-            {testSuites.map(({ id, category }) => (
+            {testSuites.map(({ id }) => (
               <TestSuiteItem isEditable={isEditing} editTest={isEditable} testSuiteId={id} />
             ))}
             {!isAddingTestSuite && isEditing && (
