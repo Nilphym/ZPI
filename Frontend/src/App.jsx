@@ -24,6 +24,7 @@ import {
   RetestBugsPage,
   DashboardPage
 } from './pages';
+import DeleteUserPanel from './components/DeleteUserPanel/DeleteUserPanel';
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
           <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
           <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
+          <Route path="deleteUser" element={<DeleteUserPanel />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFound />} />

@@ -66,7 +66,8 @@ const initialState = {
   isLoadingTestProcedure: true,
   isLoadingTestCase: true,
   selectedTestStep: {},
-  isLoadingTestStep: {}
+  isLoadingTestStep: {},
+  error: ''
 };
 
 // ----------------------------------------- Test API
@@ -232,7 +233,9 @@ export const postTestStep = createAsyncThunk(
     const dataToSend = {};
     dataToSend.testProcedureId = currentTestProcedureId;
     dataToSend.name = newStepName;
-    const { selectedTestStep } = getState().test;
+    const {
+      selectedTestStep
+    } = getState().test;
     const stepsKeys = Object.keys(selectedTestStep);
     const newStepNumber = Object.keys(selectedTestStep).length > 0 ? selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1 : 1;
     dataToSend.stepNumber = newStepNumber;
@@ -405,21 +408,22 @@ export const testSlice = createSlice({
         state.selectedTestCaseId = testCase ? testCase.id : '';
         state.selectedTestProcedureId = testProcedure ? testProcedure.id : '';
         state.isLoadingTest = false;
+        state.error = '';
       })
-      .addCase(getTestById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestById.fulfilled, () => {
-        alert('Object changed');
-      })
-      .addCase(putTestById.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(putTestById.fulfilled, () => {
+      //   alert('Object changed');
+      // })
+      .addCase(putTestById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
       .addCase(postTest.fulfilled, (_, action) => {
         return action.payload.testPlanId;
       })
-      .addCase(postTest.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(postTest.rejected, (state, action) => {
+        state.error = action.error.message;
       })
       .addCase(getTestProcedureById.fulfilled, (state, action) => {
         const {
@@ -440,40 +444,40 @@ export const testSlice = createSlice({
           state.selectedTestStep[testStepId] = {};
         });
       })
-      .addCase(getTestProcedureById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestProcedureById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestProcedureById.fulfilled, () => {
-        alert('Object changed');
+      // .addCase(putTestProcedureById.fulfilled, () => {
+      //   alert('Object changed');
+      // })
+      .addCase(putTestProcedureById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestProcedureById.rejected, (_, action) => {
-        alert(action.error.message);
-      })
-      .addCase(postTestProcedure.fulfilled, () => {
-        alert('Object added');
-      })
-      .addCase(postTestProcedure.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(postTestProcedure.fulfilled, () => {
+      //   alert('Object added');
+      // })
+      .addCase(postTestProcedure.rejected, (state, action) => {
+        state.error = action.error.message;
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
         state.selectedTestCase.entryData = typeof (action.payload.entryDataObject) === 'object' && Object.keys(action.payload.entryDataObject).length > 0 ? transformEntryData(action.payload.entryDataObject) : [];
         state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })
-      .addCase(getTestCaseById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestCaseById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestCaseById.fulfilled, () => {
-        alert('Object changed');
+      // .addCase(putTestCaseById.fulfilled, () => {
+      //   alert('Object changed');
+      // })
+      .addCase(putTestCaseById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestCaseById.rejected, (_, action) => {
-        alert(action.error.message);
-      })
-      .addCase(postTestCase.fulfilled, () => {
-        alert('Object changed');
-      })
-      .addCase(postTestCase.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(postTestCase.fulfilled, () => {
+      //   alert('Object changed');
+      // })
+      .addCase(postTestCase.rejected, (state, action) => {
+        state.error = action.error.message;
       })
       .addCase(getTestStepById.fulfilled, (state, action) => {
         const {
@@ -491,20 +495,20 @@ export const testSlice = createSlice({
         state.selectedTestStep[id].controlPoint = controlPoint;
         state.isLoadingTestStep[id] = false;
       })
-      .addCase(getTestStepById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestStepById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestStepById.fulfilled, () => {
-        console.log('Object changed');
+      // .addCase(putTestStepById.fulfilled, () => {
+      //   console.log('Object changed');
+      // })
+      .addCase(putTestStepById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestStepById.rejected, (_, action) => {
-        alert(action.error.message);
-      })
-      .addCase(postTestStep.fulfilled, () => {
-        console.log('Object changed, Object added');
-      })
-      .addCase(postTestStep.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(postTestStep.fulfilled, () => {
+      //   console.log('Object changed, Object added');
+      // })
+      .addCase(postTestStep.rejected, (state, action) => {
+        state.error = action.error.message;
       });
   }
 });
