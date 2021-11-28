@@ -14,6 +14,8 @@ import {
 } from '@mui/icons-material';
 import { grey } from '@mui/material/colors';
 import { styled, useTheme } from '@mui/system';
+import AddReactionIcon from '@mui/icons-material/AddReaction';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import NavProfile from './NavProfile';
 import NavLink from './NavLink';
@@ -26,7 +28,9 @@ const icons = {
   bugs: <BugReport />,
   tests: <FormatListBulleted />,
   logout: <Login />,
-  profile: <Person />
+  profile: <Person />,
+  addUser: <AddReactionIcon />,
+  deleteUser: <DeleteOutlineIcon />
 };
 
 const Logo = styled('img')({

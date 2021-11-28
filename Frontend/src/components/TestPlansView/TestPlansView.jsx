@@ -51,7 +51,7 @@ export const TestPlansView = () => {
     <Box
       sx={{
         margin: '1.5rem',
-        minWidth: '70rem'
+        minWidth: '90rem'
       }}
     >
       <Typography
