@@ -32,9 +32,9 @@ namespace Funtest.Services
             return $"{baseUrl}/{role}/{productIdEncoded}/{emailEncoded}";
         }
 
-        public async Task<bool> SendInvitationLinkAsync(DataToInvitationLinkRequest request)
+        public async Task<bool> SendInvitationLinkAsync(DataToInvitationLinkRequest request, string productName)
         {
-            var baseUrl = "https://localhost:3000/api/account";
+            var baseUrl = _configuration["EmailService:invitationLink"];
 
             var mailMessage = new MimeMessage();
             mailMessage.From.Add(new MailboxAddress(_configuration["EmailService:name"], _configuration["EmailService:email"]));
@@ -43,10 +43,13 @@ namespace Funtest.Services
 
             var builder = new BodyBuilder();
             builder.HtmlBody = string.Format(
-                @$"<h2>Hello in Funtest Community. </h2>
-                <p>{_configuration["EmailService:invitationMessage"]}</p>
-                <a href={CreateInvitationUrl(baseUrl, request.Role, request.ProductId, request.Email)}>Click here to register</a>
-                <p>Best regards, {_configuration["EmailService:name"]}"
+                @$"<h2>Hello in the Funtest Community!</h2>
+                <p>Your company's project manager has invited you to join as a {request.Role} of the {productName} product in the Funtest system.
+                Accept this invitation to get access today and help us in our journey to a bugless World!</p>
+                <a href={CreateInvitationUrl(baseUrl, request.Role, request.ProductId, request.Email)}>Click here to register!</a>
+                <hr/>
+                <p>Best regards,</p>
+                <p>{_configuration["EmailService:name"]}</p>"
             );
             mailMessage.Body = builder.ToMessageBody();
 
@@ -69,15 +72,13 @@ namespace Funtest.Services
                 {
                     return false;
                 }
-
             }
             return true;
         }
 
-        //url wyrzucić 
         public async Task<bool> SendResetPasswordMail(User user, string encodedToken, string baseUrl)
         {
-            baseUrl = "https://localhost:3000/api/auth";
+            baseUrl = _configuration["EmailService:passwordReset"];
             string url = $"{baseUrl}/{user.Id}/{encodedToken}";
 
             var mailMessage = new MimeMessage();
@@ -90,8 +91,9 @@ namespace Funtest.Services
                 @$"<h2>Hello in Funtest Community. </h2>
                 <p>Click link to reset pssword.</p>
                 <a href='{url}'>Reset password link</a>
-                <p>Best regards, {_configuration["EmailService:name"]}"
-            );
+                <hr/>
+                <p>Best regards,</p>
+                <p>{_configuration["EmailService:name"]}</p>");
             mailMessage.Body = builder.ToMessageBody();
 
             var result = await Send(mailMessage);

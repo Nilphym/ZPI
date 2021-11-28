@@ -20,7 +20,7 @@ namespace Funtest.Services
 
             return Context.UserRoles
                 .Join(Context.Users, role => role.UserId, user => user.Id, (roleId, user) => new { roleId = roleId.RoleId, user = user })
-                .Where(x => x.roleId == roleId && x.user.ProductId == productId).Count();
+                .Where(x => x.roleId == roleId && x.user.ProductId == productId && !x.user.IsDeleted).Count();
         }
 
         public ChartResponse GetDataToChart(Product product)

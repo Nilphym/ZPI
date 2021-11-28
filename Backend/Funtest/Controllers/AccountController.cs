@@ -34,7 +34,10 @@ namespace Funtest.Controllers
         [Authorize(Roles = Roles.ProjectManager)]
         public async Task<ActionResult> UserInvitationAsync(DataToInvitationLinkRequest request)
         {
-            var result = await _emailService.SendInvitationLinkAsync(request);
+            var principal = HttpContext.User;
+            var productName = principal.Claims.Where(x => x.Type == "productName").Select(x => x.Value).FirstOrDefault();
+
+            var result = await _emailService.SendInvitationLinkAsync(request, productName);
             if (result)
                 return Ok();
             return Problem("Problem with sending invitation email.");
@@ -55,7 +58,7 @@ namespace Funtest.Controllers
 
             if (userName != null)
                 return Ok(userName);
-            return Problem("Problem with creating nre user.");
+            return Problem("Problem with creating new user.");
         }
 
         [HttpPost("forgotPassword")]

@@ -183,12 +183,12 @@ namespace Funtest.Services
                 Result = test.TestProcedure.Result
             };
 
-            var error = await Context.Errors.Include(x => x.Test)
+          /*  var error = await Context.Errors.Include(x => x.Test)
                 .Include(x => x.Step)
                 .Include(x => x.Step.TestProcedure)
                 .Include(x => x.Step.TestProcedure.TestCase)
                 .Where(x => x.TestId == testId)
-                .FirstAsync();
+                .FirstAsync();*/
 
             return errorTest;
         }

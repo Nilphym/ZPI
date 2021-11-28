@@ -49,9 +49,9 @@ namespace Funtest.Controllers
             if (!_stepService.IsStepExist(request.StepId))
                 return NotFound("Step with given id doesn't exist.");
 
-            var result = await _errorService.AddError(request, test.TestSuite.Category);
-            if (result)
-                return Ok();
+            var index = await _errorService.AddError(request, test.TestSuite.Category);
+            if (index != null)
+                return Ok(index);
             return Problem("Problem with saving changes in database.");
         }
 
@@ -232,6 +232,12 @@ namespace Funtest.Controllers
             return (ActionResult<GetErrorTestWithProcedureAndCaseResponse>)errorTest;
         }
 
+
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="errorId"></param>
+        /// <returns></returns>
         [HttpGet("{errorId}/executed")]
         public async Task<ActionResult<bool>> IsErrorReviewed(Guid errorId)
         {

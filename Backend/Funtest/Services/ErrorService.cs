@@ -234,7 +234,7 @@ namespace Funtest.Services
             return $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8).ToUpper()}";
         }
 
-        public async Task<bool> AddError(AddErrorRequest request, string testSuiteCategory)
+        public async Task<Guid?> AddError(AddErrorRequest request, string testSuiteCategory)
         {
             var error = _mapper.Map<Error>(request);
             var index = Guid.NewGuid();
@@ -245,8 +245,8 @@ namespace Funtest.Services
             Context.Errors.Add(error);
 
             if (await Context.SaveChangesAsync() == 0)
-                return false;
-            return true;
+                return null;
+            return index;
         }
 
         public async Task<bool> SetErrorCategory(Error error, string category)
