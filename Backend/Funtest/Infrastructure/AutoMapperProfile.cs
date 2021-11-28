@@ -42,6 +42,7 @@ namespace Funtest.Infrastructure
             CreateMap<AddTestCaseRequest, TestCase>();
             CreateMap<TestCase, GetTestCaseResponse>();
             CreateMap<TestCase, GetTestCaseIdentityValueResponse>();
+            CreateMap<TestCase, GetTestCaseWithTabelFormatResponse>();
 
             //Mapowania dla TestProcedure
             CreateMap<AddTestProcedureRequest, TestProcedure>();
@@ -53,6 +54,7 @@ namespace Funtest.Infrastructure
             //Mapowania dla TestProcedure
             CreateMap<AddTestRequest, Test>();
             CreateMap<Test, GetTestResponse>();
+            CreateMap<TestProcedure, GetResultTestProcedureResponse>();
 
             //Mapowania dla TestSuite
             CreateMap<TestSuite, GetTestSuiteResponse>();
@@ -63,6 +65,7 @@ namespace Funtest.Infrastructure
             CreateMap<AddTestPlanRequest, TestPlan>();
             CreateMap<TestPlan, GetTestPlanWithTestSuitesAndTestsResponse>();
             CreateMap<TestPlan, GetTestPlanIdentityValueResponse>();
+            CreateMap<TestPlan, GetTestPlanForMaciejResponse>();
 
             //Mapowanie dla Błędów
             CreateMap<Error, GetErrorResponse>()
@@ -79,6 +82,7 @@ namespace Funtest.Infrastructure
             CreateMap<Test, GetTestResponse>();
             CreateMap<Test, GetTestIdentityInformationResponse>();
             CreateMap<Test, GetTestBasicInformationResponse>();
+            CreateMap<Test, GetTestWithProcedureAndCaseTestResponse>();
 
             //Mapowanie dla Załącznika
             CreateMap<AddAttachmentRequest, Attachment>();
@@ -94,8 +98,6 @@ namespace Funtest.Infrastructure
 
             //Mapowania dla Review
             CreateMap<AddReviewRequest, Review>();
-
-
         }
 
         private string GetExpression(ErrorType errorType)

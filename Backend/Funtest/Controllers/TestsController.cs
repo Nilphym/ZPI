@@ -135,5 +135,15 @@ namespace Funtest.Controllers
 
             return test;
         }
+
+        [HttpGet("android/{id}")]
+        public async Task<ActionResult<GetTestWithProcedureAndCaseTestResponse>> GetTestForAndroid(Guid id)
+        {
+            TestsController testsController = this;
+            if (!testsController._testService.IsTestExist(id))
+                return (ActionResult<GetTestWithProcedureAndCaseTestResponse>)(ActionResult)testsController.NotFound((object)"Test with given id doesn't exist.");
+            GetTestWithProcedureAndCaseTestResponse testByIdForAndroid = await testsController._testService.GetTestByIdForAndroid(id);
+            return (ActionResult<GetTestWithProcedureAndCaseTestResponse>)(ActionResult)testsController.Ok((object)testByIdForAndroid);
+        }
     }
 }

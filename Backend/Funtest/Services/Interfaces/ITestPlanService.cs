@@ -14,5 +14,6 @@ namespace Funtest.Services.Interfaces
         Task<bool> EditTestPlan(Guid id, EditTestPlanRequest request);
 
         List<GetTestPlanIdentityValueResponse> GetAllTestPlansForProduct(Guid productId);
+        Task<GetTestPlanForMaciejResponse> GetTestPlanWithTestSuiteAndTestForMaciej(Guid testPlanId);
     }
 }

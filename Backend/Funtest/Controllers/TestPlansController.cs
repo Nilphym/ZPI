@@ -10,6 +10,7 @@ using Funtest.TransferObject.TestPlan.Responses;
 using Funtest.TransferObject.TestPlan.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
+using Funtest.TransferObject.TestSuite.Responses;
 
 namespace Funtest.Controllers
 {
@@ -81,6 +82,26 @@ namespace Funtest.Controllers
 
             var result = _testPlanService.GetAllTestPlansForProduct(productId);
             return Ok(result);
+        }
+
+
+        [HttpGet("maciej/{id}")]
+        public async Task<ActionResult<GetTestPlanForMaciejResponse>> GetTestPlanForMaciej(
+          Guid id)
+        {
+            TestPlansController testPlansController = this;
+            GetTestPlanForMaciejResponse testPlan = await testPlansController._testPlanService.GetTestPlanWithTestSuiteAndTestForMaciej(id);
+            List<GetTestSuiteResponse> suiteForTestPlan = testPlansController._testSuiteService.GetTestSuiteForTestPlan(id);
+            if (testPlan == null)
+                return (ActionResult<GetTestPlanForMaciejResponse>)(ActionResult)testPlansController.NotFound((object)"Test plan with given id doesn't exist.");
+            testPlan.TestSuites = new List<GetTestSuiteWithTestsResponse>();
+            foreach (GetTestSuiteResponse testSuite in suiteForTestPlan)
+            {
+                GetTestSuiteWithTestsResponse testSuiteWithTests = await testPlansController._testSuiteService.GetTestSuiteWithTests(testSuite.Id);
+                testSuiteWithTests.TestsForTestSuite = testPlansController._testService.GetTestsDataForTestSuite(testSuite.Id);
+                testPlan.TestSuites.Add(testSuiteWithTests);
+            }
+            return (ActionResult<GetTestPlanForMaciejResponse>)testPlan;
         }
     }
 }

@@ -64,7 +64,6 @@ namespace Funtest.Services
         public async Task<bool> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var user = Context.Users.Where(x => x.Email == request.Email && x.UserName == request.UserName).FirstOrDefault();
-            //  var user = await UserManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
@@ -73,7 +72,7 @@ namespace Funtest.Services
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
-            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "https://localhost:44360/");
+            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "");
 
             return emailServiceResponse;
         }

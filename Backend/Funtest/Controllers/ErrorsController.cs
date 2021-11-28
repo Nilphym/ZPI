@@ -213,15 +213,23 @@ namespace Funtest.Controllers
         }
 
         [HttpGet("ErrorTest/{errorId}")]
-        public async Task<ActionResult<ErrorTestResponse>> GetErrorTest([FromRoute] Guid errorId)
+        public async Task<ActionResult<GetErrorTestWithProcedureAndCaseResponse>> GetErrorTest([FromRoute] Guid errorId)
         {
-            if (!_errorService.IsErrorExist(errorId))
-                return NotFound("Error with givenn id doesn't exist");
+            // if (!_errorService.IsErrorExist(errorId))
+            //  return NotFound("Error with givenn id doesn't exist");
 
-            var errorTest = await _errorService.GetErrorTest(errorId);
-            errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+            // var errorTest = await _errorService.GetErrorTest(errorId);
+            // errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
 
-            return errorTest;
+            // return errorTest;
+            ErrorsController errorsController = this;
+            if (!errorsController._errorService.IsErrorExist(errorId))
+                return (ActionResult<GetErrorTestWithProcedureAndCaseResponse>)(ActionResult)errorsController.NotFound((object)"Error with givenn id doesn't exist");
+            GetErrorTestWithProcedureAndCaseResponse errorTest = await errorsController._errorService.GetErrorTest(errorId);
+            GetErrorTestWithProcedureAndCaseResponse procedureAndCaseResponse = errorTest;
+            procedureAndCaseResponse.Steps = await errorsController._stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+            procedureAndCaseResponse = (GetErrorTestWithProcedureAndCaseResponse)null;
+            return (ActionResult<GetErrorTestWithProcedureAndCaseResponse>)errorTest;
         }
 
         [HttpGet("{errorId}/executed")]

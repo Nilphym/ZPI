@@ -34,7 +34,7 @@ namespace Funtest.Services
 
         public async Task<bool> SendInvitationLinkAsync(DataToInvitationLinkRequest request)
         {
-            var baseUrl = "https://localhost:44360/api/auth";
+            var baseUrl = "https://localhost:3000/api/account";
 
             var mailMessage = new MimeMessage();
             mailMessage.From.Add(new MailboxAddress(_configuration["EmailService:name"], _configuration["EmailService:email"]));
@@ -74,9 +74,10 @@ namespace Funtest.Services
             return true;
         }
 
+        //url wyrzucić 
         public async Task<bool> SendResetPasswordMail(User user, string encodedToken, string baseUrl)
         {
-            baseUrl = "https://localhost:44360/api/auth";
+            baseUrl = "https://localhost:3000/api/auth";
             string url = $"{baseUrl}/{user.Id}/{encodedToken}";
 
             var mailMessage = new MimeMessage();

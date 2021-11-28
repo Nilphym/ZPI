@@ -30,7 +30,7 @@ namespace Funtest.Services.Interfaces
         List<string> ErrorImpacts();
         List<string> ErrorPriorities();
         List<string> ErrorTypes();
-        Task<ErrorTestResponse> GetErrorTest(Guid errorId);
+        Task<GetErrorTestWithProcedureAndCaseResponse> GetErrorTest(Guid errorId);
         List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId);
         Task<bool> IsErrorReviewed(Guid errorId);
         Task<bool> ChangeErrorStatus(Guid errorId, ErrorState errorState);

@@ -94,6 +94,7 @@ namespace Funtest.Controllers
 
             if (!result)
                 return Conflict("You can't do this.");
+
             var userRole = await _authService.UserRole(userToRemove);
             if (userRole == Roles.Developer)
                 result = result && await _errorService.ResignFromEverErrors(userToRemove.Id);

@@ -4,7 +4,11 @@ using Funtest.Services.Interfaces;
 using Funtest.TransferObject.Error.Response;
 using Funtest.TransferObject.Test.Requests;
 using Funtest.TransferObject.Test.Response;
+using Funtest.TransferObject.TestCase.Responses;
+using Funtest.TransferObject.TestProcedure.Responses;
+using Funtest.TransferObject.TestSuite.Responses;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,6 +135,39 @@ namespace Funtest.Services
                 .FirstOrDefaultAsync();
 
             return _mapper.Map<GetTestResponse>(test);
+        }
+
+        public async Task<GetTestWithProcedureAndCaseTestResponse> GetTestByIdForAndroid(Guid id)
+        {
+            var test = Context.Tests
+                .Where(x => x.Id == id)
+                .Include(x => x.TestProcedure)
+                .Include(x => x.TestCase)
+                .Include(x => x.TestSuite)
+                .FirstOrDefault();
+
+            var testWithProcedureAndCase = new GetTestWithProcedureAndCaseTestResponse()
+            {
+                Id = test.Id,
+                Name = test.Name,
+                CreationDate = test.CreationDate,
+                ExecutionCounter = test.ExecutionCounter,
+                TestSuite = _mapper.Map<GetTestSuiteResponse>(test.TestSuite),
+                TestProcedure = _mapper.Map<GetResultTestProcedureResponse>(test.TestProcedure)
+            };
+
+            if (test.TestCase != null)
+            {
+                testWithProcedureAndCase.TestCase = new GetTestCaseWithTabelFormatResponse()
+                {
+                    Id = test.TestCase.Id,
+                    Code = test.TestCase.Code,
+                    Preconditions = test.TestCase.Preconditions,
+                    EntryDataObject = test.TestCase.EntryDataObject != null ? test.TestCase.EntryDataObject.GetValue("data") : ""
+                };
+            }
+
+            return testWithProcedureAndCase;
         }
 
         public async Task<ErrorTestResponse> GetTestExecutionWithError(Guid testId)

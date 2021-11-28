@@ -259,19 +259,24 @@ namespace Funtest.Services
             return true;
         }
 
-        public async Task<ErrorTestResponse> GetErrorTest(Guid errorId)
+        public async Task<GetErrorTestWithProcedureAndCaseResponse> GetErrorTest(Guid errorId)
         {
-            ErrorTestResponse errorTest = new ErrorTestResponse();
-
-            var error = await Context.Errors.Include(x => x.Test)
+            var error = await Context.Errors
+                .Include(x => x.Test)
                 .Include(x => x.Step)
                 .Include(x => x.Step.TestProcedure)
                 .Include(x => x.Step.TestProcedure.TestCase)
                 .Where(x => x.Id == errorId)
                 .FirstAsync();
 
+            GetErrorTestWithProcedureAndCaseResponse errorTest = new GetErrorTestWithProcedureAndCaseResponse();
+
             errorTest.TestId = (Guid)error.TestId;
             errorTest.TestName = error.Test.Name;
+            errorTest.CreationDate = error.Test.CreationDate;
+            errorTest.TestCaseId = (Guid)error.Test.TestCaseId;
+            errorTest.TestCaseCode = error.Step.TestProcedure.TestCase.Code;
+
 
             if (error.Step.TestProcedure.TestCase.EntryDataObject != null)
                 errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryDataObject.GetValue("data");
@@ -279,7 +284,8 @@ namespace Funtest.Services
                 errorTest.TestCaseEntryData = "";
 
             errorTest.TestCaseProconditions = error.Step.TestProcedure.TestCase.Preconditions;
-
+            errorTest.TestProcedureId = (Guid)error.Step.TestProcedureId;
+            errorTest.TestProcedureCode = error.Step.TestProcedure.Code;
             errorTest.Result = error.Step.TestProcedure.Result;
             return errorTest;
         }
