@@ -20,15 +20,22 @@ public class BugDetailsActivity extends AppCompatActivity {
 
     Button button_bugAttachments;
 
-    public static ArrayList<Bug> currentBugList = MainActivity.bugList;
+    public static ArrayList<Bug> currentBugList;
     int bug_list_position = -1;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentBugList = MainActivity.bugList;
+        get_position();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bug_details);
 
-
+        currentBugList = MainActivity.bugList;
         initializeViews();
         get_position();
 
@@ -56,7 +63,7 @@ public class BugDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
-                intent.putExtra("position",bug_list_position);
+                intent.putExtra("id",currentBugList.get(bug_list_position).getId());
                 intent.putExtra("sourceActivityName","BugDetailsActivity");
                 startActivity(intent);
             }

@@ -52,13 +52,21 @@ public class TestPlanDetailsActivity extends AppCompatActivity {
 
         initializeViews();
         get_position();
-        getTestPlansData();
+        //getTestPlansData();
 
         //setting textviews in layout with current bug details
         textView_name.setText(currentTestPlanList.get(testPlan_list_position).getName());
 
         //setting expandable list adapter
         //testSuiteAdapterExpandableListView = new TestSuiteAdapterExpandableListView(this,currentTestPlanList.get(testPlan_list_position).getTestSuites());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getTestPlansData();
+
 
     }
 

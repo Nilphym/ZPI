@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static ArrayList<Bug> bugList;
     public static ArrayList<TestPlan> testPlanList;
 
+    private ProgressDialog pDialog;
+    private ProgressDialog pDialog2;
+
 
 
     @Override
@@ -92,12 +96,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
 
+        /*
         //begin transaction and load default fragment
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
         fragmentTransaction.commit();
+
+         */
 
         //check necessary permissons
         checkPermissions();
@@ -132,15 +139,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //DASHBOARD get user stats / If PM: get project stats
 
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //TESTS get public data
         getTestPlanList();
 
         //BUGS get public data
         getBugList();
-
-
-
-
     }
 
     private void getTestPlanList() {
@@ -150,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String token = preferences.getString("Token", "");
         String productId = preferences.getString("productId", "");
         if(!token.equalsIgnoreCase("") && !productId.equalsIgnoreCase("")) {
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
 
             String url = "https://fun-test-zpi.herokuapp.com/api/Product/"+productId+"/TestPlans";
 
@@ -160,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
 
                     for(int i=0;i<response.length();i++){
                         try {
@@ -180,6 +198,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
 
                 }
             }){
@@ -207,6 +229,94 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //fetching public bug list from API
     private void getBugList() {
+        MainActivity.bugList = new ArrayList<>();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+        String productId = preferences.getString("productId", "");
+        if(!token.equalsIgnoreCase("") && !productId.equalsIgnoreCase("")) {
+            pDialog2 = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog2.setMessage("Loading...");
+            pDialog2.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Project/"+productId+"/Errors";
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //JSONObject jsonBody = new JSONObject();
+            //jsonBody.put("token", token);
+
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    if (pDialog2 != null) {
+                        pDialog2.dismiss();
+                        pDialog2 = null;
+                    }
+
+                    for(int i=0;i<response.length();i++){
+                        try {
+                            JSONObject currentObject = response.getJSONObject(i);
+                            Bug currentBug = new Bug();
+
+                            currentBug.setId(currentObject.getString("id"));
+                            currentBug.setDeadline(currentObject.getString("deadline"));
+                            currentBug.setDescription(currentObject.getString("description"));
+                            currentBug.setEndDate(currentObject.getString("endDate"));
+                            currentBug.setImpact(currentObject.getString("errorImpact"));
+                            currentBug.setName(currentObject.getString("name"));
+                            currentBug.setCode(currentObject.getString("code"));
+                            currentBug.setPriority(currentObject.getString("errorPriority"));
+                            currentBug.setReportDate(currentObject.getString("reportDate"));
+                            currentBug.setState(currentObject.getString("errorState"));
+                            currentBug.setType(currentObject.getString("errorType"));
+                            currentBug.setFunctionality(currentObject.getString("functionality"));
+                            currentBug.setRetestsRequired(currentObject.getInt("retestsRequired"));
+                            currentBug.setRetestsDone(currentObject.getInt("retestsDone"));
+                            currentBug.setRetestsFailed(currentObject.getInt("retestsFailed"));
+
+                            MainActivity.bugList.add(currentBug);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    //begin transaction and load default fragment
+                    fragmentManager = getSupportFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+
+                    fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
+                    fragmentTransaction.commit();
+
+                }
+            }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog2 != null) {
+                        pDialog2.dismiss();
+                        pDialog2 = null;
+                    }
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+
+            requestQueue.add(jsonArrayRequest);
+        }
+
+
+
+        /*
         //CURRENTLY ADDING STATIC DATA
         MainActivity.bugList = new ArrayList<>();
 
@@ -223,6 +333,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MainActivity.bugList.add(new Bug("E-12326","Screen Freezes","New","Refresh page","Functional","Low","Low",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments4));
         MainActivity.bugList.add(new Bug("E-12327","Screen not responding","New","Refresh page","Functional","Low","Low",1,1,1,"12/15/2022","12/20/2022","12/05/2022","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat sed risus vel iaculis. Phasellus imperdiet velit a rhoncus dignissim. Vivamus blandit fringilla ligula, et eleifend nisl imperdiet cursus. Nullam non lobortis risus. Integer sollicitudin mattis neque, eget imperdiet mauris maximus vitae. Praesent fringilla, nisl eget dictum maximus, sapien odio sodales magna, et finibus dolor massa in turpis. Donec enim felis, suscipit malesuada libero vitae, lacinia efficitur enim.",attachments5));
         //
+
+         */
     }
 
 
@@ -311,5 +423,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static String getJson(String strEncoded) throws UnsupportedEncodingException {
         byte[] decodedBytes = Base64.decode(strEncoded, Base64.URL_SAFE);
         return new String(decodedBytes, "UTF-8");
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

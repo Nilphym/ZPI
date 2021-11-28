@@ -16,11 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.funtest.objects.Bug;
 import com.example.funtest.objects.TestCase;
@@ -30,8 +34,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class BugDetailsActivityPerformTest extends AppCompatActivity {
@@ -56,6 +64,8 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
 
         get_bugData();
 
+        //check permissions
+
 
         button_bugAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +85,9 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // do something
-                                Toast.makeText(getApplicationContext(), "Bug Set As Fixed", Toast.LENGTH_SHORT).show();
-                                finish();
+                                //Toast.makeText(getApplicationContext(), "Bug Set As Fixed", Toast.LENGTH_SHORT).show();
+                                postAsFixedOrUnfixed(true);
+                                //finish();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -97,8 +108,9 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // do something
-                                Toast.makeText(getApplicationContext(), "Bug Set As Unfixed", Toast.LENGTH_SHORT).show();
-                                finish();
+                                //Toast.makeText(getApplicationContext(), "Bug Set As Unfixed", Toast.LENGTH_SHORT).show();
+                                //finish();
+                                postAsFixedOrUnfixed(false);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -110,6 +122,97 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
+
+    private void postAsFixedOrUnfixed(Boolean isFixed) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString("Token", "");
+
+        if(!token.equalsIgnoreCase("")) {
+
+            pDialog = new ProgressDialog(this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+            String url = "https://fun-test-zpi.herokuapp.com/api/Reviews/" +currentBug.getId();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+            StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("LOG_RESPONSE", response.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Bug Reviewed", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                    if (pDialog != null) {
+                        pDialog.dismiss();
+                        pDialog = null;
+                    }
+                    if (error == null || error.networkResponse == null) {
+                        return;
+                    }
+
+                    String body;
+                    //get status code here
+                    final String statusCode = String.valueOf(error.networkResponse.statusCode);
+                    //get response body and parse with appropriate encoding
+                    try {
+                        body = new String(error.networkResponse.data,"UTF-8");
+                        Log.e("LOG_ERROR_DATA", body);
+
+                    } catch (UnsupportedEncodingException e) {
+                        // exception
+                    }
+
+                    //do stuff with the body...
+                }
+            }) {
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    HashMap<String, Boolean> params2 = new HashMap<String, Boolean>();
+                    params2.put("result", isFixed);
+
+                    return new JSONObject(params2).toString().getBytes();
+                    /*
+                    HashMap<String, String> params2 = new HashMap<String, String>();
+                    if(isFixed){
+                        params2.put("result", "true");
+                    }
+                    else{
+                        params2.put("result", "false");
+                    }
+                    return new JSONObject(params2).toString().getBytes();
+                    */
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json";
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer "+ token);
+                    return params;
+                }
+            };
+
+
+            requestQueue.add(sr);
+        }
+
     }
 
     private void get_bugData() {
@@ -184,6 +287,15 @@ public class BugDetailsActivityPerformTest extends AppCompatActivity {
     }
 
     private void continueInit() {
+        if(currentBug.getState().equals("Retest") || currentBug.getState().equals("Fixed")){
+            //everything okay
+        }
+        else{
+            button_setAsFixed.setVisibility(View.GONE);
+            getButton_setAsUnfixed.setVisibility(View.GONE);
+        }
+
+
         //setting textviews in layout with current bug details
         textView_name.setText(currentBug.getName());
         textView_state.setText(currentBug.getState());

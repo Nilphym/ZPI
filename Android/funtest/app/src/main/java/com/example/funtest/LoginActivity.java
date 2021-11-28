@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         pDialog.dismiss();
                         pDialog = null;
                     }
+                    Toast.makeText(getApplicationContext(), "Login Failed. Please, try again.", Toast.LENGTH_SHORT).show();
                 }
             });
 
