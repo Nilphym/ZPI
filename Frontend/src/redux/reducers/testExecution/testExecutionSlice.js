@@ -60,8 +60,7 @@ export const getExecutionTestFromErrorId = createAsyncThunk(
 );
 
 export const getExecutionTest = createAsyncThunk('testExecution/get', async ({ testId }) => {
-  const data = await server().get({ url: `Tests/TestExecution/${testId}` });
-
+  const data = await server().get({ url: `Tests/testExecution/${testId}` });
   const testWithExecutedInfo = {
     ...data,
     steps: await Promise.all(
