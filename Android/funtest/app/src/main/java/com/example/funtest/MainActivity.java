@@ -96,12 +96,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
 
+        /*
         //begin transaction and load default fragment
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
         fragmentTransaction.commit();
+
+         */
 
         //check necessary permissons
         checkPermissions();
@@ -280,6 +283,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                     }
+                    //begin transaction and load default fragment
+                    fragmentManager = getSupportFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+
+                    fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
+                    fragmentTransaction.commit();
 
                 }
             }, new Response.ErrorListener(){
