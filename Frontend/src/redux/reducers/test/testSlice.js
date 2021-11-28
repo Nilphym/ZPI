@@ -1,9 +1,4 @@
-/* eslint-disable no-console */
-/* eslint-disable no-alert */
-import {
-  createAsyncThunk,
-  createSlice
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import server from '../../../services/server';
 
@@ -41,8 +36,7 @@ const prepareOutputEntryData = (entryDataArray) => {
   const entryDataObject = {};
   const dataArray = [];
   entryDataArray.forEach((object) => {
-    if (object.entryType === 'textField')
-      dataArray.push(object.textField);
+    if (object.entryType === 'textField') dataArray.push(object.textField);
     else {
       dataArray.push(object);
     }
@@ -71,9 +65,7 @@ const initialState = {
 };
 
 // ----------------------------------------- Test API
-export const getTestById = createAsyncThunk('test/get/byId', async (_, {
-  getState
-}) => {
+export const getTestById = createAsyncThunk('test/get/byId', async (_, { getState }) => {
   const id = getState().test.testId ? getState().test.testId : localStorage.getItem('testId');
   const response = await server().get({
     url: `Tests/${id}`
@@ -81,9 +73,7 @@ export const getTestById = createAsyncThunk('test/get/byId', async (_, {
   return response;
 });
 
-export const putTestById = createAsyncThunk('test/put/ById', async (_, {
-  getState
-}) => {
+export const putTestById = createAsyncThunk('test/put/ById', async (_, { getState }) => {
   const body = {
     name: getState().test.testData.testName,
     testSuiteId: getState().test.selectedTestSuiteId,
@@ -98,28 +88,25 @@ export const putTestById = createAsyncThunk('test/put/ById', async (_, {
   return response;
 });
 
-export const postTest = createAsyncThunk('test/post', async ({
-  testPlanId,
-  testSuiteId,
-  testName
-}) => {
-  const response = await server().post({
-    url: 'Tests',
-    data: {
-      planTestId: testPlanId,
-      planSuiteId: testSuiteId,
-      name: testName
-    }
-  });
-  return response;
-});
+export const postTest = createAsyncThunk(
+  'test/post',
+  async ({ testPlanId, testSuiteId, testName }) => {
+    const response = await server().post({
+      url: 'Tests',
+      data: {
+        planTestId: testPlanId,
+        planSuiteId: testSuiteId,
+        name: testName
+      }
+    });
+    return response;
+  }
+);
 
 // ----------------------------------------- Test Procedure API
 export const getTestProcedureById = createAsyncThunk(
   'test/getTestProcedureById',
-  async (_, {
-    getState
-  }) => {
+  async (_, { getState }) => {
     const response = await server().get({
       url: `TestProcedures/${getState().test.selectedTestProcedureId}`
     });
@@ -129,9 +116,7 @@ export const getTestProcedureById = createAsyncThunk(
 
 export const putTestProcedureById = createAsyncThunk(
   'test/putTestProcedureById',
-  async (_, {
-    getState
-  }) => {
+  async (_, { getState }) => {
     const response = await server().put({
       url: `TestProcedures/${getState().test.selectedTestProcedureId}`,
       data: {
@@ -145,9 +130,7 @@ export const putTestProcedureById = createAsyncThunk(
 
 export const postTestProcedure = createAsyncThunk(
   'test/postTestProcedure',
-  async (_, {
-    getState
-  }) => {
+  async (_, { getState }) => {
     const response = await server().post({
       url: 'TestProcedures',
       data: {
@@ -160,18 +143,14 @@ export const postTestProcedure = createAsyncThunk(
 );
 
 // ----------------------------------------- Test Case API
-export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_, {
-  getState
-}) => {
+export const getTestCaseById = createAsyncThunk('test/getTestCaseById', async (_, { getState }) => {
   const response = await server().get({
     url: `TestCases/${getState().test.selectedTestCaseId}`
   });
   return response;
 });
 
-export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_, {
-  getState
-}) => {
+export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_, { getState }) => {
   const transferObject = {
     testId: getState().test.testId,
     preconditions: getState().test.selectedTestCase.preconditions,
@@ -185,18 +164,19 @@ export const putTestCaseById = createAsyncThunk('test/putTestCaseById', async (_
   return response;
 });
 
-export const postTestCase = createAsyncThunk('test/postTestCase', async (productId, {
-  getState
-}) => {
-  const response = await server().post({
-    url: 'TestCases',
-    data: {
-      productId,
-      testId: getState().test.testId
-    }
-  });
-  return response;
-});
+export const postTestCase = createAsyncThunk(
+  'test/postTestCase',
+  async (productId, { getState }) => {
+    const response = await server().post({
+      url: 'TestCases',
+      data: {
+        productId,
+        testId: getState().test.testId
+      }
+    });
+    return response;
+  }
+);
 
 // ----------------------------------------- Test Step API
 export const getTestStepById = createAsyncThunk('test/getTestStepById', async (testStepId) => {
@@ -208,9 +188,7 @@ export const getTestStepById = createAsyncThunk('test/getTestStepById', async (t
 
 export const putTestStepById = createAsyncThunk(
   'test/putTestStepById',
-  async (testStepId, {
-    getState
-  }) => {
+  async (testStepId, { getState }) => {
     const currentTestStep = getState().test.selectedTestStep[testStepId];
     const dataToSend = {};
     dataToSend.name = currentTestStep.name;
@@ -226,18 +204,17 @@ export const putTestStepById = createAsyncThunk(
 
 export const postTestStep = createAsyncThunk(
   'test/postTestStep',
-  async (newStepName, {
-    getState
-  }) => {
+  async (newStepName, { getState }) => {
     const currentTestProcedureId = getState().test.selectedTestProcedure.id;
     const dataToSend = {};
     dataToSend.testProcedureId = currentTestProcedureId;
     dataToSend.name = newStepName;
-    const {
-      selectedTestStep
-    } = getState().test;
+    const { selectedTestStep } = getState().test;
     const stepsKeys = Object.keys(selectedTestStep);
-    const newStepNumber = Object.keys(selectedTestStep).length > 0 ? selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1 : 1;
+    const newStepNumber =
+      Object.keys(selectedTestStep).length > 0
+        ? selectedTestStep[stepsKeys[stepsKeys.length - 1]].stepNumber + 1
+        : 1;
     dataToSend.stepNumber = newStepNumber;
     const response = await server().post({
       url: 'Steps',
@@ -256,51 +233,33 @@ export const testSlice = createSlice({
       state.isLoading = true;
     },
     addTestStepTestData: (state, action) => {
-      const {
-        id,
-        newTable
-      } = action.payload;
-      state.selectedTestStep[id].testData = state.selectedTestStep[id].testData ? [...state.selectedTestStep[id].testData, newTable] : [newTable];
+      const { id, newTable } = action.payload;
+      state.selectedTestStep[id].testData = state.selectedTestStep[id].testData
+        ? [...state.selectedTestStep[id].testData, newTable]
+        : [newTable];
     },
     editTestStepTestData: (state, action) => {
-      const {
-        id,
-        editedTable
-      } = action.payload;
+      const { id, editedTable } = action.payload;
       state.selectedTestStep[id].testData[
-        state.selectedTestStep[id].testData.findIndex(
-          (table) => table.name === editedTable.name
-        )
+        state.selectedTestStep[id].testData.findIndex((table) => table.name === editedTable.name)
       ] = editedTable;
     },
     editTestStepControlPoint: (state, action) => {
-      const {
-        id,
-        editedControlPoint
-      } = action.payload;
+      const { id, editedControlPoint } = action.payload;
       state.selectedTestStep[id].controlPoint = editedControlPoint;
     },
     deleteTestStepTestData: (state, action) => {
-      const {
-        id,
-        name
-      } = action.payload;
+      const { id, name } = action.payload;
       state.selectedTestStep[id].testData = [
         ...state.selectedTestStep[id].testData.filter((table) => table.name !== name)
       ];
     },
     setTestStepName: (state, action) => {
-      const {
-        id,
-        newName
-      } = action.payload;
+      const { id, newName } = action.payload;
       state.selectedTestStep[id].name = newName;
     },
     setTestStepLoading: (state, action) => {
-      const {
-        id,
-        value
-      } = action.payload;
+      const { id, value } = action.payload;
       state.isLoadingTestStep[id] = value;
     },
     editTestProcedureResult: (state, action) => {
@@ -310,50 +269,36 @@ export const testSlice = createSlice({
       state.isLoadingTestProcedure = action.payload.isLoading;
     },
     addTestCaseEntryDataItem: (state, action) => {
-      const {
-        newItem
-      } = action.payload;
+      const { newItem } = action.payload;
       state.selectedTestCase.entryData = [...state.selectedTestCase.entryData, newItem];
     },
     editTestCaseTextField: (state, action) => {
-      const {
-        editedTextField
-      } = action.payload;
+      const { editedTextField } = action.payload;
       state.selectedTestCase.entryData[
         state.selectedTestCase.entryData.findIndex(
           (item) =>
-          item.entryType === 'textField' && item.textFieldId === editedTextField.textFieldId
+            item.entryType === 'textField' && item.textFieldId === editedTextField.textFieldId
         )
       ] = editedTextField;
     },
     editTestCaseTable: (state, action) => {
-      const {
-        editedTable
-      } = action.payload;
+      const { editedTable } = action.payload;
       state.selectedTestCase.entryData[
-        state.selectedTestCase.entryData.findIndex(
-          (table) => table.name === editedTable.name
-        )
+        state.selectedTestCase.entryData.findIndex((table) => table.name === editedTable.name)
       ] = editedTable;
     },
     editTestCasePreconditions: (state, action) => {
-      const {
-        editedPreconditions
-      } = action.payload;
+      const { editedPreconditions } = action.payload;
       state.selectedTestCase.preconditions = editedPreconditions;
     },
     deleteTestCaseTextField: (state, action) => {
-      const {
-        textFieldId
-      } = action.payload;
+      const { textFieldId } = action.payload;
       state.selectedTestCase.entryData = [
         ...state.selectedTestCase.entryData.filter((item) => item.textFieldId !== textFieldId)
       ];
     },
     deleteTestCaseTable: (state, action) => {
-      const {
-        name
-      } = action.payload;
+      const { name } = action.payload;
       state.selectedTestCase.entryData = [
         ...state.selectedTestCase.entryData.filter((item) => item.name !== name)
       ];
@@ -426,12 +371,7 @@ export const testSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(getTestProcedureById.fulfilled, (state, action) => {
-        const {
-          id,
-          result,
-          testCaseId,
-          stepIds: testStepsIds
-        } = action.payload;
+        const { id, result, testCaseId, stepIds: testStepsIds } = action.payload;
         state.selectedTestProcedure.id = id;
         state.selectedTestProcedure.testStepsIds = testStepsIds;
         state.selectedTestProcedure.result = result;
@@ -460,7 +400,11 @@ export const testSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(getTestCaseById.fulfilled, (state, action) => {
-        state.selectedTestCase.entryData = typeof (action.payload.entryDataObject) === 'object' && Object.keys(action.payload.entryDataObject).length > 0 ? transformEntryData(action.payload.entryDataObject) : [];
+        state.selectedTestCase.entryData =
+          typeof action.payload.entryDataObject === 'object' &&
+          Object.keys(action.payload.entryDataObject).length > 0
+            ? transformEntryData(action.payload.entryDataObject)
+            : [];
         state.selectedTestCase.preconditions = action.payload.preconditions;
         state.isLoadingTestCase = false;
       })
@@ -480,13 +424,7 @@ export const testSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(getTestStepById.fulfilled, (state, action) => {
-        const {
-          id,
-          name,
-          stepNumber,
-          testDataObject,
-          controlPoint
-        } = action.payload;
+        const { id, name, stepNumber, testDataObject, controlPoint } = action.payload;
         state.selectedTestStep[id] = {};
         state.selectedTestStep[id].id = id;
         state.selectedTestStep[id].name = name;

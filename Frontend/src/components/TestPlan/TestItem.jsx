@@ -5,10 +5,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTestId, setExecutionTestId, getTestExecCounter } from '../../redux/store';
 
-
-
 const TestItem = ({ isEditable, testName, testId }) => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();

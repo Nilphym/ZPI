@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -52,27 +51,36 @@ export const ChangeUserDataPanel = () => {
 
   function onSubmitName() {
     // dispatch(changeUserName({ name }));
-    resetName({ name: '' }, {
-      keepIsValid: true
-    });
+    resetName(
+      { name: '' },
+      {
+        keepIsValid: true
+      }
+    );
     // navigate TODO: Ew
-  };
+  }
 
   function onSubmitSurname() {
     // dispatch(changeUserSurname({ surname }));
-    resetSurname({ surname: '' }, {
-      keepIsValid: true
-    });
+    resetSurname(
+      { surname: '' },
+      {
+        keepIsValid: true
+      }
+    );
     // navigate TODO: Ew
-  };
+  }
 
   function onSubmitPassword() {
     // dispatch(changeUserPasswordById({ password }));
-    resetPassword({ password: '', repeatPassword: '' }, {
-      keepIsValid: true
-    });
+    resetPassword(
+      { password: '', repeatPassword: '' },
+      {
+        keepIsValid: true
+      }
+    );
     // navigate TODO: Ew
-  };
+  }
 
   return (
     <Box

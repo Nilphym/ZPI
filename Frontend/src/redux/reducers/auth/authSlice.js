@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import authService from '../../../services/auth';
