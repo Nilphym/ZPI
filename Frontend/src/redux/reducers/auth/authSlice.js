@@ -5,40 +5,22 @@ import authService from '../../../services/auth';
 import server from '../../../services/server';
 
 // ----------------------------------------- Users API
-<<<<<<< HEAD
-export const getUsers = createAsyncThunk('users/get', async (_, { getState }) => {
-=======
 export const getUsers = createAsyncThunk('users/get', async () => {
->>>>>>> test-planning
   const response = await server().get({
     url: 'Products/users'
   });
   return response;
 });
 
-<<<<<<< HEAD
-export const deleteUser = createAsyncThunk('user/delete', async ({ userId }) => {
-  const response = await server().delete({
-    url: `Users/${userId}`
+export const deleteUser = createAsyncThunk('user/delete', async ({ userName }) => {
+  const response = await server().put({
+    url: 'Account/deleteUser',
+    data: {
+      userName
+    }
   });
   return response;
 });
-=======
-export const deleteUser = createAsyncThunk(
-  'user/delete',
-  async ({
-    userName
-  }) => {
-    const response = await server().put({
-      url: 'Account/deleteUser',
-      data: {
-        userName
-      }
-    });
-    return response;
-  }
-);
->>>>>>> test-planning
 
 // ----------------------------------------- Product API
 export const getProductById = createAsyncThunk('product/get/byId', async (_, { getState }) => {
@@ -176,29 +158,30 @@ export const registerUserToProject = createAsyncThunk(
   }
 );
 
-
 const token = authService.getDecodedToken();
-const initialState = token ? {
-  isLoggedIn: true,
-  token,
-  creationDate: '',
-  version: '',
-  testPlans: [],
-  users: [],
-  isLoading: true,
-  isLoadingUsers: true,
-  error: ''
-} : {
-  isLoggedIn: false,
-  token: null,
-  creationDate: '',
-  version: '',
-  testPlans: [],
-  users: [],
-  isLoading: true,
-  isLoadingUsers: true,
-  error: ''
-};
+const initialState = token
+  ? {
+      isLoggedIn: true,
+      token,
+      creationDate: '',
+      version: '',
+      testPlans: [],
+      users: [],
+      isLoading: true,
+      isLoadingUsers: true,
+      error: ''
+    }
+  : {
+      isLoggedIn: false,
+      token: null,
+      creationDate: '',
+      version: '',
+      testPlans: [],
+      users: [],
+      isLoading: true,
+      isLoadingUsers: true,
+      error: ''
+    };
 
 export const register = createAsyncThunk(
   'auth/register',
