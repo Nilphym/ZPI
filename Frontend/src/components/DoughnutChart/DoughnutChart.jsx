@@ -66,6 +66,13 @@ const renderActiveShape = ({
 export const DoughnutChart = ({ sx, name, label, data }) => {
   const count = data.reduce((previous, current) => previous + current.value, 0);
 
+  const formatedData = data
+    .filter((test) => test.value !== 0)
+    .map((test) => ({
+      ...test,
+      name: test.name.length > 19 ? `${test.name.substring(0, 16)}...` : test.name
+    }));
+
   return (
     <Box
       component={Paper}
@@ -94,13 +101,13 @@ export const DoughnutChart = ({ sx, name, label, data }) => {
             <Pie
               cy="45%"
               label={(props) => renderActiveShape({ ...props, count, label })}
-              data={data}
+              data={formatedData}
               innerRadius={50}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
             >
-              {data.map((entry, index) => (
+              {formatedData.map((entry, index) => (
                 <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
