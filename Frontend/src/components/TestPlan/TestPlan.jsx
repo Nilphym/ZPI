@@ -51,7 +51,7 @@ export const TestPlan = ({ isEditable }) => {
 
   async function addTestSuite({ newTestSuite }) {
     setIsAddingTestSuite(false);
-    dispatch(postTestSuite(newTestSuite));
+    await dispatch(postTestSuite(newTestSuite));
     dispatch(setLoading({ isLoading: true }));
     await dispatch(getTestPlanById());
   }
