@@ -79,7 +79,7 @@ const TestItem = ({ isEditable, testName, testId }) => {
           sx={{
             position: 'absolute',
             top: '50%',
-            right: '17.5%',
+            right: '18.5%',
             transform: 'translateY(-50%)'
           }}
           variant="contained"

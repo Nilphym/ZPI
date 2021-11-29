@@ -65,7 +65,8 @@ export const TestPlan = ({ isEditable }) => {
       sx={{
         position: 'relative',
         margin: '1.5rem',
-        minWidth: '95rem'
+        minWidth: '62.5rem',
+        width: 'calc(100%-10px)'
       }}
     >
       {isLoading ? (
