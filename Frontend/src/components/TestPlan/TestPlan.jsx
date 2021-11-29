@@ -24,10 +24,7 @@ export const TestPlan = ({ isEditable }) => {
   } = useSelector((state) => state.testPlan);
 
   const { control } = useForm();
-  const {
-    control: testSuiteControl,
-    handleSubmit: handleTestSuite
-  } = useForm();
+  const { control: testSuiteControl, handleSubmit: handleTestSuite } = useForm();
   const dispatch = useDispatch();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -176,7 +173,13 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '13%'
+                  left: '19%',
+                  '@media(min-width: 1350px)': {
+                    left: '17.5%'
+                  },
+                  '@media(min-width: 1650px)': {
+                    left: '14%'
+                  }
                 }}
                 startIcon={<AddIcon />}
               >
@@ -188,7 +191,13 @@ export const TestPlan = ({ isEditable }) => {
                   zIndex: 2,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  left: '20%'
+                  left: '30%',
+                  '@media(min-width: 1350px)': {
+                    left: '26%'
+                  },
+                  '@media(min-width: 1650px)': {
+                    left: '21%'
+                  }
                 }}
                 startIcon={<CloseIcon />}
                 onClick={() => setIsAddingTestSuite(false)}
