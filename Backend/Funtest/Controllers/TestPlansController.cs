@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestPlan.Responses;
 using Funtest.TransferObject.TestPlan.Requests;
@@ -46,6 +43,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost("/api/{productId}/[controller]")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddTestPlan([FromRoute] Guid productId, AddTestPlanRequest request)
         {
             var isProductExist = _productService.IsProductExist(productId);
@@ -61,6 +59,7 @@ namespace Funtest.Controllers
 
 
         [HttpPut("{testPlanId}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditTestPlan([FromRoute] Guid testPlanId, EditTestPlanRequest request)
         {
             var isTestPlanExist = _testPlanService.IsTestPlanExist(testPlanId);

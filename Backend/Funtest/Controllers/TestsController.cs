@@ -36,6 +36,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddTest(AddTestRequest test)
         {
             var isPlanTestExist = _testPlanService.IsTestPlanExist(test.PlanTestId);
@@ -74,6 +75,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testId}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditTest([FromRoute] Guid testId, EditTestRequest request)
         {
             var isExist = _testService.IsTestExist(testId);
@@ -103,6 +105,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testId}/execute")]
+        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> ExecuteTest([FromRoute] Guid testId)
         {
             var result = await _testService.ExecuteTest(testId);

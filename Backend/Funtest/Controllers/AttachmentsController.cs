@@ -50,6 +50,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles=Roles.Tester)]
         public async Task<ActionResult<Attachment>> PostAttachment(AddAttachmentRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(request.ErrorId);

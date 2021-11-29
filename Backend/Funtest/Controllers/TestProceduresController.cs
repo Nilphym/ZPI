@@ -13,7 +13,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
+    [Authorize(Roles = Roles.Tester + ", " + Roles.Developer)]
     public class TestProceduresController : ControllerBase
     {
         private readonly ITestProcedureService _testProcedureService;
@@ -28,6 +28,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> PostTestProcedure(AddTestProcedureRequest testProcedure)
         {
             var correctResult = await _testProcedureService.AddTestProcedure(testProcedure);
@@ -52,6 +53,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testProcedureId}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditTestProcedure([FromRoute] Guid testProcedureId, EditTestProcedureRequest request)
         {
             var isExist = _testProcedureService.IsTestProcedureExist(testProcedureId);

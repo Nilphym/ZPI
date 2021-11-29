@@ -314,9 +314,9 @@ namespace Funtest.Services
             return errors.Select(x => _mapper.Map<GetIdentityErrorInformationRespons>(x)).ToList();
         }
 
-        public async Task<bool> IsErrorReviewed(Guid errorId)
+        public async Task<bool> IsErrorReviewed(Guid errorId, string userId)
         {
-            return Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual).Count() > 0;
+            return Context.Reviews.Where(x => x.ErrorId == errorId && x.TesterId == userId && x.IsActual).Count() > 0;
         }
 
         public async Task<bool> ResignFromEverErrors(string developerId)

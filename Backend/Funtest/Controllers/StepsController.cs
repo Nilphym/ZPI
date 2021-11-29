@@ -28,6 +28,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddStep(AddStepRequest step)
         {
             var isTetProcedureExist = _testProcedureService.IsTestProcedureExist(step.TestProcedureId);
@@ -70,6 +71,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{stepId}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditStep([FromRoute] Guid stepId, EditStepRequest request)
         {
             var response = await _stepService.EditStep(stepId, request);

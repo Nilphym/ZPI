@@ -42,7 +42,7 @@ namespace Funtest.Services
                 userName += duplicat;
             }
             var workspace = Regex.Replace(product.Name, @"\s+", "").ToLower();
-            return $"{userName.ToLower()}@{workspace}.pl";
+            return $"{userName.ToLower()}@{workspace}.com";
         }
 
         public async Task<string> AddNewUser(AddNewUserRequest request, Product product)
