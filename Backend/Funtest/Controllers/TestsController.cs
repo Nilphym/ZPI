@@ -105,7 +105,6 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testId}/execute")]
-        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> ExecuteTest([FromRoute] Guid testId)
         {
             var result = await _testService.ExecuteTest(testId);

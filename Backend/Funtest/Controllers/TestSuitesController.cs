@@ -11,7 +11,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Tester+", "+ Roles.Developer)]
+    [Authorize(Roles = Roles.Tester+", "+ Roles.Developer + ", "+Roles.ProjectManager)]
     public class TestSuitesController : ControllerBase
     {
         private readonly ITestSuiteService _testSuiteService;

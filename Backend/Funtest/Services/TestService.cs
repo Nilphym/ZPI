@@ -177,20 +177,31 @@ namespace Funtest.Services
             ErrorTestResponse errorTest = new ErrorTestResponse()
             {
                 TestId = test.Id,
-                TestName = test.Name,
-                TestCaseEntryData = test.TestCase.EntryDataObject != null ? test.TestCase.EntryDataObject.GetValue("data") : "",
+                TestName = test.Name
+            };
+            /*
+             * TestCaseEntryData = test.TestCase.EntryDataObject != null ? test.TestCase.EntryDataObject.GetValue("data") : "",
                 TestCaseProconditions = test.TestCase.Preconditions,
                 Result = test.TestProcedure.Result
-            };
+             */
+            if (test.TestCase != null)
+            {
+                errorTest.TestCaseEntryData = test.TestCase.EntryDataObject != null ? test.TestCase.EntryDataObject.GetValue("data") : "";
+                errorTest.TestCaseProconditions = test.TestCase.Preconditions;
+            }
 
-          /*  var error = await Context.Errors.Include(x => x.Test)
-                .Include(x => x.Step)
-                .Include(x => x.Step.TestProcedure)
-                .Include(x => x.Step.TestProcedure.TestCase)
-                .Where(x => x.TestId == testId)
-                .FirstAsync();*/
+            if (test.TestProcedure != null)
+                errorTest.Result = test.TestProcedure.Result;
 
-            return errorTest;
+
+                /*  var error = await Context.Errors.Include(x => x.Test)
+                      .Include(x => x.Step)
+                      .Include(x => x.Step.TestProcedure)
+                      .Include(x => x.Step.TestProcedure.TestCase)
+                      .Where(x => x.TestId == testId)
+                      .FirstAsync();*/
+
+                return errorTest;
         }
 
         public List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId)

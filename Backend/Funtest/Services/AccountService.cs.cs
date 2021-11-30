@@ -27,12 +27,22 @@ namespace Funtest.Services
             _emailService = emailService;
         }
 
+        public string RemoveDiacritics(string s)
+        {
+            string asciiEquivalents = Encoding.ASCII.GetString(
+                         Encoding.GetEncoding("Cyrillic").GetBytes(s)
+                     );
+
+            return asciiEquivalents;
+        }
+
         private string CreateUserName(User user, Product product)
         {
             var userName = $"{user.FirstName}.{user.LastName}";
             userName = userName.Normalize(NormalizationForm.FormD);
             var chars = userName.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
             userName = new string(chars).Normalize(NormalizationForm.FormC);
+            userName = RemoveDiacritics(userName);
 
 
             var duplicat = Context.Users.Where(x => x.FirstName == user.FirstName && user.LastName == x.LastName && x.ProductId == product.Id).Count();
