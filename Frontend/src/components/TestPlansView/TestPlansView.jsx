@@ -51,7 +51,8 @@ export const TestPlansView = () => {
     <Box
       sx={{
         margin: '1.5rem',
-        minWidth: '90rem'
+        minWidth: '62.5rem',
+        width: 'calc(100%-10px)'
       }}
     >
       <Typography
@@ -148,8 +149,14 @@ export const TestPlansView = () => {
                 sx={{
                   position: 'absolute',
                   top: '50%',
-                  left: '15%',
-                  transform: 'translateY(-50%)'
+                  transform: 'translateY(-50%)',
+                  left: '22%',
+                  '@media(min-width: 1350px)': {
+                    left: '21%'
+                  },
+                  '@media(min-width: 1650px)': {
+                    left: '16%'
+                  }
                 }}
                 variant="contained"
                 type="submit"
@@ -161,8 +168,14 @@ export const TestPlansView = () => {
                 sx={{
                   position: 'absolute',
                   top: '50%',
-                  left: '22%',
-                  transform: 'translateY(-50%)'
+                  left: '32%',
+                  transform: 'translateY(-50%)',
+                  '@media(min-width: 1350px)': {
+                    left: '30%'
+                  },
+                  '@media(min-width: 1650px)': {
+                    left: '23%'
+                  }
                 }}
                 onClick={() => {
                   setIsAddingTestPlan(false);

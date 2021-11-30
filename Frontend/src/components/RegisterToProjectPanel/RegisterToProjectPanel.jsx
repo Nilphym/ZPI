@@ -61,15 +61,16 @@ export const RegisterToProjectPanel = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = ({ name, surname, password }) => {
-    dispatch(
+  async function onSubmit({ name, surname, password }) {
+    const username = await dispatch(
       registerUserToProject({ name, surname, password, role, productIdEncoded, emailEncoded })
     );
     reset(defaultValues, {
       keepIsValid: true
     });
-    navigate('/login');
-  };
+    console.log(username);
+    navigate(`/welcome/${username.payload}`);
+  }
 
   return (
     <Box>

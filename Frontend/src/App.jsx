@@ -13,7 +13,8 @@ import {
   ForgotPasswordPanel,
   RegisterToProjectPanel,
   TestPlansView,
-  InviteUserToProjectPanel
+  InviteUserToProjectPanel,
+  WelcomeUserToProjectPanel
 } from './components';
 import {
   NotFound,
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="resetPassword" element={<ForgotPasswordPanel />} />
         <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
         <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
+        <Route path="welcome/:username" element={<WelcomeUserToProjectPanel/>} />
         <Route
           path="api/account/:role/:productIdEncoded/:emailEncoded"
           element={<RegisterToProjectPanel />}

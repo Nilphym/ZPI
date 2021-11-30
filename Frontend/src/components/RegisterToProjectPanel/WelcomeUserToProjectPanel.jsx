@@ -1,9 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { styled } from '@mui/system';
-// import axios from 'axios';
 
 const StyledLink = styled(Link)({
   color: 'blue',
@@ -16,8 +14,8 @@ const StyledLink = styled(Link)({
   }
 });
 
-export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
-
+export const WelcomeUserToProjectPanel = () => {
+  const { username } = useParams();
   return (
     <Box
       sx={{
@@ -39,10 +37,10 @@ export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
         gutterBottom
         component="div"
       >
-        {`Welcome, to the ${projectName}, ${user.name}!`}
+        Welcome to the Project!
       </Typography>
       <Typography align="center" variant="body1" gutterBottom component="div">
-        {`Your login: ${user.login}`}
+        {`Your login: ${username}`}
       </Typography>
       <Typography
         align="center"
@@ -58,7 +56,7 @@ export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
           height: '6.25rem'
         }}
       >
-        <StyledLink to="#!">
+        <StyledLink to="/login">
           <Button
             variant="contained"
             sx={{
@@ -72,11 +70,6 @@ export const WelcomeUserToProjectPanel = ({ user, projectName }) => {
       </Box>
     </Box>
   );
-};
-
-WelcomeUserToProjectPanel.propTypes = {
-  user: PropTypes.object.isRequired,
-  projectName: PropTypes.string.isRequired
 };
 
 export default WelcomeUserToProjectPanel;

@@ -117,7 +117,8 @@ export const Test = ({ isEditable }) => {
       sx={{
         position: 'relative',
         margin: '1.5rem',
-        minWidth: '81rem'
+        minWidth: '81.5rem',
+        width: 'calc(100%-10px)'
       }}
     >
       {isLoading ? (
