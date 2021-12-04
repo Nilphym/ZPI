@@ -98,8 +98,15 @@ public class BugReportActivity extends AppCompatActivity {
         //initialize spinner lists
         labels_type = new ArrayList<>();
         labels_type.add("Functional");
-        labels_type.add("Logical");
-        labels_type.add("Wrong Datatype");
+        labels_type.add("Logic");
+        labels_type.add("Performance");
+        labels_type.add("Usability");
+        labels_type.add("Compatibility");
+        labels_type.add("Security");
+        //labels_type.add("Syntax");
+        //labels_type.add("System-level integration");
+        //labels_type.add("Unit-level bugs");
+        //labels_type.add("Wrong data type");
 
         labels_impact = new ArrayList<>();
         labels_impact.add("High");

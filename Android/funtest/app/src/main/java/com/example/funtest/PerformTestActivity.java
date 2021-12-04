@@ -209,18 +209,24 @@ public class PerformTestActivity extends AppCompatActivity {
 
                             ///
                             JSONObject jsonTestData = jsonTestStep.getJSONObject("testDataObject");
-                            JSONArray jsonArrayTestData = jsonTestData.getJSONArray("data");
 
                             ArrayList<String> currentTestStepTestData = new ArrayList<>();
-                            for(int j=0;j<jsonArrayTestData.length();j++){
-                                if (jsonArrayTestData.get(j) instanceof JSONObject){
-                                    String currentTestData = jsonArrayTestData.getJSONObject(j).toString();
-                                    currentTestStepTestData.add(currentTestData);
+
+                            try {
+
+                                JSONArray jsonArrayTestData = jsonTestData.getJSONArray("data");
+
+                                for (int j = 0; j < jsonArrayTestData.length(); j++) {
+                                    if (jsonArrayTestData.get(j) instanceof JSONObject) {
+                                        String currentTestData = jsonArrayTestData.getJSONObject(j).toString();
+                                        currentTestStepTestData.add(currentTestData);
+                                    } else if (jsonArrayTestData.get(j) instanceof String) {
+                                        String currentTestData = jsonArrayTestData.getString(j);
+                                        currentTestStepTestData.add(currentTestData);
+                                    }
+
                                 }
-                                else if (jsonArrayTestData.get(j) instanceof String){
-                                    String currentTestData = jsonArrayTestData.getString(j);
-                                    currentTestStepTestData.add(currentTestData);
-                                }
+                            }catch(Exception e){
 
                             }
                             currentTestStep.setTestData(currentTestStepTestData);

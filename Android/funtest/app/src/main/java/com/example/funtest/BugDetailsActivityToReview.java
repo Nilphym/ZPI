@@ -85,6 +85,7 @@ public class BugDetailsActivityToReview extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BugDetailsAttachmentsActivity.class);
                 intent.putExtra("position",bug_list_position);
+                intent.putExtra("id",currentBugList.get(bug_list_position).getId());
                 intent.putExtra("sourceActivityName","BugDetailsActivityToReview");
                 startActivity(intent);
             }

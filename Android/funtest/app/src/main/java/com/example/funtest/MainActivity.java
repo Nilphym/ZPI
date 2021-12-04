@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
+    Boolean isFirstRun;
+
     //Permissions
     private static final int REQUEST_CODE = 1;
 
@@ -83,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isFirstRun=true;
 
         toolbar = findViewById(R.id.ndt_toolbar);
         setSupportActionBar(toolbar);
@@ -283,12 +287,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                     }
-                    //begin transaction and load default fragment
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
+                    if(isFirstRun){
+                        //begin transaction and load default fragment
+                        fragmentManager = getSupportFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
 
-                    fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
-                    fragmentTransaction.commit();
+                        fragmentTransaction.add(R.id.mc_frame_layout, new DashboardFragment());
+                        fragmentTransaction.commit();
+                    }
+                    isFirstRun = false;
 
                 }
             }, new Response.ErrorListener(){

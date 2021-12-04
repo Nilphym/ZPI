@@ -76,10 +76,16 @@ public class TestDetailsActivity extends AppCompatActivity {
         ArrayList<String> entryDataLabels = new ArrayList<>();
         //for(int i=0;i< currentTest.getTestCase().getEntryData().size();i++){
         for(int i=0;i< currentTest.getTestCase().getEntryData().size();i++){
-            String currentData = currentTest.getTestCase().getEntryData().get(i);
-            JSONObject jsonObject = new JSONObject(currentData);
-            String currentDataName = jsonObject.getString("name");
-            entryDataLabels.add(currentDataName);
+            if (isJSONValid(currentTest.getTestCase().getEntryData().get(i))){
+                String currentData = currentTest.getTestCase().getEntryData().get(i);
+                JSONObject jsonObject = new JSONObject(currentData);
+                String currentDataName = jsonObject.getString("name");
+                entryDataLabels.add(currentDataName);
+            }
+            else {
+                String currentTestData = currentTest.getTestCase().getEntryData().get(i);
+                entryDataLabels.add(currentTestData);
+            }
         }
         ArrayAdapter<String> entryDataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, entryDataLabels);
         listView_entryData.setAdapter(entryDataAdapter);
@@ -106,6 +112,15 @@ public class TestDetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            return false;
+        }
+        return true;
     }
 
     private void getTestData() {
@@ -151,7 +166,8 @@ public class TestDetailsActivity extends AppCompatActivity {
                         JSONArray jsonArrayEntryData =jsonTestCase.getJSONArray("entryDataObject");
 
                         for(int i=0;i<jsonArrayEntryData.length();i++){
-                            String currentData = jsonArrayEntryData.getJSONObject(i).toString();
+                            //String currentData = jsonArrayEntryData.getJSONObject(i).toString();
+                            String currentData = jsonArrayEntryData.getString(i);
                             currentEntryData.add(currentData);
                         }
                         currentTestCase.setEntryData(currentEntryData);
