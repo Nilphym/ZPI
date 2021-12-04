@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-alert */
 import {
   createAsyncThunk,
   createSlice
@@ -11,14 +9,17 @@ const initialState = {
   selectedTestPlanId: '',
   selectedTestPlan: {},
   isLoadingTestSuites: {},
-  isLoading: true
+  isLoading: true,
+  error: ''
 };
 
 // ----------------------------------------- Test Plan API
 export const getTestPlanById = createAsyncThunk('testPlan/get/byId', async (_, {
   getState
 }) => {
-  const id = getState().testPlan.selectedTestPlanId ? getState().testPlan.selectedTestPlanId : localStorage.getItem('testPlanId');
+  const id = getState().testPlan.selectedTestPlanId ?
+    getState().testPlan.selectedTestPlanId :
+    localStorage.getItem('testPlanId');
   const response = await server().get({
     url: `TestPlans/${id}`
   });
@@ -80,7 +81,6 @@ export const putTestSuite = createAsyncThunk(
     newTestSuiteName,
     testSuiteId
   }) => {
-
     const body = {
       category: newTestSuiteName
     };
@@ -92,6 +92,13 @@ export const putTestSuite = createAsyncThunk(
     return response;
   }
 );
+
+export const getTestExecCounter = createAsyncThunk('test/execCounter', async (testId) => {
+  const response = await server().get({
+    url: `Tests/${testId}/executionCounter`
+  });
+  return response;
+});
 
 export const testPlanSlice = createSlice({
   name: 'testPlans',
@@ -120,12 +127,15 @@ export const testPlanSlice = createSlice({
           name,
           testSuites
         } = action.payload;
+        if (!state.selectedTestPlanId)
+          state.selectedTestPlanId = id;
         state.selectedTestPlan.id = id;
         state.selectedTestPlan.name = name;
         state.selectedTestPlan.testSuites = testSuites;
         state.selectedTestPlan.tests = {};
         state.selectedTestPlan.categories = {};
         state.isLoadingTestSuites = {};
+        state.error = '';
         testSuites.forEach(({
           id
         }) => {
@@ -133,12 +143,12 @@ export const testPlanSlice = createSlice({
         });
         state.isLoading = false;
       })
-      .addCase(getTestPlanById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestPlanById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestPlanById.fulfilled, () => {
-        alert('Object changed');
-      })
+      // .addCase(putTestPlanById.fulfilled, () => {
+      //   alert('Object changed');
+      // })
       .addCase(getTestSuiteTests.fulfilled, (state, action) => {
         const {
           id: testSuiteId,
@@ -149,22 +159,23 @@ export const testPlanSlice = createSlice({
         state.selectedTestPlan.categories[testSuiteId] = category;
         state.isLoadingTestSuites[testSuiteId] = false;
       })
-      .addCase(getTestSuiteTests.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(getTestSuiteTests.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestPlanById.rejected, (_, action) => {
-        alert(action.error.message);
+      .addCase(putTestPlanById.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(postTestSuite.fulfilled, () => {
-        alert('Test Suite added');
+      .addCase(getTestExecCounter.fulfilled, (_, action) => {
+        return action.payload;
       })
-      .addCase(postTestSuite.rejected, (_, action) => {
-        alert(action.error.message);
-      }).addCase(putTestSuite.fulfilled, () => {
-        alert('Test Suite modified');
+      .addCase(postTestSuite.rejected, (state, action) => {
+        state.error = action.error.message;
       })
-      .addCase(putTestSuite.rejected, (_, action) => {
-        alert(action.error.message);
+      // .addCase(putTestSuite.fulfilled, () => {
+      //   alert('Test Suite modified');
+      // })
+      .addCase(putTestSuite.rejected, (state, action) => {
+        state.error = action.error.message;
       });
   }
 });

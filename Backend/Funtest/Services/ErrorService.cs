@@ -234,7 +234,7 @@ namespace Funtest.Services
             return $"{ERROR_PREFIX}-{index.ToString().Substring(0, 8).ToUpper()}";
         }
 
-        public async Task<bool> AddError(AddErrorRequest request, string testSuiteCategory)
+        public async Task<Guid?> AddError(AddErrorRequest request, string testSuiteCategory)
         {
             var error = _mapper.Map<Error>(request);
             var index = Guid.NewGuid();
@@ -245,8 +245,8 @@ namespace Funtest.Services
             Context.Errors.Add(error);
 
             if (await Context.SaveChangesAsync() == 0)
-                return false;
-            return true;
+                return null;
+            return index;
         }
 
         public async Task<bool> SetErrorCategory(Error error, string category)
@@ -259,19 +259,24 @@ namespace Funtest.Services
             return true;
         }
 
-        public async Task<ErrorTestResponse> GetErrorTest(Guid errorId)
+        public async Task<GetErrorTestWithProcedureAndCaseResponse> GetErrorTest(Guid errorId)
         {
-            ErrorTestResponse errorTest = new ErrorTestResponse();
-
-            var error = await Context.Errors.Include(x => x.Test)
+            var error = await Context.Errors
+                .Include(x => x.Test)
                 .Include(x => x.Step)
                 .Include(x => x.Step.TestProcedure)
                 .Include(x => x.Step.TestProcedure.TestCase)
                 .Where(x => x.Id == errorId)
                 .FirstAsync();
 
+            GetErrorTestWithProcedureAndCaseResponse errorTest = new GetErrorTestWithProcedureAndCaseResponse();
+
             errorTest.TestId = (Guid)error.TestId;
             errorTest.TestName = error.Test.Name;
+            errorTest.CreationDate = error.Test.CreationDate;
+            errorTest.TestCaseId = (Guid)error.Test.TestCaseId;
+            errorTest.TestCaseCode = error.Step.TestProcedure.TestCase.Code;
+
 
             if (error.Step.TestProcedure.TestCase.EntryDataObject != null)
                 errorTest.TestCaseEntryData = error.Step.TestProcedure.TestCase.EntryDataObject.GetValue("data");
@@ -279,7 +284,8 @@ namespace Funtest.Services
                 errorTest.TestCaseEntryData = "";
 
             errorTest.TestCaseProconditions = error.Step.TestProcedure.TestCase.Preconditions;
-
+            errorTest.TestProcedureId = (Guid)error.Step.TestProcedureId;
+            errorTest.TestProcedureCode = error.Step.TestProcedure.Code;
             errorTest.Result = error.Step.TestProcedure.Result;
             return errorTest;
         }
@@ -308,9 +314,9 @@ namespace Funtest.Services
             return errors.Select(x => _mapper.Map<GetIdentityErrorInformationRespons>(x)).ToList();
         }
 
-        public async Task<bool> IsErrorReviewed(Guid errorId)
+        public async Task<bool> IsErrorReviewed(Guid errorId, string userId)
         {
-            return Context.Reviews.Where(x => x.ErrorId == errorId && x.IsActual).Count() > 0;
+            return Context.Reviews.Where(x => x.ErrorId == errorId && x.TesterId == userId && x.IsActual).Count() > 0;
         }
 
         public async Task<bool> ResignFromEverErrors(string developerId)

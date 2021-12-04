@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Box, Button, TextField, Typography, InputLabel, Select, MenuItem } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

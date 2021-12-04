@@ -142,7 +142,7 @@ export const rejectBug = createAsyncThunk('bugs/reject', async ({ id, developerI
 });
 
 export const resolveBug = createAsyncThunk('bugs/resolve', async ({ id, retestsRequired }) => {
-  const data = await server().put({ url: `Errors/fixed/${id}`, data: retestsRequired });
+  const data = await server().put({ url: `Errors/fixed/${id}`, data: { retestsRequired } });
   return data;
 });
 

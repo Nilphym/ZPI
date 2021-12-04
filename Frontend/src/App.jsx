@@ -13,7 +13,8 @@ import {
   ForgotPasswordPanel,
   RegisterToProjectPanel,
   TestPlansView,
-  InviteUserToProjectPanel
+  InviteUserToProjectPanel,
+  WelcomeUserToProjectPanel
 } from './components';
 import {
   NotFound,
@@ -24,6 +25,7 @@ import {
   RetestBugsPage,
   DashboardPage
 } from './pages';
+import DeleteUserPanel from './components/DeleteUserPanel/DeleteUserPanel';
 
 const App = () => {
   return (
@@ -35,6 +37,7 @@ const App = () => {
         <Route path="resetPassword" element={<ForgotPasswordPanel />} />
         <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
         <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
+        <Route path="welcome/:username" element={<WelcomeUserToProjectPanel/>} />
         <Route
           path="api/account/:role/:productIdEncoded/:emailEncoded"
           element={<RegisterToProjectPanel />}
@@ -52,6 +55,7 @@ const App = () => {
           <Route path="testPlan-:testPlanId" element={<TestPlan isEditable={false} />} />
           <Route path="testPlan-:testPlanId/test-e-:testId" element={<Test isEditable />} />
           <Route path="testPlan-:testPlanId/test-:testId" element={<Test isEditable={false} />} />
+          <Route path="deleteUser" element={<DeleteUserPanel />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFound />} />

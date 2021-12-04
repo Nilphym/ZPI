@@ -13,7 +13,7 @@ namespace Funtest.Services.Interfaces
     {
         Task<GetErrorResponse> GetErrorById(Guid id);
         Task<Error> GetModelErrorById(Guid id);
-        Task<bool> AddError(AddErrorRequest request, string testSuiteCategory);
+        Task<Guid?> AddError(AddErrorRequest request, string testSuiteCategory);
         Task<bool> SetErrorCategory(Error error, string category);
         List<GetErrorResponse> GetAllErrors(Guid productId);
         List<GetErrorResponse> GetAllErrorsToRetest(Guid productId);
@@ -30,9 +30,9 @@ namespace Funtest.Services.Interfaces
         List<string> ErrorImpacts();
         List<string> ErrorPriorities();
         List<string> ErrorTypes();
-        Task<ErrorTestResponse> GetErrorTest(Guid errorId);
+        Task<GetErrorTestWithProcedureAndCaseResponse> GetErrorTest(Guid errorId);
         List<GetIdentityErrorInformationRespons> GetAllErrorsForStep(Guid stepId);
-        Task<bool> IsErrorReviewed(Guid errorId);
+        Task<bool> IsErrorReviewed(Guid errorId, string userId);
         Task<bool> ChangeErrorStatus(Guid errorId, ErrorState errorState);
         Task<bool> ResignFromEverErrors(string developerId);
     }

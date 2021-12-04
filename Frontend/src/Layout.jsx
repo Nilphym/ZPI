@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
@@ -70,6 +69,8 @@ const Layout = () => {
               { icon: 'dashboard', text: 'Dashboard', destination: '/dashboard' },
               { icon: 'tests', text: 'Test Plans', destination: '/testPlans' },
               { icon: 'bugs', text: 'Bugs', destination: '/bugs' },
+              { icon: 'addUser', text: 'Invite User', destination: '/inviteUser' },
+              { icon: 'deleteUser', text: 'Delete User', destination: '/deleteUser' },
               { icon: 'logout', text: 'Logout', destination: '/logout' }
             ]}
           />

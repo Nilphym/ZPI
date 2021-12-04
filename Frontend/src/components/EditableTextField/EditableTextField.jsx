@@ -118,7 +118,7 @@ export const EditableTextField = ({ disabled, deleteTextField, data }) => {
         </Box>
       </Box>
       {isEditing && (
-        <Button variant="outlined" sx={{ marginTop: '1.5rem' }} onClick={() => saveTextField()}>
+        <Button variant="contained" sx={{ marginTop: '1.5rem' }} onClick={() => saveTextField()}>
           Save TextField
         </Button>
       )}

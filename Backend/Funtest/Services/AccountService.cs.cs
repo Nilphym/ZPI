@@ -27,12 +27,22 @@ namespace Funtest.Services
             _emailService = emailService;
         }
 
+        public string RemoveDiacritics(string s)
+        {
+            string asciiEquivalents = Encoding.ASCII.GetString(
+                         Encoding.GetEncoding("Cyrillic").GetBytes(s)
+                     );
+
+            return asciiEquivalents;
+        }
+
         private string CreateUserName(User user, Product product)
         {
             var userName = $"{user.FirstName}.{user.LastName}";
             userName = userName.Normalize(NormalizationForm.FormD);
             var chars = userName.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
             userName = new string(chars).Normalize(NormalizationForm.FormC);
+            userName = RemoveDiacritics(userName);
 
 
             var duplicat = Context.Users.Where(x => x.FirstName == user.FirstName && user.LastName == x.LastName && x.ProductId == product.Id).Count();
@@ -42,7 +52,7 @@ namespace Funtest.Services
                 userName += duplicat;
             }
             var workspace = Regex.Replace(product.Name, @"\s+", "").ToLower();
-            return $"{userName.ToLower()}@{workspace}.pl";
+            return $"{userName.ToLower()}@{workspace}.com";
         }
 
         public async Task<string> AddNewUser(AddNewUserRequest request, Product product)
@@ -64,7 +74,6 @@ namespace Funtest.Services
         public async Task<bool> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var user = Context.Users.Where(x => x.Email == request.Email && x.UserName == request.UserName).FirstOrDefault();
-            //  var user = await UserManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
@@ -73,7 +82,7 @@ namespace Funtest.Services
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = HttpUtility.UrlEncode(passwordResetToken);
-            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "https://localhost:44360/");
+            var emailServiceResponse = await _emailService.SendResetPasswordMail(user, encodedToken, "");
 
             return emailServiceResponse;
         }

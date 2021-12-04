@@ -25,6 +25,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult<TestCase>> AddTestCase(AddTestCaseRequest testCase)
         {
             var response = await _testCaseService.AddTestCase(testCase);

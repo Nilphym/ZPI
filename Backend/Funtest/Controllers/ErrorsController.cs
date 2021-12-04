@@ -8,10 +8,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Data.Roles;
 using Funtest.Interfaces;
-using Funtest.TransferObject.Error.Response;
-using System.Net.Http.Headers;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
 namespace Funtest.Controllers
@@ -37,6 +33,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles=Roles.Tester)]
         public async Task<ActionResult> AddError(AddErrorRequest request)
         {
             if (!await _userService.IsTesterExist(request.TesterId))
@@ -49,9 +46,9 @@ namespace Funtest.Controllers
             if (!_stepService.IsStepExist(request.StepId))
                 return NotFound("Step with given id doesn't exist.");
 
-            var result = await _errorService.AddError(request, test.TestSuite.Category);
-            if (result)
-                return Ok();
+            var index = await _errorService.AddError(request, test.TestSuite.Category);
+            if (index != null)
+                return Ok(index);
             return Problem("Problem with saving changes in database.");
         }
 
@@ -135,6 +132,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("fixed/{id}")]
+        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> ResolveError([FromRoute] Guid id, [FromBody] ResolveErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(id);
@@ -172,6 +170,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("open/{errorId}")]
+        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> AssignBugToDeveloper([FromRoute] Guid errorId, [FromBody] DeveloperAssignedToErrorRequest request)
         {
             var isErrorExist = _errorService.IsErrorExist(errorId);
@@ -193,6 +192,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("reject/{errorId}")]
+        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> RejectError([FromRoute] Guid errorId, DeveloperAssignedToErrorRequest request)
         {
             var result = await _errorService.RejectError(errorId, request);
@@ -203,6 +203,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("resign/{errorId}")]
+        [Authorize(Roles = Roles.Developer)]
         public async Task<ActionResult> ResignTheError([FromRoute] Guid errorId, DeveloperAssignedToErrorRequest request)
         {
             var result = await _errorService.ResignError(errorId, request);
@@ -213,25 +214,37 @@ namespace Funtest.Controllers
         }
 
         [HttpGet("ErrorTest/{errorId}")]
-        public async Task<ActionResult<ErrorTestResponse>> GetErrorTest([FromRoute] Guid errorId)
+        public async Task<ActionResult<GetErrorTestWithProcedureAndCaseResponse>> GetErrorTest([FromRoute] Guid errorId)
         {
-            if (!_errorService.IsErrorExist(errorId))
-                return NotFound("Error with givenn id doesn't exist");
+            // if (!_errorService.IsErrorExist(errorId))
+            //  return NotFound("Error with givenn id doesn't exist");
 
-            var errorTest = await _errorService.GetErrorTest(errorId);
-            errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+            // var errorTest = await _errorService.GetErrorTest(errorId);
+            // errorTest.Steps = await _stepService.GetStepsWithErrorsForTest(errorTest.TestId);
 
-            return errorTest;
+            // return errorTest;
+            ErrorsController errorsController = this;
+            if (!errorsController._errorService.IsErrorExist(errorId))
+                return (ActionResult<GetErrorTestWithProcedureAndCaseResponse>)(ActionResult)errorsController.NotFound((object)"Error with givenn id doesn't exist");
+            GetErrorTestWithProcedureAndCaseResponse errorTest = await errorsController._errorService.GetErrorTest(errorId);
+            GetErrorTestWithProcedureAndCaseResponse procedureAndCaseResponse = errorTest;
+            procedureAndCaseResponse.Steps = await errorsController._stepService.GetStepsWithErrorsForTest(errorTest.TestId);
+            procedureAndCaseResponse = (GetErrorTestWithProcedureAndCaseResponse)null;
+            return (ActionResult<GetErrorTestWithProcedureAndCaseResponse>)errorTest;
         }
 
         [HttpGet("{errorId}/executed")]
+        [Authorize(Roles=Roles.Tester)]
         public async Task<ActionResult<bool>> IsErrorReviewed(Guid errorId)
         {
+            var principal = HttpContext.User;
+            var userId = principal.Claims.Where(x => x.Type == "userId").Select(x => x.Value).FirstOrDefault();
+
             var isErrorExist = _errorService.IsErrorExist(errorId);
             if (!isErrorExist)
                 return NotFound("Error with given id doesn't exist");
 
-            var result = await _errorService.IsErrorReviewed(errorId);
+            var result = await _errorService.IsErrorReviewed(errorId, userId);
 
             return Ok(result);
         }

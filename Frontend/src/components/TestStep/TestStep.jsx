@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import * as yup from 'yup';
 
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
@@ -157,11 +156,7 @@ export const TestStep = ({ testStepId, isEditable }) => {
               }
             />
             <Button
-              onClick={
-                !isEditing
-                  ? () => setIsOpened((state) => !state)
-                  : () => alert('Cannot close the view in an editing mode!')
-              }
+              onClick={!isEditing ? () => setIsOpened((state) => !state) : () => {}}
               variant="contained"
               sx={{
                 height: '3.5rem',

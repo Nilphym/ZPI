@@ -68,7 +68,7 @@ namespace Funtest.Services
         public async Task<List<GetStepWithErrorIdsResponse>> GetStepsWithErrorsForTest(Guid testId)
         {
             var result = new List<GetStepWithErrorIdsResponse>();
-            var testProcedureId = (await Context.Tests.FindAsync(testId)).TestProcedure.Id;
+            var testProcedureId = (await Context.Tests.FindAsync(testId)).TestProcedureId;
             var steps = Context.Steps.Where(x => x.TestProcedureId == testProcedureId).ToList();
 
             foreach (var step in steps)
@@ -79,6 +79,7 @@ namespace Funtest.Services
                 {
                     Id = step.Id,
                     Name = step.Name,
+                    StepNumber = step.StepNumber,
                     ControlPoint = step.ControlPoint,
                     ErrorIds = errorIds
                 };
@@ -87,7 +88,7 @@ namespace Funtest.Services
                     newStep.TestData = step.TestDataObject.GetValue("data");
                 else
                     newStep.TestData = "";
-
+                
                 result.Add(newStep);
             }
 

@@ -11,7 +11,7 @@ namespace Funtest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Tester+", "+ Roles.Developer)]
+    [Authorize(Roles = Roles.Tester+", "+ Roles.Developer + ", "+Roles.ProjectManager)]
     public class TestSuitesController : ControllerBase
     {
         private readonly ITestSuiteService _testSuiteService;
@@ -37,6 +37,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddTestSuite(AddTestSuiteRequest request)
         {
             var result = await _testSuiteService.AddTestSuite(request);
@@ -47,6 +48,7 @@ namespace Funtest.Controllers
         } 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditTestSuite([FromRoute] Guid id, EditTestSuiteRequest request)
         {
             var result = await  _testSuiteService.EditTestSuite(id, request);

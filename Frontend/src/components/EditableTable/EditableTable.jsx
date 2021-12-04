@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -15,16 +14,14 @@ import { editTestStepTestData, editTestCaseTable } from '../../redux/store';
 const MAX_ROWS_NUMBER = 11;
 const MAX_COLUMNS_NUMBER = 11;
 
-
 const processData = (data) => {
   return data.table;
 };
 
 const prepareOutputData = (values) => {
   const dataKeys = Object.keys(values).sort();
-  console.log(dataKeys);
   const processedData = [];
-  const array = [];
+  let array = [];
   dataKeys.forEach((key) => {
     if (key.toString().includes('-0-0')) {
       array.push(values[key]);
@@ -35,7 +32,8 @@ const prepareOutputData = (values) => {
         .includes('-0')
     ) {
       processedData.push(array);
-      array.length = 0;
+      array = [];
+      array.push(values[key]);
     } else if (key === dataKeys[dataKeys.length - 1]) {
       array.push(values[key]);
       processedData.push(array);
@@ -43,7 +41,6 @@ const prepareOutputData = (values) => {
       array.push(values[key]);
     }
   });
-  console.log(processedData);
   return processedData;
 };
 
@@ -51,8 +48,12 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
   const { control: tableControl, getValues } = useForm();
 
   const defaultData = processData(data);
-  const [rowsNumber, setRowsNumber] = defaultData && defaultData.length > 0 ? useState(defaultData.length) : useState(0);
-  const [columnsNumber, setColumnsNumber] = defaultData && defaultData.length > 0 && defaultData[0].length ? useState(defaultData[0].length) : useState(0);
+  const [rowsNumber, setRowsNumber] =
+    defaultData && defaultData.length > 0 ? useState(defaultData.length) : useState(0);
+  const [columnsNumber, setColumnsNumber] =
+    defaultData && defaultData.length > 0 && defaultData[0].length
+      ? useState(defaultData[0].length)
+      : useState(0);
   const [currentData, setCurrentData] = useState(defaultData);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -104,9 +105,9 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
 
   return (
     <Box
-      // sx={{
-      //   marginTop: '0.06rem'
-      // }}
+    // sx={{
+    //   marginTop: '0.06rem'
+    // }}
     >
       <Box
         sx={{
@@ -206,27 +207,29 @@ export const EditableTable = ({ parentComp, disabled, deleteTable, data, testSte
               width: '100%'
             }}
           >
-            {currentData && currentData.map((row, rowIndex) => (
-              <Box
-                key={`${data.tableName}-row-${row[0]}`}
-                sx={{
-                  display: 'flex'
-                }}
-              >
-                {row.map((item, columnIndex) => (
-                  <TableItem
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${data.tableName}-${rowIndex}-${columnIndex}`}
-                    name={data.tableName}
-                    row={rowIndex}
-                    column={columnIndex}
-                    control={tableControl}
-                    disabled={!isEditing}
-                    defaultValue={item}
-                  />
-                ))}
-              </Box>
-            ))}
+            {currentData &&
+              currentData.map((row, rowIndex) => (
+                <Box
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`${data.name}-row-${rowIndex}`}
+                  sx={{
+                    display: 'flex'
+                  }}
+                >
+                  {row.map((item, columnIndex) => (
+                    <TableItem
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`${data.name}-${rowIndex}-${columnIndex}`}
+                      name={data.name}
+                      row={rowIndex}
+                      column={columnIndex}
+                      control={tableControl}
+                      disabled={!isEditing}
+                      defaultValue={item}
+                    />
+                  ))}
+                </Box>
+              ))}
           </Box>
         </Box>
       </Box>

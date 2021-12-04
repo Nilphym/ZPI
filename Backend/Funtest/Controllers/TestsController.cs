@@ -36,6 +36,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> AddTest(AddTestRequest test)
         {
             var isPlanTestExist = _testPlanService.IsTestPlanExist(test.PlanTestId);
@@ -74,6 +75,7 @@ namespace Funtest.Controllers
         }
 
         [HttpPut("{testId}")]
+        [Authorize(Roles = Roles.Tester)]
         public async Task<ActionResult> EditTest([FromRoute] Guid testId, EditTestRequest request)
         {
             var isExist = _testService.IsTestExist(testId);
@@ -134,6 +136,16 @@ namespace Funtest.Controllers
             test.Steps = await _stepService.GetStepsWithErrorsForTest(testId);
 
             return test;
+        }
+
+        [HttpGet("android/{id}")]
+        public async Task<ActionResult<GetTestWithProcedureAndCaseTestResponse>> GetTestForAndroid(Guid id)
+        {
+            TestsController testsController = this;
+            if (!testsController._testService.IsTestExist(id))
+                return (ActionResult<GetTestWithProcedureAndCaseTestResponse>)(ActionResult)testsController.NotFound((object)"Test with given id doesn't exist.");
+            GetTestWithProcedureAndCaseTestResponse testByIdForAndroid = await testsController._testService.GetTestByIdForAndroid(id);
+            return (ActionResult<GetTestWithProcedureAndCaseTestResponse>)(ActionResult)testsController.Ok((object)testByIdForAndroid);
         }
     }
 }

@@ -136,12 +136,13 @@ Field.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   possibleValues: PropTypes.array
 };
 
 Field.defaultProps = {
-  possibleValues: []
+  possibleValues: [],
+  value: null
 };
 
 const ExpandableRow = ({ colSpan, data, open }) => {

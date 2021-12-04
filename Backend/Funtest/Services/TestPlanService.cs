@@ -3,6 +3,7 @@ using Data.Models;
 using Funtest.Services.Interfaces;
 using Funtest.TransferObject.TestPlan.Requests;
 using Funtest.TransferObject.TestPlan.Responses;
+using Funtest.TransferObject.TestSuite.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,19 @@ namespace Funtest.Services
                 return null;
 
             return _mapper.Map<GetTestPlanWithTestSuitesAndTestsResponse>(testPlan);
+        }
+
+        public async Task<GetTestPlanForMaciejResponse> GetTestPlanWithTestSuiteAndTestForMaciej(Guid testPlanId)
+        {
+            var testPlan = _mapper.Map<GetTestPlanForMaciejResponse>(await Context.TestPlans.FindAsync(testPlanId));
+             if (testPlan == null)
+                 return null;
+
+            testPlan.TestSuites = Context.TestSuites
+                .Where(x => x.TestPlanId == testPlanId)
+                .Select(x => _mapper.Map<GetTestSuiteWithTestsResponse>(x)).ToList();
+
+            return testPlan;
         }
 
         public bool IsTestPlanExist(Guid testPlanId)

@@ -23,5 +23,6 @@ namespace Funtest.Services.Interfaces
         List<GetTestIdentityInformationResponse> GetTestsDataForTestSuite(Guid testSuiteId);
         List<GetTestIdentityInformationResponse> GetTestsDataForTestPlan(Guid testPlanId);
         Task<ErrorTestResponse> GetTestExecutionWithError(Guid testId);
+        Task<GetTestWithProcedureAndCaseTestResponse> GetTestByIdForAndroid(Guid id);
     }
 }
