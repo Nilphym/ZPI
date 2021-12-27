@@ -37,12 +37,11 @@ const App = () => {
         <Route path="resetPassword" element={<ForgotPasswordPanel />} />
         <Route path="api/auth/:userId/:token" element={<ResetPasswordPanel />} />
         <Route path="inviteUser" element={<InviteUserToProjectPanel />} />
-        <Route path="welcome/:username" element={<WelcomeUserToProjectPanel/>} />
+        <Route path="welcome/:username" element={<WelcomeUserToProjectPanel />} />
         <Route
           path="api/account/:role/:productIdEncoded/:emailEncoded"
           element={<RegisterToProjectPanel />}
         />
-        {/* <Route path="changeUserData" element={<ChangeUserDataPanel />} /> */}
         <Route element={<RequireAuth />}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="bugs" element={<AllBugsPage />} />

@@ -21,7 +21,7 @@ const NavProfile = ({ avatar, name, compact }) => {
         }}
         src={avatar}
       >
-        {name.at(0)}
+        {name !== ' ' ? name.at(0) : ''}
       </Avatar>
       {!compact && <Typography sx={{ color: 'primary.dark' }}>{name}</Typography>}
     </Box>

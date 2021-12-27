@@ -1,7 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import authService from '../../../services/auth';
 import server from '../../../services/server';
@@ -14,9 +11,7 @@ export const getUsers = createAsyncThunk('users/get', async () => {
   return response;
 });
 
-export const deleteUser = createAsyncThunk('user/delete', async ({
-  userName
-}) => {
+export const deleteUser = createAsyncThunk('user/delete', async ({ userName }) => {
   const response = await server().put({
     url: 'Account/deleteUser',
     data: {
@@ -27,9 +22,7 @@ export const deleteUser = createAsyncThunk('user/delete', async ({
 });
 
 // ----------------------------------------- Product API
-export const getProductById = createAsyncThunk('product/get/byId', async (_, {
-  getState
-}) => {
+export const getProductById = createAsyncThunk('product/get/byId', async (_, { getState }) => {
   const response = await server().get({
     url: `Products/${getState().auth.token.productId}`
   });
@@ -38,9 +31,7 @@ export const getProductById = createAsyncThunk('product/get/byId', async (_, {
 
 export const getProductTestPlansById = createAsyncThunk(
   'product/testPlans/get/byId',
-  async (_, {
-    getState
-  }) => {
+  async (_, { getState }) => {
     const response = await server().get({
       url: `Product/${getState().auth.token.productId}/TestPlans`
     });
@@ -51,9 +42,7 @@ export const getProductTestPlansById = createAsyncThunk(
 // ----------------------------------------- Test Plan API
 export const postTestPlan = createAsyncThunk(
   'testPlan/post',
-  async (testPlanName, {
-    getState
-  }) => {
+  async (testPlanName, { getState }) => {
     const response = await server().post({
       url: `${getState().auth.token.productId}/TestPlans`,
       data: {
@@ -64,55 +53,9 @@ export const postTestPlan = createAsyncThunk(
   }
 );
 
-// -------------------------------------------------------
-
-// export const changeUserName = createAsyncThunk(
-//   'user/change/name',
-//   async ({ name }, { getState }) => {
-//     const response = await server().put({
-//       url: `User/${getState().auth.token.userId}/name`,
-//       body: {
-//         name
-//       }
-//     });
-//     return response;
-//   }
-// );
-
-// export const changeUserSurname = createAsyncThunk(
-//   'user/change/surname',
-//   async ({ surname }, { getState }) => {
-//     const response = await server().put({
-//       url: `User/${getState().auth.token.userId}/surname`,
-//       body: {
-//         surname
-//       }
-//     });
-//     return response;
-//   }
-// );
-
-// export const changeUserPasswordById = createAsyncThunk(
-//   'user/change/password/byId',
-//   async ({ password }, { getState }) => {
-//     const response = await server().put({
-//       url: `User/${getState().auth.token.userId}/passwordById`,
-//       body: {
-//         password
-//       }
-//     });
-//     return response;
-//   }
-// );
-
 export const changeUserPassword = createAsyncThunk(
   'user/change/password/byId',
-  async ({
-    password,
-    repeatPassword,
-    userId,
-    token
-  }) => {
+  async ({ password, repeatPassword, userId, token }) => {
     const response = await server().put({
       url: 'Account/resetPassword',
       data: {
@@ -128,10 +71,7 @@ export const changeUserPassword = createAsyncThunk(
 
 export const forgotPassword = createAsyncThunk(
   'user/forget/password',
-  async ({
-    email,
-    username
-  }) => {
+  async ({ email, username }) => {
     const response = await server().post({
       url: 'Account/forgotPassword',
       data: {
@@ -145,12 +85,7 @@ export const forgotPassword = createAsyncThunk(
 
 export const inviteUser = createAsyncThunk(
   'user/invite/byPM',
-  async ({
-    email,
-    role
-  }, {
-    getState
-  }) => {
+  async ({ email, role }, { getState }) => {
     const response = await server().post({
       url: 'Account/invitation',
       data: {
@@ -165,14 +100,7 @@ export const inviteUser = createAsyncThunk(
 
 export const registerUserToProject = createAsyncThunk(
   'user/registerToProject',
-  async ({
-    name,
-    surname,
-    password,
-    role,
-    productIdEncoded,
-    emailEncoded
-  }) => {
+  async ({ name, surname, password, role, productIdEncoded, emailEncoded }) => {
     const response = await server().post({
       url: 'Account/registration',
       data: {
@@ -189,39 +117,33 @@ export const registerUserToProject = createAsyncThunk(
 );
 
 const token = authService.getDecodedToken();
-const initialState = token ?
-  {
-    isLoggedIn: true,
-    token,
-    creationDate: '',
-    version: '',
-    testPlans: [],
-    users: [],
-    isLoading: true,
-    isLoadingUsers: true,
-    error: ''
-  } :
-  {
-    isLoggedIn: false,
-    token: null,
-    creationDate: '',
-    version: '',
-    testPlans: [],
-    users: [],
-    isLoading: true,
-    isLoadingUsers: true,
-    error: ''
-  };
+const initialState = token
+  ? {
+      isLoggedIn: true,
+      token,
+      creationDate: '',
+      version: '',
+      testPlans: [],
+      users: [],
+      isLoading: true,
+      isLoadingUsers: true,
+      error: ''
+    }
+  : {
+      isLoggedIn: false,
+      token: null,
+      creationDate: '',
+      version: '',
+      testPlans: [],
+      users: [],
+      isLoading: true,
+      isLoadingUsers: true,
+      error: ''
+    };
 
 export const register = createAsyncThunk(
   'auth/register',
-  async ({
-    projectName,
-    name,
-    surname,
-    email,
-    password
-  }) => {
+  async ({ projectName, name, surname, email, password }) => {
     const response = await server().post({
       url: 'Products',
       data: {
@@ -236,10 +158,7 @@ export const register = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk('auth/login', async ({
-  email,
-  password
-}) => {
+export const login = createAsyncThunk('auth/login', async ({ email, password }) => {
   const data = await authService.login({
     email,
     password
@@ -279,12 +198,7 @@ export const authSlice = createSlice({
         state.token = null;
       })
       .addCase(getProductById.fulfilled, (state, action) => {
-        const {
-          id,
-          name,
-          creationDate,
-          version
-        } = action.payload;
+        const { id, name, creationDate, version } = action.payload;
         state.productId = id;
         state.productName = name;
         state.creationDate = creationDate;
@@ -301,9 +215,6 @@ export const authSlice = createSlice({
       .addCase(getProductTestPlansById.rejected, (state, action) => {
         state.alert = action.error.message;
       })
-      // .addCase(postTestPlan.fulfilled, () => {
-      //   alert('Test Plan added');
-      // })
       .addCase(postTestPlan.rejected, (state, action) => {
         state.alert = action.error.message;
       })
@@ -320,9 +231,6 @@ export const authSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.alert = action.error.message;
       })
-      // .addCase(inviteUser.fulfilled, () => {
-      //   alert('User invited');
-      // })
       .addCase(inviteUser.rejected, (state, action) => {
         state.alert = action.error.message;
       })
@@ -335,8 +243,5 @@ export const authSlice = createSlice({
   }
 });
 
-export const {
-  logout,
-  setIsLoadingUsers
-} = authSlice.actions;
+export const { logout, setIsLoadingUsers } = authSlice.actions;
 export default authSlice.reducer;

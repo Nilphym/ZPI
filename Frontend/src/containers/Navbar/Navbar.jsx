@@ -45,7 +45,7 @@ const SmallLogo = styled('img')({
 export const Navbar = ({ links }) => {
   const [open, setOpen] = useState(true);
   const { pathname } = useLocation();
-  const { name, surname } = useSelector((state) => state.auth.token);
+  const { name, surname } = useSelector((state) => state.auth.token) ?? { name: '', surname: '' };
   const theme = useTheme();
   const largeMedia = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -75,6 +75,7 @@ export const Navbar = ({ links }) => {
           }}
           elevation={1}
           component={Box}
+          data-testid="navbar"
         >
           <Box
             sx={{
@@ -91,7 +92,7 @@ export const Navbar = ({ links }) => {
               </IconButton>
             )}
           </Box>
-          <Box sx={{ alignSelf: 'center' }}>
+          <Box sx={{ alignSelf: 'center' }} role="navigation">
             {links.map((link) =>
               link.name ? (
                 <NavMultiLink
